@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: liora
+      POSTGRES_PASSWORD: liora123
+      POSTGRES_DB: projectdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  db-mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: liora123
+      MYSQL_DATABASE: projectdb
+      MYSQL_USER: liora
+      MYSQL_PASSWORD: liora123
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysqldata:/var/lib/mysql
+
+  # backend:
+  #   build: ./backend
+  #   working_dir: /app
+  #   volumes:
+  #     - ./backend:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - "4000:4000"
+  #   depends_on:
+  #     - db
+  #     - db-mysql
+  #     - mongo
+  #   command: sh -c "npm install && npm run dev"
+
+volumes:
+  pgdata:
+  mysqldata:
+  mongodata:
