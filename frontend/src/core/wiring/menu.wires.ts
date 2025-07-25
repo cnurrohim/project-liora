@@ -17,8 +17,8 @@ export function menuWires(): Wire[] {
         console.log(sections);
         // Inject ke VMenuBarController
         const miniEntries: VMenuBarEntry[] = sections.map((section) => ({
-          key: section.key,
-          label: section.label ?? section.key,
+          key: section.id,
+          label: section.label ?? section.id,
           //icon: section.icon ?? "•",
           icon: React.createElement(IconRenderer, {
             name: section.icon,
@@ -39,8 +39,8 @@ export function menuWires(): Wire[] {
         console.log(sections);
         // Inject ke HMenuBarController
         const miniEntries: HMenuBarEntry[] = sections.map((section) => ({
-          key: section.key,
-          label: section.label ?? section.key,
+          key: section.id,
+          label: section.label ?? section.id,
           icon: React.createElement(IconRenderer, {
             name: section.icon,
             color: section.icon_color,

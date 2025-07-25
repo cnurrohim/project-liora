@@ -31,7 +31,7 @@ export const MenuProviderController = {
   },
 
   getSection(key: string): MenuSection | undefined {
-    return this.getState().sections.find((s) => s.key === key);
+    return this.getState().sections.find((s) => s.id === key);
   },
 
   getState() {
@@ -47,7 +47,7 @@ export const MenuProviderController = {
   },
 
   getSectionByKey(key: string): MenuSection | undefined {
-    return state.sections.find((s) => s.key === key);
+    return state.sections.find((s) => s.id === key);
   },
 
   subscribe(cb: () => void) {

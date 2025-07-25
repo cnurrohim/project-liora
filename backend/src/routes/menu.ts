@@ -6,7 +6,7 @@ export const menuRoute = new Hono();
 // GET /menus
 menuRoute.get("/", async (c) => {
   const result = await db.query(
-    "SELECT id as key,* FROM menu_items ORDER BY ordinal ASC"
+    "SELECT * FROM menu_items ORDER BY ordinal ASC"
   );
 
   const rows = result.rows;
@@ -38,24 +38,22 @@ menuRoute.post("/", async (c) => {
   const body = await c.req.json();
 
   const parent_id = body.parent_id ?? null;
-  const menu_key = body.menu_key ?? null;
 
   try {
     const { rows } = await db.query(
-      "SELECT MAX(ordinal) AS max FROM menu_items WHERE parent_id IS NOT DISTINCT FROM $1 AND menu_key IS NOT DISTINCT FROM $2",
-      [parent_id, menu_key]
+      "SELECT MAX(ordinal) AS max FROM menu_items WHERE parent_id IS NOT DISTINCT FROM $1",
+      [parent_id]
     );
     const newOrdinal = (rows[0].max || 0) + 1;
 
     const result = await db.query(
       `INSERT INTO menu_items 
-        (id, parent_id, menu_key, type, label, description, icon, icon_color, route, command, mode, alignment, position, ordinal)
+        (id, parent_id, type, label, description, icon, icon_color, route, command, mode, alignment, position, ordinal)
        VALUES 
         (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING *`,
       [
         body.parent_id ?? null,
-        body.menu_key ?? null,
         body.type,
         body.label,
         body.description,
@@ -86,21 +84,19 @@ menuRoute.put("/:id", async (c) => {
     await db.query(
       `UPDATE menu_items SET
         parent_id = $1,
-        menu_key = $2,
-        type = $3,
-        label = $4,
-        icon = $5,
-        route = $6,
-        command = $7,
-        mode = $8,
-        alignment = $9,
-        position = $10
-        description = $11
-        icon_color = $12,
-       WHERE id = $13`,
+        type = $2,
+        label = $3,
+        icon = $4,
+        route = $5,
+        command = $6,
+        mode = $7,
+        alignment = $8,
+        position = $9,
+        description = $10,
+        icon_color = $11,
+       WHERE id = $12`,
       [
         body.parent_id ?? null,
-        body.menu_key ?? null,
         body.type,
         body.label,
         body.icon ?? null,
@@ -129,7 +125,7 @@ menuRoute.delete("/:id", async (c) => {
   try {
     // Step 1: Ambil data item sebelum dihapus
     const { rows } = await db.query(
-      "SELECT ordinal, parent_id, menu_key FROM menu_items WHERE id = $1",
+      "SELECT ordinal, parent_id FROM menu_items WHERE id = $1",
       [id]
     );
 
@@ -137,7 +133,7 @@ menuRoute.delete("/:id", async (c) => {
       return c.json({ error: "Item tidak ditemukan" }, 404);
     }
 
-    const { ordinal, parent_id, menu_key } = rows[0];
+    const { ordinal, parent_id } = rows[0];
 
     // Step 2: Hapus item
     await db.query("DELETE FROM menu_items WHERE id = $1", [id]);
@@ -147,9 +143,8 @@ menuRoute.delete("/:id", async (c) => {
       `UPDATE menu_items 
        SET ordinal = ordinal - 1 
        WHERE ordinal > $1 
-         AND parent_id IS NOT DISTINCT FROM $2 
-         AND menu_key IS NOT DISTINCT FROM $3`,
-      [ordinal, parent_id, menu_key]
+         AND parent_id IS NOT DISTINCT FROM $2`,
+      [ordinal, parent_id]
     );
 
     return c.json({ success: true });
@@ -165,7 +160,7 @@ menuRoute.post("/reorder", async (c) => {
   const {
     rows: [current],
   } = await db.query(
-    "SELECT id, ordinal, parent_id, menu_key FROM menu_items WHERE id = $1",
+    "SELECT id, ordinal, parent_id FROM menu_items WHERE id = $1",
     [id]
   );
   if (!current) return c.json({ error: "Item not found" }, 404);
@@ -173,7 +168,6 @@ menuRoute.post("/reorder", async (c) => {
   const neighbor = await db.query(
     `SELECT id, ordinal FROM menu_items 
      WHERE parent_id IS NOT DISTINCT FROM $1 
-     AND menu_key IS NOT DISTINCT FROM $2 
      AND ordinal ${isLiftUp === true ? "<" : ">"} $3
      ORDER BY ordinal ${isLiftUp === true ? "DESC" : "ASC"}
      LIMIT 1`,
@@ -201,14 +195,13 @@ menuRoute.post("/reorder", async (c) => {
 });
 
 menuRoute.post("/normalize-ordinal", async (c) => {
-  const { parent_id, menu_key } = await c.req.json();
+  const { parent_id } = await c.req.json();
 
   const { rows } = await db.query(
     `SELECT id FROM menu_items 
-     WHERE parent_id IS NOT DISTINCT FROM $1 
-     AND menu_key IS NOT DISTINCT FROM $2 
+     WHERE parent_id IS NOT DISTINCT FROM $1
      ORDER BY ordinal ASC`,
-    [parent_id, menu_key]
+    [parent_id]
   );
 
   for (let i = 0; i < rows.length; i++) {

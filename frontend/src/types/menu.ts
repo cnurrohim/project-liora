@@ -32,8 +32,7 @@ export type MenuGroup = {
 export type MenuItem = MenuRoute | MenuCommand | MenuGroup;
 
 export type MenuSection = {
-  // id: string;
-  key: string;
+  id: string;
   label?: string;
   icon?: string;
   icon_color?: string;

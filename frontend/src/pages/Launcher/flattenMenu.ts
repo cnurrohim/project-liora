@@ -15,7 +15,7 @@ export function flattenMenu(
   result: FlatMenuItem[] = []
 ): FlatMenuItem[] {
   for (const section of sections) {
-    const parentLabel = section.label ?? section.key ?? "Untitled";
+    const parentLabel = section.label ?? section.id ?? "Untitled";
 
     if (Array.isArray(section.items)) {
       for (const item of section.items) {
