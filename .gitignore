@@ -1,0 +1,20 @@
+# Node modules
+**/node_modules/
+
+# dotenv
+*.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+**/pgdata/
+**/mysqldata/
+**/mongodata/
+.vscode/

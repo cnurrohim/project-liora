@@ -1,0 +1,26 @@
+[
+  {
+    "id": "main",
+    "icon": "☰",
+    "title": "Main Menu",
+    "position": "top",
+    "panelId": "main",
+    "type": "sliding"
+  },
+  {
+    "id": "settings",
+    "icon": "⚙️",
+    "title": "Settings",
+    "position": "bottom",
+    "panelId": "settings",
+    "type": "context"
+  },
+  {
+    "id": "debug",
+    "icon": "🪲",
+    "title": "Debug Tools",
+    "position": "bottom",
+    "panelId": "debug",
+    "type": "sliding"
+  }
+]

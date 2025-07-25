@@ -1,15 +1,4 @@
-import express from 'express';
-import { initDatabases } from './db';
+// src/index.ts
+import { startServer } from "./server.js";
 
-const app = express();
-initDatabases();
-
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('Hello from Express + DB!');
-});
-
-app.listen(4000, () => {
-  console.log('🚀 Server running at http://localhost:4000');
-});
+startServer();

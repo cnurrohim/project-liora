@@ -1,0 +1,214 @@
+[
+  {
+    "key": "main",
+    "label": "Main Menu",
+    "icon": "☰",
+    "mode": "sliding",
+    "alignment": "start",
+    "items": [
+      {
+        "type": "group",
+        "label": "Dashboard",
+        "icon": "📊",
+        "items": [
+          {
+            "type": "route",
+            "label": "Overview",
+            "icon": "🗂️",
+            "route": "/dashboard/overview"
+          },
+          {
+            "type": "route",
+            "label": "Stats",
+            "icon": "📈",
+            "route": "/dashboard/stats"
+          },
+          {
+            "type": "route",
+            "label": "Performance",
+            "icon": "💹",
+            "route": "/dashboard/performance"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "label": "Projects",
+        "icon": "📁",
+        "items": [
+          {
+            "type": "route",
+            "label": "Active",
+            "icon": "✅",
+            "route": "/projects/active"
+          },
+          {
+            "type": "route",
+            "label": "Archived",
+            "icon": "🗃️",
+            "route": "/projects/archived"
+          },
+          {
+            "type": "group",
+            "label": "Templates",
+            "icon": "🧾",
+            "items": [
+              {
+                "type": "route",
+                "label": "Internal",
+                "icon": "📝",
+                "route": "/projects/templates/internal"
+              },
+              {
+                "type": "route",
+                "label": "External",
+                "icon": "📄",
+                "route": "/projects/templates/external"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "label": "Reports",
+        "icon": "📑",
+        "items": [
+          {
+            "type": "route",
+            "label": "Daily",
+            "icon": "📆",
+            "route": "/reports/daily"
+          },
+          {
+            "type": "route",
+            "label": "Weekly",
+            "icon": "🗓️",
+            "route": "/reports/weekly"
+          },
+          {
+            "type": "route",
+            "label": "Monthly",
+            "icon": "📅",
+            "route": "/reports/monthly"
+          },
+          {
+            "type": "route",
+            "label": "Yearly",
+            "icon": "📈",
+            "route": "/reports/yearly"
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "label": "Tools",
+        "icon": "🛠️",
+        "items": [
+          {
+            "type": "route",
+            "label": "Builder",
+            "icon": "🏗️",
+            "route": "/tools/builder"
+          },
+          {
+            "type": "route",
+            "label": "Preview",
+            "icon": "🔍",
+            "route": "/tools/preview"
+          },
+          {
+            "type": "command",
+            "label": "Run Diagnostics",
+            "icon": "⚙️",
+            "command": "runDiagnostics"
+          },
+          {
+            "type": "command",
+            "label": "Clear Cache",
+            "icon": "🧹",
+            "command": "clearCache"
+          }
+        ]
+      },
+      { "type": "route", "label": "Inbox", "icon": "📬", "route": "/inbox" },
+      {
+        "type": "route",
+        "label": "Notifications",
+        "icon": "🔔",
+        "route": "/notifications"
+      },
+      { "type": "route", "label": "Tasks", "icon": "📋", "route": "/tasks" },
+      {
+        "type": "route",
+        "label": "Calendar",
+        "icon": "🗓️",
+        "route": "/calendar"
+      },
+      {
+        "type": "route",
+        "label": "Contacts",
+        "icon": "👥",
+        "route": "/contacts"
+      },
+      { "type": "route", "label": "Search", "icon": "🔎", "route": "/search" },
+      {
+        "type": "command",
+        "label": "Reload App",
+        "icon": "🔄",
+        "command": "reloadApp"
+      },
+      {
+        "type": "command",
+        "label": "Sync Data",
+        "icon": "🔁",
+        "command": "syncData"
+      }
+    ]
+  },
+  {
+    "key": "settings",
+    "label": "Settings",
+    "icon": "⛭",
+    "mode": "sliding",
+    "alignment": "end",
+    "items": [
+      {
+        "type": "route",
+        "label": "Preferences",
+        "icon": "✿",
+        "route": "/pages/preferences"
+      },
+      {
+        "type": "route",
+        "label": "users",
+        "icon": "✿",
+        "route": "/pages/users"
+      },
+      {
+        "type": "route",
+        "label": "Management Menu",
+        "icon": "✿",
+        "route": "/pages/menu"
+      },
+      {
+        "type": "route",
+        "label": "Roles",
+        "icon": "🔒",
+        "route": "/pages/roles"
+      },
+      {
+        "type": "command",
+        "label": "Check for Updates",
+        "icon": "⬇️",
+        "command": "checkUpdates"
+      },
+      {
+        "type": "command",
+        "label": "Logout",
+        "icon": "🚪",
+        "command": "logout"
+      }
+    ]
+  }
+]

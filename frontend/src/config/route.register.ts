@@ -1,0 +1,60 @@
+import React from "react";
+import Preferences from "../pages/Preferences";
+import { RouteRegistry } from "./routeRegistry";
+import UserListPage from "../pages/Users";
+import UserForm from "../pages/Users/UserForm";
+import RoleListPage from "../pages/role";
+import RoleFormPage from "../pages/role/roleForm";
+import MenuListPage from "../pages/Menu";
+import MenuFormPage from "../pages/Menu/form";
+
+export function registerRoutes() {
+  RouteRegistry.register(
+    "/pages/preferences",
+    "preferences",
+    React.createElement(Preferences)
+  );
+
+  RouteRegistry.register(
+    "/pages/users",
+    "list users",
+    React.createElement(UserListPage)
+  );
+  RouteRegistry.register(
+    "/users/create",
+    "create users",
+    React.createElement(UserForm)
+  );
+
+  RouteRegistry.register(
+    "/pages/roles",
+    "list roles",
+    React.createElement(RoleListPage)
+  );
+  RouteRegistry.register(
+    "/roles/create",
+    "create roles",
+    React.createElement(RoleFormPage)
+  );
+  RouteRegistry.register(
+    "/roles/:id/edit",
+    "edit roles",
+    React.createElement(RoleFormPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/menu",
+    "list menu",
+    React.createElement(MenuListPage)
+  );
+  RouteRegistry.register(
+    "/menu/create",
+    "create menu",
+    React.createElement(MenuFormPage)
+  );
+  RouteRegistry.register(
+    "/menu/:id/edit",
+    "edit menu",
+    React.createElement(MenuFormPage)
+  );
+}

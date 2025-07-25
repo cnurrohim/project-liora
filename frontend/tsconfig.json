@@ -3,5 +3,18 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "lib": ["dom", "es2022"],
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "types": ["jest"]
+  }
 }

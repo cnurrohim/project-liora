@@ -1,0 +1,12 @@
+### Login dan dapatkan token
+POST http://localhost:4000/auth/login
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "password": "password"
+}
+
+### Get profile (gunakan token dari response login)
+GET http://localhost:4000/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwMjdjNDc2LTQwN2ItNDY1ZS05OTVlLWY0MDM2MmQ2NDRkOSIsIm5hbWUiOiJBbGljZSBBZG1pbiIsInJvbGUiOiI2MDAzZTYwNS0wMWYwLTQ4MGUtYTc0OC1lYWUwYjBkNTU3NzIiLCJpYXQiOjE3NTI1MTMwNDgsImV4cCI6MTc1MjUxNjY0OH0.AJPlZ7L6mdvQf4S4ksVDgNiDRdW--xI4abaFwVb_0fs

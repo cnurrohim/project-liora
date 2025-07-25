@@ -1,0 +1,59 @@
+
+Menambahkan input/output ke controller [done]
+
+Membuat useController() hook untuk wrap behavior umum [done]
+
+Menambahkan sistem routing antar modul ala "node" [done]
+
+Komponen punya lebih banyak properti, [done]
+
+Komponen punya input/output, [done]
+
+Atau biar controller bisa diregistrasi otomatis seperti hook [DONE] [manual router.js, ada versi otomatis tapi pakai webpack, vite dll] 
+
+Menerima selector: hanya ambil sebagian state [ambil state yang butuh saja buttonA dan ButtonB visibility dan label]
+
+Tambahkan deep comparison untuk optimisasi re-render [shalow equal untuk flat state, deepEqual untuk nested state]
+
+Logging/debugging tersentralisasi [logic/logger.js]
+[tingkat lanjut]
+    Kamu bisa bikin logger ke file tertentu, atau pakai proxy.
+    Bisa juga tambahkan waktu, stack trace, id (kalau ingin tracing lebih lanjut).
+    Logger ini juga bisa digunakan untuk profiling sederhana.
+
+Kita bisa buat sistem visual ala node editor tapi tetap fokus ke source code modularnya
+
+Atau bikin plugin system di mana modul bisa muncul dari mana aja (kayak microkernel) [plugins, registry,pluginLoader, buttonD]
+[tingkat lanjut]
+    Autoload semua plugin di folder?
+    Plugin yang punya sub-plugin?
+    Dynamic import plugin dari server?
+    Atau mau eksplor lebih jauh fitur tambahan untuk 1 plugin ini dulu?
+    Atau bikin debugger buat melacak rute data antar modul
+
+
+🔄 Uji chained routing (output A → B → C) [sliderA,ButtonC,CounterDisplay, router-map,wire]
+
+🧪 Buat testing/debug tool ringan untuk ngecek isi registry dan routingMap [debugPanel]
+
+Siap lanjut ke sistem data input/output antar modul?
+
+
+Kalau nanti mau aktifkan TypeScript
+
+Cukup rename test jadi .test.ts atau .test.tsx dan install ini:
+
+npm install --save-dev ts-jest typescript
+npx ts-jest config:init
+
+
+Kalau kamu ingin bantu buat tool auto-connect atau decorators semacam @Wire() untuk bikin ini lebih deklaratif, aku juga bisa bantu. Mau lanjut ke arah itu?
+UI context menu untuk tab bar juga (klik kanan → close others, close right, dsb)
+
+Tampilkan pesan error ramah + error code
+
+✅ Sertakan konteks waktu/user/role
+
+✅ Log detail di backend, kirim logId ke frontend
+
+✅ Sediakan jalur pelaporan yang jelas
