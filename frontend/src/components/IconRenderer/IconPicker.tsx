@@ -15,10 +15,19 @@ export const IconPicker: React.FC<IconPickerProps> = ({
   const [search, setSearch] = useState("");
 
   const filteredIcons = useMemo(() => {
-    return Object.keys(iconRegistry)
-      .filter((name) => name.toLowerCase().includes(search.toLowerCase()))
-      .slice(0, 100); // limit to 100 icons
-  }, [search]);
+    let icons = Object.keys(iconRegistry).filter((name) =>
+      name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    if (selectedIcon && !icons.includes(selectedIcon) && search.trim() === "") {
+      icons = [selectedIcon, ...icons];
+    }
+
+    return icons.slice(0, 100); // limit tetap 100
+  }, [search, selectedIcon]);
+
+  const isSearching = search.trim() === "";
+  const previousSelectedIconVisible = selectedIcon && isSearching;
 
   return (
     <div className="p-2 bg-gray-900 rounded shadow max-h-[400px] overflow-y-auto w-full">
@@ -31,6 +40,19 @@ export const IconPicker: React.FC<IconPickerProps> = ({
       />
 
       <div className="grid grid-cols-6 gap-2">
+        {previousSelectedIconVisible && (
+          <button
+            type="button"
+            className={`flex items-center justify-center p-2 rounded hover:bg-gray-700 bg-blue-600`}
+          >
+            {(() => {
+              const Icon =
+                iconRegistry[selectedIcon as keyof typeof iconRegistry];
+              return <Icon size={24} />;
+            })()}
+          </button>
+        )}
+
         {filteredIcons.map((name) => {
           const Icon = iconRegistry[
             name as keyof typeof iconRegistry

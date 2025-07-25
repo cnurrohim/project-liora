@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   createMenu,
   getMenuById,
-  getMenus,
   getParentMenus,
   updateMenu,
 } from "./menu.api";
@@ -11,7 +10,6 @@ import { RouteRegistry } from "../../config/routeRegistry";
 import { useRouteParamsFromTab } from "../../hooks/useRouteParams";
 import { CommandRegistry } from "../../config/commandRegistry";
 import { IconPicker } from "../../components/IconRenderer/IconPicker";
-import ColorCirclePicker from "../../components/ColorPicker/ColorCirclePicker";
 
 const modeOptions = ["sliding", "context"];
 const alignmentOptions = ["start", "end"];
@@ -21,7 +19,7 @@ type FormData = {
   label: string;
   description: string;
   icon: string;
-  icon_color: string;
+  icon_color: string | null;
   type: "route" | "command" | "group";
   route?: string;
   command?: string;
@@ -38,7 +36,7 @@ export default function MenuFormPage() {
     label: "",
     description: "",
     icon: "",
-    icon_color: "",
+    icon_color: null,
     type: "route",
     route: "",
     command: "",
@@ -63,32 +61,61 @@ export default function MenuFormPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setLoading(true);
     try {
       if (isEdit) {
         await updateMenu(id!, form);
         showSuccessToast("Menu berhasil diperbarui");
+        setLoading(false);
       } else {
         await createMenu(form);
         showSuccessToast("Menu berhasil dibuat");
+        setLoading(false);
       }
     } catch (err: any) {
+      setLoading(false);
       showErrorToast(err.message || "Gagal menyimpan menu");
     }
   };
 
   useEffect(() => {
-    getParentMenus().then(setAllMenus);
-    if (isEdit) {
-      getMenuById(id!).then((data) => {
-        setForm({
-          ...data,
-          route: data.route || "",
-          command: data.command || "",
-        });
-      });
-    }
-  }, [id]);
+    const init = async () => {
+      try {
+        const parentMenu = await getParentMenus();
+        setAllMenus(parentMenu);
+
+        if (isEdit && id) {
+          (async () => {
+            try {
+              const data = await getMenuById(id);
+              console.log("data", data);
+              setForm({
+                label: data.label ?? "",
+                description: data.description ?? "",
+                icon: data.icon ?? "",
+                icon_color: data.icon_color ?? null,
+                type: data.type ?? "route",
+                route: data.route ?? "",
+                command: data.command ?? "",
+                parent_id: data.parent_id ?? null,
+                mode: data.mode ?? "sliding",
+                alignment: data.alignment ?? "start",
+              });
+            } catch (err) {
+              console.error(err);
+              showErrorToast("Gagal memuat data menu");
+            }
+          })();
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    init();
+  }, [isEdit, id]);
 
   const availableRoutes = RouteRegistry.getAllOptions();
   const availableCommands = CommandRegistry.getOptions();
@@ -232,9 +259,10 @@ export default function MenuFormPage() {
       <div className="pt-4">
         <button
           type="submit"
-          className="bg-blue-600 px-4 py-2 rounded text-white"
+          disabled={loading}
+          className="bg-blue-600 px-4 py-2 rounded text-white disabled:opacity-50"
         >
-          Simpan
+          {loading ? "Menyimpan..." : "Simpan"}
         </button>
       </div>
     </form>

@@ -34,22 +34,10 @@ export default function RoleFormPage() {
         const perms = await getAllPermissions();
         setAllPermissions(perms);
 
-        // if (isEdit) {
-        //   const role = await getRoleById(id!);
-        //   setForm({
-        //     name: role.name,
-        //     description: role.description ?? "",
-        //     label: role.label ?? "",
-        //     permissions: role.permissions ?? [],
-        //   });
-        // }
-
         if (isEdit && id) {
           (async () => {
             try {
               const role = await getRoleById(id);
-              console.log("roole = ");
-              console.log(role);
               setForm({
                 name: role.name,
                 description: role.description,

@@ -62,11 +62,14 @@ export default function MenuListPage() {
   };
 
   const handleEdit = (menu: MenuItem) => {
-    openTabSmart({
-      route: `/menu/${menu.id}/edit`,
-      label: `Edit: ${menu.label}`,
-      type: "route",
-    });
+    openTabSmart(
+      {
+        route: `/menu/${menu.id}/edit`,
+        label: `Edit: ${menu.label}`,
+        type: "route",
+      },
+      { replace: true }
+    );
   };
 
   const handleMove = async (id: string, isLiftUp: boolean) => {

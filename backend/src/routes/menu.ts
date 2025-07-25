@@ -33,6 +33,26 @@ menuRoute.get("/parent-menu", async (c) => {
   return c.json({ data: result.rows });
 });
 
+menuRoute.get("/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+
+    const res = await db.query(
+      `SELECT * FROM menu_items WHERE id = $1 LIMIT 1`,
+      [id]
+    );
+
+    const data = res.rows[0];
+
+    if (!data) return c.json({ error: "Menu not found" }, 404);
+
+    return c.json({ data });
+  } catch (err) {
+    console.error("Error fetching menu:", err);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+});
+
 // POST /menus
 menuRoute.post("/", async (c) => {
   const body = await c.req.json();
@@ -93,7 +113,7 @@ menuRoute.put("/:id", async (c) => {
         alignment = $8,
         position = $9,
         description = $10,
-        icon_color = $11,
+        icon_color = $11
        WHERE id = $12`,
       [
         body.parent_id ?? null,
