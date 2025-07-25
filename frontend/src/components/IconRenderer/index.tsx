@@ -2,9 +2,10 @@
 
 import { RiQuestionLine } from "@remixicon/react";
 import { iconRegistry } from "../../assets/icons/iconRegistry";
+import type { ReactNode } from "react";
 
 type IconRendererProps = {
-  name?: string;
+  name?: ReactNode | string;
   size?: number;
   className?: string;
   color?: string;

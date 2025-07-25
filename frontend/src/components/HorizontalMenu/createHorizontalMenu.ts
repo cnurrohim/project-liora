@@ -6,6 +6,7 @@ import { SlidingPanelController } from "./SlidingPanel/controller";
 import { TabController } from "../Tab/controller";
 import { handleMenuClick } from "../../utils/handleMenuClick";
 import SlidingPanel from "./SlidingPanel";
+import { IconRenderer } from "../IconRenderer";
 
 export function createHorizontalMenu(position: LayoutPosition) {
   return function MenuWrapper() {
@@ -23,8 +24,27 @@ export function createHorizontalMenu(position: LayoutPosition) {
       React.createElement(SlidingPanel, {
         onItemClick: (item) => {
           const currentTabKey = TabController.getActiveTabKey() ?? undefined;
-          handleMenuClick(item, currentTabKey);
+          const menuItem = { ...item };
+
+          if (typeof menuItem.icon === "string") {
+            menuItem.icon = React.createElement(IconRenderer, {
+              name: menuItem.icon,
+              size: 15,
+            });
+          }
+          handleMenuClick(menuItem, currentTabKey);
         },
+        iconRenderer: ({ name, size, color }) => {
+          return React.createElement(IconRenderer, {
+            name,
+            size,
+            color,
+          });
+        },
+        defaultIcon: React.createElement(IconRenderer, {
+          name: "RiApps2Line",
+          size: 15,
+        }),
       }),
       React.createElement(MenuBar)
     );

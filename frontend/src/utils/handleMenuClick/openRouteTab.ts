@@ -11,6 +11,7 @@ export function openRouteTab(item: MenuRoute, currentTabKey?: string | null) {
     key: item.route,
     label: item.label,
     route: item.route,
+    icon: item.icon,
     content: component,
   };
 
@@ -34,6 +35,7 @@ export function replaceTab(item: MenuRoute) {
     key: item.route,
     label: item.label,
     route: item.route,
+    icon: item.icon,
     content: component,
   };
 

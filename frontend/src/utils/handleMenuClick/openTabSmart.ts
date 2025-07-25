@@ -15,6 +15,7 @@ export function openTabSmart(
     key: item.route,
     label: item.label,
     route: item.route,
+    icon: item.icon,
     content: component,
   };
 

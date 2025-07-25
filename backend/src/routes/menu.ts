@@ -68,9 +68,12 @@ menuRoute.post("/", async (c) => {
 
     const result = await db.query(
       `INSERT INTO menu_items 
-        (id, parent_id, type, label, description, icon, icon_color, route, command, mode, alignment, position, ordinal)
+        (id, parent_id, type, 
+        label, description, icon, 
+        icon_color, route, command, 
+        mode, alignment, position, ordinal)
        VALUES 
-        (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
        RETURNING *`,
       [
         body.parent_id ?? null,

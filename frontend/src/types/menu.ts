@@ -6,7 +6,7 @@ export type MenuRoute = {
   // id: string;
   type: "route";
   label: string;
-  icon?: string;
+  icon?: React.ReactNode | string;
   icon_color?: string;
   route: string;
 };
@@ -15,7 +15,7 @@ export type MenuCommand = {
   // id: string;
   type: "command";
   label: string;
-  icon?: string;
+  icon?: React.ReactNode | string;
   icon_color?: string;
   command: string;
 };
@@ -24,7 +24,7 @@ export type MenuGroup = {
   // id: string;
   type: "group";
   label: string;
-  icon?: string;
+  icon?: React.ReactNode | string;
   icon_color?: string;
   items: MenuItem[];
 };
@@ -34,7 +34,7 @@ export type MenuItem = MenuRoute | MenuCommand | MenuGroup;
 export type MenuSection = {
   id: string;
   label?: string;
-  icon?: string;
+  icon?: React.ReactNode | string;
   icon_color?: string;
   mode: MenuMode;
   alignment: MenuAlignment;
@@ -49,5 +49,5 @@ export type MenuAction = MenuBase & {
 export type MenuBase = {
   // id: string;
   label: string;
-  icon?: string;
+  icon?: React.ReactNode | string;
 };

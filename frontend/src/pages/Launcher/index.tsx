@@ -4,6 +4,7 @@ import { flattenMenu, type FlatMenuItem } from "./flattenMenu"; // tempatkan fun
 import { TabController } from "../../components/Tab/controller";
 import { handleMenuClick } from "../../utils/handleMenuClick";
 import { IconRenderer } from "../../components/IconRenderer";
+import React from "react";
 
 export default function AppLauncher() {
   const [search, setSearch] = useState("");
@@ -21,15 +22,23 @@ export default function AppLauncher() {
 
   const handleClick = (item: FlatMenuItem) => {
     const currentTabKey = TabController.getActiveTabKey() ?? undefined;
+    const menuItem = { ...item };
+
+    if (typeof menuItem.icon === "string") {
+      menuItem.icon = React.createElement(IconRenderer, {
+        name: menuItem.icon,
+        size: 15,
+      });
+    }
+
     if (item.type === "route") {
       handleMenuClick(
         {
           type: "route",
-          label: item.label,
-          route: item.route!,
-          icon: item.icon,
-          icon_color: item.icon_color,
-          // id: item.id,
+          label: menuItem.label,
+          route: menuItem.route!,
+          icon: menuItem.icon,
+          icon_color: menuItem.icon_color,
         },
         currentTabKey
       );
@@ -43,7 +52,6 @@ export default function AppLauncher() {
           command: item.command!,
           icon: item.icon,
           icon_color: item.icon_color,
-          // id: item.id,
         },
         currentTabKey
       );
@@ -83,11 +91,19 @@ export default function AppLauncher() {
                   className="flex items-center gap-2 text-sm text-gray-200 cursor-pointer hover:bg-gray-800 px-2 py-1 rounded"
                 >
                   <span className="text-rose-300">
-                    <IconRenderer
-                      name={item.icon}
-                      size={15}
-                      color={item.icon_color}
-                    />
+                    {typeof item.icon === "string" && item.icon ? (
+                      <IconRenderer
+                        name={item.icon}
+                        size={15}
+                        color={item.icon_color}
+                      />
+                    ) : (
+                      <IconRenderer
+                        name="RiApps2Line"
+                        size={15}
+                        color={item.icon_color}
+                      />
+                    )}
                   </span>
                   <span>{item.label}</span>
                   <span className="ml-auto text-gray-400 text-xs">

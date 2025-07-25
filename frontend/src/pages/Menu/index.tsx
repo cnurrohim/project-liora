@@ -67,6 +67,7 @@ export default function MenuListPage() {
         route: `/menu/${menu.id}/edit`,
         label: `Edit: ${menu.label}`,
         type: "route",
+        icon: <IconRenderer name="RiPencilFill" size={15} />,
       },
       { replace: true }
     );
@@ -249,6 +250,7 @@ export default function MenuListPage() {
         route: "/menu/create",
         label: "Tambah Menu",
         type: "route",
+        icon: <IconRenderer name="RiApps2AddLine" size={15} />,
       },
       { replace: !newTab, remember: true }
     );

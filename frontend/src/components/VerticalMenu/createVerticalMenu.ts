@@ -24,7 +24,15 @@ export function createVerticalMenu(position: LayoutPosition) {
       React.createElement(SlidingPanel, {
         onItemClick: (item) => {
           const currentTabKey = TabController.getActiveTabKey() ?? undefined;
-          handleMenuClick(item, currentTabKey);
+          const menuItem = { ...item };
+
+          if (typeof menuItem.icon === "string") {
+            menuItem.icon = React.createElement(IconRenderer, {
+              name: menuItem.icon,
+              size: 15,
+            });
+          }
+          handleMenuClick(menuItem, currentTabKey);
         },
         iconRenderer: ({ name, size, color }) => {
           return React.createElement(IconRenderer, {
@@ -33,6 +41,10 @@ export function createVerticalMenu(position: LayoutPosition) {
             color,
           });
         },
+        defaultIcon: React.createElement(IconRenderer, {
+          name: "RiApps2Line",
+          size: 15,
+        }),
       }),
       React.createElement(MenuBar)
     );

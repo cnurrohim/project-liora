@@ -68,24 +68,26 @@ export default function TabBar() {
         className="flex overflow-x-auto no-scrollbar flex-1 h-10 items-stretch"
       >
         {tabList.map((tab) => (
-          <div key={tab.key} className="tab-wrapper relative group">
+          <div
+            key={tab.key}
+            className={`tab-wrapper flex items-center group ${
+              tab.key === activeTabKey
+                ? "bg-gray-800 text-gray-300 border-t-2 border-rose-400"
+                : "bg-gray-900 text-gray-400 hover:bg-gray-800"
+            }`}
+          >
             <button
               data-key={tab.key}
               onClick={() => TabController.setActiveTab(tab.key)}
-              className={`tab transition-all duration-200 ease-in-out h-full px-4 py-1 text-sm whitespace-nowrap pr-6
-                ${
-                  tab.key === activeTabKey
-                    ? "bg-gray-800 text-gray-200 border-t-2 border-rose-400"
-                    : "bg-gray-900 text-gray-400 hover:bg-gray-800"
-                }
-              `}
+              className={`tab transition-all duration-200 ease-in-out h-full px-4 py-1 text-sm whitespace-nowrap flex items-center gap-x-2`}
             >
-              <span className="text-rose-400 pr-2">▨</span>
-              {tab.label}
+              <span className="text-rose-400">{tab.icon ? tab.icon : "🗱"}</span>
+              <span>{tab.label}</span>
             </button>
+
             <button
               onClick={() => TabController.closeTab(tab.key)}
-              className="absolute right-1 h-full text-lg text-rose-400 hover:text-rose-200 cursor-pointer opacity-0 group-hover:opacity-100"
+              className="mr-2 text-lg text-rose-200 cursor-pointer"
             >
               &times;
             </button>

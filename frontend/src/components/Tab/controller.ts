@@ -3,6 +3,7 @@ export type TabItem = {
   label: string; // Nama tab yang tampil
   route?: string; // Untuk routing (opsional)
   content: React.ReactNode; // JSX untuk isi tab
+  icon?: React.ReactNode | string;
 };
 
 export type TabState = {

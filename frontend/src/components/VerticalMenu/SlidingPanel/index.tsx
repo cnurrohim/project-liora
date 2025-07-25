@@ -6,13 +6,15 @@ import type { MenuItem } from "../../../types/menu";
 export default function SlidingPanel({
   onItemClick,
   iconRenderer,
+  defaultIcon,
 }: {
   onItemClick: (item: MenuItem) => void;
   iconRenderer?: (props: {
-    name: string | undefined;
+    name: ReactNode | string | undefined;
     size?: number;
     color?: string;
   }) => ReactNode;
+  defaultIcon?: ReactNode | string;
 }) {
   const [state, setState] = useState(SlidingPanelController.getState());
   const visible = useController(SlidingPanelController, (s) => s.visible);
@@ -84,14 +86,15 @@ export default function SlidingPanel({
               }}
             >
               <span className="text-gray-300 pr-2">
-                {iconRenderer
-                  ? iconRenderer({
+                {typeof item.icon === "string" && item.icon
+                  ? iconRenderer?.({
                       name: item.icon,
                       size: 15,
                       color: item.icon_color,
                     })
-                  : "*"}
+                  : defaultIcon}
               </span>
+
               <span className="text-gray-300">{item.label}</span>
               {item.type === "group" && (
                 <span className="ml-auto text-rose-400">⮯</span>
