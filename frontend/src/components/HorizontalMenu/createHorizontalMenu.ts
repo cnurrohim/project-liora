@@ -11,7 +11,6 @@ import { IconRenderer } from "../IconRenderer";
 export function createHorizontalMenu(position: LayoutPosition) {
   return function MenuWrapper() {
     const resolved = position === "topPane" ? "top" : "bottom";
-    SlidingPanelController.setPosition(resolved);
 
     useEffect(() => {
       MenuBarController.setPosition(resolved);

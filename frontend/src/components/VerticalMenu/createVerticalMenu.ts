@@ -11,7 +11,6 @@ import { IconRenderer } from "../IconRenderer";
 export function createVerticalMenu(position: LayoutPosition) {
   return function SidebarWrapper() {
     const resolved = position === "rightPane" ? "right" : "left";
-    SlidingPanelController.setPosition(resolved);
 
     useEffect(() => {
       MenuBarController.setPosition(resolved);
