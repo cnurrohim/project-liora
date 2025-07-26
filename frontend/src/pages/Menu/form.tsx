@@ -10,6 +10,7 @@ import { RouteRegistry } from "../../config/routeRegistry";
 import { useRouteParamsFromTab } from "../../hooks/useRouteParams";
 import { CommandRegistry } from "../../config/commandRegistry";
 import { IconPicker } from "../../components/IconRenderer/IconPicker";
+import { MenuProviderController } from "../../controller/menuProviderController";
 
 const modeOptions = ["sliding", "context"];
 const alignmentOptions = ["start", "end"];
@@ -66,10 +67,12 @@ export default function MenuFormPage() {
       if (isEdit) {
         await updateMenu(id!, form);
         showSuccessToast("Menu berhasil diperbarui");
+        MenuProviderController.load();
         setLoading(false);
       } else {
         await createMenu(form);
         showSuccessToast("Menu berhasil dibuat");
+        MenuProviderController.load();
         setLoading(false);
       }
     } catch (err: any) {
@@ -88,7 +91,7 @@ export default function MenuFormPage() {
           (async () => {
             try {
               const data = await getMenuById(id);
-              console.log("data", data);
+
               setForm({
                 label: data.label ?? "",
                 description: data.description ?? "",

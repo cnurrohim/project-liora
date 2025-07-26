@@ -15,15 +15,9 @@ let subscribers: (() => void)[] = [];
 export const MenuProviderController = {
   async load() {
     try {
-      // const res = await fetch("/dummyData/menu.json");
-      // const data = await res.json();
-      // console.log(data1);
-
       const res = await apiFetch("/menu");
       const data = (await res.json()).data;
-      // console.log(data);
       state.sections = data;
-
       notify();
     } catch (err) {
       console.error("Failed to load menu.json", err);

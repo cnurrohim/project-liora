@@ -16,6 +16,7 @@ import { IconRenderer } from "../../components/IconRenderer";
 import { EditButtonLink } from "../../components/Buttons/EditButtonLink";
 import { DeleteButtonLink } from "../../components/Buttons/DeleteButtonLink";
 import { ButtonGroupWithDropdown } from "../../components/Buttons/ButtonGroupWithDropdown";
+import { MenuProviderController } from "../../controller/menuProviderController";
 
 type MenuItem = {
   id: string;
@@ -56,6 +57,7 @@ export default function MenuListPage() {
       await deleteMenu(id);
       showSuccessToast("Menu berhasil dihapus");
       fetchMenus();
+      MenuProviderController.load();
     } catch (err: any) {
       showErrorToast(err.message);
     }
@@ -73,10 +75,11 @@ export default function MenuListPage() {
     );
   };
 
-  const handleMove = async (id: string, isLiftUp: boolean) => {
+  const handleMove = async (id: string, isMoveMenuUP: boolean) => {
     try {
-      await handleReorder(id, isLiftUp);
+      await handleReorder(id, isMoveMenuUP);
       fetchMenus(); // refresh
+      MenuProviderController.load();
     } catch (err: any) {
       showErrorToast(err.message || "Gagal mengubah urutan");
     }

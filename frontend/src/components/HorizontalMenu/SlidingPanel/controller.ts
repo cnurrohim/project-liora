@@ -15,7 +15,6 @@ let listeners: (() => void)[] = [];
 export const SlidingPanelController = {
   setMenu(section: MenuSection) {
     state.start = section;
-    state.visible = true;
     listeners.forEach((cb) => cb());
     notify();
   },
@@ -42,6 +41,10 @@ export const SlidingPanelController = {
   },
   close() {
     state.visible = false;
+    notify();
+  },
+  open() {
+    state.visible = true;
     notify();
   },
   getState() {

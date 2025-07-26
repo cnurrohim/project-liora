@@ -178,7 +178,7 @@ menuRoute.delete("/:id", async (c) => {
 });
 
 menuRoute.post("/reorder", async (c) => {
-  const { id, isLiftUp } = await c.req.json();
+  const { id, isMoveMenuUp } = await c.req.json();
 
   const {
     rows: [current],
@@ -191,10 +191,10 @@ menuRoute.post("/reorder", async (c) => {
   const neighbor = await db.query(
     `SELECT id, ordinal FROM menu_items 
      WHERE parent_id IS NOT DISTINCT FROM $1 
-     AND ordinal ${isLiftUp === true ? "<" : ">"} $3
-     ORDER BY ordinal ${isLiftUp === true ? "DESC" : "ASC"}
+     AND ordinal ${isMoveMenuUp === true ? "<" : ">"} $2
+     ORDER BY ordinal ${isMoveMenuUp === true ? "DESC" : "ASC"}
      LIMIT 1`,
-    [current.parent_id, current.menu_key, current.ordinal]
+    [current.parent_id, current.ordinal]
   );
 
   if (neighbor.rowCount === 0) {

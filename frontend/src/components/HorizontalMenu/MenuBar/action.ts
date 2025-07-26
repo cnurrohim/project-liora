@@ -5,19 +5,19 @@ import { MenuBarController } from "./controller";
 
 export const handleClick = (entry: MenuBarEntry) => {
   const section = MenuProviderController.getSection(entry.key);
-  console.log("Clicked section:", section?.key, "mode:", section?.mode);
+  // console.log("Clicked section:", section?.id, "mode:", section?.mode);
 
   if (!section) return;
 
   const isAlreadyActive = MenuBarController.getActive() === entry.key;
-
+  SlidingPanelController.setMenu(section);
   switch (section.mode) {
     case "sliding":
       if (isAlreadyActive) {
         SlidingPanelController.toggle();
       } else {
         MenuBarController.setActive(entry.key);
-        SlidingPanelController.setMenu(section);
+        SlidingPanelController.open();
       }
       break;
     case "context":

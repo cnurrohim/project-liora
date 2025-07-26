@@ -95,7 +95,7 @@ export default function SlidingPanel({
                   : defaultIcon}
               </span>
 
-              <span className="text-gray-300">{item.label}</span>
+              <span className="text-gray-300 truncate">{item.label}</span>
               {item.type === "group" && (
                 <span className="ml-auto text-rose-400">⮯</span>
               )}

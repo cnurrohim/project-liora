@@ -14,7 +14,7 @@ export function menuWires(): Wire[] {
       from: MenuProviderController.subscribe,
       to: () => {
         const sections = MenuProviderController.getState().sections;
-        console.log(sections);
+
         // Inject ke VMenuBarController
         const miniEntries: VMenuBarEntry[] = sections.map((section) => ({
           key: section.id,
@@ -36,7 +36,7 @@ export function menuWires(): Wire[] {
       from: MenuProviderController.subscribe,
       to: () => {
         const sections = MenuProviderController.getState().sections;
-        console.log(sections);
+
         // Inject ke HMenuBarController
         const miniEntries: HMenuBarEntry[] = sections.map((section) => ({
           key: section.id,

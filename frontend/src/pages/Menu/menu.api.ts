@@ -44,11 +44,11 @@ export async function deleteMenu(id: string) {
   return await res.json();
 }
 
-export async function handleReorder(id: string, isLiftUp: boolean) {
+export async function handleReorder(id: string, isMoveMenuUp: boolean) {
   try {
     const res = await apiFetch(`/menu/reorder`, {
       method: "POST",
-      body: JSON.stringify({ id, isLiftUp }),
+      body: JSON.stringify({ id, isMoveMenuUp }),
     });
 
     if (!res.ok) throw new Error("Gagal reorder");
