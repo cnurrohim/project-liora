@@ -1,7 +1,9 @@
+import { apiFetch } from "../../utils/apiFetch";
+
 // src/components/AppConfig/controller.ts
 let state = {
-  name: "",
-  logo: "",
+  app_name: "",
+  app_logo: "",
 };
 
 let listeners: (() => void)[] = [];
@@ -9,9 +11,11 @@ let listeners: (() => void)[] = [];
 export const AppConfigController = {
   async loadConfig() {
     try {
-      const res = await fetch("./dummyData/app.json");
+      const res = await apiFetch("/app-setting");
       const json = await res.json();
+
       state = { ...state, ...json };
+      notify();
     } catch (err) {
       console.error("Gagal load app.json:", err);
     }

@@ -50,7 +50,7 @@ export default function SlidingPanel({
   `}
     >
       {/* Header */}
-      <div className="flex items-center justify-between py-1">
+      <div className="flex items-center justify-between py-4 ">
         <div className="text-2xl font-bold text-rose-500">{state.appName}</div>
         <button
           className="text-xl text-gray-400 hover:text-white cursor-pointer"

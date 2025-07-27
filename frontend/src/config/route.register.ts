@@ -7,8 +7,15 @@ import RoleListPage from "../pages/role";
 import RoleFormPage from "../pages/role/roleForm";
 import MenuListPage from "../pages/Menu";
 import MenuFormPage from "../pages/Menu/form";
+import AppSettingPage from "../pages/AppSettings";
 
 export function registerRoutes() {
+  RouteRegistry.register(
+    "/pages/app-settings",
+    "app settings",
+    React.createElement(AppSettingPage)
+  );
+
   RouteRegistry.register(
     "/pages/preferences",
     "preferences",

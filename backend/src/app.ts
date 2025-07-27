@@ -9,8 +9,12 @@ import { permissionRoute } from "./routes/permissions.js";
 import type { Variables } from "./types/context.js";
 import { menuRoute } from "./routes/menu.js";
 import { userLayoutRoute } from "./routes/userLayoutRoute.js";
+import { appSettingsRoute } from "./routes/appSettings.js";
+import { serveStatic } from "@hono/node-server/serve-static";
 
 export const app = new Hono<{ Variables: Variables }>();
+
+app.use("/uploads/*", serveStatic({ root: "./public" }));
 
 app.use("*", logger());
 app.use(
@@ -20,6 +24,7 @@ app.use(
   })
 );
 
+app.route("/app-setting", appSettingsRoute);
 app.route("/auth", authRoute);
 app.route("/users", userRoute);
 app.route("/menu", menuRoute);

@@ -8,6 +8,8 @@ import { getActiveUser } from "../services/authServices";
 import { layoutComponentRegistry } from "./layoutComponentRegistry";
 import { registerRoutes } from "./route.register";
 
+const API_URL = import.meta.env.VITE_API_BASE_URL;
+
 export async function initializeApp(): Promise<() => void> {
   setupWiring(wiringMap, connectOutputToInput);
 
@@ -20,8 +22,8 @@ export async function initializeApp(): Promise<() => void> {
 
   await MenuProviderController.load();
 
-  const { name, logo } = AppConfigController.getState();
-  applyAppMetadata(name, logo);
+  const { app_name, app_logo } = AppConfigController.getState();
+  applyAppMetadata(app_name, app_logo);
 
   registerRoutes();
 
@@ -57,7 +59,19 @@ export async function hydrateUserLayout(): Promise<boolean> {
   return true;
 }
 
-export function applyAppMetadata(name: string, logo: string) {
-  if (name) document.title = name;
-  if (logo) document.title = logo + " " + name;
+export function applyAppMetadata(app_name: string, app_logo: string | null) {
+  if (app_name) document.title = app_name;
+
+  if (app_logo) {
+    let link: HTMLLinkElement | null =
+      document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+
+    link.href = `${API_URL}/uploads/${app_logo}`;
+    link.type = app_logo.endsWith(".svg") ? "image/svg+xml" : "image/png";
+  }
 }

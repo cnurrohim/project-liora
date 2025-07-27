@@ -8,11 +8,14 @@ export async function apiFetch(
 ): Promise<Response> {
   const token = localStorage.getItem("token");
 
-  const headers = {
-    ...options.headers,
+  const headers: Record<string, string> = {
     Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
+    ...normalizeHeaders(options.headers),
   };
+
+  if (!(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
 
   const response = await fetch(`${API_URL}${url}`, { ...options, headers });
 
@@ -44,4 +47,15 @@ export async function apiFetch(
   }
 
   return response;
+}
+
+function normalizeHeaders(headers?: HeadersInit): Record<string, string> {
+  if (!headers) return {};
+  if (headers instanceof Headers) {
+    return Object.fromEntries(headers.entries());
+  }
+  if (Array.isArray(headers)) {
+    return Object.fromEntries(headers); // array of [key, value]
+  }
+  return headers; // assumed to be Record<string, string>
 }

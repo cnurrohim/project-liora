@@ -12,18 +12,17 @@ export const appWires: Wire[] = [
   {
     from: AppConfigController.subscribe,
     to: () => {
-      const { logo, name } = AppConfigController.getState();
-      console.log(logo, name);
-      VMenuBarController.setAppInfo(name, logo);
-      VSlidingPanelController.setAppInfo(name, logo);
+      const { app_logo, app_name } = AppConfigController.getState();
+      VMenuBarController.setAppInfo(app_name, app_logo);
+      VSlidingPanelController.setAppInfo(app_name, app_logo);
     },
   },
   {
     from: AppConfigController.subscribe,
     to: () => {
-      const { logo, name } = AppConfigController.getState();
-      HMenuBarController.setAppInfo(name, logo);
-      HSlidingPanelController.setAppInfo(name, logo);
+      const { app_logo, app_name } = AppConfigController.getState();
+      HMenuBarController.setAppInfo(app_name, app_logo);
+      HSlidingPanelController.setAppInfo(app_name, app_logo);
     },
   },
 ];
