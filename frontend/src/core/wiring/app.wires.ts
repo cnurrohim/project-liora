@@ -13,6 +13,7 @@ export const appWires: Wire[] = [
     from: AppConfigController.subscribe,
     to: () => {
       const { logo, name } = AppConfigController.getState();
+      console.log(logo, name);
       VMenuBarController.setAppInfo(name, logo);
       VSlidingPanelController.setAppInfo(name, logo);
     },
