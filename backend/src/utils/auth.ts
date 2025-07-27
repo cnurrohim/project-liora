@@ -4,27 +4,26 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// export const hashPassword = async (plain: string) => {
-//   return await bcrypt.hash(plain, 10);
-// };
-
-// export const comparePassword = async (plain: string, hash: string) => {
-//   return await bcrypt.compare(plain, hash);
-// };
-
-// export const generateToken = (payload: object) => {
-//   return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "7d" });
-// };
-
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 
-export function generateToken(payload: object): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "60m" }); // 15 menit
+type AuthPayload = {
+  id: string;
+  name: string;
+  role: string;
+};
+
+type RefreshPayload = {
+  id: string;
+  name: string;
+};
+
+export function generateToken(payload: AuthPayload): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" }); // 15 menit
 }
 
-export function generateRefreshToken(payload: object): string {
-  return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: "120m" }); // 7 hari
+export function generateRefreshToken(payload: RefreshPayload): string {
+  return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: "7d" }); // 7 hari
 }
 
 export function verifyToken(token: string) {

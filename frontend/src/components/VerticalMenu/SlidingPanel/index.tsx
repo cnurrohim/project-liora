@@ -28,6 +28,8 @@ export default function SlidingPanel({
   const section = state.start;
   const items = resolveItems(section, state.activePath);
 
+  if (state.hidden) return;
+
   return (
     <aside
       className={`

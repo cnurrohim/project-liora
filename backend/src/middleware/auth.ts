@@ -20,6 +20,15 @@ export const authMiddleware: MiddlewareHandler<{
       process.env.JWT_SECRET!
     ) as Variables["user"];
 
+    if (!decoded.id || !decoded.role) {
+      return c.json(
+        {
+          error: `Token payload missing required fields ${decoded.id} and ${decoded.role}`,
+        },
+        400
+      );
+    }
+
     c.set("user", decoded);
     await next();
   } catch (err) {

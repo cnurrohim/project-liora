@@ -8,6 +8,7 @@ let state = {
   position: "top" as "top" | "bottom",
   appName: "App" as string,
   appLogo: "" as string,
+  hidden: true as boolean,
 };
 
 let listeners: (() => void)[] = [];
@@ -37,14 +38,17 @@ export const SlidingPanelController = {
   },
   toggle() {
     state.visible = !state.visible;
+    state.hidden = !state.hidden;
     notify();
   },
   close() {
     state.visible = false;
+    state.hidden = true;
     notify();
   },
   open() {
     state.visible = true;
+    state.hidden = false;
     notify();
   },
   getState() {

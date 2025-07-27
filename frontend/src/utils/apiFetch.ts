@@ -34,7 +34,7 @@ export async function apiFetch(
         localStorage.setItem("token", newToken);
 
         // Retry original request sekali lagi
-        return apiFetch(`${API_URL}${url}`, options, false);
+        return apiFetch(url, options, false);
       } else {
         // Refresh gagal → logout user
         localStorage.clear();

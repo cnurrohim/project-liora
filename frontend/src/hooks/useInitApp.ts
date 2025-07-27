@@ -7,6 +7,13 @@ export function useInitApp() {
   const stopFnRef = useRef<() => void | null>(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.warn("Tidak ada token, redirect login");
+      window.location.href = "/login";
+      return;
+    }
+
     async function init() {
       try {
         // ⬅️ Panggil ini dulu agar state permission siap duluan

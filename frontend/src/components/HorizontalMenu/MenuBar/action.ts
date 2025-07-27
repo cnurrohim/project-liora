@@ -11,6 +11,7 @@ export const handleClick = (entry: MenuBarEntry) => {
 
   const isAlreadyActive = MenuBarController.getActive() === entry.key;
   SlidingPanelController.setMenu(section);
+
   switch (section.mode) {
     case "sliding":
       if (isAlreadyActive) {

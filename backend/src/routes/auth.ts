@@ -65,6 +65,11 @@ authRoute.post("/login", async (c) => {
   const roles = rolesRes.rows;
   const defaultRole = roles.find((r) => r.is_default) || roles[0];
 
+  await db.query("UPDATE users SET active_role_id = $1 WHERE id = $2", [
+    defaultRole.id,
+    user.id,
+  ]);
+
   const token = generateToken({
     id: String(user.id),
     name: user.name,
@@ -108,6 +113,11 @@ authRoute.post("/switch-role", authMiddleware, async (c) => {
   );
   const role = roleCheck.rows[0];
   if (!role) return c.json({ error: "Invalid role or not assigned" }, 403);
+
+  await db.query("UPDATE users SET active_role_id = $1 WHERE id = $2", [
+    role.id,
+    user.id,
+  ]);
 
   const newToken = generateToken({
     id: user.id,
@@ -160,9 +170,27 @@ authRoute.post("/refresh", async (c) => {
     const decoded = verifyRefreshToken(refreshToken);
     const user = decoded as { id: string; name: string };
 
+    // ⬇️ Cari default role user dari DB
+    const res = await db.query(
+      `
+  SELECT ur.role_id
+  FROM user_roles ur
+  WHERE ur.user_id = $1 AND ur.role_id = (
+    SELECT active_role_id FROM users WHERE id = $1
+  )
+  `,
+      [user.id]
+    );
+    if (!res.rowCount) {
+      return c.json({ error: "Invalid active role" }, 400);
+    }
+
+    const activeRole = res.rows[0].role_id;
+
     const newAccessToken = generateToken({
       id: user.id,
       name: user.name,
+      role: activeRole, // ⬅️ Tambahkan role
     });
 
     return c.json({ token: newAccessToken });

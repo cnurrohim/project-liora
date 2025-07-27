@@ -13,6 +13,8 @@ export const layoutWires: Wire[] = [
   {
     from: MenuProviderController.subscribe,
     to: () => {
+      if (LayoutController.isHydrated()) return;
+
       LayoutController.setPane(
         "leftPane",
         React.createElement(createVerticalMenu("leftPane"))
@@ -22,6 +24,8 @@ export const layoutWires: Wire[] = [
   {
     from: MenuProviderController.subscribe,
     to: () => {
+      if (LayoutController.isHydrated()) return;
+
       LayoutController.setPane("topPane", React.createElement(tabBar));
     },
   },

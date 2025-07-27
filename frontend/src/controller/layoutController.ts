@@ -1,17 +1,18 @@
-import React, { type ReactNode } from "react";
+// src/controller/layoutController.ts
+import type { ReactNode } from "react";
 
 export type LayoutState = {
-  topPane: React.ReactNode | null;
-  bottomPane: React.ReactNode | null;
-  leftPane: React.ReactNode | null;
-  rightPane: React.ReactNode | null;
+  topPane: ReactNode | null;
+  bottomPane: ReactNode | null;
+  leftPane: ReactNode | null;
+  rightPane: ReactNode | null;
   content: ReactNode | null;
 
-  // Config mapping
   topPaneKey?: string;
   bottomPaneKey?: string;
   leftPaneKey?: string;
   rightPaneKey?: string;
+  contentKey?: string;
 };
 
 const state: LayoutState = {
@@ -25,26 +26,38 @@ const state: LayoutState = {
   bottomPaneKey: undefined,
   leftPaneKey: undefined,
   rightPaneKey: undefined,
+  contentKey: undefined,
 };
 
-type PaneKey = Extract<
-  keyof LayoutState,
-  "topPane" | "bottomPane" | "leftPane" | "rightPane" | "content"
->;
-export type LayoutKeyName =
-  | "topPaneKey"
-  | "bottomPaneKey"
-  | "leftPaneKey"
-  | "rightPaneKey";
+type LayoutPosition =
+  | "topPane"
+  | "bottomPane"
+  | "leftPane"
+  | "rightPane"
+  | "content";
+type LayoutKeyName = `${LayoutPosition}Key`;
+
+export type LayoutConfig = {
+  leftPane: string | null;
+  rightPane: string | null;
+  topPane: string | null;
+  bottomPane: string | null;
+};
+
+let isLayoutHydrated = false;
 
 let updateCallbacks: (() => void)[] = [];
+
+function notify() {
+  updateCallbacks.forEach((cb) => cb());
+}
 
 export const LayoutController = {
   getState(): LayoutState {
     return { ...state };
   },
 
-  setPane(pane: PaneKey, content: React.ReactNode | null) {
+  setPane(pane: LayoutPosition, content: ReactNode | null) {
     state[pane] = content;
     notify();
   },
@@ -52,6 +65,43 @@ export const LayoutController = {
   setPaneKey(paneKey: LayoutKeyName, key: string | undefined) {
     state[paneKey] = key;
     notify();
+  },
+
+  updatePaneWithKey(
+    pane: LayoutPosition,
+    key: string | null,
+    content: ReactNode | null
+  ) {
+    state[pane] = content;
+    state[`${pane}Key` as LayoutKeyName] = key ?? undefined;
+    notify();
+  },
+
+  clearComponentFromOtherPositions(
+    currentPane: LayoutPosition,
+    componentId: string
+  ) {
+    const layoutPositions: LayoutPosition[] = [
+      "topPane",
+      "bottomPane",
+      "leftPane",
+      "rightPane",
+    ];
+    for (const pos of layoutPositions) {
+      if (pos !== currentPane && state[`${pos}Key`] === componentId) {
+        state[pos] = null;
+        state[`${pos}Key`] = undefined;
+      }
+    }
+    notify();
+  },
+
+  markAsHydrated() {
+    isLayoutHydrated = true;
+  },
+
+  isHydrated() {
+    return isLayoutHydrated;
   },
 
   subscribe(callback: () => void) {
@@ -62,7 +112,3 @@ export const LayoutController = {
     updateCallbacks = updateCallbacks.filter((cb) => cb !== callback);
   },
 };
-
-function notify() {
-  updateCallbacks.forEach((cb) => cb());
-}

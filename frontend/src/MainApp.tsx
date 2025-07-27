@@ -1,26 +1,14 @@
 // React hooks
-import { useController } from "./hooks/useController";
-import { LayoutController } from "./controller/layoutController";
-
-// Hooks
 import { useInitApp } from "./hooks/useInitApp";
 
-// Pages
+// Components
 import Loading from "./pages/Loading";
-import EmptyPage from "./pages/Empty";
 import ConfirmationDialog from "./components/ConfirmationDialog";
 import { Toaster } from "sonner";
+import { LayoutRenderer } from "./components/LayoutRenderer.tsx";
 
 export default function App() {
   const { isReady } = useInitApp();
-
-  const layout = useController(LayoutController, (s) => ({
-    leftPane: s.leftPane,
-    rightPane: s.rightPane,
-    topPane: s.topPane,
-    bottomPane: s.bottomPane,
-    content: s.content,
-  }));
 
   if (!isReady) return <Loading />;
 
@@ -36,24 +24,8 @@ export default function App() {
           },
         }}
       />
-      <div className="flex flex-1 min-h-0 min-w-0">
-        {layout.leftPane && (
-          <div className="flex-shrink-0">{layout.leftPane}</div>
-        )}
-
-        <main id="mainContent" className="flex flex-col flex-1 min-w-0 h-full">
-          {layout.topPane && <div className="w-full">{layout.topPane}</div>}
-          {layout.content ?? <EmptyPage />}
-          {layout.bottomPane && (
-            <div className="w-full">{layout.bottomPane}</div>
-          )}
-        </main>
-
-        {layout.rightPane && (
-          <div className="flex-shrink-0">{layout.rightPane}</div>
-        )}
-        <ConfirmationDialog />
-      </div>
+      <LayoutRenderer />
+      <ConfirmationDialog />
     </div>
   );
 }

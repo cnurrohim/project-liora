@@ -8,6 +8,7 @@ import { roleRoute } from "./routes/role.js";
 import { permissionRoute } from "./routes/permissions.js";
 import type { Variables } from "./types/context.js";
 import { menuRoute } from "./routes/menu.js";
+import { userLayoutRoute } from "./routes/userLayoutRoute.js";
 
 export const app = new Hono<{ Variables: Variables }>();
 
@@ -22,6 +23,7 @@ app.use(
 app.route("/auth", authRoute);
 app.route("/users", userRoute);
 app.route("/menu", menuRoute);
+app.route("/user-layout", userLayoutRoute);
 
 app.route("/roles", roleRoute);
 app.route("/permissions", permissionRoute);

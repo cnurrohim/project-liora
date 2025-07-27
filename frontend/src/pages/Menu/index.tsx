@@ -17,6 +17,7 @@ import { EditButtonLink } from "../../components/Buttons/EditButtonLink";
 import { DeleteButtonLink } from "../../components/Buttons/DeleteButtonLink";
 import { ButtonGroupWithDropdown } from "../../components/Buttons/ButtonGroupWithDropdown";
 import { MenuProviderController } from "../../controller/menuProviderController";
+import { ConfirmationDialogController } from "../../components/ConfirmationDialog/controller";
 
 type MenuItem = {
   id: string;
@@ -52,15 +53,19 @@ export default function MenuListPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Yakin ingin menghapus menu ini?")) return;
-    try {
-      await deleteMenu(id);
-      showSuccessToast("Menu berhasil dihapus");
-      fetchMenus();
-      MenuProviderController.load();
-    } catch (err: any) {
-      showErrorToast(err.message);
-    }
+    ConfirmationDialogController.askConfirmation(
+      "Yakin ingin menghapus menu ini?",
+      async () => {
+        try {
+          await deleteMenu(id);
+          showSuccessToast("Menu berhasil dihapus");
+          fetchMenus();
+          MenuProviderController.load();
+        } catch (err: any) {
+          showErrorToast(err.message);
+        }
+      }
+    );
   };
 
   const handleEdit = (menu: MenuItem) => {
