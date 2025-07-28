@@ -4,9 +4,9 @@ import { db } from "../db.js";
 export const userLayoutRoute = new Hono();
 
 // GET layout preference by user_id and role_id
-userLayoutRoute.get("/", async (c) => {
-  const user_id = c.req.query("user_id");
-  const role_id = c.req.query("role_id");
+userLayoutRoute.get("/:userId/:roleId", async (c) => {
+  const user_id = c.req.param("userId");
+  const role_id = c.req.param("roleId");
 
   if (!user_id || !role_id) {
     return c.json({ error: "user_id and role_id are required" }, 400);

@@ -49,7 +49,7 @@ userRoute.get("/:id", async (c) => {
 
 // ✅ POST /users → Create user
 userRoute.post("/", async (c) => {
-  const { name, username, email, password, is_active, roles, defaultRole } =
+  const { name, username, email, password, is_active, roleIds } =
     await c.req.json();
 
   const pwHash = await bcrypt.hash(password, 10);
@@ -62,13 +62,14 @@ userRoute.post("/", async (c) => {
   );
   const userId = userRes.rows[0].id;
 
+  console.log(roleIds);
   // Insert roles
-  if (roles?.length) {
-    for (const roleId of roles) {
-      const isDefault = defaultRole === roleId;
+  if (roleIds?.length) {
+    for (const roleId of roleIds) {
+      // const isDefault = defaultRole === roleId;
       await db.query(
         `INSERT INTO user_roles (user_id, role_id, is_default) VALUES ($1, $2, $3)`,
-        [userId, roleId, isDefault]
+        [userId, roleId, true]
       );
     }
   }

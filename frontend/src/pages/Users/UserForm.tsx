@@ -37,6 +37,7 @@ export default function UserForm() {
     const selected = Array.from(e.target.selectedOptions).map(
       (opt) => opt.value
     );
+    console.log(selected);
     setForm((prev) => ({ ...prev, roleIds: selected }));
   };
 
@@ -45,6 +46,7 @@ export default function UserForm() {
     setError("");
     setLoading(true);
     try {
+      console.log(form);
       await createUser(form);
       toastConfirmSuccess("User berhasil disimpan!");
 

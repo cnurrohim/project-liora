@@ -50,7 +50,7 @@ export default function UserListPage() {
               size={15}
               className="text-white"
             />
-            Tambah Role
+            Tambah Users
           </>
         }
         onMainClick={() => openInNewTab(false)}

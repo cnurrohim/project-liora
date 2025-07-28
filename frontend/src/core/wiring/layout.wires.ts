@@ -19,6 +19,8 @@ export const layoutWires: Wire[] = [
         "leftPane",
         React.createElement(createVerticalMenu("leftPane"))
       );
+      LayoutController.setPaneKey("leftPaneKey", "VMenuBar");
+      LayoutController.setPaneKey("topPaneKey", "tabbar");
     },
   },
   {
@@ -27,6 +29,7 @@ export const layoutWires: Wire[] = [
       if (LayoutController.isHydrated()) return;
 
       LayoutController.setPane("topPane", React.createElement(tabBar));
+      LayoutController.setPaneKey("topPaneKey", "tabbar");
     },
   },
   // {
