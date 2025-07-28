@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { TabController } from "./controller";
 import { useController } from "../../hooks/useController";
 import { DefaultPageController } from "../../controller/DefaultPageController";
-import DefaultPage from "../../pages/DefaultPage";
 
-export default function TabBar() {
+type TabBarProps = {
+  iconRenderer?: (iconName?: string) => React.ReactNode;
+};
+
+export default function TabBar({ iconRenderer }: TabBarProps) {
   const tabList = useController(TabController, (s) => s.openTabs);
   const activeTabKey = useController(TabController, (s) => s.activeTabKey);
 
@@ -81,7 +84,9 @@ export default function TabBar() {
               onClick={() => TabController.setActiveTab(tab.key)}
               className={`tab transition-all duration-200 ease-in-out h-full px-4 py-1 text-sm whitespace-nowrap flex items-center gap-x-2`}
             >
-              <span className="text-rose-400">{tab.icon ? tab.icon : "🗱"}</span>
+              <span className="text-rose-400">
+                {tab.icon ? iconRenderer?.(tab.icon) ?? "🗱" : "🗱"}
+              </span>
               <span>{tab.label}</span>
             </button>
 
@@ -114,7 +119,7 @@ export default function TabBar() {
           TabController.openTab({
             key: `tab-${Date.now()}`, // selalu unik
             label: defaultTab?.label ?? "New Tab",
-            content: defaultTab?.content ?? <DefaultPage />,
+            route: defaultTab?.content ?? "/pages/default",
           });
         }}
         className="px-2 text-2xl h-10 bg-rose-500 text-gray-900 hover:text-white cursor-pointer"

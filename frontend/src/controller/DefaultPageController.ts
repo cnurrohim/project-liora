@@ -2,7 +2,7 @@ export type TabItem = {
   key: string; // ID unik tab
   label: string; // Nama tab yang tampil
   route?: string; // Untuk routing (opsional)
-  content: React.ReactNode; // JSX untuk isi tab
+  content: string; // JSX untuk isi tab
 };
 
 type DefaultPageState = {

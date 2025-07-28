@@ -1,8 +1,9 @@
 // src/registry/layoutComponentRegistry.ts
 import React from "react";
-import tabBar from "../components/Tab/tabBar";
-import { createVerticalMenu } from "../components/VerticalMenu/createVerticalMenu";
-import { createHorizontalMenu } from "../components/HorizontalMenu/createHorizontalMenu";
+import { createVerticalMenu } from "../factory/createVerticalMenu";
+import { createHorizontalMenu } from "../factory/createHorizontalMenu";
+import { createTabBar } from "../factory/createTabBar";
+import { IconRenderer } from "../components/IconRenderer";
 
 export type LayoutPosition =
   | "leftPane"
@@ -36,7 +37,13 @@ export const layoutComponentRegistry: LayoutComponentDefinition[] = [
   {
     id: "tabbar",
     label: "Tab Bar",
-    create: () => React.createElement(tabBar),
+    create: () =>
+      React.createElement(
+        createTabBar({
+          iconRenderer: (name) =>
+            React.createElement(IconRenderer, { name: name, size: 15 }),
+        })
+      ),
     allowedPositions: ["topPane", "bottomPane"],
   },
 ];

@@ -2,8 +2,8 @@ export type TabItem = {
   key: string; // ID unik tab
   label: string; // Nama tab yang tampil
   route?: string; // Untuk routing (opsional)
-  content: React.ReactNode; // JSX untuk isi tab
-  icon?: React.ReactNode | string;
+  icon?: string;
+  content?: React.ReactNode;
 };
 
 export type TabState = {
@@ -174,5 +174,43 @@ export const TabController = {
 };
 
 function notify() {
+  // Buang properti yang tidak serializable
+
+  console.log(state.openTabs);
+
+  const openTabsForStorage = state.openTabs.map(
+    ({ key, label, route, icon }) => ({
+      key,
+      label,
+      route,
+      icon,
+    })
+  );
+
+  localStorage.setItem(
+    "tabState",
+    JSON.stringify({
+      openTabs: openTabsForStorage,
+      activeTabKey: state.activeTabKey,
+    })
+  );
+
   updateCallbacks.forEach((cb) => cb());
+}
+
+export function initFromStorage() {
+  const saved = localStorage.getItem("tabState");
+  if (!saved) return;
+
+  try {
+    const parsed = JSON.parse(saved) as TabState;
+
+    // Rebuild content secara manual (pakai key/route)
+    const rebuiltTabs = parsed.openTabs;
+
+    state.openTabs = rebuiltTabs;
+    state.activeTabKey = parsed.activeTabKey;
+  } catch (e) {
+    console.warn("Gagal restore tab state:", e);
+  }
 }

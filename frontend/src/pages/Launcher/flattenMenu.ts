@@ -1,10 +1,9 @@
-import type { ReactNode } from "react";
 import type { MenuSection, MenuItem } from "../../types/menu";
 
 export type FlatMenuItem = {
   parent: string;
   label: string;
-  icon?: string | ReactNode;
+  icon?: string;
   icon_color?: string;
   type: "route" | "command";
   route?: string;

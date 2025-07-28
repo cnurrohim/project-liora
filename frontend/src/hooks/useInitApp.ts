@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { initializeApp } from "../config/appInit";
 import { PermissionController } from "../controller/permissionController";
+import { initFromStorage } from "../components/Tab/controller";
 
 export function useInitApp() {
   const [isReady, setReady] = useState(false);
@@ -20,6 +21,8 @@ export function useInitApp() {
         await PermissionController.getPermissions();
 
         const stop = await initializeApp();
+        initFromStorage();
+
         stopFnRef.current = stop;
 
         setReady(true);

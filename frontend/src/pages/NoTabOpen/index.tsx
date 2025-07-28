@@ -22,7 +22,7 @@ export default function NoTabOpen() {
           <img
             src={previewUrl}
             alt="Logo Preview"
-            className="h-30 object-contain"
+            className="h-100 object-contain"
           />
         )}
 

@@ -8,8 +8,22 @@ import RoleFormPage from "../pages/role/roleForm";
 import MenuListPage from "../pages/Menu";
 import MenuFormPage from "../pages/Menu/form";
 import AppSettingPage from "../pages/AppSettings";
+import AppLauncher from "../pages/Launcher";
+import DefaultPage from "../pages/DefaultPage";
 
 export function registerRoutes() {
+  RouteRegistry.register(
+    "/pages/default",
+    "Empty",
+    React.createElement(DefaultPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/launcher",
+    "default app launcher",
+    React.createElement(AppLauncher)
+  );
+
   RouteRegistry.register(
     "/pages/app-settings",
     "app settings",

@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import MenuBar from "./MenuBar";
-import type { LayoutPosition } from "../../config/layoutComponentRegistry";
-import { MenuBarController } from "./MenuBar/controller";
-import { SlidingPanelController } from "./SlidingPanel/controller";
-import { TabController } from "../Tab/controller";
-import { handleMenuClick } from "../../utils/handleMenuClick";
-import SlidingPanel from "./SlidingPanel";
-import { IconRenderer } from "../IconRenderer";
+import MenuBar from "../components/HorizontalMenu/MenuBar";
+import type { LayoutPosition } from "../config/layoutComponentRegistry";
+import { MenuBarController } from "../components/HorizontalMenu/MenuBar/controller";
+import { SlidingPanelController } from "../components/HorizontalMenu/SlidingPanel/controller";
+import { TabController } from "../components/Tab/controller";
+import { handleMenuClick } from "../utils/handleMenuClick";
+import SlidingPanel from "../components/HorizontalMenu/SlidingPanel";
+import { IconRenderer } from "../components/IconRenderer";
 
 export function createHorizontalMenu(position: LayoutPosition) {
   return function MenuWrapper() {
@@ -24,13 +24,6 @@ export function createHorizontalMenu(position: LayoutPosition) {
         onItemClick: (item) => {
           const currentTabKey = TabController.getActiveTabKey() ?? undefined;
           const menuItem = { ...item };
-
-          if (typeof menuItem.icon === "string") {
-            menuItem.icon = React.createElement(IconRenderer, {
-              name: menuItem.icon,
-              size: 15,
-            });
-          }
           handleMenuClick(menuItem, currentTabKey);
         },
         iconRenderer: ({ name, size, color }) => {

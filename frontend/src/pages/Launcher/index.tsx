@@ -4,7 +4,6 @@ import { flattenMenu, type FlatMenuItem } from "./flattenMenu"; // tempatkan fun
 import { TabController } from "../../components/Tab/controller";
 import { handleMenuClick } from "../../utils/handleMenuClick";
 import { IconRenderer } from "../../components/IconRenderer";
-import React from "react";
 
 export default function AppLauncher() {
   const [search, setSearch] = useState("");
@@ -23,13 +22,6 @@ export default function AppLauncher() {
   const handleClick = (item: FlatMenuItem) => {
     const currentTabKey = TabController.getActiveTabKey() ?? undefined;
     const menuItem = { ...item };
-
-    if (typeof menuItem.icon === "string") {
-      menuItem.icon = React.createElement(IconRenderer, {
-        name: menuItem.icon,
-        size: 15,
-      });
-    }
 
     if (item.type === "route") {
       handleMenuClick(

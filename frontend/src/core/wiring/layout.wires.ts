@@ -6,8 +6,8 @@ import React from "react";
 import tabBar from "../../components/Tab/tabBar";
 import type { Wire } from "./setupWiring";
 
-import { createVerticalMenu } from "../../components/VerticalMenu/createVerticalMenu";
-import { createHorizontalMenu } from "../../components/HorizontalMenu/createHorizontalMenu";
+import { createVerticalMenu } from "../../factory/createVerticalMenu";
+import { createHorizontalMenu } from "../../factory/createHorizontalMenu";
 
 export const layoutWires: Wire[] = [
   {
