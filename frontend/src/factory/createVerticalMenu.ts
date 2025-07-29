@@ -33,10 +33,13 @@ export function createVerticalMenu(position: LayoutPosition) {
             color,
           });
         },
-        defaultIcon: React.createElement(IconRenderer, {
-          name: "RiApps2Line",
-          size: 15,
-        }),
+        defaultIcon: ({ size, color }) => {
+          return React.createElement(IconRenderer, {
+            name: "RiApps2Line",
+            size,
+            color,
+          });
+        },
       }),
       React.createElement(MenuBar)
     );

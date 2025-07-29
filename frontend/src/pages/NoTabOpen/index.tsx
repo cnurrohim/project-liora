@@ -6,12 +6,14 @@ const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function NoTabOpen() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [appName, setAppName] = useState<string | null>(null);
 
   useEffect(() => {
     getAppSetting().then((data) => {
       if (data.app_logo) {
         setPreviewUrl(`${API_URL}/uploads/${data.app_logo}`);
       }
+      if (data.app_name) setAppName(data.app_name);
     });
   }, []);
 
@@ -34,7 +36,11 @@ export default function NoTabOpen() {
           />
         )}
       </div>
-      <div className="text-center text-sm">No Tab Open</div>
+      <div className="text-center text-sm">
+        <h1 className="font-logo text-5xl">
+          {appName ? appName : "No Tab Open"}{" "}
+        </h1>
+      </div>
     </div>
   );
 }

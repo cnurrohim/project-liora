@@ -43,7 +43,7 @@ export default function MenuBar() {
               className="h-10 w-10"
             />
           </div>
-          {entries.start.map(renderButton)}
+          <div className="mt-2">{entries.start.map(renderButton)}</div>
         </div>
         <div className="flex flex-col items-center mb-2">
           {entries.end.map(renderButton)}
