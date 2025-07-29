@@ -64,15 +64,15 @@ export default function AppSettingPage() {
               file:mr-4 file:py-2 file:px-4
               file:rounded-md file:border-0
               file:text-sm file:font-semibold
-              file:bg-blue-50 file:text-blue-700
-              hover:file:bg-blue-100
+              file:bg-gray-700 file:text-gray-200
+              hover:file:bg-gray-900
               cursor-pointer"
           />
           {previewUrl && (
             <img
               src={previewUrl}
               alt="Logo Preview"
-              className="h-10 w-10 object-contain rounded-md border border-gray-200"
+              className="h-20 w-20 object-contain "
             />
           )}
         </div>
