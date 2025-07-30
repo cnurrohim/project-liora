@@ -33,15 +33,12 @@ export default function SlidingPanel({
   return (
     <aside
       className={`
-    fixed top-0
-    ${state.position === "left" ? "left-0" : "right-0"}
-    h-full w-64 bg-gray-900 text-white shadow-lg
-    transform transition-transform duration-300 z-20 flex flex-col 
+    fixed top-0 ${state.position === "left" ? "left-14" : "right-14"}
+    h-full w-64 bg-gray-900 text-white shadow-xl
+    transform transition-transform duration-300 z-30 flex flex-col px-4 py-3
     ${
       visible
-        ? state.position === "left"
-          ? "translate-x-0 ml-14 px-2"
-          : "translate-x-0 mr-14 px-5"
+        ? "translate-x-0"
         : state.position === "left"
         ? "-translate-x-full"
         : "translate-x-full"
@@ -54,26 +51,26 @@ export default function SlidingPanel({
         <div className="text-2xl font-bold text-rose-500 font-logo">
           {state.appName}
         </div>
-        {/* <button
+        <button
           className="text-xl text-gray-400 hover:text-white cursor-pointer"
           onClick={() => SlidingPanelController.close()}
           title="Close"
         >
           <div className="text-2xl mx-2 font-bold text-rose-500">×</div>
-        </button> */}
+        </button>
       </div>
 
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full mt-2">
         <nav className=" overflow-auto flex flex-col">
           {state.start?.label && (
-            <div className="font-primary text-md uppercase text-gray-400 font-bold mb-1">
+            <div className="font-primary text-sm uppercase text-gray-500 font-bold mb-2">
               {state.start.label}
             </div>
           )}
           {items.map((item, i) => (
             <div
               key={i}
-              className="group flex items-center cursor-pointer py-2 px-2 "
+              className="group flex items-center gap-4 cursor-pointer px-2 py-2 rounded-md hover:bg-gray-800 transition"
               onClick={() => {
                 if (item.type === "group") {
                   SlidingPanelController.setActivePath([
@@ -89,7 +86,7 @@ export default function SlidingPanel({
                 onItemClick(item);
               }}
             >
-              <span className="text-gray-400 pr-3 group-hover:text-gray-100">
+              <span className="text-gray-400 group-hover:text-white">
                 {typeof item.icon === "string" && item.icon
                   ? iconRenderer?.({
                       name: item.icon,
@@ -102,9 +99,10 @@ export default function SlidingPanel({
                     })}
               </span>
 
-              <span className="text-sm text-gray-400 truncate group-hover:text-gray-100">
+              <span className="font-semibold text-sm text-gray-400 group-hover:text-white flex-1 truncate">
                 {item.label}
               </span>
+
               {item.type === "group" && (
                 <span className="ml-auto text-rose-400">⮯</span>
               )}

@@ -5,6 +5,10 @@
 @import "@fontsource-variable/mona-sans";
 @import "@fontsource-variable/hubot-sans";
 @import "@fontsource/acme";
+@import "@fontsource-variable/rubik";
+@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/baloo-2";
+@import "@fontsource-variable/inter";
 @import "tailwindcss";
 
 @theme {
@@ -12,14 +16,17 @@
   --font-pacifico: "pacifico";
   --font-manrope: "manrope";
   --font-dmsans: "DM Sans Variable";
-  --font-logo: "acme", system-ui, sans-serif;
+  --font-inter: "Inter Variable", sans-serif;
+  --font-baloo: "Baloo 2 Variable", system-ui;
+  --font-outfit: "outfit Variable", system-ui, sans-serif;
+  --font-logo: "rubik", system-ui, sans-serif;
 
   --font-primary: "Mona Sans Variable", system-ui, sans-serif;
-  --font-secondary: "Hubot Sans Variable", system-ui, sans-serif;
+  --font-secondary: "manrope", system-ui, sans-serif;
 }
 
 html {
-  font-family: "Hubot Sans Variable", system-ui, sans-serif;
+  font-family: "Inter Variable", system-ui, sans-serif;
 }
 
 @source inline("{hover:,}bg-red-{50,{100..900..100},950}");

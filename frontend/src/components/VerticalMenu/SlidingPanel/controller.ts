@@ -42,6 +42,9 @@ export const SlidingPanelController = {
     state.hidden = !state.hidden;
     notify();
   },
+  getVisibleState() {
+    return state.visible;
+  },
   close() {
     state.visible = false;
     state.hidden = true;

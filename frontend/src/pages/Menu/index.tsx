@@ -109,7 +109,7 @@ export default function MenuListPage() {
         size: 50,
         cell: ({ row }) => (
           <div
-            style={{ paddingLeft: `${row.depth * 20}px` }}
+            style={{ paddingLeft: `${row.depth * 8}px` }}
             className="flex items-center gap-2"
           >
             {row.getValue("ordinal")}
@@ -132,12 +132,12 @@ export default function MenuListPage() {
                 <div>{row.getValue("label")} </div>
                 <div>
                   {row.getIsExpanded() ? (
-                    <div className="bg-gray-100 text-gray-950 w-6 h-6 rounded-full flex items-center justify-center text-sm">
-                      {row.subRows.length}
+                    <div className=" text-gray-400 w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                      <IconRenderer name="RiArrowUpWideFill" size={20} />
                     </div>
                   ) : (
-                    <div className="bg-gray-950 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
-                      {row.subRows.length}
+                    <div className="text-gray-300 w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                      <IconRenderer name="RiArrowDownWideFill" size={20} />
                     </div>
                   )}
                 </div>
@@ -311,7 +311,7 @@ export default function MenuListPage() {
                         key={header.id}
                         style={
                           header.column.id === "ordinal"
-                            ? { width: "30px" }
+                            ? { width: "40px" }
                             : undefined
                         }
                         className="p-2 text-left cursor-pointer select-none"

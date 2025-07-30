@@ -10,6 +10,8 @@ import MenuFormPage from "../pages/Menu/form";
 import AppSettingPage from "../pages/AppSettings";
 import AppLauncher from "../pages/Launcher";
 import DefaultPage from "../pages/DefaultPage";
+import DepartmentListPage from "../pages/Departments";
+import DepartmentFormPage from "../pages/Departments/form";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -34,6 +36,24 @@ export function registerRoutes() {
     "/pages/preferences",
     "preferences",
     React.createElement(Preferences)
+  );
+
+  RouteRegistry.register(
+    "/pages/departmemts",
+    "list departments",
+    React.createElement(DepartmentListPage)
+  );
+
+  RouteRegistry.register(
+    "/departments/create",
+    "add new departments",
+    React.createElement(DepartmentFormPage)
+  );
+
+  RouteRegistry.register(
+    "/departments/:id/edit",
+    "edit department",
+    React.createElement(DepartmentFormPage)
   );
 
   RouteRegistry.register(

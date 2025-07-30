@@ -45,7 +45,7 @@ export function ButtonGroupWithDropdown({
       </button>
 
       {open && (
-        <ul className="absolute top-full left-0 z-10 mt-1 w-48 bg-gray-900 text-white rounded shadow">
+        <ul className="absolute top-full right-0 z-10 mt-1 w-48 bg-gray-900 text-white rounded shadow">
           {dropdownItems.map((item, idx) => (
             <li key={idx}>
               <button

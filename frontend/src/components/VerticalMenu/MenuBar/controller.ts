@@ -29,6 +29,10 @@ export const MenuBarController = {
   getActive() {
     return activeKey;
   },
+  setInActive() {
+    activeKey = null;
+    notify();
+  },
   setEntries(entries: MenuBarEntry[]) {
     state = {
       start: entries.filter((e) => e.alignment === "start"),
