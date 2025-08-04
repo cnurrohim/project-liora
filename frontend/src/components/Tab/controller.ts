@@ -176,8 +176,6 @@ export const TabController = {
 function notify() {
   // Buang properti yang tidak serializable
 
-  console.log(state.openTabs);
-
   const openTabsForStorage = state.openTabs.map(
     ({ key, label, route, icon }) => ({
       key,

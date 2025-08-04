@@ -2,7 +2,6 @@ import React from "react";
 import Preferences from "../pages/Preferences";
 import { RouteRegistry } from "./routeRegistry";
 import UserListPage from "../pages/Users";
-import UserForm from "../pages/Users/UserForm";
 import RoleListPage from "../pages/role";
 import RoleFormPage from "../pages/role/roleForm";
 import MenuListPage from "../pages/Menu";
@@ -12,6 +11,7 @@ import AppLauncher from "../pages/Launcher";
 import DefaultPage from "../pages/DefaultPage";
 import DepartmentListPage from "../pages/Departments";
 import DepartmentFormPage from "../pages/Departments/form";
+import UserFormPage from "../pages/Users/form";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -62,14 +62,20 @@ export function registerRoutes() {
     React.createElement(UserListPage)
   );
   RouteRegistry.register(
-    "/users/create",
-    "create users",
-    React.createElement(UserForm)
+    "/user/create",
+    "create user",
+    React.createElement(UserFormPage)
+  );
+
+  RouteRegistry.register(
+    "/user/:id/edit",
+    "create user",
+    React.createElement(UserFormPage)
   );
 
   RouteRegistry.register(
     "/pages/roles",
-    "list roles",
+    "Edit User",
     React.createElement(RoleListPage)
   );
   RouteRegistry.register(

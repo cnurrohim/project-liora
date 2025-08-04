@@ -12,7 +12,7 @@ export function openTabSmart(
     RouteRegistry.get(item.route) ?? React.createElement(PagesNotFound);
 
   const tab = {
-    key: item.route,
+    key: `${item.route}-${Date.now()}`,
     label: item.label,
     route: item.route,
     icon: item.icon,

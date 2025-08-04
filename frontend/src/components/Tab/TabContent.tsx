@@ -16,6 +16,11 @@ export default function TabContent() {
   })();
 
   return (
-    <div className="flex-1 bg-gray-800 text-white overflow-auto">{content}</div>
+    <div
+      key={activeTab?.key}
+      className="flex-1 bg-gray-800 text-white overflow-auto"
+    >
+      {content}
+    </div>
   );
 }

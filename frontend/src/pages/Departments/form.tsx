@@ -64,7 +64,6 @@ export default function DepartmentFormPage() {
 
         if (isEdit && id) {
           const data = await getDepartmentById(id);
-          console.log(data);
           setForm({
             name: data.name ?? "",
             description: data.description ?? "",

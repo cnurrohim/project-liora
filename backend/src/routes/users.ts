@@ -13,11 +13,38 @@ userRoute.use(authMiddleware);
 userRoute.get("/", async (c) => {
   const res = await db.query(`
     SELECT
-      u.id, u.name, u.username, u.email, u.is_active, u.created_at, u.updated_at,
-      json_agg(json_build_object('id', r.id, 'name', r.name, 'is_default', ur.is_default)) as roles
+      u.id,
+      u.name,
+      u.username,
+      u.email,
+      u.is_active,
+      u.created_at,
+      u.updated_at,
+
+      -- roles
+      COALESCE(json_agg(
+        DISTINCT jsonb_build_object(
+          'id', r.id,
+          'name', r.name,
+          'is_default', ur.is_default
+        )
+      ) FILTER (WHERE r.id IS NOT NULL), '[]') AS roles,
+
+      -- departments
+      COALESCE(json_agg(
+        DISTINCT jsonb_build_object(
+          'id', d.id,
+          'name', d.name,
+          'description', d.description
+        )
+      ) FILTER (WHERE d.id IS NOT NULL), '[]') AS departments
+
     FROM users u
     LEFT JOIN user_roles ur ON ur.user_id = u.id
     LEFT JOIN roles r ON r.id = ur.role_id
+    LEFT JOIN user_departments ud ON ud.user_id = u.id
+    LEFT JOIN departments d ON d.id = ud.department_id
+
     GROUP BY u.id
   `);
 
@@ -27,16 +54,35 @@ userRoute.get("/", async (c) => {
 // ✅ GET /users/:id → Get single user detail
 userRoute.get("/:id", async (c) => {
   const id = c.req.param("id");
+
   const res = await db.query(
     `
     SELECT
       u.id, u.name, u.username, u.email, u.is_active,
-      json_agg(json_build_object('id', r.id, 'name', r.name, 'is_default', ur.is_default)) as roles
+
+      (
+        SELECT json_agg(json_build_object(
+          'id', r.id,
+          'name', r.name,
+          'is_default', ur.is_default
+        ))
+        FROM user_roles ur
+        JOIN roles r ON r.id = ur.role_id
+        WHERE ur.user_id = u.id
+      ) AS roles,
+
+      (
+        SELECT json_agg(json_build_object(
+          'id', d.id,
+          'name', d.name
+        ))
+        FROM user_departments ud
+        JOIN departments d ON d.id = ud.department_id
+        WHERE ud.user_id = u.id
+      ) AS departments
+
     FROM users u
-    LEFT JOIN user_roles ur ON ur.user_id = u.id
-    LEFT JOIN roles r ON r.id = ur.role_id
     WHERE u.id = $1
-    GROUP BY u.id
     `,
     [id]
   );
@@ -49,39 +95,73 @@ userRoute.get("/:id", async (c) => {
 
 // ✅ POST /users → Create user
 userRoute.post("/", async (c) => {
-  const { name, username, email, password, is_active, roleIds } =
-    await c.req.json();
+  const client = await db.connect();
+  try {
+    const {
+      name,
+      username,
+      email,
+      password,
+      is_active,
+      roleIds,
+      defaultRoleId,
+      departmentIds,
+    } = await c.req.json();
 
-  const pwHash = await bcrypt.hash(password, 10);
+    await client.query("BEGIN");
 
-  const userRes = await db.query(
-    `INSERT INTO users (name, username, email, password, is_active)
-     VALUES ($1, $2, $3, $4, $5)
-     RETURNING id`,
-    [name, username, email, pwHash, is_active ?? true]
-  );
-  const userId = userRes.rows[0].id;
+    const pwHash = await bcrypt.hash(password, 10);
 
-  console.log(roleIds);
-  // Insert roles
-  if (roleIds?.length) {
+    const userRes = await client.query(
+      `INSERT INTO users (name, username, email, password, is_active)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id`,
+      [name, username, email, pwHash, is_active ?? true]
+    );
+
+    const userId = userRes.rows[0].id;
+
     for (const roleId of roleIds) {
-      // const isDefault = defaultRole === roleId;
-      await db.query(
+      const isDefault = roleId === defaultRoleId;
+      await client.query(
         `INSERT INTO user_roles (user_id, role_id, is_default) VALUES ($1, $2, $3)`,
-        [userId, roleId, true]
+        [userId, roleId, isDefault]
       );
     }
-  }
 
-  return c.json({ success: true, id: userId });
+    if (departmentIds?.length) {
+      for (const departmentId of departmentIds) {
+        await client.query(
+          `INSERT INTO user_departments (user_id, department_id) VALUES ($1, $2)`,
+          [userId, departmentId]
+        );
+      }
+    }
+
+    await client.query("COMMIT");
+    return c.json({ success: true, id: userId });
+  } catch (err: any) {
+    await client.query("ROLLBACK");
+    console.error("Gagal membuat user baru:", err);
+    return c.json({ error: "Gagal membuat user baru." }, 500);
+  } finally {
+    client.release();
+  }
 });
 
 // ✅ PUT /users/:id → Update user
 userRoute.put("/:id", async (c) => {
   const id = c.req.param("id");
-  const { name, username, email, password, is_active, roles, defaultRole } =
-    await c.req.json();
+  const {
+    name,
+    username,
+    email,
+    password,
+    is_active,
+    roleIds,
+    departmentIds,
+    defaultRoleId,
+  } = await c.req.json();
 
   // Update user info
   if (password) {
@@ -101,12 +181,23 @@ userRoute.put("/:id", async (c) => {
   // Replace user_roles
   await db.query(`DELETE FROM user_roles WHERE user_id = $1`, [id]);
 
-  if (roles?.length) {
-    for (const roleId of roles) {
-      const isDefault = defaultRole === roleId;
+  if (roleIds?.length) {
+    for (const roleId of roleIds) {
+      const isDefault = defaultRoleId === roleId;
       await db.query(
         `INSERT INTO user_roles (user_id, role_id, is_default) VALUES ($1, $2, $3)`,
         [id, roleId, isDefault]
+      );
+    }
+  }
+
+  await db.query(`DELETE FROM user_departments WHERE user_id = $1`, [id]);
+
+  if (departmentIds?.length) {
+    for (const departmentId of departmentIds) {
+      await db.query(
+        `INSERT INTO user_departments (user_id, department_id) VALUES ($1, $2)`,
+        [id, departmentId]
       );
     }
   }
