@@ -20,8 +20,9 @@ app.use("/uploads/*", serveStatic({ root: "./public" }));
 app.use("*", logger());
 app.use(
   cors({
-    origin: "*", // atau domain frontend-mu
+    origin: "http://localhost:5173",
     allowHeaders: ["Authorization", "Content-Type"],
+    credentials: true,
   })
 );
 

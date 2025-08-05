@@ -20,29 +20,25 @@ export async function apiFetch(
   const response = await fetch(`${API_URL}${url}`, { ...options, headers });
 
   if (response.status === 401 && retry) {
-    // Coba refresh token
-    const refresh = localStorage.getItem("refreshToken");
-
-    if (refresh) {
+    try {
       const refreshRes = await fetch(`${API_URL}/auth/refresh`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${refresh}`,
-          "Content-Type": "application/json",
-        },
+        credentials: "include",
       });
 
       if (refreshRes.ok) {
         const { token: newToken } = await refreshRes.json();
         localStorage.setItem("token", newToken);
 
-        // Retry original request sekali lagi
-        return apiFetch(url, options, false);
+        return apiFetch(url, options, false); // Retry sekali lagi
       } else {
-        // Refresh gagal → logout user
         localStorage.clear();
         window.location.href = "/login";
       }
+    } catch (e) {
+      console.error("Gagal refresh token:", e);
+      localStorage.clear();
+      window.location.href = "/login";
     }
   }
 

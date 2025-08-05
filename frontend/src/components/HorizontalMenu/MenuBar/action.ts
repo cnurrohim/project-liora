@@ -5,7 +5,6 @@ import { MenuBarController } from "./controller";
 
 export const handleClick = (entry: MenuBarEntry) => {
   const section = MenuProviderController.getSection(entry.key);
-  // console.log("Clicked section:", section?.id, "mode:", section?.mode);
 
   if (!section) return;
 

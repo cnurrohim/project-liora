@@ -69,3 +69,9 @@ export async function getDepartments() {
   if (!res.ok) throw new Error("Gagal mengambil departments");
   return (await res.json()).data;
 }
+
+export async function getUserPermissions(userId: string) {
+  const res = await apiFetch(`/permissions/${userId}`);
+  if (!res.ok) throw new Error("Gagal ambil data override");
+  return (await res.json()).permissions;
+}

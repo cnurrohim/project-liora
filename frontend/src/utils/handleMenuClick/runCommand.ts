@@ -19,7 +19,6 @@ export function runCommand(item: MenuAction) {
     ConfirmationDialogController.askConfirmation(
       commandsRequiringConfirmation[command],
       () => {
-        console.log("Running command:", command);
         CommandController.emit(command);
       }
     );

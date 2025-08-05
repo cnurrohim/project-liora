@@ -7,6 +7,7 @@ import {
   verifyRefreshToken,
 } from "../utils/auth.js";
 import { authMiddleware } from "../middleware/auth.js";
+import { getCookie, setCookie } from "hono/cookie";
 
 export const authRoute = new Hono();
 
@@ -83,9 +84,16 @@ authRoute.post("/login", async (c) => {
 
   const permissions = await getUserPermissions(user.id, defaultRole.id);
 
+  setCookie(c, "refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+    maxAge: 60 * 60 * 24 * 7, // 7 hari
+    path: "/",
+  });
+
   return c.json({
     token,
-    refreshToken,
     user: {
       id: user.id,
       name: user.name,
@@ -163,7 +171,7 @@ authRoute.get("/me", authMiddleware, async (c) => {
 });
 
 authRoute.post("/refresh", async (c) => {
-  const refreshToken = c.req.header("Authorization")?.replace("Bearer ", "");
+  const refreshToken = getCookie(c, "refreshToken"); // ✅ benar
   if (!refreshToken) return c.json({ error: "Missing token" }, 401);
 
   try {
@@ -197,4 +205,12 @@ authRoute.post("/refresh", async (c) => {
   } catch {
     return c.json({ error: "Invalid refresh token" }, 401);
   }
+});
+
+authRoute.post("/logout", async (c) => {
+  setCookie(c, "refreshToken", "", {
+    maxAge: 0,
+    path: "/",
+  });
+  return c.json({ message: "Logged out" });
 });

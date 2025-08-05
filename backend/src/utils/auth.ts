@@ -19,7 +19,7 @@ type RefreshPayload = {
 };
 
 export function generateToken(payload: AuthPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" }); // 15 menit
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "1m" }); // 15 menit
 }
 
 export function generateRefreshToken(payload: RefreshPayload): string {

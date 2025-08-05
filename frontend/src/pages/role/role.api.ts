@@ -73,6 +73,16 @@ export async function getAllPermissions() {
   return data.permissions;
 }
 
+export async function getPermissionsByRoleIds(roleIds: string[]) {
+  const query = roleIds.join(",");
+  const res = await apiFetch(`/permissions/by-roles?roleIds=${query}`);
+  if (!res.ok) {
+    throw new Error("Gagal mengambil daftar permissions");
+  }
+
+  return (await res.json()).permissions;
+}
+
 export async function getRoleDetail(id: string) {
   const res = await apiFetch(`/roles/detail/${id}`);
 

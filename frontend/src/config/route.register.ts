@@ -11,7 +11,7 @@ import AppLauncher from "../pages/Launcher";
 import DefaultPage from "../pages/DefaultPage";
 import DepartmentListPage from "../pages/Departments";
 import DepartmentFormPage from "../pages/Departments/form";
-import UserFormPage from "../pages/Users/form";
+import UserFormTabs from "../pages/Users/UserFormTabs";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -64,13 +64,13 @@ export function registerRoutes() {
   RouteRegistry.register(
     "/user/create",
     "create user",
-    React.createElement(UserFormPage)
+    React.createElement(UserFormTabs)
   );
 
   RouteRegistry.register(
     "/user/:id/edit",
     "create user",
-    React.createElement(UserFormPage)
+    React.createElement(UserFormTabs)
   );
 
   RouteRegistry.register(

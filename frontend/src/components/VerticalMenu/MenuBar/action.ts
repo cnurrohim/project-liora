@@ -17,7 +17,6 @@ export const handleClick = (entry: MenuBarEntry) => {
       if (isAlreadyActive) {
         SlidingPanelController.toggle();
         const isSlidingPanelVisible = SlidingPanelController.getVisibleState();
-        console.log("isSlidingPanelVisible", isSlidingPanelVisible);
         !isSlidingPanelVisible && MenuBarController.setInActive();
       } else {
         MenuBarController.setActive(entry.key);

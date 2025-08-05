@@ -19,13 +19,11 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const { token, refreshToken, user } = await login({ username, password });
+      const { token, user } = await login({ username, password });
 
       localStorage.setItem("token", token);
-      localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("user", JSON.stringify(user));
 
-      console.log("Login success", user);
       setTimeout(() => {
         // window.location.href = "/";
         navigate("/", { replace: true });

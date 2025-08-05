@@ -19,6 +19,52 @@ permissionRoute.get("/", async (c) => {
   }
 });
 
+// Get permissions by role IDs
+permissionRoute.get("/by-roles", async (c) => {
+  try {
+    const roleIdsParam = c.req.query("roleIds");
+    if (!roleIdsParam) {
+      return c.json({ error: "Missing roleIds query parameter" }, 400);
+    }
+
+    const roleIds = roleIdsParam.split(",");
+
+    if (!Array.isArray(roleIds) || roleIds.length === 0) {
+      return c.json({ error: "Invalid roleIds" }, 400);
+    }
+
+    const result = await db.query(
+      `
+      SELECT DISTINCT p.id, p.name, p.label, p.domain, p.description
+      FROM permissions p
+      JOIN role_permissions rp ON rp.permission_id = p.id
+      WHERE rp.role_id = ANY($1::uuid[])
+      ORDER BY p.name ASC
+    `,
+      [roleIds]
+    );
+
+    return c.json({ permissions: result.rows });
+  } catch (err) {
+    console.error("GET /permissions/by-roles error", err);
+    return c.json({ error: "Failed to fetch permissions by role" }, 500);
+  }
+});
+
+permissionRoute.get("/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const result = await db.query(
+      `SELECT permission_id, granted FROM user_permissions where user_id = $1`,
+      [id]
+    );
+    return c.json({ permissions: result.rows });
+  } catch (err) {
+    console.error("GET /permissions error", err);
+    return c.json({ error: "Failed to fetch permissions" }, 500);
+  }
+});
+
 // Create new permission
 permissionRoute.post("/", async (c) => {
   try {

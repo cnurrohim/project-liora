@@ -72,6 +72,13 @@ userRoute.get("/:id", async (c) => {
       ) AS roles,
 
       (
+        SELECT ur.role_id
+        FROM user_roles ur
+        WHERE ur.user_id = u.id and ur.is_default is true
+        limit 1
+      ) AS default_role_id,
+
+      (
         SELECT json_agg(json_build_object(
           'id', d.id,
           'name', d.name
@@ -106,6 +113,7 @@ userRoute.post("/", async (c) => {
       roleIds,
       defaultRoleId,
       departmentIds,
+      userPermissions,
     } = await c.req.json();
 
     await client.query("BEGIN");
@@ -138,6 +146,15 @@ userRoute.post("/", async (c) => {
       }
     }
 
+    if (userPermissions) {
+      for (const [permissionId, granted] of Object.entries(userPermissions)) {
+        await client.query(
+          `INSERT INTO user_permissions (user_id, permission_id, granted) VALUES ($1, $2, $3)`,
+          [userId, permissionId, granted]
+        );
+      }
+    }
+
     await client.query("COMMIT");
     return c.json({ success: true, id: userId });
   } catch (err: any) {
@@ -151,69 +168,94 @@ userRoute.post("/", async (c) => {
 
 // ✅ PUT /users/:id → Update user
 userRoute.put("/:id", async (c) => {
-  const id = c.req.param("id");
-  const {
-    name,
-    username,
-    email,
-    password,
-    is_active,
-    roleIds,
-    departmentIds,
-    defaultRoleId,
-  } = await c.req.json();
+  const client = await db.connect();
+  try {
+    const id = c.req.param("id");
+    const {
+      name,
+      username,
+      email,
+      password,
+      is_active,
+      roleIds,
+      departmentIds,
+      defaultRoleId,
+      userPermissions,
+    } = await c.req.json();
 
-  // Update user info
-  if (password) {
-    const pwHash = await bcrypt.hash(password, 10);
+    await client.query("BEGIN");
 
-    await db.query(
-      `UPDATE users SET name = $1, username = $2, email = $3, password = $4, is_active = $5, updated_at = NOW() WHERE id = $6`,
-      [name, username, email, pwHash, is_active, id]
-    );
-  } else {
-    await db.query(
-      `UPDATE users SET name = $1, username = $2, email = $3, is_active = $4, updated_at = NOW() WHERE id = $5`,
-      [name, username, email, is_active, id]
-    );
-  }
-
-  // Replace user_roles
-  await db.query(`DELETE FROM user_roles WHERE user_id = $1`, [id]);
-
-  if (roleIds?.length) {
-    for (const roleId of roleIds) {
-      const isDefault = defaultRoleId === roleId;
-      await db.query(
-        `INSERT INTO user_roles (user_id, role_id, is_default) VALUES ($1, $2, $3)`,
-        [id, roleId, isDefault]
+    if (password) {
+      const pwHash = await bcrypt.hash(password, 10);
+      await client.query(
+        `UPDATE users SET name = $1, username = $2, email = $3, password = $4, is_active = $5, updated_at = NOW() WHERE id = $6`,
+        [name, username, email, pwHash, is_active, id]
+      );
+    } else {
+      await client.query(
+        `UPDATE users SET name = $1, username = $2, email = $3, is_active = $4, updated_at = NOW() WHERE id = $5`,
+        [name, username, email, is_active, id]
       );
     }
-  }
 
-  await db.query(`DELETE FROM user_departments WHERE user_id = $1`, [id]);
+    await client.query(`DELETE FROM user_roles WHERE user_id = $1`, [id]);
 
-  if (departmentIds?.length) {
-    for (const departmentId of departmentIds) {
-      await db.query(
-        `INSERT INTO user_departments (user_id, department_id) VALUES ($1, $2)`,
-        [id, departmentId]
-      );
+    if (roleIds?.length) {
+      for (const roleId of roleIds) {
+        const isDefault = defaultRoleId === roleId;
+        await client.query(
+          `INSERT INTO user_roles (user_id, role_id, is_default) VALUES ($1, $2, $3)`,
+          [id, roleId, isDefault]
+        );
+      }
     }
-  }
 
-  return c.json({ success: true });
+    await client.query(`DELETE FROM user_departments WHERE user_id = $1`, [id]);
+    if (departmentIds?.length) {
+      for (const departmentId of departmentIds) {
+        await client.query(
+          `INSERT INTO user_departments (user_id, department_id) VALUES ($1, $2)`,
+          [id, departmentId]
+        );
+      }
+    }
+
+    // Override user permissions
+    await client.query(`DELETE FROM user_permissions WHERE user_id = $1`, [id]);
+    if (userPermissions) {
+      for (const [permissionId, granted] of Object.entries(userPermissions)) {
+        await client.query(
+          `INSERT INTO user_permissions (user_id, permission_id, granted) VALUES ($1, $2, $3)`,
+          [id, permissionId, granted]
+        );
+      }
+    }
+
+    await client.query("COMMIT");
+    return c.json({ success: true });
+  } catch (err: any) {
+    await client.query("ROLLBACK");
+    console.error("Gagal update user:", err);
+    return c.json({ error: "Gagal update user." }, 500);
+  } finally {
+    client.release();
+  }
 });
 
 // ✅ DELETE /users/:id → Delete user
 userRoute.delete("/:id", async (c) => {
+  const client = await db.connect();
   try {
     const id = c.req.param("id");
-
-    await db.query(`DELETE FROM users WHERE id = $1`, [id]);
-
+    await client.query("BEGIN");
+    await client.query(`DELETE FROM user_permissions WHERE user_id = $1`, [id]);
+    await client.query(`DELETE FROM user_departments WHERE user_id = $1`, [id]);
+    await client.query(`DELETE FROM user_roles WHERE user_id = $1`, [id]);
+    await client.query(`DELETE FROM users WHERE id = $1`, [id]);
+    await client.query("COMMIT");
     return c.json({ success: true });
   } catch (err: any) {
+    await client.query("ROLLBACK");
     if (
       err.code === "23503" && // foreign_key_violation
       err.constraint === "user_roles_role_id_fkey"
