@@ -43,7 +43,7 @@ export function TabsTrigger({
     <button
       type="button"
       onClick={() => ctx.setActiveValue(value)}
-      className={`px-3 py-1.5 text-sm font-medium rounded-t border-b-2 ${
+      className={`px-3 py-1.5 text-sm font-medium rounded-t border-b-2 flex flex-row gap-2 cursor-pointer ${
         isActive
           ? "border-blue-500 text-white"
           : "border-transparent text-gray-400 hover:text-white"

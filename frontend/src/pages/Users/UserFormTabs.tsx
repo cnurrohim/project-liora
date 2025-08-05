@@ -20,6 +20,8 @@ import {
 } from "./user.api";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import { useEffect, useState } from "react";
+import UserRolesForm from "./userRolesForm";
+import { IconRenderer } from "../../components/IconRenderer";
 
 type FormValues = z.infer<typeof schema>;
 
@@ -63,7 +65,11 @@ export default function UserFormTabs() {
     load();
   }, []);
 
-  const { handleSubmit, reset } = methods;
+  const {
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = methods;
 
   useEffect(() => {
     if (isEdit && id) {
@@ -111,24 +117,50 @@ export default function UserFormTabs() {
     }
   };
 
+  const isDataUserErrorsExists =
+    !!errors.name ||
+    !!errors.username ||
+    !!errors.email ||
+    !!errors.departments;
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full p-4">
         <Tabs defaultValue="user">
           <TabsList>
-            <TabsTrigger value="user">Data User</TabsTrigger>
+            <TabsTrigger value="user">
+              Data User
+              {isDataUserErrorsExists && (
+                <IconRenderer
+                  name="RiErrorWarningFill"
+                  size={20}
+                  color="#fae332"
+                />
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="roles">
+              Manage User Roles
+              {typeof errors.defaultRole?.message === "string" && (
+                <IconRenderer
+                  name="RiErrorWarningFill"
+                  size={20}
+                  color="#fae332"
+                />
+              )}
+            </TabsTrigger>
             <TabsTrigger value="override">Override Permissions</TabsTrigger>
           </TabsList>
 
           <TabsContent value="user">
-            <TabsContent value="user">
-              <UserFormPage
-                isEdit={isEdit}
-                userId={id}
-                roles={roles}
-                departments={departments}
-              />
-            </TabsContent>
+            <UserFormPage
+              isEdit={isEdit}
+              userId={id}
+              departments={departments}
+            />
+          </TabsContent>
+
+          <TabsContent value="roles">
+            <UserRolesForm isEdit={isEdit} userId={id} roles={roles} />
           </TabsContent>
 
           <TabsContent value="override">

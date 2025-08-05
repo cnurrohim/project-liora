@@ -5,15 +5,13 @@ import { type Option } from "./UserFormTabs";
 type Props = {
   isEdit: boolean;
   userId?: string;
-  roles: Option[];
   departments: Option[];
 };
 
-export default function UserFormPage({ isEdit, roles, departments }: Props) {
+export default function UserFormPage({ isEdit, departments }: Props) {
   const {
     control,
     register,
-    watch,
     formState: { errors },
   } = useFormContext();
 
@@ -64,51 +62,6 @@ export default function UserFormPage({ isEdit, roles, departments }: Props) {
           />
           {typeof errors.password?.message === "string" && (
             <p className="text-red-500 text-sm">{errors.password.message}</p>
-          )}
-        </div>
-      )}
-
-      <div>
-        <label className="block">Roles</label>
-        <Controller
-          control={control}
-          name="roles"
-          render={({ field, fieldState }) => (
-            <div>
-              <MultiSelect
-                options={roles}
-                value={field.value}
-                onChange={field.onChange}
-                placeholder="Pilih roles"
-              />
-              {fieldState.error && (
-                <p className="text-red-500 text-sm mt-1">
-                  {fieldState.error.message}
-                </p>
-              )}
-            </div>
-          )}
-        />
-      </div>
-
-      {watch("roles").length > 0 && (
-        <div>
-          <label className="block">Default Role</label>
-          <select
-            className="w-full p-2 bg-gray-800 rounded"
-            {...register("defaultRole")}
-          >
-            <option value="">Pilih default role</option>
-            {watch("roles").map((role: Option) => (
-              <option key={role.id} value={role.id}>
-                {role.name}
-              </option>
-            ))}
-          </select>
-          {typeof errors.defaultRole?.message === "string" && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.defaultRole.message}
-            </p>
           )}
         </div>
       )}
