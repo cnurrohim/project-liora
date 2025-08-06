@@ -3,12 +3,12 @@ import { deleteRole, getRoleDetail, getRoles } from "./role.api";
 import { ConfirmationDialogController } from "../../components/ConfirmationDialog/controller";
 import { openTabSmart } from "../../utils/handleMenuClick/openTabSmart";
 import { ButtonGroupWithDropdown } from "../../components/Buttons/ButtonGroupWithDropdown";
-import DetailPane from "../../components/DetailPane";
-import { DetailPaneController } from "../../components/DetailPane/controller";
 import { IconRenderer } from "../../components/IconRenderer";
 import { EditButtonLink } from "../../components/Buttons/EditButtonLink";
 import { ViewButtonLink } from "../../components/Buttons/ViewButtonLink";
 import { DeleteButtonLink } from "../../components/Buttons/DeleteButtonLink";
+
+import { RoleDetailPane, RoleDetailPaneController } from "./RoleDetailPane";
 
 export default function RoleListPage() {
   const [roles, setRoles] = useState<any[]>([]);
@@ -54,7 +54,7 @@ export default function RoleListPage() {
   async function handleViewClick(roleId: string) {
     try {
       const detail = await getRoleDetail(roleId);
-      DetailPaneController.open(detail);
+      RoleDetailPaneController.open(detail);
     } catch (err) {
       console.error("Gagal ambil data", err);
     }
@@ -76,7 +76,7 @@ export default function RoleListPage() {
               Tambah Role
             </>
           }
-          onMainClick={() => openInNewTab(false)}
+          onClick={() => openInNewTab(false)}
           dropdownItems={[
             {
               label: (
@@ -119,15 +119,13 @@ export default function RoleListPage() {
                 </td>
                 <td className="p-2 border border-gray-700 flex">
                   <EditButtonLink
-                    onMainClick={() => handleEditClick(role.id, role.name)}
+                    onClick={() => handleEditClick(role.id, role.name)}
                   />
 
-                  <ViewButtonLink
-                    onMainClick={() => handleViewClick(role.id)}
-                  />
+                  <ViewButtonLink onClick={() => handleViewClick(role.id)} />
 
                   <DeleteButtonLink
-                    onMainClick={() => handleDelete(role.id, role.name)}
+                    onClick={() => handleDelete(role.id, role.name)}
                   />
                 </td>
               </tr>
@@ -136,7 +134,7 @@ export default function RoleListPage() {
         </table>
       )}
 
-      <DetailPane />
+      <RoleDetailPane />
     </div>
   );
 }

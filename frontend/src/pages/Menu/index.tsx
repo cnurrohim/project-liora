@@ -184,10 +184,8 @@ export default function MenuListPage() {
         header: "Aksi",
         cell: ({ row }) => (
           <div className="flex gap-1">
-            <EditButtonLink onMainClick={() => handleEdit(row.original)} />
-            <DeleteButtonLink
-              onMainClick={() => handleDelete(row.original.id)}
-            />
+            <EditButtonLink onClick={() => handleEdit(row.original)} />
+            <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
           </div>
         ),
       },
@@ -281,7 +279,7 @@ export default function MenuListPage() {
               Tambah Menu
             </>
           }
-          onMainClick={() => openInNewTab(false)}
+          onClick={() => openInNewTab(false)}
           dropdownItems={[
             {
               label: (

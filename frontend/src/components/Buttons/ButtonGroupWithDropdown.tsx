@@ -3,13 +3,13 @@ import { IconRenderer } from "../IconRenderer";
 
 type Props = {
   mainLabel: ReactNode;
-  onMainClick: () => void;
+  onClick: () => void;
   dropdownItems: { label: ReactNode; onClick: () => void }[];
 };
 
 export function ButtonGroupWithDropdown({
   mainLabel,
-  onMainClick,
+  onClick,
   dropdownItems,
 }: Props) {
   const [open, setOpen] = useState(false);
@@ -32,7 +32,7 @@ export function ButtonGroupWithDropdown({
   return (
     <div className="relative inline-flex" ref={dropdownRef}>
       <button
-        onClick={onMainClick}
+        onClick={onClick}
         className="px-4 py-2 bg-blue-600 text-white rounded-l hover:bg-gray-900 flex flex-row justify-center items-center gap-1 cursor-pointer"
       >
         {mainLabel}

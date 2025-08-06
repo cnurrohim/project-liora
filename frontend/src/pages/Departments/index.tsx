@@ -140,10 +140,8 @@ export default function DepartmentListPage() {
         header: "Aksi",
         cell: ({ row }) => (
           <div className="flex gap-1">
-            <EditButtonLink onMainClick={() => handleEdit(row.original)} />
-            <DeleteButtonLink
-              onMainClick={() => handleDelete(row.original.id)}
-            />
+            <EditButtonLink onClick={() => handleEdit(row.original)} />
+            <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
           </div>
         ),
       },
@@ -183,7 +181,7 @@ export default function DepartmentListPage() {
               Tambah Departement
             </>
           }
-          onMainClick={() => openCreateTab(false)}
+          onClick={() => openCreateTab(false)}
           dropdownItems={[
             {
               label: (

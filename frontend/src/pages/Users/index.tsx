@@ -8,7 +8,13 @@ import {
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
-import { getUsers, deleteUser } from "./user.api";
+import {
+  getUsers,
+  deleteUser,
+  toggleActivationUser,
+  getUserById,
+  getUserDetail,
+} from "./user.api";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
 import { openTabSmart } from "../../utils/handleMenuClick/openTabSmart";
 import { IconRenderer } from "../../components/IconRenderer";
@@ -16,11 +22,15 @@ import { EditButtonLink } from "../../components/Buttons/EditButtonLink";
 import { DeleteButtonLink } from "../../components/Buttons/DeleteButtonLink";
 import { ButtonGroupWithDropdown } from "../../components/Buttons/ButtonGroupWithDropdown";
 import { ConfirmationDialogController } from "../../components/ConfirmationDialog/controller";
+import { ViewButtonLink } from "../../components/Buttons/ViewButtonLink";
+import { ButtonLink } from "../../components/Buttons/ButtonLink";
+import { UserDetailPane, UserDetailPaneController } from "./UserDetailPane";
 
 type User = {
   id: string;
   name: string;
   email: string;
+  is_active: boolean;
   roles: {
     id: string;
     name: string;
@@ -69,6 +79,15 @@ export default function UserListPage() {
     );
   };
 
+  const handleView = async (id: string) => {
+    try {
+      const detail = await getUserDetail(id);
+      UserDetailPaneController.open(detail);
+    } catch (err) {
+      console.error("Gagal ambil data", err);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     ConfirmationDialogController.askConfirmation(
       "Yakin ingin menghapus user ini?",
@@ -76,6 +95,26 @@ export default function UserListPage() {
         try {
           await deleteUser(id);
           showSuccessToast("User berhasil dihapus");
+          fetchUsers();
+        } catch (err: any) {
+          showErrorToast(err.message);
+        }
+      }
+    );
+  };
+
+  const toggleUserActivation = async (id: string, status: boolean) => {
+    ConfirmationDialogController.askConfirmation(
+      status
+        ? "Yakin ingin mengnonaktifkan user ini?"
+        : "Yakin ingin mengaktifkan user ini?",
+      async () => {
+        try {
+          await toggleActivationUser(id);
+          const msg = status
+            ? "User berhasil dinonaktifkan"
+            : "User berhasil diaktifkan";
+          showSuccessToast(msg);
           fetchUsers();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -102,6 +141,13 @@ export default function UserListPage() {
       {
         accessorKey: "email",
         header: "Email",
+      },
+      {
+        accessorKey: "is_active",
+        header: "Status",
+        cell: ({ row }) => {
+          return row.original.is_active ? "Aktif" : "Nonaktif";
+        },
       },
       {
         accessorKey: "departments",
@@ -155,10 +201,18 @@ export default function UserListPage() {
         header: "Aksi",
         cell: ({ row }) => (
           <div className="flex gap-1">
-            <EditButtonLink onMainClick={() => handleEdit(row.original)} />
-            <DeleteButtonLink
-              onMainClick={() => handleDelete(row.original.id)}
+            <ViewButtonLink onClick={() => handleView(row.original.id)} />
+            <EditButtonLink onClick={() => handleEdit(row.original)} />
+
+            <ButtonLink
+              icon={row.original.is_active ? "RiForbid2Line" : "RiForbid2Line"}
+              label={row.original.is_active ? "Nonaktifkan" : "Aktifkan"}
+              onClick={() =>
+                toggleUserActivation(row.original.id, row.original.is_active)
+              }
             />
+
+            <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
           </div>
         ),
       },
@@ -211,7 +265,7 @@ export default function UserListPage() {
               Tambah User
             </>
           }
-          onMainClick={() => openInNewTab(false)}
+          onClick={() => openInNewTab(false)}
           dropdownItems={[
             {
               label: (
@@ -264,7 +318,7 @@ export default function UserListPage() {
                 {table.getRowModel().rows.map((row) => (
                   <tr key={row.id} className="border-b border-gray-700">
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="p-2">
+                      <td key={cell.id} className="p-2 align-top">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -301,6 +355,8 @@ export default function UserListPage() {
           </div>
         </>
       )}
+
+      <UserDetailPane />
     </div>
   );
 }

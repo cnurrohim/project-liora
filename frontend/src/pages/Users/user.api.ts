@@ -14,6 +14,16 @@ export async function getUserById(id: string) {
   return data.user;
 }
 
+export async function getUserDetail(id: string) {
+  const res = await apiFetch(`/users/detail/${id}`);
+
+  if (!res.ok) {
+    throw new Error("Gagal mengambil informasi detail user ");
+  }
+
+  return await res.json();
+}
+
 export async function createUser(input: {
   name: string;
   username?: string;
@@ -55,6 +65,14 @@ export async function updateUser(
 export async function deleteUser(id: string) {
   const res = await apiFetch(`/users/${id}`, { method: "DELETE" });
   if (!res.ok) throw new Error("Gagal menghapus user");
+  return res.json();
+}
+
+export async function toggleActivationUser(id: string) {
+  const res = await apiFetch(`/users/${id}/toggleActivation`, {
+    method: "PUT",
+  });
+  if (!res.ok) throw new Error("Gagal mengnonaktifkan user");
   return res.json();
 }
 

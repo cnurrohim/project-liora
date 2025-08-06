@@ -51,6 +51,134 @@ userRoute.get("/", async (c) => {
   return c.json({ users: res.rows });
 });
 
+userRoute.get("/detail/:id", async (c) => {
+  const id = c.req.param("id");
+  try {
+    const userDetail = await db.query(
+      `SELECT id,
+      name,
+      username,
+      email,
+      is_active,
+      created_at,
+      updated_at FROM users WHERE id = $1`,
+      [id]
+    );
+
+    // ambil semua role_id dulu
+    const roleDetails = await db.query(
+      `SELECT 
+      ur.role_id as id,
+      ur.is_default,
+      r.name, 
+      r.description 
+      FROM user_roles ur
+      JOIN roles r on r.id = ur.role_id
+      WHERE ur.user_id = $1`,
+      [id]
+    );
+
+    const roleIds = roleDetails.rows.map((r) => r.id);
+    if (!roleIds.length) {
+      return c.json({ error: "user tidak memiliki roles apapun" }, 404);
+    }
+
+    // ambil semua permissions dari role
+    const permRes = await db.query(
+      `
+      SELECT DISTINCT ON (p.id)
+        p.id, 
+        p.name, 
+        p.label, 
+        p.description, 
+        p.domain
+      FROM role_permissions rp
+      JOIN permissions p ON p.id = rp.permission_id
+      WHERE rp.role_id = ANY($1::uuid[])
+      AND p.id NOT IN (
+        SELECT permission_id
+        FROM user_permissions
+        WHERE user_id = $2
+      )
+      ORDER BY p.id, p.domain, p.label
+  `,
+      [roleIds, id]
+    );
+
+    const userPermRes = await db.query(
+      `
+        SELECT DISTINCT ON (p.id)
+          p.id,
+          p.name,
+          p.label,
+          p.description,
+          p.domain,
+          up.granted
+        FROM user_permissions up
+        JOIN permissions p ON p.id = up.permission_id
+        WHERE up.user_id = $1
+        order by p.id
+  `,
+      [id]
+    );
+
+    const userDeparments = await db.query(
+      `
+        SELECT 
+          p.id,
+          p.name,
+          p.description
+        FROM user_departments up
+        JOIN departments p ON p.id = up.department_id
+        WHERE up.user_id = $1
+      `,
+      [id]
+    );
+
+    const groupedPermissions: Record<string, any[]> = {};
+    for (const p of permRes.rows) {
+      if (!groupedPermissions[p.domain]) {
+        groupedPermissions[p.domain] = [];
+      }
+      groupedPermissions[p.domain].push({
+        id: p.id,
+        name: p.name,
+        label: p.label,
+        description: p.description,
+        source: "role",
+      });
+    }
+
+    for (const p of userPermRes.rows) {
+      if (!groupedPermissions[p.domain]) {
+        groupedPermissions[p.domain] = [];
+      }
+      // tandai permission dari user langsung
+      groupedPermissions[p.domain].push({
+        id: p.id,
+        name: p.name,
+        label: p.label,
+        description: p.description,
+        granted: p.granted,
+        source: "user",
+      });
+    }
+
+    return c.json({
+      user: userDetail.rows[0],
+      roles: roleDetails.rows,
+      departments: userDeparments.rows,
+      permissions: groupedPermissions,
+    });
+  } catch (err: any) {
+    console.error("GET /roles/:id error", err);
+    return c.json(
+      { error: "Terjadi kesalahan saat mengambil data detail user" },
+      500
+    );
+  }
+});
+
 // ✅ GET /users/:id → Get single user detail
 userRoute.get("/:id", async (c) => {
   const id = c.req.param("id");
@@ -270,5 +398,24 @@ userRoute.delete("/:id", async (c) => {
 
     console.error("Gagal hapus user:", err);
     return c.json({ error: "Gagal menghapus user." }, 500);
+  }
+});
+
+userRoute.put("/:id/toggleActivation", async (c) => {
+  const client = await db.connect();
+  try {
+    const id = c.req.param("id");
+    await client.query("BEGIN");
+    await client.query(
+      `UPDATE users SET is_active = NOT is_active,  updated_at = NOW() WHERE id = $1`,
+      [id]
+    );
+    await client.query("COMMIT");
+    return c.json({ success: true });
+  } catch (err: any) {
+    await client.query("ROLLBACK");
+
+    console.error("Gagal mengnonaktifkan user:", err);
+    return c.json({ error: "Gagal mengnonaktifkan user." }, 500);
   }
 });

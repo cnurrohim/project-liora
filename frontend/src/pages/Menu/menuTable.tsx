@@ -77,8 +77,8 @@ export default function MenuTable({ menus, onEdit, onDelete }: Props) {
           <TableCell>{row.mode}</TableCell>
           <TableCell>{row.alignment}</TableCell>
           <TableCell>
-            <EditButtonLink onMainClick={() => onEdit(row)} />
-            <DeleteButtonLink onMainClick={() => onDelete(row.id)} />
+            <EditButtonLink onClick={() => onEdit(row)} />
+            <DeleteButtonLink onClick={() => onDelete(row.id)} />
           </TableCell>
         </TableRow>
       );
