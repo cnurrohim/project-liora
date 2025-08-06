@@ -15,7 +15,7 @@ async function getUserPermissions(userId: string, activeRoleId: string) {
   const [rolePerms, userPerms] = await Promise.all([
     db.query(
       `
-      SELECT p.name
+      SELECT p.domain, p.name
       FROM role_permissions rp
       JOIN permissions p ON rp.permission_id = p.id
       WHERE rp.role_id = $1
@@ -24,7 +24,7 @@ async function getUserPermissions(userId: string, activeRoleId: string) {
     ),
     db.query(
       `
-      SELECT p.name
+      SELECT p.domain, p.name
       FROM user_permissions up
       JOIN permissions p ON up.permission_id = p.id
       WHERE up.user_id = $1
@@ -34,8 +34,8 @@ async function getUserPermissions(userId: string, activeRoleId: string) {
   ]);
 
   const permissions = new Set([
-    ...rolePerms.rows.map((r) => r.name),
-    ...userPerms.rows.map((r) => r.name),
+    ...rolePerms.rows.map((r) => `${r.domain}.${r.name}`),
+    ...userPerms.rows.map((r) => `${r.domain}.${r.name}`),
   ]);
 
   return Array.from(permissions);

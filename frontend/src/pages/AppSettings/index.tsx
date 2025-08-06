@@ -3,10 +3,17 @@ import { getAppSetting, updateAppSetting } from "./appSetting.api";
 import { showSuccessToast } from "../../utils/toast";
 import { AppConfigController } from "../../components/AppConfig/controller";
 import { applyAppMetadata } from "../../config/appInit";
+import { useHasPermission } from "../../hooks/useHasPermission";
+import ForbiddenPage from "../Misc/403";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function AppSettingPage() {
+  const canAccessPage = useHasPermission(["dev.dev"]);
+  const canSubmit = useHasPermission("dev.dev");
+
+  if (!canAccessPage) return <ForbiddenPage />;
+
   const [appName, setAppName] = useState("");
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -23,6 +30,8 @@ export default function AppSettingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canSubmit) return;
+
     setLoading(true);
     const result = await updateAppSetting({
       app_name: appName,
@@ -78,13 +87,15 @@ export default function AppSettingPage() {
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full flex justify-center items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-      >
-        {loading ? "Menyimpan..." : "Simpan"}
-      </button>
+      {canSubmit && (
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full flex justify-center items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+        >
+          {loading ? "Menyimpan..." : "Simpan"}
+        </button>
+      )}
     </form>
   );
 }

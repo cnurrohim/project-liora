@@ -2,7 +2,7 @@ import React from "react";
 import { TabController } from "../../components/Tab/controller";
 import { RouteRegistry } from "../../config/routeRegistry";
 import type { MenuRoute } from "../../types/menu";
-import PagesNotFound from "../../pages/PagesNotFound";
+import PagesNotFound from "../../pages/Misc/404";
 
 export function openTabSmart(
   item: MenuRoute,

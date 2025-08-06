@@ -1,5 +1,3 @@
-// src/config/permissionRegistry.ts
-
 export const permissionRegistry = [
   {
     domain: "dev",

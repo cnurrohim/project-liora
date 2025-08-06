@@ -2,7 +2,7 @@
 import { useInitApp } from "./hooks/useInitApp";
 
 // Components
-import Loading from "./pages/Loading";
+import Loading from "./pages/Misc/Loading.tsx";
 import ConfirmationDialog from "./components/ConfirmationDialog";
 import { Toaster } from "sonner";
 import { LayoutRenderer } from "./components/LayoutRenderer.tsx";

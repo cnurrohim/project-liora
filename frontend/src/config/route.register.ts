@@ -8,7 +8,7 @@ import MenuListPage from "../pages/Menu";
 import MenuFormPage from "../pages/Menu/form";
 import AppSettingPage from "../pages/AppSettings";
 import AppLauncher from "../pages/Launcher";
-import DefaultPage from "../pages/DefaultPage";
+import DefaultPage from "../pages/Misc/DefaultPage";
 import DepartmentListPage from "../pages/Departments";
 import DepartmentFormPage from "../pages/Departments/form";
 import UserFormTabs from "../pages/Users/UserFormTabs";

@@ -26,3 +26,12 @@ export async function logout() {
   localStorage.clear();
   window.location.href = "/login";
 }
+
+export function getUserPermissions(): string[] {
+  try {
+    const user = JSON.parse(localStorage.getItem("user") ?? "null");
+    return Array.isArray(user?.permissions) ? user.permissions : [];
+  } catch {
+    return [];
+  }
+}
