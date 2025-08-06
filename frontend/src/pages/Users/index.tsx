@@ -12,7 +12,6 @@ import {
   getUsers,
   deleteUser,
   toggleActivationUser,
-  getUserById,
   getUserDetail,
 } from "./user.api";
 import { showErrorToast, showSuccessToast } from "../../utils/toast";
