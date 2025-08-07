@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import {
   PermissionController,
   type Permission,
-} from "../../controller/permissionController";
+} from "@/controller/permissionController";
 
 export type FormType = {
   name: string;

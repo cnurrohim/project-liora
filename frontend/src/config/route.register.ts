@@ -1,7 +1,7 @@
 import React from "react";
 import Preferences from "../pages/Preferences";
 import { RouteRegistry } from "./routeRegistry";
-import UserListPage from "../pages/Users";
+import UserListPage from "../pages/User";
 import RoleListPage from "../pages/role";
 import RoleFormPage from "../pages/role/roleForm";
 import MenuListPage from "../pages/Menu";
@@ -11,7 +11,7 @@ import AppLauncher from "../pages/Launcher";
 import DefaultPage from "../pages/Misc/DefaultPage";
 import DepartmentListPage from "../pages/Departments";
 import DepartmentFormPage from "../pages/Departments/form";
-import UserFormTabs from "../pages/Users/UserFormTabs";
+import UserFormTabs from "../pages/User/UserFormTabs";
 
 export function registerRoutes() {
   RouteRegistry.register(

@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import { useAuthRedirect } from "../../hooks/useAuthRedirect";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { login } from "./login.api";
 import { useNavigate } from "react-router-dom";
-import { IconRenderer } from "../../components/IconRenderer";
+import { IconRenderer } from "@/components/IconRenderer";
 
 export default function LoginPage() {
   useAuthRedirect();

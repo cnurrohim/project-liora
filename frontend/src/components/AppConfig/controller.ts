@@ -1,4 +1,4 @@
-import { apiFetch } from "../../utils/apiFetch";
+import { apiFetch } from "@/utils/apiFetch";
 
 // src/components/AppConfig/controller.ts
 let state = {

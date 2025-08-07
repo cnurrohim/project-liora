@@ -1,11 +1,11 @@
 // src/core/wiring/menu.wires.ts
-import { MenuProviderController } from "../../controller/menuProviderController";
-import { MenuBarController as VMenuBarController } from "../../components/VerticalMenu/MenuBar/controller";
-import { MenuBarController as HMenuBarController } from "../../components/HorizontalMenu/MenuBar/controller";
+import { MenuProviderController } from "@/controller/menuProviderController";
+import { MenuBarController as VMenuBarController } from "@/components/VerticalMenu/MenuBar/controller";
+import { MenuBarController as HMenuBarController } from "@/components/HorizontalMenu/MenuBar/controller";
 import type { Wire } from "./setupWiring";
-import type { MenuBarEntry as VMenuBarEntry } from "../../components/VerticalMenu/MenuBar/types";
-import type { MenuBarEntry as HMenuBarEntry } from "../../components/VerticalMenu/MenuBar/types";
-import { IconRenderer } from "../../components/IconRenderer";
+import type { MenuBarEntry as VMenuBarEntry } from "@/components/VerticalMenu/MenuBar/types";
+import type { MenuBarEntry as HMenuBarEntry } from "@/components/VerticalMenu/MenuBar/types";
+import { IconRenderer } from "@/components/IconRenderer";
 import React from "react";
 
 export function menuWires(): Wire[] {

@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { groupBy } from "lodash";
-import { getAllPermissions, getPermissionsByRoleIds } from "../role/role.api";
+import {
+  getAllPermissions,
+  getPermissionsByRoleIds,
+} from "pages/role/role.api";
 import { getUserPermissions } from "./user.api";
+import { usePermissions } from "./permissions";
+import ForbiddenPage from "pages/Misc/403";
 
 type Props = {
   userId?: string;
@@ -24,6 +29,10 @@ export default function UserPermissionOverrideForm({
   overrides,
   setOverrides,
 }: Props) {
+  const { canView } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
   const [defaultPermissions, setDefaultPermissions] = useState<
     Record<string, boolean>

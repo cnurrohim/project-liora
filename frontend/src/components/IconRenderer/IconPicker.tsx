@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 
 import type { RemixiconComponentType } from "@remixicon/react";
-import { iconRegistry } from "../../assets/icons/iconRegistry";
+import { iconRegistry } from "@/assets/icons/iconRegistry";
 
 type IconPickerProps = {
   onSelect: (iconName: string) => void;

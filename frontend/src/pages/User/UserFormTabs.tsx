@@ -3,8 +3,8 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../../components/TabbedForm/tabs";
-import { useRouteParamsFromTab } from "../../hooks/useRouteParams";
+} from "@/components/TabbedForm/tabs";
+import { useRouteParamsFromTab } from "@/hooks/useRouteParams";
 import UserFormPage from "./form";
 import UserPermissionOverrideForm from "./UserPermissionOverrideForm";
 import { useForm, FormProvider } from "react-hook-form";
@@ -18,16 +18,22 @@ import {
   getUserById,
   updateUser,
 } from "./user.api";
-import { showErrorToast, showSuccessToast } from "../../utils/toast";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import { useEffect, useState } from "react";
 import UserRolesForm from "./userRolesForm";
-import { IconRenderer } from "../../components/IconRenderer";
+import { IconRenderer } from "@/components/IconRenderer";
+import { usePermissions } from "./permissions";
+import ForbiddenPage from "pages/Misc/403";
 
 type FormValues = z.infer<typeof schema>;
 
 export type Option = { id: string; name: string };
 
 export default function UserFormTabs() {
+  const { canView, canDelete, canUpdate, canCreate } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const { id } = useRouteParamsFromTab("/user/:id/edit");
   const isEdit = !!id;
   const [loading, setLoading] = useState(false);
@@ -88,6 +94,16 @@ export default function UserFormTabs() {
   }, [isEdit, id, reset]);
 
   const onSubmit = async (data: FormValues) => {
+    if (isEdit && !canUpdate) {
+      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      return;
+    }
+
+    if (!isEdit && !canCreate) {
+      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      return;
+    }
+
     try {
       setLoading(true);
       const payload = {
@@ -174,13 +190,15 @@ export default function UserFormTabs() {
         </Tabs>
 
         <div className="pt-4">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-blue-600 px-4 py-2 rounded text-white disabled:opacity-50"
-          >
-            {loading ? "Menyimpan..." : "Simpan"}
-          </button>
+          {canCreate && (
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-600 px-4 py-2 rounded text-white disabled:opacity-50"
+            >
+              {loading ? "Menyimpan..." : "Simpan"}
+            </button>
+          )}
         </div>
       </form>
     </FormProvider>

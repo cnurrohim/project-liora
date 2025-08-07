@@ -1,4 +1,4 @@
-import { apiFetch } from "../../utils/apiFetch";
+import { apiFetch } from "@/utils/apiFetch";
 
 export async function getAppSetting() {
   const res = await apiFetch("/app-setting");

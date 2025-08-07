@@ -1,4 +1,4 @@
-import { IconRenderer } from "../../components/IconRenderer";
+import { IconRenderer } from "@/components/IconRenderer";
 
 export default function PagesNotFound() {
   return (

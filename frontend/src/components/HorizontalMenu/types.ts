@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { MenuMode, MenuAlignment } from "../../types/menu";
+import type { MenuMode, MenuAlignment } from "@/types/menu";
 
 /**
  * MenuBarEntry digunakan oleh MenuBar untuk menampilkan

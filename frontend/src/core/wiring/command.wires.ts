@@ -1,7 +1,7 @@
-import { CommandRegistry } from "../../config/commandRegistry";
-import { CommandController } from "../../controller/commandController";
-import type { Wire } from "../../core/wiring";
-import { logout } from "../../utils/auth";
+import { CommandRegistry } from "@/config/commandRegistry";
+import { CommandController } from "@/controller/commandController";
+import type { Wire } from "@/core/wiring";
+import { logout } from "@/utils/auth";
 
 export function commandWires(): Wire[] {
   CommandRegistry.register("logout", "logout current user");

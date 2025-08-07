@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { TabController } from "./controller";
-import { useController } from "../../hooks/useController";
-import { DefaultPageController } from "../../controller/DefaultPageController";
+import { useController } from "@/hooks/useController";
+import { DefaultPageController } from "@/controller/DefaultPageController";
 
 type TabBarProps = {
   iconRenderer?: (iconName?: string) => React.ReactNode;

@@ -1,10 +1,10 @@
 // src/core/wiring/app.wires.ts
 
-import { AppConfigController } from "../../components/AppConfig/controller";
-import { MenuBarController as VMenuBarController } from "../../components/VerticalMenu/MenuBar/controller";
-import { MenuBarController as HMenuBarController } from "../../components/HorizontalMenu/MenuBar/controller";
-import { SlidingPanelController as VSlidingPanelController } from "../../components/VerticalMenu/SlidingPanel/controller";
-import { SlidingPanelController as HSlidingPanelController } from "../../components/HorizontalMenu/SlidingPanel/controller";
+import { AppConfigController } from "@/components/AppConfig/controller";
+import { MenuBarController as VMenuBarController } from "@/components/VerticalMenu/MenuBar/controller";
+import { MenuBarController as HMenuBarController } from "@/components/HorizontalMenu/MenuBar/controller";
+import { SlidingPanelController as VSlidingPanelController } from "@/components/VerticalMenu/SlidingPanel/controller";
+import { SlidingPanelController as HSlidingPanelController } from "@/components/HorizontalMenu/SlidingPanel/controller";
 
 import type { Wire } from "./setupWiring";
 

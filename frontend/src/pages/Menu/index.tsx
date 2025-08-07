@@ -10,14 +10,16 @@ import {
   getExpandedRowModel,
 } from "@tanstack/react-table";
 import { deleteMenu, getMenus, handleReorder } from "./menu.api";
-import { showErrorToast, showSuccessToast } from "../../utils/toast";
-import { openTabSmart } from "../../utils/handleMenuClick/openTabSmart";
-import { IconRenderer } from "../../components/IconRenderer";
-import { EditButtonLink } from "../../components/Buttons/EditButtonLink";
-import { DeleteButtonLink } from "../../components/Buttons/DeleteButtonLink";
-import { ButtonGroupWithDropdown } from "../../components/Buttons/ButtonGroupWithDropdown";
-import { MenuProviderController } from "../../controller/menuProviderController";
-import { ConfirmationDialogController } from "../../components/ConfirmationDialog/controller";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import { openTabSmart } from "@/utils/handleMenuClick/openTabSmart";
+import { IconRenderer } from "@/components/IconRenderer";
+import { EditButtonLink } from "@/components/Buttons/EditButtonLink";
+import { DeleteButtonLink } from "@/components/Buttons/DeleteButtonLink";
+import { ButtonGroupWithDropdown } from "@/components/Buttons/ButtonGroupWithDropdown";
+import { MenuProviderController } from "@/controller/menuProviderController";
+import { ConfirmationDialogController } from "@/components/ConfirmationDialog/controller";
+import ForbiddenPage from "pages/Misc/403";
+import { usePermissions } from "./permissions";
 
 type MenuItem = {
   id: string;
@@ -35,6 +37,10 @@ type MenuItem = {
 };
 
 export default function MenuListPage() {
+  const { canView, canCreate, canUpdate, canDelete } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [loading, setLoading] = useState(false);
@@ -53,6 +59,11 @@ export default function MenuListPage() {
   };
 
   const handleDelete = async (id: string) => {
+    if (!canDelete) {
+      showErrorToast("Anda tidak punya akses untuk menghapus data ini");
+      return;
+    }
+
     ConfirmationDialogController.askConfirmation(
       "Yakin ingin menghapus menu ini?",
       async () => {
@@ -184,8 +195,12 @@ export default function MenuListPage() {
         header: "Aksi",
         cell: ({ row }) => (
           <div className="flex gap-1">
-            <EditButtonLink onClick={() => handleEdit(row.original)} />
-            <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
+            {canUpdate && (
+              <EditButtonLink onClick={() => handleEdit(row.original)} />
+            )}
+            {canDelete && (
+              <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
+            )}
           </div>
         ),
       },
@@ -268,30 +283,32 @@ export default function MenuListPage() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Daftar Menu</h1>
-        <ButtonGroupWithDropdown
-          mainLabel={
-            <>
-              <IconRenderer
-                name="RiApps2AddLine"
-                size={15}
-                className="text-white"
-              />
-              Tambah Menu
-            </>
-          }
-          onClick={() => openInNewTab(false)}
-          dropdownItems={[
-            {
-              label: (
-                <>
-                  <IconRenderer name="RiArrowRightUpBoxLine" size={15} />
-                  Open in new tab
-                </>
-              ),
-              onClick: () => openInNewTab(true),
-            },
-          ]}
-        />
+        {canCreate && (
+          <ButtonGroupWithDropdown
+            mainLabel={
+              <>
+                <IconRenderer
+                  name="RiApps2AddLine"
+                  size={15}
+                  className="text-white"
+                />
+                Tambah Menu
+              </>
+            }
+            onClick={() => openInNewTab(false)}
+            dropdownItems={[
+              {
+                label: (
+                  <>
+                    <IconRenderer name="RiArrowRightUpBoxLine" size={15} />
+                    Open in new tab
+                  </>
+                ),
+                onClick: () => openInNewTab(true),
+              },
+            ]}
+          />
+        )}
       </div>
 
       {error && <div className="text-red-500 mb-2">{error}</div>}

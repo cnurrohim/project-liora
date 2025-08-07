@@ -5,12 +5,14 @@ import {
   getParentMenus,
   updateMenu,
 } from "./menu.api";
-import { showErrorToast, showSuccessToast } from "../../utils/toast";
-import { RouteRegistry } from "../../config/routeRegistry";
-import { useRouteParamsFromTab } from "../../hooks/useRouteParams";
-import { CommandRegistry } from "../../config/commandRegistry";
-import { IconPicker } from "../../components/IconRenderer/IconPicker";
-import { MenuProviderController } from "../../controller/menuProviderController";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import { RouteRegistry } from "@/config/routeRegistry";
+import { useRouteParamsFromTab } from "@/hooks/useRouteParams";
+import { CommandRegistry } from "@/config/commandRegistry";
+import { IconPicker } from "@/components/IconRenderer/IconPicker";
+import { MenuProviderController } from "@/controller/menuProviderController";
+import { usePermissions } from "./permissions";
+import ForbiddenPage from "../Misc/403";
 
 const modeOptions = ["sliding", "context"];
 const alignmentOptions = ["start", "end"];
@@ -30,6 +32,10 @@ type FormData = {
 };
 
 export default function MenuFormPage() {
+  const { canCreate, canUpdate } = usePermissions();
+
+  if (!canCreate && !canUpdate) return <ForbiddenPage />;
+
   const { id } = useRouteParamsFromTab("/menu/:id/edit");
   const isEdit = !!id;
 
@@ -62,6 +68,16 @@ export default function MenuFormPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isEdit && !canUpdate) {
+      showErrorToast("Anda tidak punya akses untuk mengupdate data ini");
+      return;
+    }
+    if (!isEdit && !canCreate) {
+      showErrorToast("Anda tidak punya akses untuk membuat manu baru");
+      return;
+    }
+
     setLoading(true);
     try {
       if (isEdit) {

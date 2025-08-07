@@ -14,16 +14,18 @@ import {
   toggleActivationUser,
   getUserDetail,
 } from "./user.api";
-import { showErrorToast, showSuccessToast } from "../../utils/toast";
-import { openTabSmart } from "../../utils/handleMenuClick/openTabSmart";
-import { IconRenderer } from "../../components/IconRenderer";
-import { EditButtonLink } from "../../components/Buttons/EditButtonLink";
-import { DeleteButtonLink } from "../../components/Buttons/DeleteButtonLink";
-import { ButtonGroupWithDropdown } from "../../components/Buttons/ButtonGroupWithDropdown";
-import { ConfirmationDialogController } from "../../components/ConfirmationDialog/controller";
-import { ViewButtonLink } from "../../components/Buttons/ViewButtonLink";
-import { ButtonLink } from "../../components/Buttons/ButtonLink";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import { openTabSmart } from "@/utils/handleMenuClick/openTabSmart";
+import { IconRenderer } from "@/components/IconRenderer";
+import { EditButtonLink } from "@/components/Buttons/EditButtonLink";
+import { DeleteButtonLink } from "@/components/Buttons/DeleteButtonLink";
+import { ButtonGroupWithDropdown } from "@/components/Buttons/ButtonGroupWithDropdown";
+import { ConfirmationDialogController } from "@/components/ConfirmationDialog/controller";
+import { ViewButtonLink } from "@/components/Buttons/ViewButtonLink";
+import { ButtonLink } from "@/components/Buttons/ButtonLink";
 import { UserDetailPane, UserDetailPaneController } from "./UserDetailPane";
+import { usePermissions } from "./permissions";
+import ForbiddenPage from "pages/Misc/403";
 
 type User = {
   id: string;
@@ -43,6 +45,10 @@ type User = {
 };
 
 export default function UserListPage() {
+  const { canView, canDelete, canUpdate, canCreate } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const [users, setUsers] = useState<User[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [loading, setLoading] = useState(false);
@@ -67,6 +73,11 @@ export default function UserListPage() {
   const data = useMemo(() => users, [users]);
 
   const handleEdit = (user: User) => {
+    if (!canUpdate) {
+      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      return;
+    }
+
     openTabSmart(
       {
         route: `/user/${user.id}/edit`,
@@ -88,6 +99,11 @@ export default function UserListPage() {
   };
 
   const handleDelete = async (id: string) => {
+    if (!canDelete) {
+      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      return;
+    }
+
     ConfirmationDialogController.askConfirmation(
       "Yakin ingin menghapus user ini?",
       async () => {
@@ -103,6 +119,11 @@ export default function UserListPage() {
   };
 
   const toggleUserActivation = async (id: string, status: boolean) => {
+    if (!canUpdate) {
+      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      return;
+    }
+
     ConfirmationDialogController.askConfirmation(
       status
         ? "Yakin ingin mengnonaktifkan user ini?"
@@ -201,17 +222,25 @@ export default function UserListPage() {
         cell: ({ row }) => (
           <div className="flex gap-1">
             <ViewButtonLink onClick={() => handleView(row.original.id)} />
-            <EditButtonLink onClick={() => handleEdit(row.original)} />
+            {canUpdate && (
+              <EditButtonLink onClick={() => handleEdit(row.original)} />
+            )}
 
-            <ButtonLink
-              icon={row.original.is_active ? "RiForbid2Line" : "RiForbid2Line"}
-              label={row.original.is_active ? "Nonaktifkan" : "Aktifkan"}
-              onClick={() =>
-                toggleUserActivation(row.original.id, row.original.is_active)
-              }
-            />
+            {canUpdate && (
+              <ButtonLink
+                icon={
+                  row.original.is_active ? "RiForbid2Line" : "RiForbid2Line"
+                }
+                label={row.original.is_active ? "Nonaktifkan" : "Aktifkan"}
+                onClick={() =>
+                  toggleUserActivation(row.original.id, row.original.is_active)
+                }
+              />
+            )}
 
-            <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
+            {canDelete && (
+              <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
+            )}
           </div>
         ),
       },
@@ -253,30 +282,32 @@ export default function UserListPage() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Daftar User</h1>
-        <ButtonGroupWithDropdown
-          mainLabel={
-            <>
-              <IconRenderer
-                name="RiUserAddLine"
-                size={15}
-                className="text-white"
-              />
-              Tambah User
-            </>
-          }
-          onClick={() => openInNewTab(false)}
-          dropdownItems={[
-            {
-              label: (
-                <>
-                  <IconRenderer name="RiArrowRightUpBoxLine" size={15} />
-                  Open in new tab
-                </>
-              ),
-              onClick: () => openInNewTab(true),
-            },
-          ]}
-        />
+        {canCreate && (
+          <ButtonGroupWithDropdown
+            mainLabel={
+              <>
+                <IconRenderer
+                  name="RiUserAddLine"
+                  size={15}
+                  className="text-white"
+                />
+                Tambah User
+              </>
+            }
+            onClick={() => openInNewTab(false)}
+            dropdownItems={[
+              {
+                label: (
+                  <>
+                    <IconRenderer name="RiArrowRightUpBoxLine" size={15} />
+                    Open in new tab
+                  </>
+                ),
+                onClick: () => openInNewTab(true),
+              },
+            ]}
+          />
+        )}
       </div>
 
       {error && <div className="text-red-500 mb-2">{error}</div>}

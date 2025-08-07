@@ -1,4 +1,4 @@
-import type { MenuSection, MenuItem } from "../../types/menu";
+import type { MenuSection, MenuItem } from "@/types/menu";
 
 export type FlatMenuItem = {
   parent: string;

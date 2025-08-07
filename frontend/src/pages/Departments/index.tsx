@@ -10,13 +10,15 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import { deleteDepartment, getDepartments } from "./departments.api";
-import { ConfirmationDialogController } from "../../components/ConfirmationDialog/controller";
-import { showErrorToast, showSuccessToast } from "../../utils/toast";
-import { openTabSmart } from "../../utils/handleMenuClick/openTabSmart";
-import { EditButtonLink } from "../../components/Buttons/EditButtonLink";
-import { DeleteButtonLink } from "../../components/Buttons/DeleteButtonLink";
-import { ButtonGroupWithDropdown } from "../../components/Buttons/ButtonGroupWithDropdown";
-import { IconRenderer } from "../../components/IconRenderer";
+import { ConfirmationDialogController } from "@/components/ConfirmationDialog/controller";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import { openTabSmart } from "@/utils/handleMenuClick/openTabSmart";
+import { EditButtonLink } from "@/components/Buttons/EditButtonLink";
+import { DeleteButtonLink } from "@/components/Buttons/DeleteButtonLink";
+import { ButtonGroupWithDropdown } from "@/components/Buttons/ButtonGroupWithDropdown";
+import { IconRenderer } from "@/components/IconRenderer";
+import ForbiddenPage from "pages/Misc/403";
+import { useDepartmentPermissions } from "./permissions";
 
 type Department = {
   id: string;
@@ -26,6 +28,9 @@ type Department = {
 };
 
 export default function DepartmentListPage() {
+  const { canView, canDelete, canUpdate } = useDepartmentPermissions();
+  if (!canView) return <ForbiddenPage />;
+
   const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -140,8 +145,12 @@ export default function DepartmentListPage() {
         header: "Aksi",
         cell: ({ row }) => (
           <div className="flex gap-1">
-            <EditButtonLink onClick={() => handleEdit(row.original)} />
-            <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
+            {canUpdate && (
+              <EditButtonLink onClick={() => handleEdit(row.original)} />
+            )}
+            {canDelete && (
+              <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
+            )}
           </div>
         ),
       },

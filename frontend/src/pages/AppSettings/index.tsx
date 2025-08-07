@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import { getAppSetting, updateAppSetting } from "./appSetting.api";
-import { showSuccessToast } from "../../utils/toast";
-import { AppConfigController } from "../../components/AppConfig/controller";
-import { applyAppMetadata } from "../../config/appInit";
-import { useHasPermission } from "../../hooks/useHasPermission";
-import ForbiddenPage from "../Misc/403";
+import { showSuccessToast } from "@/utils/toast";
+import { AppConfigController } from "@/components/AppConfig/controller";
+import { applyAppMetadata } from "@/config/appInit";
+import ForbiddenPage from "pages/Misc/403";
+import { useDepartmentPermissions } from "./permissions";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function AppSettingPage() {
-  const canAccessPage = useHasPermission(["dev.dev"]);
-  const canSubmit = useHasPermission("dev.dev");
+  const { canView, canSubmit } = useDepartmentPermissions();
 
-  if (!canAccessPage) return <ForbiddenPage />;
+  if (!canView) return <ForbiddenPage />;
 
   const [appName, setAppName] = useState("");
   const [logoFile, setLogoFile] = useState<File | null>(null);

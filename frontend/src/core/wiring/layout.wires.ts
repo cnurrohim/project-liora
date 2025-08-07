@@ -1,13 +1,13 @@
 // src/core/wiring/layout.wires.ts
-import { LayoutController } from "../../controller/layoutController";
-import { MenuProviderController } from "../../controller/menuProviderController";
+import { LayoutController } from "@/controller/layoutController";
+import { MenuProviderController } from "@/controller/menuProviderController";
 
 import React from "react";
-import tabBar from "../../components/Tab/tabBar";
+import tabBar from "@/components/Tab/tabBar";
 import type { Wire } from "./setupWiring";
 
-import { createVerticalMenu } from "../../factory/createVerticalMenu";
-import { createHorizontalMenu } from "../../factory/createHorizontalMenu";
+import { createVerticalMenu } from "@/factory/createVerticalMenu";
+import { createHorizontalMenu } from "@/factory/createHorizontalMenu";
 
 export const layoutWires: Wire[] = [
   {

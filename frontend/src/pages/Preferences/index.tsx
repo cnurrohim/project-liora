@@ -1,17 +1,23 @@
 import { useState } from "react";
-import { layoutComponentRegistry } from "../../config/layoutComponentRegistry";
+import { layoutComponentRegistry } from "@/config/layoutComponentRegistry";
 import {
   LayoutController,
   type LayoutConfig,
-} from "../../controller/layoutController";
-import { IconRenderer } from "../../components/IconRenderer";
+} from "@/controller/layoutController";
+import { IconRenderer } from "@/components/IconRenderer";
 import { saveLayout } from "./layout.api"; // gunakan API yg sebelumnya kamu buat
-import { getActiveUser } from "../../services/authServices";
-import { showErrorToast, showSuccessToast } from "../../utils/toast";
+import { getActiveUser } from "@/services/authServices";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import ForbiddenPage from "pages/Misc/403";
+import { usePermissions } from "./permissions";
 
 type LayoutPosition = "leftPane" | "rightPane" | "topPane" | "bottomPane";
 
 export default function PreferencesForm() {
+  const { canView, canSubmit } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const [config, setConfig] = useState<LayoutConfig>(() => {
     const current = LayoutController.getState();
     return {
@@ -120,13 +126,15 @@ export default function PreferencesForm() {
       {renderSelect("bottomPane", "RiLayoutBottomLine", "Bottom Pane")}
 
       <div className="pt-4">
-        <button
-          onClick={handleApply}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50"
-          disabled={isSaving}
-        >
-          {isSaving ? "Menyimpan..." : "Apply"}
-        </button>
+        {canSubmit && (
+          <button
+            onClick={handleApply}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50"
+            disabled={isSaving}
+          >
+            {isSaving ? "Menyimpan..." : "Apply"}
+          </button>
+        )}
       </div>
     </div>
   );

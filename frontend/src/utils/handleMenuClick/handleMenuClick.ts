@@ -1,4 +1,4 @@
-import type { MenuAction, MenuItem } from "../../types/menu";
+import type { MenuAction, MenuItem } from "@/types/menu";
 import { openRouteTab } from "./openRouteTab";
 import { runCommand } from "./runCommand";
 

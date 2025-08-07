@@ -1,6 +1,6 @@
-import { ConfirmationDialogController } from "../../components/ConfirmationDialog/controller";
-import { CommandController } from "../../controller/commandController";
-import type { MenuAction } from "../../types/menu";
+import { ConfirmationDialogController } from "@/components/ConfirmationDialog/controller";
+import { CommandController } from "@/controller/commandController";
+import type { MenuAction } from "@/types/menu";
 
 export function runCommand(item: MenuAction) {
   const command = item.command;

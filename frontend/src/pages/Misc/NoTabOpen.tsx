@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IconRenderer } from "../../components/IconRenderer";
+import { IconRenderer } from "@/components/IconRenderer";
 import { getAppSetting } from "../AppSettings/appSetting.api";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;

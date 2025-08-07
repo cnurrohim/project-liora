@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { MenuProviderController } from "../../controller/menuProviderController";
+import { MenuProviderController } from "@/controller/menuProviderController";
 import { flattenMenu, type FlatMenuItem } from "./flattenMenu"; // tempatkan fungsi flattenMenu di file terpisah jika mau
-import { TabController } from "../../components/Tab/controller";
-import { handleMenuClick } from "../../utils/handleMenuClick";
-import { IconRenderer } from "../../components/IconRenderer";
+import { TabController } from "@/components/Tab/controller";
+import { handleMenuClick } from "@/utils/handleMenuClick";
+import { IconRenderer } from "@/components/IconRenderer";
 
 export default function AppLauncher() {
   const [search, setSearch] = useState("");

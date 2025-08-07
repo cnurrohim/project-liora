@@ -1,7 +1,7 @@
-import { RouteRegistry } from "../../config/routeRegistry";
-import { useController } from "../../hooks/useController";
-import PagesNotFound from "../../pages/Misc/404";
-import NoTabOpen from "../../pages/Misc/NoTabOpen";
+import { RouteRegistry } from "@/config/routeRegistry";
+import { useController } from "@/hooks/useController";
+import PagesNotFound from "@/pages/Misc/404";
+import NoTabOpen from "@/pages/Misc/NoTabOpen";
 import { TabController } from "./controller";
 
 export default function TabContent() {

@@ -1,8 +1,8 @@
 // src/core/wiring/content.wires.ts
-import { LayoutController } from "../../controller/layoutController";
-import { MenuProviderController } from "../../controller/menuProviderController";
-import { DefaultPageController } from "../../controller/DefaultPageController";
-import TabContent from "../../components/Tab/TabContent";
+import { LayoutController } from "@/controller/layoutController";
+import { MenuProviderController } from "@/controller/menuProviderController";
+import { DefaultPageController } from "@/controller/DefaultPageController";
+import TabContent from "@/components/Tab/TabContent";
 import React from "react";
 import type { Wire } from "./setupWiring";
 

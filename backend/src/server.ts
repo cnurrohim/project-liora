@@ -3,7 +3,6 @@ import { serve } from "@hono/node-server";
 import { app } from "./app.js";
 import "dotenv/config"; // kalau pakai dotenv
 import { syncPermissions } from "./utils/syncPermissions.js";
-import bcrypt from "bcrypt";
 
 export async function startServer() {
   const port = process.env.PORT ? Number(process.env.PORT) : 4000;

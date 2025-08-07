@@ -1,6 +1,8 @@
 import { useFormContext, Controller } from "react-hook-form";
-import MultiSelect from "../../components/SelectOptions/MultiSelect";
+import MultiSelect from "@/components/SelectOptions/MultiSelect";
 import { type Option } from "./UserFormTabs";
+import { usePermissions } from "./permissions";
+import ForbiddenPage from "../Misc/403";
 
 type Props = {
   isEdit: boolean;
@@ -9,6 +11,10 @@ type Props = {
 };
 
 export default function UserFormPage({ isEdit, departments }: Props) {
+  const { canView } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const {
     control,
     register,

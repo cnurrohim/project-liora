@@ -1,6 +1,6 @@
-import { LayoutController } from "../../controller/layoutController";
-import { useController } from "../../hooks/useController";
-import EmptyPage from "../../pages/Misc/EmptyPage";
+import { LayoutController } from "@/controller/layoutController";
+import { useController } from "@/hooks/useController";
+import EmptyPage from "@/pages/Misc/EmptyPage";
 
 export function LayoutRenderer() {
   const layout = useController(LayoutController, (s) => ({

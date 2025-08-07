@@ -1,19 +1,25 @@
 // src/pages/roles/RoleFormPage.tsx
 import { useEffect, useState } from "react";
 
-import { showErrorToast, showSuccessToast } from "../../utils/toast";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import {
   createRole,
   getAllPermissions,
   getRoleById,
   updateRole,
 } from "./role.api";
-import { RouteRegistry } from "../../config/routeRegistry";
-import { TabController } from "../../components/Tab/controller";
+import { RouteRegistry } from "@/config/routeRegistry";
+import { TabController } from "@/components/Tab/controller";
 import PermissionForm from "./permissionForm";
-import { useRouteParamsFromTab } from "../../hooks/useRouteParams";
+import { useRouteParamsFromTab } from "@/hooks/useRouteParams";
+import { usePermissions } from "./permissions";
+import ForbiddenPage from "pages/Misc/403";
 
 export default function RoleFormPage() {
+  const { canView, canSubmit, canUpdate, canCreate } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const { id } = useRouteParamsFromTab("/roles/:id/edit");
 
   const isEdit = !!id;
@@ -77,6 +83,17 @@ export default function RoleFormPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isEdit && !canUpdate) {
+      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      return;
+    }
+
+    if (!isEdit && !canCreate) {
+      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      return;
+    }
+
     setError("");
 
     if (!form.name.trim()) {
@@ -148,12 +165,14 @@ export default function RoleFormPage() {
         handlePermissionToggle={handlePermissionToggle}
       />
 
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
-      >
-        Simpan
-      </button>
+      {canSubmit && (
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
+        >
+          Simpan
+        </button>
+      )}
     </form>
   );
 }

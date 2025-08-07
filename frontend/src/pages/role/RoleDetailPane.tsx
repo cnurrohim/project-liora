@@ -1,7 +1,7 @@
 // src/pages/roles/RoleDetailPane.tsx
 
-import { Controller } from "../../components/DetailPane/Controller";
-import { DetailPane } from "../../components/DetailPane/DetailPane";
+import { Controller } from "@/components/DetailPane/Controller";
+import { DetailPane } from "@/components/DetailPane/DetailPane";
 
 export type Permission = {
   id: string;

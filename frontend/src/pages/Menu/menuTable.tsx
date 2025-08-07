@@ -6,10 +6,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/Table/Table";
-import { IconRenderer } from "../../components/IconRenderer";
-import { EditButtonLink } from "../../components/Buttons/EditButtonLink";
-import { DeleteButtonLink } from "../../components/Buttons/DeleteButtonLink";
+} from "@/components/Table/Table";
+import { IconRenderer } from "@/components/IconRenderer";
+import { EditButtonLink } from "@/components/Buttons/EditButtonLink";
+import { DeleteButtonLink } from "@/components/Buttons/DeleteButtonLink";
 
 type MenuItem = {
   id: string;

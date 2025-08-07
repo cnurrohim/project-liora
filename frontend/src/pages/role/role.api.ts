@@ -1,5 +1,5 @@
-import { apiFetch } from "../../utils/apiFetch";
-import { showErrorToast, toastConfirmSuccess } from "../../utils/toast";
+import { apiFetch } from "@/utils/apiFetch";
+import { showErrorToast, toastConfirmSuccess } from "@/utils/toast";
 
 export async function getRoles() {
   const res = await apiFetch("/roles");

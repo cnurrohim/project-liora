@@ -5,8 +5,10 @@ import {
   getParentDepartments,
   updateDepartment,
 } from "./departments.api";
-import { showErrorToast, showSuccessToast } from "../../utils/toast";
-import { useRouteParamsFromTab } from "../../hooks/useRouteParams";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import { useRouteParamsFromTab } from "@/hooks/useRouteParams";
+import { useDepartmentPermissions } from "./permissions";
+import ForbiddenPage from "../Misc/403";
 
 type FormData = {
   name: string;
@@ -15,6 +17,10 @@ type FormData = {
 };
 
 export default function DepartmentFormPage() {
+  const { canView, canCreate, canUpdate, canSubmit } =
+    useDepartmentPermissions();
+
+  if (!canView) return <ForbiddenPage />;
   const { id } = useRouteParamsFromTab("/departments/:id/edit");
   const isEdit = !!id;
 
@@ -40,6 +46,17 @@ export default function DepartmentFormPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!canSubmit) return;
+    if (isEdit && !canUpdate) {
+      showSuccessToast("Anda tidak punya akses untuk mengedit");
+      return;
+    }
+    if (!isEdit && !canCreate) {
+      showSuccessToast("Anda tidak punya akses untuk membuat department baru");
+      return;
+    }
+
     setLoading(true);
     try {
       if (isEdit) {
@@ -125,13 +142,15 @@ export default function DepartmentFormPage() {
       </div>
 
       <div className="pt-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 px-4 py-2 rounded text-white disabled:opacity-50"
-        >
-          {loading ? "Menyimpan..." : "Simpan"}
-        </button>
+        {canSubmit && (
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-blue-600 px-4 py-2 rounded text-white disabled:opacity-50"
+          >
+            {loading ? "Menyimpan..." : "Simpan"}
+          </button>
+        )}
       </div>
 
       {error && <div className="text-red-500">{error}</div>}

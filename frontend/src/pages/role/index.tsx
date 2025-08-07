@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
 import { deleteRole, getRoleDetail, getRoles } from "./role.api";
-import { ConfirmationDialogController } from "../../components/ConfirmationDialog/controller";
-import { openTabSmart } from "../../utils/handleMenuClick/openTabSmart";
-import { ButtonGroupWithDropdown } from "../../components/Buttons/ButtonGroupWithDropdown";
-import { IconRenderer } from "../../components/IconRenderer";
-import { EditButtonLink } from "../../components/Buttons/EditButtonLink";
-import { ViewButtonLink } from "../../components/Buttons/ViewButtonLink";
-import { DeleteButtonLink } from "../../components/Buttons/DeleteButtonLink";
+import { ConfirmationDialogController } from "@/components/ConfirmationDialog/controller";
+import { openTabSmart } from "@/utils/handleMenuClick/openTabSmart";
+import { ButtonGroupWithDropdown } from "@/components/Buttons/ButtonGroupWithDropdown";
+import { IconRenderer } from "@/components/IconRenderer";
+import { EditButtonLink } from "@/components/Buttons/EditButtonLink";
+import { ViewButtonLink } from "@/components/Buttons/ViewButtonLink";
+import { DeleteButtonLink } from "@/components/Buttons/DeleteButtonLink";
 
 import { RoleDetailPane, RoleDetailPaneController } from "./RoleDetailPane";
+import ForbiddenPage from "pages/Misc/403";
+import { usePermissions } from "./permissions";
+import { showErrorToast } from "@/utils/toast";
 
 export default function RoleListPage() {
+  const { canView, canDelete, canUpdate, canCreate } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const [roles, setRoles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +28,11 @@ export default function RoleListPage() {
   }, []);
 
   const handleDelete = (id: string, name: string) => {
+    if (!canDelete) {
+      showErrorToast("Anda tidak punya hak akses untuk menghapus data ini!");
+      return;
+    }
+
     ConfirmationDialogController.askConfirmation(
       `Yakin ingin menghapus role "${name}"?`,
       async () => {
@@ -30,6 +42,11 @@ export default function RoleListPage() {
     );
   };
   function openInNewTab(newTab: boolean = false) {
+    if (!canCreate) {
+      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      return;
+    }
+
     openTabSmart(
       {
         route: "/roles/create",
@@ -41,6 +58,11 @@ export default function RoleListPage() {
   }
 
   function handleEditClick(roleId: string, name: string) {
+    if (!canUpdate) {
+      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      return;
+    }
+
     openTabSmart(
       {
         route: `/roles/${roleId}/edit`,
@@ -118,15 +140,19 @@ export default function RoleListPage() {
                   {role.description || "-"}
                 </td>
                 <td className="p-2 border border-gray-700 flex">
-                  <EditButtonLink
-                    onClick={() => handleEditClick(role.id, role.name)}
-                  />
+                  {canUpdate && (
+                    <EditButtonLink
+                      onClick={() => handleEditClick(role.id, role.name)}
+                    />
+                  )}
 
                   <ViewButtonLink onClick={() => handleViewClick(role.id)} />
 
-                  <DeleteButtonLink
-                    onClick={() => handleDelete(role.id, role.name)}
-                  />
+                  {canDelete && (
+                    <DeleteButtonLink
+                      onClick={() => handleDelete(role.id, role.name)}
+                    />
+                  )}
                 </td>
               </tr>
             ))}

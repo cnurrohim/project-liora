@@ -1,8 +1,8 @@
 import React from "react";
-import { TabController } from "../../components/Tab/controller";
-import PagesNotFound from "../../pages/Misc/404";
-import type { MenuRoute } from "../../types/menu";
-import { RouteRegistry } from "../../config/routeRegistry";
+import { TabController } from "@/components/Tab/controller";
+import PagesNotFound from "@/pages/Misc/404";
+import type { MenuRoute } from "@/types/menu";
+import { RouteRegistry } from "@/config/routeRegistry";
 
 export function openRouteTab(item: MenuRoute, currentTabKey?: string | null) {
   const component =
