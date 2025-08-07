@@ -4,7 +4,6 @@ import { db } from "../db.js";
 export async function syncPermissions() {
   for (const perm of permissionRegistry) {
     try {
-      console.log("attempting to sync", perm);
       await db.query(
         `
         INSERT INTO permissions (name, label, domain, description)
