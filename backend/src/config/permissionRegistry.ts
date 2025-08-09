@@ -167,4 +167,12 @@ export const permissionRegistry = [
     label: "menambahkan app setting baru",
     description: "Bisa menambahkan app setting baru",
   },
+
+  /** FOR TEST ONLY */
+  {
+    domain: "test",
+    name: "view",
+    label: "buat testing doang",
+    description: "buat testing doang",
+  },
 ];

@@ -175,7 +175,7 @@ export default function MenuFormPage() {
   const availableCommands = CommandRegistry.getOptions();
 
   return (
-    <form className="p-4 space-y-4 max-w-xl" onSubmit={handleSubmit}>
+    <form className="p-4 space-y-4 max-w-xl mb-20" onSubmit={handleSubmit}>
       <h1 className="text-xl font-bold">
         {isEdit ? "Edit Menu" : "Tambah Menu"}
       </h1>

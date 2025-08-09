@@ -1,20 +1,65 @@
 import { Hono } from "hono";
 import { db } from "../db.js";
+import { authMiddleware } from "../middleware/auth.js";
+import type { Variables } from "../types/context.js";
+import { redis } from "../lib/redis.js";
 
-export const menuRoute = new Hono();
+export const menuRoute = new Hono<{ Variables: Variables }>();
+menuRoute.use(authMiddleware);
 
 // GET /menus
 menuRoute.get("/", async (c) => {
-  const result = await db.query(
-    "SELECT * FROM menu_items ORDER BY ordinal ASC"
+  const user = c.get("user");
+  const userId = user.id;
+
+  const cachedMenus = await redis.get(`menus:${userId}`);
+  if (cachedMenus) {
+    return c.json({ data: JSON.parse(cachedMenus) });
+  }
+
+  // Ambil permission milik user (baik dari role maupun langsung)
+  const { rows: userPerms } = await db.query(
+    `
+    SELECT DISTINCT p.id
+    FROM permissions p
+    LEFT JOIN role_permissions rp ON rp.permission_id = p.id
+    LEFT JOIN user_roles ur ON ur.role_id = rp.role_id
+    LEFT JOIN user_permissions up ON up.permission_id = p.id
+    WHERE ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true)
+    `,
+    [userId]
   );
 
-  const rows = result.rows;
+  const userPermissionIds = userPerms.map((p) => p.id);
+
+  // Ambil menu beserta permissionsnya
+  const { rows: menus } = await db.query(
+    `
+    SELECT mi.*, 
+           ARRAY_REMOVE(ARRAY_AGG(mp.permission_id), NULL) AS permission_ids
+    FROM menu_items mi
+    LEFT JOIN menu_permissions mp ON mp.menu_id = mi.id
+    GROUP BY mi.id
+    ORDER BY mi.ordinal ASC
+    `
+  );
+
+  // Filter menu
+  const filteredMenus = menus.filter((menu) => {
+    if (menu.permission_ids.length === 0) {
+      return true; // ✅ menu tanpa permission → tampil ke semua
+    }
+    return menu.permission_ids.some((permId: string) =>
+      userPermissionIds.includes(permId)
+    );
+  });
+
+  // Bentuk tree
   const map = new Map();
-  rows.forEach((row) => map.set(row.id, { ...row, items: [] }));
+  filteredMenus.forEach((row) => map.set(row.id, { ...row, items: [] }));
 
   const tree: any[] = [];
-  rows.forEach((row) => {
+  filteredMenus.forEach((row) => {
     if (row.parent_id) {
       const parent = map.get(row.parent_id);
       if (parent) parent.items.push(map.get(row.id));
@@ -23,7 +68,11 @@ menuRoute.get("/", async (c) => {
     }
   });
 
-  return c.json({ data: tree });
+  const cleanedTree = removeEmptyGroups(tree);
+
+  await redis.set(`menus:${userId}`, JSON.stringify(cleanedTree), { EX: 300 });
+
+  return c.json({ data: cleanedTree });
 });
 
 menuRoute.get("/parent-menu", async (c) => {
@@ -95,17 +144,21 @@ menuRoute.post("/", async (c) => {
 
     const menuId = result.rows[0].id;
 
-    console.log(body.permissions);
     if (body.permissions?.length) {
       insertMenuPermissions(client, menuId, body.permissions);
     }
 
     await client.query("COMMIT");
+
+    await clearRedisCache();
+
     return c.json({ data: result.rows[0] });
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Error insert menu:", err);
     return c.json({ error: "Gagal menambahkan menu" }, 400);
+  } finally {
+    client.release();
   }
 });
 
@@ -153,21 +206,28 @@ menuRoute.put("/:id", async (c) => {
     }
 
     await client.query("COMMIT");
+
+    await clearRedisCache();
+
     return c.json({ success: true });
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Error update menu:", err);
     return c.json({ error: "Gagal mengubah menu" }, 400);
+  } finally {
+    client.release();
   }
 });
 
 // DELETE /menus/:id
 menuRoute.delete("/:id", async (c) => {
   const id = c.req.param("id");
+  const client = await db.connect();
 
   try {
+    await client.query("BEGIN");
     // Step 1: Ambil data item sebelum dihapus
-    const { rows } = await db.query(
+    const { rows } = await client.query(
       "SELECT ordinal, parent_id FROM menu_items WHERE id = $1",
       [id]
     );
@@ -179,10 +239,11 @@ menuRoute.delete("/:id", async (c) => {
     const { ordinal, parent_id } = rows[0];
 
     // Step 2: Hapus item
-    await db.query("DELETE FROM menu_items WHERE id = $1", [id]);
+    await client.query("DELETE FROM menu_items WHERE id = $1", [id]);
+    await client.query(`DELETE FROM menu_permissions WHERE menu_id = $1`, [id]);
 
     // Step 3: Kurangi ordinal semua item di bawahnya
-    await db.query(
+    await client.query(
       `UPDATE menu_items 
        SET ordinal = ordinal - 1 
        WHERE ordinal > $1 
@@ -190,10 +251,17 @@ menuRoute.delete("/:id", async (c) => {
       [ordinal, parent_id]
     );
 
+    await client.query("COMMIT");
+
+    await clearRedisCache();
+
     return c.json({ success: true });
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("Error delete menu:", err);
     return c.json({ error: "Gagal menghapus menu" }, 400);
+  } finally {
+    client.release();
   }
 });
 
@@ -234,6 +302,8 @@ menuRoute.post("/reorder", async (c) => {
     ]),
   ]);
 
+  await clearRedisCache();
+
   return c.json({ success: true });
 });
 
@@ -253,6 +323,8 @@ menuRoute.post("/normalize-ordinal", async (c) => {
       rows[i].id,
     ]);
   }
+
+  await clearRedisCache();
 
   return c.json({ success: true });
 });
@@ -284,4 +356,25 @@ async function insertMenuPermissions(
     `INSERT INTO menu_permissions (permission_id, menu_id) VALUES ${valuePlaceholders}`,
     params
   );
+}
+
+function removeEmptyGroups(menus: any[]): any[] {
+  return menus
+    .map((menu) => ({
+      ...menu,
+      items: removeEmptyGroups(menu.items || []),
+    }))
+    .filter((menu) => {
+      if (menu.type === "group") {
+        return menu.items.length > 0; // hanya group yang punya anak
+      }
+      return true; // menu biasa tetap tampil
+    });
+}
+
+async function clearRedisCache() {
+  const keys = await redis.keys("menus:*");
+  if (keys.length > 0) {
+    await redis.del(keys);
+  }
 }
