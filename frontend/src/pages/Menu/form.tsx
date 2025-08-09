@@ -12,23 +12,34 @@ import { CommandRegistry } from "@/config/commandRegistry";
 import { IconPicker } from "@/components/IconRenderer/IconPicker";
 import { MenuProviderController } from "@/controller/menuProviderController";
 import { usePermissions } from "./permissions";
-import ForbiddenPage from "../Misc/403";
+import ForbiddenPage from "pages/Misc/403";
+import { MENU } from "@/constants/menu";
+import { getAllViewOnlyPermissions } from "./menu.api";
+import MultiSelect from "@/components/SelectOptions/MultiSelect";
 
-const modeOptions = ["sliding", "context"];
-const alignmentOptions = ["start", "end"];
-const typeOptions = ["route", "command", "group"];
+const modeOptions = [MENU.MODE.SLIDING, MENU.MODE.SLIDING];
+const alignmentOptions = [MENU.ALIGNMENT.START, MENU.ALIGNMENT.END];
+const typeOptions = [MENU.TYPE.ROUTE, MENU.TYPE.COMMAND, MENU.TYPE.GROUP];
+
+type MenuType = (typeof MENU.TYPE)[keyof typeof MENU.TYPE];
+
+type Option = {
+  id: string;
+  name: string;
+};
 
 type FormData = {
   label: string;
   description: string;
   icon: string;
   icon_color: string | null;
-  type: "route" | "command" | "group";
+  type: MenuType;
   route?: string;
   command?: string;
   parent_id?: string | null;
   mode?: string;
   alignment?: string;
+  permissions: Option[];
 };
 
 export default function MenuFormPage() {
@@ -44,22 +55,32 @@ export default function MenuFormPage() {
     description: "",
     icon: "",
     icon_color: null,
-    type: "route",
+    type: MENU.TYPE.ROUTE,
     route: "",
     command: "",
     parent_id: null,
-    mode: "sliding",
-    alignment: "start",
+    mode: MENU.MODE.SLIDING,
+    alignment: MENU.ALIGNMENT.START,
+    permissions: [],
   });
 
   const [allMenus, setAllMenus] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [allPermissions, setAllPermissions] = useState<Option[]>([]);
+
   const handleChange = (
     key: keyof FormData,
     value: string | null | undefined
   ) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleMultiChange = (key: keyof FormData, value: Option[]) => {
     setForm((prev) => ({
       ...prev,
       [key]: value,
@@ -87,6 +108,7 @@ export default function MenuFormPage() {
         setLoading(false);
       } else {
         await createMenu(form);
+
         showSuccessToast("Menu berhasil dibuat");
         MenuProviderController.load();
         setLoading(false);
@@ -103,6 +125,14 @@ export default function MenuFormPage() {
         const parentMenu = await getParentMenus();
         setAllMenus(parentMenu);
 
+        const permissions = await getAllViewOnlyPermissions(); // <-- Kamu buat di `menu.api.ts`
+        setAllPermissions(
+          permissions.map((p: any) => ({
+            id: p.id,
+            name: `${p.domain} ${p.name}`,
+          }))
+        );
+
         if (isEdit && id) {
           (async () => {
             try {
@@ -113,12 +143,17 @@ export default function MenuFormPage() {
                 description: data.description ?? "",
                 icon: data.icon ?? "",
                 icon_color: data.icon_color ?? null,
-                type: data.type ?? "route",
+                type: data.type ?? MENU.TYPE.ROUTE,
                 route: data.route ?? "",
                 command: data.command ?? "",
                 parent_id: data.parent_id ?? null,
-                mode: data.mode ?? "sliding",
-                alignment: data.alignment ?? "start",
+                mode: data.mode ?? MENU.MODE.SLIDING,
+                alignment: data.alignment ?? MENU.ALIGNMENT.START,
+                permissions:
+                  data.permissions?.map((p: any) => ({
+                    label: `${p.domain}.${p.name}`,
+                    value: p.id,
+                  })) ?? [],
               });
             } catch (err) {
               console.error(err);
@@ -249,7 +284,8 @@ export default function MenuFormPage() {
         </select>
       </div>
 
-      <div>
+      {/** SLIDING MODE NOT IMPLEMENTED YET */}
+      {/* <div>
         <label className="block mb-1">Mode</label>
         <select
           className="w-full p-2 bg-gray-800 rounded"
@@ -260,7 +296,7 @@ export default function MenuFormPage() {
             <option key={m}>{m}</option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       <div>
         <label className="block mb-1">Alignment</label>
@@ -273,6 +309,16 @@ export default function MenuFormPage() {
             <option key={a}>{a}</option>
           ))}
         </select>
+      </div>
+
+      <div>
+        <label className="block mb-1">Permissions</label>
+        <MultiSelect
+          options={allPermissions}
+          value={form.permissions}
+          onChange={(val) => handleMultiChange("permissions", val)}
+          placeholder="Pilih permission"
+        />
       </div>
 
       <div className="pt-4">

@@ -56,3 +56,13 @@ export async function handleReorder(id: string, isMoveMenuUp: boolean) {
     console.error("Gagal reorder", err);
   }
 }
+
+export async function getAllViewOnlyPermissions() {
+  const res = await apiFetch("/permissions/view-only");
+  if (!res.ok) {
+    throw new Error("Gagal mengambil daftar permissions");
+  }
+
+  const data = await res.json();
+  return data.permissions;
+}

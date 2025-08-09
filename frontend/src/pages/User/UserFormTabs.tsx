@@ -30,7 +30,7 @@ type FormValues = z.infer<typeof schema>;
 export type Option = { id: string; name: string };
 
 export default function UserFormTabs() {
-  const { canView, canDelete, canUpdate, canCreate } = usePermissions();
+  const { canView, canUpdate, canCreate } = usePermissions();
 
   if (!canView) return <ForbiddenPage />;
 

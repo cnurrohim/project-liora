@@ -55,18 +55,20 @@ menuRoute.get("/:id", async (c) => {
 
 // POST /menus
 menuRoute.post("/", async (c) => {
+  const client = await db.connect();
   const body = await c.req.json();
 
   const parent_id = body.parent_id ?? null;
 
   try {
-    const { rows } = await db.query(
+    await client.query("BEGIN");
+    const { rows } = await client.query(
       "SELECT MAX(ordinal) AS max FROM menu_items WHERE parent_id IS NOT DISTINCT FROM $1",
       [parent_id]
     );
     const newOrdinal = (rows[0].max || 0) + 1;
 
-    const result = await db.query(
+    const result = await client.query(
       `INSERT INTO menu_items 
         (id, parent_id, type, 
         label, description, icon, 
@@ -91,8 +93,17 @@ menuRoute.post("/", async (c) => {
       ]
     );
 
+    const menuId = result.rows[0].id;
+
+    console.log(body.permissions);
+    if (body.permissions?.length) {
+      insertMenuPermissions(client, menuId, body.permissions);
+    }
+
+    await client.query("COMMIT");
     return c.json({ data: result.rows[0] });
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("Error insert menu:", err);
     return c.json({ error: "Gagal menambahkan menu" }, 400);
   }
@@ -100,11 +111,13 @@ menuRoute.post("/", async (c) => {
 
 // PUT /menus/:id
 menuRoute.put("/:id", async (c) => {
+  const client = await db.connect();
   const id = c.req.param("id");
   const body = await c.req.json();
 
   try {
-    await db.query(
+    await client.query("BEGIN");
+    await client.query(
       `UPDATE menu_items SET
         parent_id = $1,
         type = $2,
@@ -134,8 +147,15 @@ menuRoute.put("/:id", async (c) => {
       ]
     );
 
+    await client.query(`DELETE FROM menu_permissions WHERE menu_id = $1`, [id]);
+    if (body.permissions?.length) {
+      insertMenuPermissions(client, id, body.permissions);
+    }
+
+    await client.query("COMMIT");
     return c.json({ success: true });
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("Error update menu:", err);
     return c.json({ error: "Gagal mengubah menu" }, 400);
   }
@@ -236,3 +256,32 @@ menuRoute.post("/normalize-ordinal", async (c) => {
 
   return c.json({ success: true });
 });
+
+interface Permission {
+  id: string;
+  name: string;
+}
+
+async function insertMenuPermissions(
+  client: any,
+  menuId: string,
+  permissions?: Permission[]
+) {
+  if (!permissions || permissions.length === 0) {
+    return;
+  }
+
+  const valuePlaceholders = permissions
+    .map((_, idx) => `($${idx * 2 + 1}, $${idx * 2 + 2})`)
+    .join(", ");
+
+  const params: (string | number)[] = permissions.flatMap((p) => [
+    p.id,
+    menuId,
+  ]);
+
+  await client.query(
+    `INSERT INTO menu_permissions (permission_id, menu_id) VALUES ${valuePlaceholders}`,
+    params
+  );
+}

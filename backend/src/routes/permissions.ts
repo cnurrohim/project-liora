@@ -19,6 +19,18 @@ permissionRoute.get("/", async (c) => {
   }
 });
 
+permissionRoute.get("/view-only", async (c) => {
+  try {
+    const result = await db.query(
+      "SELECT id, name, label, description, domain FROM permissions WHERE name = 'view' ORDER BY name ASC"
+    );
+    return c.json({ permissions: result.rows });
+  } catch (err) {
+    console.error("GET /permissions error", err);
+    return c.json({ error: "Failed to fetch permissions" }, 500);
+  }
+});
+
 // Get permissions by role IDs
 permissionRoute.get("/by-roles", async (c) => {
   try {

@@ -158,10 +158,10 @@ export default function UserListPage() {
         accessorKey: "name",
         header: "Nama",
       },
-      {
-        accessorKey: "email",
-        header: "Email",
-      },
+      // {
+      //   accessorKey: "email",
+      //   header: "Email",
+      // },
       {
         accessorKey: "is_active",
         header: "Status",
