@@ -97,9 +97,9 @@ export default function UserPermissionOverrideForm({
   );
 
   return (
-    <div className="space-y-4 w-full flex flex-row gap-20">
+    <div className="grid gap-10 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
       {Object.entries(grouped).map(([domain, perms]) => (
-        <div key={domain}>
+        <div key={domain} className="w-fit">
           <h3 className="font-bold text-sm mb-2">{domain}</h3>
           <div className="flex flex-col gap-2">
             {perms.map((perm) => {

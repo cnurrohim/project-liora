@@ -16,7 +16,18 @@ let listeners: (() => void)[] = [];
 
 export const SlidingPanelController = {
   setMenu(section: MenuSection) {
-    state.start = section;
+    const items = Array.isArray(section.items) ? section.items : [];
+
+    state.start = {
+      ...section,
+      items: items.filter((item) => item.alignment === "start"),
+    };
+
+    state.end = {
+      ...section,
+      items: items.filter((item) => item.alignment === "end"),
+    };
+
     listeners.forEach((cb) => cb());
     notify();
   },

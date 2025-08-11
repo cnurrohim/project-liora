@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { resolveItems, SlidingPanelController } from "./controller";
 import { useController } from "../../../hooks/useController";
 import type { MenuItem } from "../../../types/menu";
+import MenuItemComponent from "./MenuItemComponent";
 
 export default function SlidingPanel({
   onItemClick,
@@ -25,8 +26,10 @@ export default function SlidingPanel({
     return () => SlidingPanelController.unsubscribe(update);
   }, []);
 
-  const section = state.start;
-  const items = resolveItems(section, state.activePath);
+  const items = [
+    ...resolveItems(state.start, state.activePath),
+    ...resolveItems(state.end, state.activePath),
+  ];
 
   if (state.hidden) return;
 
@@ -61,53 +64,26 @@ export default function SlidingPanel({
       </div>
 
       <div className="flex flex-col h-full mt-2">
-        <nav className=" overflow-auto flex flex-col">
-          {state.start?.label && (
-            <div className="font-primary text-sm uppercase text-gray-500 font-bold mb-2">
-              {state.start.label}
-            </div>
-          )}
-          {items.map((item, i) => (
-            <div
-              key={i}
-              className="group flex items-center gap-4 cursor-pointer px-2 py-2 rounded-md hover:bg-gray-800 transition"
-              onClick={() => {
-                if (item.type === "group") {
-                  SlidingPanelController.setActivePath([
-                    ...state.activePath,
-                    i,
-                  ]);
-                }
-
-                if (item.type === "route") {
-                  SlidingPanelController.close();
-                }
-
-                onItemClick(item);
-              }}
-            >
-              <span className="text-gray-400 group-hover:text-white">
-                {typeof item.icon === "string" && item.icon
-                  ? iconRenderer?.({
-                      name: item.icon,
-                      size: 20,
-                      color: item.icon_color,
-                    })
-                  : defaultIcon?.({
-                      size: 20,
-                      color: item.icon_color,
-                    })}
-              </span>
-
-              <span className="font-semibold text-sm text-gray-400 group-hover:text-white flex-1 truncate">
-                {item.label}
-              </span>
-
-              {item.type === "group" && (
-                <span className="ml-auto text-rose-400">⮯</span>
-              )}
-            </div>
-          ))}
+        {state.start?.label && (
+          <div className="font-primary text-sm uppercase text-gray-500 font-bold mb-2">
+            {state.start.label}
+          </div>
+        )}
+        <nav className="flex flex-col justify-between h-full">
+          {/* Bagian atas (scrollable) */}
+          <div className="overflow-auto">
+            {items.map((item, i) => (
+              <MenuItemComponent
+                key={i}
+                state={state}
+                item={item}
+                i={i}
+                onItemClick={onItemClick}
+                iconRenderer={iconRenderer}
+                defaultIcon={defaultIcon}
+              />
+            ))}
+          </div>
         </nav>
 
         {state.activePath.length > 0 && (
