@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { SlidingPanelController } from "./controller";
+import { MENU } from "../constant";
 
 export default function MenuItemComponent({
   state,
@@ -25,11 +26,11 @@ export default function MenuItemComponent({
       key={i}
       className="group flex items-center gap-4 cursor-pointer px-2 py-2 rounded-md hover:bg-gray-800 transition"
       onClick={() => {
-        if (item.type === "group") {
+        if (item.type === MENU.TYPE.GROUP) {
           SlidingPanelController.setActivePath([...state.activePath, i]);
         }
 
-        if (item.type === "route") {
+        if (item.type === MENU.TYPE.ROUTE) {
           SlidingPanelController.close();
         }
 

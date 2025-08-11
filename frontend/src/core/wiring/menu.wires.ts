@@ -7,6 +7,8 @@ import type { MenuBarEntry as VMenuBarEntry } from "@/components/VerticalMenu/Me
 import type { MenuBarEntry as HMenuBarEntry } from "@/components/VerticalMenu/MenuBar/types";
 import { IconRenderer } from "@/components/IconRenderer";
 import React from "react";
+import { SlidingPanelController as VSlidingPanelController } from "@/components/VerticalMenu";
+import { SlidingPanelController as HSlidingPanelController } from "@/components/HorizontalMenu";
 
 export function menuWires(): Wire[] {
   return [
@@ -14,7 +16,7 @@ export function menuWires(): Wire[] {
       from: MenuProviderController.subscribe,
       to: () => {
         const sections = MenuProviderController.getState().sections;
-
+        VSlidingPanelController.setAllMenu(sections);
         // Inject ke VMenuBarController
         const miniEntries: VMenuBarEntry[] = sections.map((section) => ({
           key: section.id,
@@ -36,7 +38,7 @@ export function menuWires(): Wire[] {
       from: MenuProviderController.subscribe,
       to: () => {
         const sections = MenuProviderController.getState().sections;
-
+        HSlidingPanelController.setAllMenu(sections);
         // Inject ke HMenuBarController
         const miniEntries: HMenuBarEntry[] = sections.map((section) => ({
           key: section.id,

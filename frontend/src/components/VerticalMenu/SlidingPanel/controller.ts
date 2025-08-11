@@ -1,5 +1,5 @@
-// src/components/Sidebar/SlidingPanel/controller.ts
 import type { MenuItem, MenuSection } from "../../../types/menu";
+import { MENU } from "../constant";
 
 let state = {
   start: null as MenuSection | null,
@@ -10,6 +10,7 @@ let state = {
   appName: "App" as string,
   appLogo: "" as string,
   hidden: true as boolean,
+  allMenus: [] as MenuSection[],
 };
 
 let listeners: (() => void)[] = [];
@@ -20,16 +21,33 @@ export const SlidingPanelController = {
 
     state.start = {
       ...section,
-      items: items.filter((item) => item.alignment === "start"),
+      items: items.filter((item) => item.alignment === MENU.ALIGNMENT.START),
     };
 
     state.end = {
       ...section,
-      items: items.filter((item) => item.alignment === "end"),
+      items: items.filter((item) => item.alignment === MENU.ALIGNMENT.END),
     };
 
     listeners.forEach((cb) => cb());
     notify();
+  },
+  setAllMenu(sections: MenuSection[]) {
+    state.allMenus = sections; // simpan semua menu
+    notify();
+  },
+  getAllMenuItems(): MenuItem[] {
+    const flatten = (items: MenuItem[]): MenuItem[] =>
+      items.flatMap((item) =>
+        item.type === MENU.TYPE.GROUP
+          ? [item, ...flatten(item.items ?? [])]
+          : [item]
+      );
+
+    return state.allMenus.flatMap((section) => flatten(section.items ?? []));
+  },
+  getSection(key: string): MenuSection | undefined {
+    return state.allMenus.find((s) => s.id === key);
   },
   setPosition(pos: "left" | "right") {
     state.position = pos;
@@ -89,7 +107,7 @@ export function resolveItems(
   let items = section.items;
   for (const index of path) {
     const current = items?.[index];
-    if (current?.type === "group") {
+    if (current?.type === MENU.TYPE.GROUP) {
       items = current.items;
     } else {
       break;

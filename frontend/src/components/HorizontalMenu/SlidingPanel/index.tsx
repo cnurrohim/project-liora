@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { resolveItems, SlidingPanelController } from "./controller";
 import { useController } from "../../../hooks/useController";
 import type { MenuItem } from "../../../types/menu";
+import { MENU } from "../constant";
 
 export default function SlidingPanel({
   onItemClick,
@@ -18,6 +19,7 @@ export default function SlidingPanel({
 }) {
   const [state, setState] = useState(SlidingPanelController.getState());
   const visible = useController(SlidingPanelController, (s) => s.visible);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const update = () => setState(SlidingPanelController.getState());
@@ -25,8 +27,17 @@ export default function SlidingPanel({
     return () => SlidingPanelController.unsubscribe(update);
   }, []);
 
-  const section = state.start;
-  const items = resolveItems(section, state.activePath);
+  const unFiltereditems =
+    searchQuery.trim() === ""
+      ? [
+          ...resolveItems(state.start, state.activePath),
+          ...resolveItems(state.end, state.activePath),
+        ]
+      : SlidingPanelController.getAllMenuItems();
+
+  const items = unFiltereditems.filter((item) =>
+    item.label?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (state.hidden) return;
   return (
@@ -60,6 +71,15 @@ export default function SlidingPanel({
       </div>
 
       <div className="flex flex-col w-full mt-2">
+        {/* Search Input */}
+        <input
+          type="text"
+          placeholder="Search menu..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="mb-3 p-2 rounded bg-gray-800 text-white focus:outline-none"
+        />
+
         {state.start?.label && (
           <div className="text-sm uppercase text-gray-400 mb-2 px-1">
             {state.start.label}
@@ -71,14 +91,14 @@ export default function SlidingPanel({
               key={i}
               className="flex items-center gap-2  hover:bg-gray-800 cursor-pointer p-2 rounded w-48"
               onClick={() => {
-                if (item.type === "group") {
+                if (item.type === MENU.TYPE.GROUP) {
                   SlidingPanelController.setActivePath([
                     ...state.activePath,
                     i,
                   ]);
                 }
 
-                if (item.type === "route") {
+                if (item.type === MENU.TYPE.ROUTE) {
                   SlidingPanelController.close();
                 }
 

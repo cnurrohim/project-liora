@@ -1,11 +1,10 @@
-import { MenuProviderController } from "../../../controller/menuProviderController";
+import { MENU } from "../constant";
 import { SlidingPanelController } from "../SlidingPanel/controller";
 import type { MenuBarEntry } from "../types";
 import { MenuBarController } from "./controller";
 
 export const handleClick = (entry: MenuBarEntry) => {
-  const section = MenuProviderController.getSection(entry.key);
-  // console.log("Clicked section:", section?.id, "mode:", section?.mode);
+  const section = SlidingPanelController.getSection(entry.key);
 
   if (!section) return;
 
@@ -13,7 +12,7 @@ export const handleClick = (entry: MenuBarEntry) => {
   SlidingPanelController.setMenu(section);
 
   switch (section.mode) {
-    case "sliding":
+    case MENU.MODE.SLIDING:
       if (isAlreadyActive) {
         SlidingPanelController.toggle();
         const isSlidingPanelVisible = SlidingPanelController.getVisibleState();
@@ -23,7 +22,7 @@ export const handleClick = (entry: MenuBarEntry) => {
         SlidingPanelController.open();
       }
       break;
-    case "context":
+    case MENU.MODE.CONTEXT:
       //ContextMenusController.setMenu(section);
       break;
   }
