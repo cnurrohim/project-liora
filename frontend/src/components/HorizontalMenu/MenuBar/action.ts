@@ -10,6 +10,7 @@ export const handleClick = (entry: MenuBarEntry) => {
 
   const isAlreadyActive = MenuBarController.getActive() === entry.key;
   SlidingPanelController.setMenu(section);
+  SlidingPanelController.unsetActivePath();
 
   switch (section.mode) {
     case MENU.MODE.SLIDING:

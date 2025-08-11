@@ -57,6 +57,10 @@ export const SlidingPanelController = {
     state.activePath = path;
     notify();
   },
+  unsetActivePath() {
+    state.activePath = [];
+    notify();
+  },
   setAppInfo(name: string, logo: string) {
     state.appName = name;
     state.appLogo = logo;
