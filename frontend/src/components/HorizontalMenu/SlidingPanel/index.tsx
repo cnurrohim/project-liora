@@ -2,12 +2,13 @@ import { useEffect, useState, type ReactNode } from "react";
 import { resolveItems, SlidingPanelController } from "./controller";
 import { useController } from "../../../hooks/useController";
 import type { MenuItem } from "../../../types/menu";
-import { MENU } from "../constant";
+import MenuItemComponent from "./MenuItemComponent";
 
 export default function SlidingPanel({
   onItemClick,
   iconRenderer,
   defaultIcon,
+  onPinClick,
 }: {
   onItemClick: (item: MenuItem) => void;
   iconRenderer?: (props: {
@@ -15,7 +16,8 @@ export default function SlidingPanel({
     size?: number;
     color?: string;
   }) => ReactNode;
-  defaultIcon?: ReactNode | string;
+  defaultIcon?: (props: { size?: number; color?: string }) => ReactNode;
+  onPinClick?: (item: MenuItem) => void;
 }) {
   const [state, setState] = useState(SlidingPanelController.getState());
   const visible = useController(SlidingPanelController, (s) => s.visible);
@@ -27,13 +29,15 @@ export default function SlidingPanel({
     return () => SlidingPanelController.unsubscribe(update);
   }, []);
 
-  const unFiltereditems =
+  const rawItems =
     searchQuery.trim() === ""
       ? [
           ...resolveItems(state.start, state.activePath),
           ...resolveItems(state.end, state.activePath),
         ]
       : SlidingPanelController.getAllMenuItems();
+
+  const unFiltereditems = uniqueBy(rawItems, (item) => item.id);
 
   const items = unFiltereditems.filter((item) =>
     item.label?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -85,42 +89,18 @@ export default function SlidingPanel({
             {state.start.label}
           </div>
         )}
-        <nav className="flex flex-row flex-wrap justify-start gap-x-6 overflow-auto px-1">
+        <nav className="flex flex-row flex-wrap justify-between gap-x-6 overflow-auto px-1">
           {items.map((item, i) => (
-            <div
+            <MenuItemComponent
               key={i}
-              className="flex items-center gap-2  hover:bg-gray-800 cursor-pointer p-2 rounded w-48"
-              onClick={() => {
-                if (item.type === MENU.TYPE.GROUP) {
-                  SlidingPanelController.setActivePath([
-                    ...state.activePath,
-                    i,
-                  ]);
-                }
-
-                if (item.type === MENU.TYPE.ROUTE) {
-                  SlidingPanelController.close();
-                }
-
-                onItemClick(item);
-              }}
-            >
-              <span className="text-gray-300 pr-2">
-                {typeof item.icon === "string" && item.icon
-                  ? iconRenderer?.({
-                      name: item.icon,
-                      size: 15,
-                      color: item.icon_color,
-                    })
-                  : defaultIcon
-                  ? defaultIcon
-                  : "*"}
-              </span>
-              <span className="text-gray-300 truncate">{item.label}</span>
-              {item.type === "group" && (
-                <span className="ml-auto text-rose-400">⮯</span>
-              )}
-            </div>
+              state={state}
+              item={item}
+              i={i}
+              onItemClick={onItemClick}
+              iconRenderer={iconRenderer}
+              defaultIcon={defaultIcon}
+              onPinClick={onPinClick}
+            />
           ))}
         </nav>
 
@@ -138,4 +118,14 @@ export default function SlidingPanel({
       </div>
     </aside>
   );
+}
+
+function uniqueBy<T>(array: T[], keyFn: (item: T) => string | number) {
+  const seen = new Set();
+  return array.filter((item) => {
+    const key = keyFn(item);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }

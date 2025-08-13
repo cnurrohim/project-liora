@@ -7,6 +7,9 @@ import { TabController } from "../components/Tab/controller";
 import { handleMenuClick } from "../utils/handleMenuClick";
 import SlidingPanel from "../components/VerticalMenu/SlidingPanel";
 import { IconRenderer } from "../components/IconRenderer";
+import type { MenuItem } from "@/types/menu";
+import { PinnedMenuController } from "@/controller/PinnedMenuController";
+import { MenuProviderController } from "@/controller/menuProviderController";
 
 export function createVerticalMenu(position: LayoutPosition) {
   return function SidebarWrapper() {
@@ -16,6 +19,27 @@ export function createVerticalMenu(position: LayoutPosition) {
       MenuBarController.setPosition(resolved);
       SlidingPanelController.setPosition(resolved);
     }, [position]);
+
+    async function handlePinClick(menuItem: MenuItem) {
+      const isPinned = PinnedMenuController.getPinnedMenus().some(
+        (m) => m.id === menuItem.id
+      );
+
+      PinnedMenuController.getPinnedMenus();
+
+      try {
+        if (isPinned) {
+          await PinnedMenuController.removePinnedMenu(menuItem.id!);
+        } else {
+          await PinnedMenuController.addPinnedMenu(menuItem);
+        }
+
+        // Pastikan ini dipanggil setelah server selesai clear redis
+        await MenuProviderController.load();
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
     return React.createElement(
       "div",
@@ -39,6 +63,10 @@ export function createVerticalMenu(position: LayoutPosition) {
             size,
             color,
           });
+        },
+        onPinClick: (item: MenuItem) => {
+          const menuItem = { ...item };
+          handlePinClick(menuItem);
         },
       }),
       React.createElement(MenuBar)

@@ -8,6 +8,7 @@ export default function SlidingPanel({
   onItemClick,
   iconRenderer,
   defaultIcon,
+  onPinClick,
 }: {
   onItemClick: (item: MenuItem) => void;
   iconRenderer?: (props: {
@@ -16,6 +17,7 @@ export default function SlidingPanel({
     color?: string;
   }) => ReactNode;
   defaultIcon?: (props: { size?: number; color?: string }) => ReactNode;
+  onPinClick?: (item: MenuItem) => void;
 }) {
   const [state, setState] = useState(SlidingPanelController.getState());
   const visible = useController(SlidingPanelController, (s) => s.visible);
@@ -27,13 +29,15 @@ export default function SlidingPanel({
     return () => SlidingPanelController.unsubscribe(update);
   }, []);
 
-  const unFiltereditems =
+  const rawItems =
     searchQuery.trim() === ""
       ? [
           ...resolveItems(state.start, state.activePath),
           ...resolveItems(state.end, state.activePath),
         ]
       : SlidingPanelController.getAllMenuItems();
+
+  const unFiltereditems = uniqueBy(rawItems, (item) => item.id);
 
   const items = unFiltereditems.filter((item) =>
     item.label?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -87,7 +91,6 @@ export default function SlidingPanel({
           </div>
         )}
         <nav className="flex flex-col justify-between h-full">
-          {/* Bagian atas (scrollable) */}
           <div className="overflow-auto">
             {items.map((item, i) => (
               <MenuItemComponent
@@ -98,6 +101,7 @@ export default function SlidingPanel({
                 onItemClick={onItemClick}
                 iconRenderer={iconRenderer}
                 defaultIcon={defaultIcon}
+                onPinClick={onPinClick}
               />
             ))}
           </div>
@@ -117,4 +121,14 @@ export default function SlidingPanel({
       </div>
     </aside>
   );
+}
+
+function uniqueBy<T>(array: T[], keyFn: (item: T) => string | number) {
+  const seen = new Set();
+  return array.filter((item) => {
+    const key = keyFn(item);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }

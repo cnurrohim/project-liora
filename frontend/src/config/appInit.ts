@@ -1,3 +1,4 @@
+import { PinnedMenuController } from "@/controller/PinnedMenuController";
 import { AppConfigController } from "../components/AppConfig/controller";
 import { startRave } from "../components/Effects/raveEffect";
 import { LayoutController } from "../controller/layoutController";
@@ -21,6 +22,8 @@ export async function initializeApp(): Promise<() => void> {
   await AppConfigController.loadConfig();
 
   await MenuProviderController.load();
+
+  await PinnedMenuController.init();
 
   const { app_name, app_logo } = AppConfigController.getState();
   applyAppMetadata(app_name, app_logo);

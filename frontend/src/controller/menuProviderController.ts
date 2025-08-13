@@ -20,7 +20,7 @@ export const MenuProviderController = {
       state.sections = data;
       notify();
     } catch (err) {
-      console.error("Failed to load menu.json", err);
+      console.error("Failed to load menu", err);
     }
   },
 

@@ -4,15 +4,28 @@ import { flattenMenu, type FlatMenuItem } from "./flattenMenu"; // tempatkan fun
 import { TabController } from "@/components/Tab/controller";
 import { handleMenuClick } from "@/utils/handleMenuClick";
 import { IconRenderer } from "@/components/IconRenderer";
+import { PinnedMenuController } from "@/controller/PinnedMenuController";
 
 export default function AppLauncher() {
   const [search, setSearch] = useState("");
   const [menu, setMenu] = useState<FlatMenuItem[]>([]);
 
   useEffect(() => {
-    const data = MenuProviderController.getState().sections;
-    const flat = flattenMenu(data);
-    setMenu(flat);
+    const updateMenu = () => {
+      const data = MenuProviderController.getState().sections;
+      const flat = flattenMenu(data);
+      setMenu(flat);
+    };
+
+    // initial load
+    updateMenu();
+
+    // subscribe to updates
+    MenuProviderController.subscribe(updateMenu);
+
+    return () => {
+      MenuProviderController.unsubscribe(updateMenu);
+    };
   }, []);
 
   const filtered = menu.filter((item) =>
@@ -26,6 +39,7 @@ export default function AppLauncher() {
     if (item.type === "route") {
       handleMenuClick(
         {
+          id: menuItem.id,
           type: "route",
           label: menuItem.label,
           route: menuItem.route!,
@@ -39,6 +53,7 @@ export default function AppLauncher() {
     if (item.type === "command") {
       handleMenuClick(
         {
+          id: item.id,
           type: "command",
           label: item.label,
           command: item.command!,
@@ -50,6 +65,24 @@ export default function AppLauncher() {
     }
 
     return;
+  };
+
+  const handlePinClick = async (flatItem: FlatMenuItem) => {
+    const menuItem = flatItem.original; // langsung pakai MenuItem asli
+    const isPinned = PinnedMenuController.getPinnedMenus().some(
+      (m) => m.id === menuItem.id
+    );
+
+    try {
+      if (isPinned) {
+        await PinnedMenuController.removePinnedMenu(menuItem.id!);
+      } else {
+        await PinnedMenuController.addPinnedMenu(menuItem);
+      }
+      await MenuProviderController.load();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -77,30 +110,47 @@ export default function AppLauncher() {
             <div className="text-rose-400 font-semibold">{parent}</div>
             <div className="pl-2 mt-1 space-y-1">
               {items.map((item, i) => (
-                <div
-                  key={i}
-                  onClick={() => handleClick(item)}
-                  className="flex items-center gap-2 text-sm text-gray-200 cursor-pointer hover:bg-gray-800 px-2 py-1 rounded"
-                >
-                  <span className="text-rose-300">
-                    {typeof item.icon === "string" && item.icon ? (
-                      <IconRenderer
-                        name={item.icon}
-                        size={15}
-                        color={item.icon_color}
-                      />
-                    ) : (
-                      <IconRenderer
-                        name="RiApps2Line"
-                        size={15}
-                        color={item.icon_color}
-                      />
-                    )}
-                  </span>
-                  <span>{item.label}</span>
-                  <span className="ml-auto text-gray-400 text-xs">
-                    {item.route || item.command}
-                  </span>
+                <div key={i} className="flex flex-row">
+                  <button
+                    type="button"
+                    title={item.isPinned ? "Unpin menu" : "Pin menu"}
+                    className="text-rose-400 cursor-pointer hover:bg-gray-700 p-2"
+                    onClick={() => {
+                      handlePinClick(item);
+                    }}
+                  >
+                    <IconRenderer
+                      name={item.isPinned ? "RiPushpin2Fill" : "RiPushpin2Line"}
+                      size={15}
+                      color="#9c9c9c"
+                    />
+                  </button>
+
+                  <div
+                    key={i}
+                    onClick={() => handleClick(item)}
+                    className="w-full flex items-center gap-2 text-sm text-gray-200 cursor-pointer hover:bg-gray-800 px-2 py-1 rounded"
+                  >
+                    <span className="text-rose-300">
+                      {typeof item.icon === "string" && item.icon ? (
+                        <IconRenderer
+                          name={item.icon}
+                          size={15}
+                          color={item.icon_color}
+                        />
+                      ) : (
+                        <IconRenderer
+                          name="RiApps2Line"
+                          size={15}
+                          color={item.icon_color}
+                        />
+                      )}
+                    </span>
+                    <span>{item.label}</span>
+                    <span className="ml-auto text-gray-400 text-xs">
+                      {item.route || item.command}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

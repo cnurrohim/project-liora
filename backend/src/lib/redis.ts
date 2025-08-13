@@ -9,3 +9,10 @@ redis.on("error", (err) => {
 });
 
 await redis.connect();
+
+export async function clearRedisCache() {
+  const keys = await redis.keys("menus:*");
+  if (keys.length > 0) {
+    await redis.del(keys);
+  }
+}

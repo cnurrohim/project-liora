@@ -16,7 +16,17 @@ export function menuWires(): Wire[] {
       from: MenuProviderController.subscribe,
       to: () => {
         const sections = MenuProviderController.getState().sections;
+
         VSlidingPanelController.setAllMenu(sections);
+        const vActive = VMenuBarController.getActive();
+        if (vActive) {
+          const section = sections.find((s) => s.id === vActive);
+          if (section) {
+            VSlidingPanelController.setMenu(section);
+          } else {
+            VSlidingPanelController.close();
+          }
+        }
         // Inject ke VMenuBarController
         const miniEntries: VMenuBarEntry[] = sections.map((section) => ({
           key: section.id,
@@ -39,6 +49,16 @@ export function menuWires(): Wire[] {
       to: () => {
         const sections = MenuProviderController.getState().sections;
         HSlidingPanelController.setAllMenu(sections);
+        const hActive = HMenuBarController.getActive();
+        if (hActive) {
+          const section = sections.find((s) => s.id === hActive);
+          if (section) {
+            HSlidingPanelController.setMenu(section);
+          } else {
+            HSlidingPanelController.close();
+          }
+        }
+
         // Inject ke HMenuBarController
         const miniEntries: HMenuBarEntry[] = sections.map((section) => ({
           key: section.id,

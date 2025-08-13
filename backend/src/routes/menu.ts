@@ -2,77 +2,98 @@ import { Hono } from "hono";
 import { db } from "../db.js";
 import { authMiddleware } from "../middleware/auth.js";
 import type { Variables } from "../types/context.js";
-import { redis } from "../lib/redis.js";
+import { clearRedisCache, redis } from "../lib/redis.js";
 
 export const menuRoute = new Hono<{ Variables: Variables }>();
 menuRoute.use(authMiddleware);
 
+type MenuRow = {
+  id: string;
+  parent_id: string | null;
+  menu_key: string | null;
+  type: string; // 'group'|'route'|'command'
+  label: string;
+  icon?: string | null;
+  route?: string | null;
+  command?: string | null;
+  mode?: string | null;
+  alignment?: string | null;
+  position?: number | null;
+  ordinal?: number | null;
+  description?: string | null;
+  icon_color?: string | null;
+  permission_ids: string[]; // from ARRAY_AGG
+};
+
+type MenuTreeNode = MenuRow & {
+  items: MenuTreeNode[];
+  isPinned?: boolean;
+};
+
 // GET /menus
 menuRoute.get("/", async (c) => {
-  const user = c.get("user");
-  const userId = user.id;
+  try {
+    const user = c.get("user");
+    if (!user || !user.id) return c.json({ error: "Unauthorized" }, 401);
 
-  const cachedMenus = await redis.get(`menus:${userId}`);
-  if (cachedMenus) {
-    return c.json({ data: JSON.parse(cachedMenus) });
+    const userId = String(user.id);
+    const roleId = String(user.role);
+
+    const cacheKey = `menus:${userId}`;
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return c.json(JSON.parse(cached));
+    }
+
+    // fetch
+    const [userPermissionIds, menus, pinnedIds] = await Promise.all([
+      getUserPermissionIds(userId),
+      getMenus(),
+      getPinnedMenuIds(userId, roleId),
+    ]);
+
+    // filter by permission
+    const filteredMenus = filterMenusByPermissions(menus, userPermissionIds);
+
+    // build tree
+    const tree = buildMenuTree(filteredMenus);
+
+    // mark pinned (and collect them)
+    const pinnedAcc: MenuTreeNode[] = [];
+    const markPinned = (nodes: MenuTreeNode[]) => {
+      for (const node of nodes) {
+        if (pinnedIds.includes(node.id)) {
+          node.isPinned = true;
+          pinnedAcc.push(node);
+        }
+        if (node.items && node.items.length) markPinned(node.items);
+      }
+    };
+    markPinned(tree);
+
+    // optional: preserve pinned order as pinnedIds
+    const pinnedMenusOrdered = pinnedIds
+      .map((id) => pinnedAcc.find((n) => n.id === id))
+      .filter(Boolean) as MenuTreeNode[];
+
+    // remove empty groups but keep pinned nodes
+    const cleanedTree = removeEmptyGroups(tree);
+
+    // pinned group
+    const pinnedTree = makePinnedTree(pinnedMenusOrdered);
+    const finalMenuTree = [...(pinnedTree ? [pinnedTree] : []), ...cleanedTree];
+
+    // final response
+    const response = { data: finalMenuTree };
+
+    // cache (store the full response object)
+    await redis.set(cacheKey, JSON.stringify(response), { EX: 300 });
+
+    return c.json(response);
+  } catch (err) {
+    console.error("GET /menus error", err);
+    return c.json({ error: "Failed to fetch menus" }, 500);
   }
-
-  // Ambil permission milik user (baik dari role maupun langsung)
-  const { rows: userPerms } = await db.query(
-    `
-    SELECT DISTINCT p.id
-    FROM permissions p
-    LEFT JOIN role_permissions rp ON rp.permission_id = p.id
-    LEFT JOIN user_roles ur ON ur.role_id = rp.role_id
-    LEFT JOIN user_permissions up ON up.permission_id = p.id
-    WHERE ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true)
-    `,
-    [userId]
-  );
-
-  const userPermissionIds = userPerms.map((p) => p.id);
-
-  // Ambil menu beserta permissionsnya
-  const { rows: menus } = await db.query(
-    `
-    SELECT mi.*, 
-           ARRAY_REMOVE(ARRAY_AGG(mp.permission_id), NULL) AS permission_ids
-    FROM menu_items mi
-    LEFT JOIN menu_permissions mp ON mp.menu_id = mi.id
-    GROUP BY mi.id
-    ORDER BY mi.ordinal ASC
-    `
-  );
-
-  // Filter menu
-  const filteredMenus = menus.filter((menu) => {
-    if (menu.permission_ids.length === 0) {
-      return true; // ✅ menu tanpa permission → tampil ke semua
-    }
-    return menu.permission_ids.some((permId: string) =>
-      userPermissionIds.includes(permId)
-    );
-  });
-
-  // Bentuk tree
-  const map = new Map();
-  filteredMenus.forEach((row) => map.set(row.id, { ...row, items: [] }));
-
-  const tree: any[] = [];
-  filteredMenus.forEach((row) => {
-    if (row.parent_id) {
-      const parent = map.get(row.parent_id);
-      if (parent) parent.items.push(map.get(row.id));
-    } else {
-      tree.push(map.get(row.id));
-    }
-  });
-
-  const cleanedTree = removeEmptyGroups(tree);
-
-  await redis.set(`menus:${userId}`, JSON.stringify(cleanedTree), { EX: 300 });
-
-  return c.json({ data: cleanedTree });
 });
 
 menuRoute.get("/parent-menu", async (c) => {
@@ -358,23 +379,119 @@ async function insertMenuPermissions(
   );
 }
 
-function removeEmptyGroups(menus: any[]): any[] {
-  return menus
-    .map((menu) => ({
-      ...menu,
-      items: removeEmptyGroups(menu.items || []),
-    }))
-    .filter((menu) => {
-      if (menu.type === "group") {
-        return menu.items.length > 0; // hanya group yang punya anak
+function removeEmptyGroups(nodes: MenuTreeNode[]): MenuTreeNode[] {
+  return nodes
+    .map((n) => ({ ...n, items: removeEmptyGroups(n.items || []) }))
+    .filter((n) => {
+      // keep groups that either have children or are explicitly pinned
+      if (n.type === "group") {
+        return Boolean(n.isPinned) || (n.items && n.items.length > 0);
       }
-      return true; // menu biasa tetap tampil
+      // non-group (route/command) always kept (unless you want extra filtering)
+      return true;
     });
 }
 
-async function clearRedisCache() {
-  const keys = await redis.keys("menus:*");
-  if (keys.length > 0) {
-    await redis.del(keys);
+// === helper DB functions with explicit return types ===
+async function getUserPermissionIds(userId: string): Promise<string[]> {
+  const res = await db.query(
+    `
+    SELECT DISTINCT p.id
+    FROM permissions p
+    LEFT JOIN role_permissions rp ON rp.permission_id = p.id
+    LEFT JOIN user_roles ur ON ur.role_id = rp.role_id
+    LEFT JOIN user_permissions up ON up.permission_id = p.id
+    WHERE ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true)
+    `,
+    [userId]
+  );
+  const rows = res.rows as { id: string }[];
+  return rows.map((r) => r.id);
+}
+
+async function getMenus(): Promise<MenuRow[]> {
+  const res = await db.query(
+    `
+    SELECT mi.*, 
+           ARRAY_REMOVE(ARRAY_AGG(mp.permission_id), NULL) AS permission_ids
+    FROM menu_items mi
+    LEFT JOIN menu_permissions mp ON mp.menu_id = mi.id
+    GROUP BY mi.id
+    ORDER BY mi.ordinal ASC
+    `
+  );
+  return res.rows as MenuRow[];
+}
+
+async function getPinnedMenuIds(
+  userId: string,
+  roleId: string
+): Promise<string[]> {
+  const res = await db.query(
+    `
+    SELECT menu_id
+    FROM user_pinned_menus
+    WHERE user_id = $1 AND role_id = $2
+    ORDER BY pinned_at ASC
+    `,
+    [userId, roleId]
+  );
+  return (res.rows as { menu_id: string }[]).map((r) => r.menu_id);
+}
+
+function filterMenusByPermissions(
+  menus: MenuRow[],
+  userPermissionIds: string[]
+): MenuRow[] {
+  return menus.filter((menu) => {
+    const perms = menu.permission_ids ?? [];
+    if (perms.length === 0) return true;
+    return perms.some((permId) => userPermissionIds.includes(permId));
+  });
+}
+
+function buildMenuTree(filteredMenus: MenuRow[]): MenuTreeNode[] {
+  const map = new Map<string, MenuTreeNode>();
+  // init nodes
+  filteredMenus.forEach((row) => {
+    map.set(row.id, { ...row, items: [] });
+  });
+
+  const tree: MenuTreeNode[] = [];
+  filteredMenus.forEach((row) => {
+    const node = map.get(row.id)!;
+    if (row.parent_id) {
+      const parent = map.get(row.parent_id);
+      if (parent) parent.items.push(node);
+    } else {
+      tree.push(node);
+    }
+  });
+
+  return tree;
+}
+
+function makePinnedTree(pinnedMenus: MenuTreeNode[]): MenuTreeNode | null {
+  if (pinnedMenus.length === 0) {
+    return null; // tidak ada pin, tidak tampilkan group
   }
+
+  return {
+    id: "pinned-menus",
+    parent_id: null,
+    menu_key: null,
+    type: "group",
+    label: "Pinned",
+    icon: "RiPushpin2Fill",
+    route: "",
+    command: "",
+    mode: "sliding",
+    alignment: "start",
+    position: 0,
+    ordinal: 0,
+    description: "Pinned menus",
+    icon_color: null,
+    permission_ids: [],
+    items: pinnedMenus,
+  };
 }

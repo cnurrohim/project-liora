@@ -1,6 +1,8 @@
+import { PinnedMenuController } from "@/controller/PinnedMenuController";
 import type { MenuSection, MenuItem } from "@/types/menu";
 
 export type FlatMenuItem = {
+  id: string;
   parent: string;
   label: string;
   icon?: string;
@@ -8,12 +10,19 @@ export type FlatMenuItem = {
   type: "route" | "command";
   route?: string;
   command?: string;
+  isPinned: boolean; // selalu ada, default false
+  original: MenuItem;
 };
 
 export function flattenMenu(
   sections: MenuSection[],
   result: FlatMenuItem[] = []
 ): FlatMenuItem[] {
+  // Ambil daftar ID menu yang sudah dipin
+  const pinnedIds = new Set(
+    PinnedMenuController.getPinnedMenus().map((m: MenuItem) => m.id)
+  );
+
   for (const section of sections) {
     const parentLabel = section.label ?? section.id ?? "Untitled";
 
@@ -28,9 +37,10 @@ export function flattenMenu(
     const base = {
       parent: parentLabel,
       label: item.label,
-      // id: item.id,
+      id: item.id,
       icon: item.icon ?? "⬘",
       icon_color: item.icon_color,
+      isPinned: pinnedIds.has(item.id!), // cek apakah sudah dipin
     };
 
     switch (item.type) {
@@ -39,11 +49,21 @@ export function flattenMenu(
         break;
 
       case "route":
-        result.push({ ...base, type: "route", route: item.route });
+        result.push({
+          ...base,
+          type: "route",
+          route: item.route,
+          original: item,
+        });
         break;
 
       case "command":
-        result.push({ ...base, type: "command", command: item.command });
+        result.push({
+          ...base,
+          type: "command",
+          command: item.command,
+          original: item,
+        });
         break;
     }
   }

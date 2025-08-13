@@ -9,6 +9,7 @@ export default function MenuItemComponent({
   onItemClick,
   iconRenderer,
   defaultIcon,
+  onPinClick,
 }: {
   state: any;
   item: any;
@@ -20,42 +21,61 @@ export default function MenuItemComponent({
     color?: string;
   }) => ReactNode;
   defaultIcon?: (props: { size?: number; color?: string }) => React.ReactNode;
+  onPinClick?: (item: any) => void;
 }) {
   return (
-    <div
-      key={i}
-      className="group flex items-center gap-4 cursor-pointer px-2 py-2 rounded-md hover:bg-gray-800 transition"
-      onClick={() => {
-        if (item.type === MENU.TYPE.GROUP) {
-          SlidingPanelController.setActivePath([...state.activePath, i]);
-        }
+    <div className="flex flex-row ">
+      <div
+        key={i}
+        className="group flex w-full items-center gap-4 cursor-pointer px-2 py-2 rounded-md hover:bg-gray-800 transition"
+        onClick={() => {
+          if (item.type === MENU.TYPE.GROUP) {
+            SlidingPanelController.setActivePath([...state.activePath, i]);
+          }
 
-        if (item.type === MENU.TYPE.ROUTE) {
-          SlidingPanelController.close();
-        }
+          if (item.type === MENU.TYPE.ROUTE) {
+            SlidingPanelController.close();
+          }
 
-        onItemClick(item);
-      }}
-    >
-      <span className="text-gray-400 group-hover:text-white">
-        {typeof item.icon === "string" && item.icon
-          ? iconRenderer?.({
-              name: item.icon,
-              size: 20,
-              color: item.icon_color,
-            })
-          : defaultIcon?.({
-              size: 20,
-              color: item.icon_color,
-            })}
-      </span>
+          onItemClick(item);
+        }}
+      >
+        <span className="text-gray-400 group-hover:text-white">
+          {typeof item.icon === "string" && item.icon
+            ? iconRenderer?.({
+                name: item.icon,
+                size: 20,
+                color: item.icon_color,
+              })
+            : defaultIcon?.({
+                size: 20,
+                color: item.icon_color,
+              })}
+        </span>
 
-      <span className="font-semibold text-sm text-gray-400 group-hover:text-white flex-1 truncate">
-        {item.label}
-      </span>
+        <span className="font-semibold text-sm text-gray-400 group-hover:text-white flex-1 truncate">
+          {item.label}
+        </span>
 
-      {item.type === "group" && (
-        <span className="ml-auto text-rose-400">⮯</span>
+        {item.type === "group" && (
+          <span className="ml-auto bg-gray-950 pr-1">⮯</span>
+        )}
+      </div>
+      {item.type !== "group" && onPinClick && (
+        <button
+          type="button"
+          title={item.isPinned ? "Unpin menu" : "Pin menu"}
+          className="ml-auto text-rose-400 cursor-pointer hover:bg-gray-700 p-2"
+          onClick={() => {
+            onPinClick(item);
+          }}
+        >
+          {iconRenderer?.({
+            name: item.isPinned ? "RiPushpin2Fill" : "RiPushpin2Line",
+            size: 15,
+            color: "#9c9c9c",
+          })}
+        </button>
       )}
     </div>
   );

@@ -3,7 +3,7 @@ export type MenuMode = "sliding" | "context"; // future: modal, etc.
 export type MenuAlignment = "start" | "end";
 
 export type MenuRoute = {
-  // id: string;
+  id: string;
   type: "route";
   label: string;
   icon?: string;
@@ -13,7 +13,7 @@ export type MenuRoute = {
 };
 
 export type MenuCommand = {
-  // id: string;
+  id: string;
   type: "command";
   label: string;
   icon?: string;
@@ -23,7 +23,7 @@ export type MenuCommand = {
 };
 
 export type MenuGroup = {
-  // id: string;
+  id: string;
   type: "group";
   label: string;
   icon?: string;
@@ -51,7 +51,7 @@ export type MenuAction = MenuBase & {
 };
 
 export type MenuBase = {
-  // id: string;
+  id: string;
   label: string;
   icon?: string;
 };

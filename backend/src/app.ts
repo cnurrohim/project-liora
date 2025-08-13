@@ -12,6 +12,7 @@ import { userLayoutRoute } from "./routes/userLayoutRoute.js";
 import { appSettingsRoute } from "./routes/appSettings.js";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { departmentRoute } from "./routes/departments.js";
+import { pinnedMenusRoute } from "./routes/pinnedMenus.js";
 
 export const app = new Hono<{ Variables: Variables }>();
 
@@ -35,5 +36,6 @@ app.route("/user-layout", userLayoutRoute);
 app.route("/roles", roleRoute);
 app.route("/permissions", permissionRoute);
 app.route("/departments", departmentRoute);
+app.route("/pinned-menus", pinnedMenusRoute);
 
 app.get("/", (c) => c.text("Backend running"));
