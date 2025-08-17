@@ -25,7 +25,6 @@ export default function LoginPage() {
       localStorage.setItem("user", JSON.stringify(user));
 
       setTimeout(() => {
-        // window.location.href = "/";
         navigate("/", { replace: true });
       }, 1000);
     } catch (err: any) {

@@ -106,6 +106,9 @@ export const LayoutController = {
 
   subscribe(callback: () => void) {
     updateCallbacks.push(callback);
+    return () => {
+      this.unsubscribe(callback);
+    };
   },
 
   unsubscribe(callback: () => void) {

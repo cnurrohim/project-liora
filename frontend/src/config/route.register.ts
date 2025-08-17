@@ -12,6 +12,7 @@ import DefaultPage from "../pages/Misc/DefaultPage";
 import DepartmentListPage from "../pages/Departments";
 import DepartmentFormPage from "../pages/Departments/form";
 import UserFormTabs from "../pages/User/UserFormTabs";
+import UserProfilePage from "@/pages/UserProfile";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -65,6 +66,12 @@ export function registerRoutes() {
     "/user/create",
     "create user",
     React.createElement(UserFormTabs)
+  );
+
+  RouteRegistry.register(
+    "/profile",
+    "User Profile",
+    React.createElement(UserProfilePage)
   );
 
   RouteRegistry.register(

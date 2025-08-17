@@ -1,3 +1,5 @@
+import { apiFetch } from "@/utils/apiFetch";
+
 export async function login({
   username,
   password,
@@ -24,4 +26,19 @@ export async function login({
 
   // Harus mengandung { token, refreshToken, user }
   return data;
+}
+
+export async function switchRoleAPI(roleId: string) {
+  const res = await apiFetch("/auth/switch-role", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({ roleId }),
+  });
+
+  if (!res.ok) throw new Error("Failed to switch role");
+
+  return await res.json();
 }

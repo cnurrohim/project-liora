@@ -82,6 +82,7 @@ export default function MenuListPage() {
   const handleEdit = (menu: MenuItem) => {
     openTabSmart(
       {
+        id: `/menu/${menu.id}/edit`,
         route: `/menu/${menu.id}/edit`,
         label: `Edit: ${menu.label}`,
         type: "route",
@@ -269,6 +270,7 @@ export default function MenuListPage() {
   const openInNewTab = (newTab = false) => {
     openTabSmart(
       {
+        id: "/menu/create",
         route: "/menu/create",
         label: "Tambah Menu",
         type: "route",

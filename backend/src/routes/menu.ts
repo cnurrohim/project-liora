@@ -39,7 +39,7 @@ menuRoute.get("/", async (c) => {
     const userId = String(user.id);
     const roleId = String(user.role);
 
-    const cacheKey = `menus:${userId}`;
+    const cacheKey = `menus:${userId}:${roleId}`;
     const cached = await redis.get(cacheKey);
     if (cached) {
       return c.json(JSON.parse(cached));

@@ -13,3 +13,7 @@ export const MENU = {
     GROUP: "group",
   },
 } as const;
+
+export const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+export const USER_DIR = `${API_URL}/public/uploads/profile-photo/`;

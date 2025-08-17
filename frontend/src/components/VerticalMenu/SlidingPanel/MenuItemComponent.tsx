@@ -65,7 +65,7 @@ export default function MenuItemComponent({
         <button
           type="button"
           title={item.isPinned ? "Unpin menu" : "Pin menu"}
-          className="ml-auto text-rose-400 cursor-pointer hover:bg-gray-700 p-2"
+          className="ml-auto text-gray-400 cursor-pointer hover:bg-gray-700 hover:text-white p-2"
           onClick={() => {
             onPinClick(item);
           }}
@@ -73,7 +73,7 @@ export default function MenuItemComponent({
           {iconRenderer?.({
             name: item.isPinned ? "RiPushpin2Fill" : "RiPushpin2Line",
             size: 15,
-            color: "#9c9c9c",
+            color: "",
           })}
         </button>
       )}

@@ -65,6 +65,7 @@ export default function DepartmentListPage() {
   const handleEdit = (department: Department) => {
     openTabSmart(
       {
+        id: `/departments/${department.id}/edit`,
         route: `/departments/${department.id}/edit`,
         label: `Edit: ${department.name}`,
         type: "route",
@@ -170,6 +171,7 @@ export default function DepartmentListPage() {
   const openCreateTab = (newTab = false) => {
     openTabSmart(
       {
+        id: "/departments/create",
         route: "/departments/create",
         label: "Tambah Department",
         type: "route",

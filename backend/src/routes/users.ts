@@ -313,18 +313,18 @@ userRoute.put("/:id", async (c) => {
 
     await client.query("BEGIN");
 
-    if (password) {
-      const pwHash = await bcrypt.hash(password, 10);
-      await client.query(
-        `UPDATE users SET name = $1, username = $2, email = $3, password = $4, is_active = $5, updated_at = NOW() WHERE id = $6`,
-        [name, username, email, pwHash, is_active, id]
-      );
-    } else {
-      await client.query(
-        `UPDATE users SET name = $1, username = $2, email = $3, is_active = $4, updated_at = NOW() WHERE id = $5`,
-        [name, username, email, is_active, id]
-      );
-    }
+    // if (password) {
+    //   const pwHash = await bcrypt.hash(password, 10);
+    //   await client.query(
+    //     `UPDATE users SET name = $1, username = $2, email = $3, password = $4, is_active = $5, updated_at = NOW() WHERE id = $6`,
+    //     [name, username, email, pwHash, is_active, id]
+    //   );
+    // } else {
+    await client.query(
+      `UPDATE users SET name = $1, username = $2, email = $3, is_active = $4, updated_at = NOW() WHERE id = $5`,
+      [name, username, email, is_active, id]
+    );
+    // }
 
     await client.query(`DELETE FROM user_roles WHERE user_id = $1`, [id]);
 

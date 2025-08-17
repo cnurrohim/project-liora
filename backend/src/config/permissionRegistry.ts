@@ -168,6 +168,32 @@ export const permissionRegistry = [
     description: "Bisa menambahkan app setting baru",
   },
 
+  /** USER PROFILE */
+  {
+    domain: "user_profile",
+    name: "view",
+    label: "buka halaman form user profile",
+    description: "Bisa membuka halaman user profile",
+  },
+  {
+    domain: "user_profile",
+    name: "delete",
+    label: "hapus user profile",
+    description: "Bisa menghapus user profile",
+  },
+  {
+    domain: "user_profile",
+    name: "update",
+    label: "mengubah user profile",
+    description: "Bisa mengubah user profile",
+  },
+  {
+    domain: "user_profile",
+    name: "create",
+    label: "menambahkan user profile baru",
+    description: "Bisa menambahkan user profile baru",
+  },
+
   /** FOR TEST ONLY */
   {
     domain: "test",

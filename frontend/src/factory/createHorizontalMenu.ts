@@ -4,12 +4,16 @@ import type { LayoutPosition } from "../config/layoutComponentRegistry";
 import { MenuBarController } from "../components/HorizontalMenu/MenuBar/controller";
 import { SlidingPanelController } from "../components/HorizontalMenu/SlidingPanel/controller";
 import { TabController } from "../components/Tab/controller";
-import { handleMenuClick } from "../utils/handleMenuClick";
+import { handleMenuClick, runCommand } from "../utils/handleMenuClick";
 import SlidingPanel from "../components/HorizontalMenu/SlidingPanel";
 import { IconRenderer } from "../components/IconRenderer";
 import { PinnedMenuController } from "@/controller/PinnedMenuController";
 import type { MenuItem } from "@/types/menu";
 import { MenuProviderController } from "@/controller/menuProviderController";
+import { switchRoleAPI } from "@/pages/LoginPage/login.api";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import { reinitializeApp } from "@/hooks/useInitApp";
+import { openTabSmart } from "@/utils/handleMenuClick/openTabSmart";
 
 export function createHorizontalMenu(position: LayoutPosition) {
   return function MenuWrapper() {
@@ -18,26 +22,38 @@ export function createHorizontalMenu(position: LayoutPosition) {
     useEffect(() => {
       MenuBarController.setPosition(resolved);
       SlidingPanelController.setPosition(resolved);
-    }, [position]);
+    }, [resolved]);
 
-    async function handlePinClick(menuItem: MenuItem) {
-      const isPinned = PinnedMenuController.getPinnedMenus().some(
-        (m) => m.id === menuItem.id
-      );
-
-      PinnedMenuController.getPinnedMenus();
-
+    const handlePinClick = async (menuItem: MenuItem) => {
       try {
+        const isPinned = PinnedMenuController.getPinnedMenus().some(
+          (m) => m.id === menuItem.id
+        );
+
         if (isPinned) {
           await PinnedMenuController.removePinnedMenu(menuItem.id!);
         } else {
           await PinnedMenuController.addPinnedMenu(menuItem);
         }
 
-        // Pastikan ini dipanggil setelah server selesai clear redis
         await MenuProviderController.load();
       } catch (err) {
-        console.error(err);
+        console.error("Gagal update pinned menu:", err);
+      }
+    };
+
+    async function handleSwitchRole(roleId: string) {
+      try {
+        const { token, user } = await switchRoleAPI(roleId);
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        await reinitializeApp();
+
+        showSuccessToast(`Role switched to ${user.defaultRole.name}`);
+      } catch (err) {
+        showErrorToast(`Switch role failed: ${err}`);
       }
     }
 
@@ -67,6 +83,30 @@ export function createHorizontalMenu(position: LayoutPosition) {
         onPinClick: (item: MenuItem) => {
           const menuItem = { ...item };
           handlePinClick(menuItem);
+        },
+        onViewProfileClick: () => {
+          openTabSmart(
+            {
+              id: `user-profile`,
+              route: `/profile`,
+              label: `User Profile`,
+              type: "route",
+              icon: "RiPencilFill",
+            },
+            { replace: true }
+          );
+          SlidingPanelController.close();
+        },
+        onLogout: () => {
+          runCommand({
+            id: "logout",
+            label: "logout",
+            type: "command",
+            command: "logout",
+          });
+        },
+        onSwitchRole: (userId) => {
+          handleSwitchRole(userId);
         },
       }),
       React.createElement(MenuBar)

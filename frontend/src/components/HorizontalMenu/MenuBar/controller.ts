@@ -4,16 +4,12 @@ type MenuBarState = {
   start: MenuBarEntry[];
   end: MenuBarEntry[];
   position: "top" | "bottom";
-  logo: string;
-  name: string;
 };
 
 let state: MenuBarState = {
   start: [],
   end: [],
   position: "top",
-  logo: "",
-  name: "",
 };
 
 let listeners: (() => void)[] = [];
@@ -32,18 +28,11 @@ export const MenuBarController = {
       start: entries.filter((e) => e.alignment === "start"),
       end: entries.filter((e) => e.alignment === "end"),
       position: state.position,
-      logo: state.logo,
-      name: state.name,
     };
     notify();
   },
   setPosition(pos: "top" | "bottom") {
     state.position = pos;
-    notify();
-  },
-  setAppInfo(newName: string, newLogo: string) {
-    state.name = newName;
-    state.logo = newLogo;
     notify();
   },
   getState(): MenuBarState {

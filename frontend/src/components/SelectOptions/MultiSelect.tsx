@@ -53,7 +53,7 @@ export default function MultiSelect({
             <button
               type="button"
               onClick={() => removeOption(opt.id)}
-              className="ml-1 text-red-500"
+              className="ml-1 text-red-500 cursor-pointer"
             >
               ×
             </button>

@@ -1,4 +1,4 @@
-type ActiveUser = {
+export type ActiveUser = {
   id: string;
   username: string;
   role_id: string;

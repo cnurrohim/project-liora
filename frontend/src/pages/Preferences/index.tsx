@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { layoutComponentRegistry } from "@/config/layoutComponentRegistry";
 import {
   LayoutController,
@@ -27,6 +27,23 @@ export default function PreferencesForm() {
       bottomPane: current.bottomPaneKey ?? null,
     };
   });
+
+  useEffect(() => {
+    const update = () => {
+      const current = LayoutController.getState();
+      setConfig({
+        leftPane: current.leftPaneKey ?? null,
+        rightPane: current.rightPaneKey ?? null,
+        topPane: current.topPaneKey ?? null,
+        bottomPane: current.bottomPaneKey ?? null,
+      });
+    };
+
+    const unsubUpdate = LayoutController.subscribe(update);
+    return () => {
+      unsubUpdate?.();
+    };
+  }, []);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -68,10 +85,8 @@ export default function PreferencesForm() {
     }
 
     try {
-      // simpan ke database via API
       await saveLayout(user.id, user.defaultRole.id, config);
 
-      // simpan juga ke localStorage (opsional)
       localStorage.setItem("user_layout", JSON.stringify(config));
 
       showSuccessToast("Layout berhasil disimpan.");

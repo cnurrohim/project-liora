@@ -3,6 +3,23 @@ import { initializeApp } from "../config/appInit";
 import { PermissionController } from "../controller/permissionController";
 import { initFromStorage } from "../components/Tab/controller";
 
+let globalStopFn: (() => void) | null = null;
+
+export async function reinitializeApp() {
+  try {
+    // matikan wiring lama
+    globalStopFn?.();
+    // init ulang
+    await PermissionController.getPermissions();
+    const stop = await initializeApp();
+    initFromStorage();
+    globalStopFn = stop;
+  } catch (err) {
+    console.error("Failed to re-initialize app:", err);
+  }
+}
+
+/** dipakai sekali saat app mount (mis. di App.tsx) */
 export function useInitApp() {
   const [isReady, setReady] = useState(false);
   const stopFnRef = useRef<() => void | null>(null);
@@ -17,13 +34,12 @@ export function useInitApp() {
 
     async function init() {
       try {
-        // ⬅️ Panggil ini dulu agar state permission siap duluan
         await PermissionController.getPermissions();
-
         const stop = await initializeApp();
         initFromStorage();
 
         stopFnRef.current = stop;
+        globalStopFn = stop;
 
         setReady(true);
       } catch (err) {
@@ -35,6 +51,8 @@ export function useInitApp() {
 
     return () => {
       stopFnRef.current?.();
+      // pastikan global stop dibersihkan jika unmount
+      if (globalStopFn === stopFnRef.current) globalStopFn = null;
     };
   }, []);
 

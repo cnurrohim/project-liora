@@ -54,16 +54,7 @@ authRoute.post("/login", async (c) => {
   const valid = await comparePassword(password, user.password);
   if (!valid) return c.json({ error: "Invalid password" }, 401);
 
-  const rolesRes = await db.query(
-    `
-    SELECT r.id, r.name, ur.is_default
-    FROM user_roles ur
-    JOIN roles r ON ur.role_id = r.id
-    WHERE ur.user_id = $1
-    `,
-    [user.id]
-  );
-  const roles = rolesRes.rows;
+  const roles = await getUserRoles(user.id);
   const defaultRole = roles.find((r) => r.is_default) || roles[0];
 
   await db.query("UPDATE users SET active_role_id = $1 WHERE id = $2", [
@@ -106,6 +97,19 @@ authRoute.post("/login", async (c) => {
   });
 });
 
+async function getUserRoles(userId: string) {
+  const rolesRes = await db.query(
+    `
+    SELECT r.id, r.name, ur.is_default
+    FROM user_roles ur
+    JOIN roles r ON ur.role_id = r.id
+    WHERE ur.user_id = $1
+    `,
+    [userId]
+  );
+  return rolesRes.rows;
+}
+
 authRoute.post("/switch-role", authMiddleware, async (c) => {
   const { roleId } = await c.req.json();
   const user = c.get("user");
@@ -122,15 +126,17 @@ authRoute.post("/switch-role", authMiddleware, async (c) => {
   const role = roleCheck.rows[0];
   if (!role) return c.json({ error: "Invalid role or not assigned" }, 403);
 
+  // simpan role aktif
   await db.query("UPDATE users SET active_role_id = $1 WHERE id = $2", [
     role.id,
     user.id,
   ]);
 
-  const newToken = generateToken({
-    id: user.id,
+  // buat token baru
+  const token = generateToken({
+    id: String(user.id),
     name: user.name,
-    role: role.id,
+    role: String(role.id),
   });
 
   const refreshToken = generateRefreshToken({
@@ -138,13 +144,27 @@ authRoute.post("/switch-role", authMiddleware, async (c) => {
     name: user.name,
   });
 
+  // set cookie refresh token baru
+  setCookie(c, "refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  });
+
   const permissions = await getUserPermissions(user.id, role.id);
+  const roles = await getUserRoles(user.id);
 
   return c.json({
-    token: newToken,
-    refreshToken,
-    selectedRole: role,
-    permissions,
+    token,
+    user: {
+      id: user.id,
+      name: user.name,
+      roles: roles.map((r) => ({ id: r.id, name: r.name })),
+      defaultRole: { id: role.id, name: role.name },
+      permissions,
+    },
   });
 });
 

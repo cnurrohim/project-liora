@@ -49,6 +49,7 @@ export default function RoleListPage() {
 
     openTabSmart(
       {
+        id: "/roles/create",
         route: "/roles/create",
         label: "Tambah Role",
         type: "route",
@@ -65,6 +66,7 @@ export default function RoleListPage() {
 
     openTabSmart(
       {
+        id: `/roles/${roleId}/edit`,
         route: `/roles/${roleId}/edit`,
         label: `Edit: ${name}`,
         type: "route",

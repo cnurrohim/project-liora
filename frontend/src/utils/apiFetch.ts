@@ -42,7 +42,27 @@ export async function apiFetch(
     }
   }
 
+  if (!response.ok) {
+    // Bungkus error dengan info status + body
+    const errorBody = await safeParseJson(response);
+    const error: any = new Error(errorBody?.message || "Request failed");
+    error.status = response.status;
+    error.response = {
+      status: response.status,
+      data: errorBody,
+    };
+    throw error;
+  }
+
   return response;
+}
+
+async function safeParseJson(res: Response) {
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
 
 function normalizeHeaders(headers?: HeadersInit): Record<string, string> {

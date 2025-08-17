@@ -19,13 +19,15 @@ export const AppConfigController = {
     } catch (err) {
       console.error("Gagal load app.json:", err);
     }
-    notify();
   },
   getState() {
     return { ...state };
   },
   subscribe(cb: () => void) {
     listeners.push(cb);
+    return () => {
+      this.unsubscribe(cb);
+    };
   },
   unsubscribe(cb: () => void) {
     listeners = listeners.filter((f) => f !== cb);

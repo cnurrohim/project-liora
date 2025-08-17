@@ -24,6 +24,7 @@ import UserRolesForm from "./userRolesForm";
 import { IconRenderer } from "@/components/IconRenderer";
 import { usePermissions } from "./permissions";
 import ForbiddenPage from "pages/Misc/403";
+import { ProfileController } from "@/controller/ProfileController";
 
 type FormValues = z.infer<typeof schema>;
 
@@ -120,7 +121,7 @@ export default function UserFormTabs() {
 
       if (isEdit) {
         await updateUser(id!, payload);
-
+        await ProfileController.load();
         showSuccessToast("User berhasil diperbarui");
       } else {
         await createUser(payload);

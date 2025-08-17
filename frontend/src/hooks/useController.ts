@@ -30,7 +30,9 @@ export function useController<TState, TSelected = TState>(
   selector: (s: TState) => TSelected = (s) => s as unknown as TSelected,
   isEqual: (a: TSelected, b: TSelected) => boolean = Object.is
 ): TSelected {
-  const [selected, setSelected] = useState(() => selector(controller.getState()));
+  const [selected, setSelected] = useState(() =>
+    selector(controller.getState())
+  );
 
   useEffect(() => {
     const cb = () => {
@@ -43,8 +45,6 @@ export function useController<TState, TSelected = TState>(
 
   return selected;
 }
-
-
 
 /**
  * Performs a shallow comparison between two objects.
@@ -61,11 +61,15 @@ export function useController<TState, TSelected = TState>(
  * shallowEqual({ x: 1, y: 2 }, { x: 1, y: 2 }); // true
  * shallowEqual({ x: 1 }, { x: 1, y: 2 }); // false
  */
-function shallowEqual<T extends Record<string, any>>(a: T, b: T): boolean {
+export function shallowEqual<T extends Record<string, any>>(
+  a: T,
+  b: T
+): boolean {
   if (Object.is(a, b)) return true;
   if (!a || !b || typeof a !== "object" || typeof b !== "object") return false;
 
-  const aKeys = Object.keys(a), bKeys = Object.keys(b);
+  const aKeys = Object.keys(a),
+    bKeys = Object.keys(b);
   if (aKeys.length !== bKeys.length) return false;
 
   for (let key of aKeys) {
@@ -74,8 +78,6 @@ function shallowEqual<T extends Record<string, any>>(a: T, b: T): boolean {
 
   return true;
 }
-
-
 
 /**
  * Performs a deep comparison between two objects.
@@ -95,7 +97,12 @@ function shallowEqual<T extends Record<string, any>>(a: T, b: T): boolean {
 export function deepEqual<T extends object>(a: T, b: T): boolean {
   if (Object.is(a, b)) return true;
 
-  if (typeof a !== "object" || typeof b !== "object" || a === null || b === null) {
+  if (
+    typeof a !== "object" ||
+    typeof b !== "object" ||
+    a === null ||
+    b === null
+  ) {
     return false;
   }
 
@@ -121,5 +128,3 @@ export function deepEqual<T extends object>(a: T, b: T): boolean {
 
   return true;
 }
-
-

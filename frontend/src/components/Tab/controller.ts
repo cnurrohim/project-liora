@@ -6,14 +6,21 @@ export type TabItem = {
   content?: React.ReactNode;
 };
 
+type TabStorageKey = {
+  userId?: string;
+  roleId?: string;
+};
+
 export type TabState = {
   openTabs: TabItem[]; // daftar tab yang sedang terbuka
   activeTabKey: string | null; // tab yang sedang aktif
+  tabStorageKey?: TabStorageKey;
 };
 
 const state: TabState = {
   openTabs: [],
   activeTabKey: null,
+  tabStorageKey: {},
 };
 
 let updateCallbacks: (() => void)[] = [];
@@ -160,6 +167,19 @@ export const TabController = {
     }
   },
 
+  setTabStorageKey(userId: string, roleId: string) {
+    state.tabStorageKey = state.tabStorageKey ?? {};
+    state.tabStorageKey.userId = userId;
+    state.tabStorageKey.roleId = roleId;
+  },
+
+  getTabStorageKey() {
+    const tabStorageKey = state.tabStorageKey ?? {};
+    if (!tabStorageKey?.userId && !tabStorageKey?.roleId)
+      return "tabState:guest";
+    return `tabState:${tabStorageKey.userId}:${tabStorageKey.roleId}`;
+  },
+
   getTabByRoute(route: string): TabItem | undefined {
     return state.openTabs.find((tab) => tab.route === route);
   },
@@ -186,7 +206,7 @@ function notify() {
   );
 
   localStorage.setItem(
-    "tabState",
+    TabController.getTabStorageKey(),
     JSON.stringify({
       openTabs: openTabsForStorage,
       activeTabKey: state.activeTabKey,
@@ -197,7 +217,8 @@ function notify() {
 }
 
 export function initFromStorage() {
-  const saved = localStorage.getItem("tabState");
+  const saved = localStorage.getItem(TabController.getTabStorageKey());
+
   if (!saved) return;
 
   try {
@@ -208,6 +229,7 @@ export function initFromStorage() {
 
     state.openTabs = rebuiltTabs;
     state.activeTabKey = parsed.activeTabKey;
+    notify();
   } catch (e) {
     console.warn("Gagal restore tab state:", e);
   }

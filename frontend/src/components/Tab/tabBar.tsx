@@ -53,7 +53,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
   }, [activeTabKey]);
 
   return (
-    <div className="flex items-center bg-gray-900">
+    <div className="flex items-center  bg-gray-900 mt-5 ml-5 mr-5">
       {showArrows && (
         <button
           ref={leftBtnRef}

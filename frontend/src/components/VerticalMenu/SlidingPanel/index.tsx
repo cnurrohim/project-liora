@@ -3,14 +3,21 @@ import { resolveItems, SlidingPanelController } from "./controller";
 import { useController } from "../../../hooks/useController";
 import type { MenuItem } from "../../../types/menu";
 import MenuItemComponent from "./MenuItemComponent";
+import { AppInfoController } from "../appInfoController";
+import { UserProfileController } from "../userProfileController";
+import { API_URL } from "../constant";
 
 export default function SlidingPanel({
   onItemClick,
+  onViewProfileClick,
   iconRenderer,
   defaultIcon,
   onPinClick,
+  onLogout,
+  onSwitchRole,
 }: {
   onItemClick: (item: MenuItem) => void;
+  onViewProfileClick?: () => void;
   iconRenderer?: (props: {
     name: ReactNode | string | undefined;
     size?: number;
@@ -18,15 +25,34 @@ export default function SlidingPanel({
   }) => ReactNode;
   defaultIcon?: (props: { size?: number; color?: string }) => ReactNode;
   onPinClick?: (item: MenuItem) => void;
+  onLogout?: () => void;
+  onSwitchRole?: (userId: string) => void;
 }) {
   const [state, setState] = useState(SlidingPanelController.getState());
+  const [appInfo, setAppInfo] = useState(() => AppInfoController.getState());
+  const [userProfile, setUserProfile] = useState(() =>
+    UserProfileController.getState()
+  );
+
+  const [showRoles, setShowRoles] = useState(false);
   const visible = useController(SlidingPanelController, (s) => s.visible);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const update = () => setState(SlidingPanelController.getState());
-    SlidingPanelController.subscribe(update);
-    return () => SlidingPanelController.unsubscribe(update);
+    const updateAppInfo = () => setAppInfo(AppInfoController.getState());
+    const updateUserProfile = () =>
+      setUserProfile(UserProfileController.getState());
+
+    const unsubUpdate = SlidingPanelController.subscribe(update);
+    const unsubAppInfo = AppInfoController.subscribe(updateAppInfo);
+    const unsubUserProfile = UserProfileController.subscribe(updateUserProfile);
+
+    return () => {
+      unsubUpdate;
+      unsubAppInfo;
+      unsubUserProfile;
+    };
   }, []);
 
   const rawItems =
@@ -38,7 +64,6 @@ export default function SlidingPanel({
       : SlidingPanelController.getAllMenuItems();
 
   const unFiltereditems = uniqueBy(rawItems, (item) => item.id);
-
   const items = unFiltereditems.filter((item) =>
     item.label?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -50,7 +75,7 @@ export default function SlidingPanel({
       className={`
     fixed top-0 ${state.position === "left" ? "left-14" : "right-14"}
     h-full w-64 bg-gray-900 text-white shadow-xl
-    transform transition-transform duration-300 z-30 flex flex-col px-4 py-3
+    transform transition-transform duration-300 z-30 flex flex-col 
     ${
       visible
         ? "translate-x-0"
@@ -62,63 +87,194 @@ export default function SlidingPanel({
   `}
     >
       {/* Header */}
-      <div className="flex items-center justify-between py-4 ">
-        <div className="text-2xl font-bold text-rose-500 font-logo">
-          {state.appName}
-        </div>
-        <button
-          className="text-xl text-gray-400 hover:text-white cursor-pointer"
-          onClick={() => SlidingPanelController.close()}
-          title="Close"
+      <div className="relative flex flex-row items-start py-4 px-3 justify-between text-2xl font-bold text-rose-500 font-logo">
+        <span
+          className="text-gray-200 break-words"
+          style={{
+            fontSize: "clamp(1rem, 2vw, 1.5rem)",
+            maxWidth: "80%",
+            wordBreak: "break-word",
+          }}
         >
-          <div className="text-2xl mx-2 font-bold text-rose-500">×</div>
+          {appInfo.name}
+        </span>
+        <button
+          className="cursor-pointer mt-1 bg-gray-700 rounded-full"
+          title="Collapse menu"
+          onClick={() => SlidingPanelController.close()}
+        >
+          {iconRenderer?.({
+            name:
+              state.position === "left"
+                ? "RiArrowLeftSLine"
+                : "RiArrowRightSLine",
+            size: 20,
+            color: "#eee",
+          })}
         </button>
       </div>
 
-      <div className="flex flex-col h-full mt-2">
-        {/* Search Input */}
+      {/* Search Input */}
+
+      <div className="relative mb-6 px-3">
+        <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400">
+          {iconRenderer?.({
+            name: "RiSearchLine",
+            size: 18,
+            color: "#9c9c9c",
+          })}
+        </span>
         <input
           type="text"
           placeholder="Search menu..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="mb-3 p-2 rounded bg-gray-800 text-white focus:outline-none"
+          className="p-2 pl-10 w-full rounded bg-gray-800 text-white focus:outline-none"
         />
+      </div>
 
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-auto mt-2 px-3">
+        {/* Menu List */}
         {state.start?.label && (
           <div className="font-primary text-sm uppercase text-gray-500 font-bold mb-2">
             {state.start.label}
           </div>
         )}
-        <nav className="flex flex-col justify-between h-full">
-          <div className="overflow-auto">
-            {items.map((item, i) => (
-              <MenuItemComponent
-                key={i}
-                state={state}
-                item={item}
-                i={i}
-                onItemClick={onItemClick}
-                iconRenderer={iconRenderer}
-                defaultIcon={defaultIcon}
-                onPinClick={onPinClick}
-              />
-            ))}
-          </div>
-        </nav>
+        <nav>
+          {items.map((item, i) => (
+            <MenuItemComponent
+              key={i}
+              state={state}
+              item={item}
+              i={i}
+              onItemClick={onItemClick}
+              iconRenderer={iconRenderer}
+              defaultIcon={defaultIcon}
+              onPinClick={onPinClick}
+            />
+          ))}
 
-        {state.activePath.length > 0 && (
-          <div className="mt-4 border-t border-lime-700 pt-2 ">
-            <div
-              onClick={() => SlidingPanelController.goBack()}
-              className="text-gray-400 hover:text-white cursor-pointer "
-            >
-              <span className="ml-auto text-rose-400 pr-2">⮬</span>
-              <span className="text-gray-400">Back</span>
+          {state.activePath.length > 0 && (
+            <div className="mt-4 border-t border-gray-700 p-2 hover:bg-gray-800 group">
+              <div
+                onClick={() => SlidingPanelController.goBack()}
+                className="cursor-pointer "
+              >
+                <span className="ml-auto text-gray-100 pr-2">⮬</span>
+                <span className="font-medium text-gray-400 group-hover:text-gray-100">
+                  Back
+                </span>
+              </div>
+            </div>
+          )}
+        </nav>
+      </div>
+
+      {/* Fixed footer */}
+      {userProfile.user && (
+        <div className="border-t border-gray-700 py-4 transition-all duration-300 px-3">
+          {/* Foto profil + data */}
+          <div className="flex items-center gap-3">
+            <img
+              src={
+                userProfile.user?.profile_photo
+                  ? `${API_URL}${userProfile.user?.profile_photo}`
+                  : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      userProfile.user?.name || ""
+                    )}&background=0D8ABC&color=fff`
+              }
+              alt={userProfile.user?.name || "User profile photo"}
+              className="w-[52px] h-[52px] rounded-full object-cover border border-gray-600"
+            />
+            <div className="flex flex-col">
+              <span className="font-semibold text-white text-sm">
+                {userProfile.user?.name}
+              </span>
+              <span className="text-xs text-gray-400">
+                @{userProfile.user?.username}
+              </span>
+              <span className="text-xs text-gray-500">
+                {userProfile.user?.defaultRole?.name}
+              </span>
             </div>
           </div>
-        )}
-      </div>
+
+          {/* Switch Role */}
+          {(userProfile.user?.roles?.length ?? 0) > 1 && (
+            <div className="relative mt-3">
+              <button
+                onClick={() => setShowRoles((prev) => !prev)}
+                className={`cursor-pointer relative w-full hover:bg-gray-700 ${
+                  showRoles ? "text-gray-500" : "text-gray-300"
+                } text-sm py-1 rounded flex justify-between items-center px-3`}
+              >
+                Switch Role
+                {iconRenderer?.({
+                  name: showRoles ? "RiArrowUpSLine" : "RiArrowDownSLine",
+                  size: 18,
+                  color: "#9c9c9c",
+                })}
+              </button>
+              <div
+                className="overflow-hidden transition-all duration-300"
+                style={{
+                  maxHeight: showRoles
+                    ? `${
+                        userProfile.user?.roles.filter(
+                          (role) =>
+                            role.id !== userProfile.user?.defaultRole?.id
+                        ).length * 40
+                      }px`
+                    : "0px",
+                }}
+              >
+                {onSwitchRole && (
+                  <div className="flex flex-col gap-1">
+                    {userProfile.user?.roles
+                      ?.filter(
+                        (role) => role.id !== userProfile.user?.defaultRole?.id
+                      )
+                      .map((role) => (
+                        <button
+                          key={role.id}
+                          onClick={() => onSwitchRole(role.id)}
+                          className="cursor-pointer bg-gray-800 block w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded"
+                        >
+                          {role.name}
+                        </button>
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex flex-row gap-2">
+            {onViewProfileClick && (
+              <button
+                onClick={onViewProfileClick}
+                className="cursor-pointer mt-3 w-full bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm py-1 rounded"
+              >
+                View Profile
+              </button>
+            )}
+            {onLogout && (
+              <button
+                onClick={onLogout}
+                className="cursor-pointer mt-3 px-2 w-fit border-gray-800 border-2 hover:bg-gray-700 text-white text-sm py-1 rounded"
+              >
+                {iconRenderer?.({
+                  name: "RiShutDownLine",
+                  size: 18,
+                  color: "#c9c9c9",
+                })}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

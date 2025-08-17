@@ -1,9 +1,6 @@
 import { apiFetch } from "@/utils/apiFetch";
 
 export async function getLayout(userId: string, roleId: string) {
-  // const res = await apiFetch(
-  //   `/user-layout?user_id=${userId}&role_id=${roleId}`
-  // );
   const res = await apiFetch(`/user-layout/${userId}/${roleId}`);
   if (!res.ok) throw new Error("Gagal mengambil layout user");
   return (await res.json()).layout;

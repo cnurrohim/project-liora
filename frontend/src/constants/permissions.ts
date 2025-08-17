@@ -41,4 +41,10 @@ export const PERMISSIONS = {
     UPDATE: "app_setting.update",
     DELETE: "app_setting.delete",
   },
+  USER_PROFILE: {
+    VIEW: "user_profile.view",
+    CREATE: "user_profile.create",
+    UPDATE: "user_profile.update",
+    DELETE: "user_profile.delete",
+  },
 } as const;

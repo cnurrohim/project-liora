@@ -7,11 +7,13 @@ import { contentWires } from "./content.wires";
 import { appWires } from "./app.wires";
 import type { Wire } from "./setupWiring";
 import { commandWires } from "./command.wires";
+import { userProfileWires } from "./userProfile.wires";
 
 export const wiringMap: Wire[] = [
   ...layoutWires,
   ...contentWires,
   ...appWires,
+  ...userProfileWires,
   ...menuWires(),
   ...commandWires(),
 ];

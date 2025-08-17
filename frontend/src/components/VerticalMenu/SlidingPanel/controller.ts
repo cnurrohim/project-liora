@@ -7,8 +7,6 @@ let state = {
   visible: false as boolean,
   activePath: [] as number[],
   position: "left" as "left" | "right",
-  appName: "App" as string,
-  appLogo: "" as string,
   hidden: true as boolean,
   allMenus: [] as MenuSection[],
 };
@@ -61,38 +59,59 @@ export const SlidingPanelController = {
     state.activePath = [];
     notify();
   },
-  setAppInfo(name: string, logo: string) {
-    state.appName = name;
-    state.appLogo = logo;
-    notify();
-  },
   goBack() {
     state.activePath = state.activePath.slice(0, -1);
-    notify();
-  },
-  toggle() {
-    state.visible = !state.visible;
-    state.hidden = !state.hidden;
     notify();
   },
   getVisibleState() {
     return state.visible;
   },
+  toggle() {
+    if (state.visible) {
+      // Tutup
+      state.visible = false;
+      notify();
+      setTimeout(() => {
+        state.hidden = true;
+        notify();
+      }, 300); // sesuai duration-300
+    } else {
+      // Buka
+      state.hidden = false;
+      notify();
+      requestAnimationFrame(() => {
+        state.visible = true;
+        notify();
+      });
+    }
+  },
+
   close() {
     state.visible = false;
-    state.hidden = true;
     notify();
+    setTimeout(() => {
+      state.hidden = true;
+      notify();
+    }, 300);
   },
+
   open() {
-    state.visible = true;
     state.hidden = false;
     notify();
+    requestAnimationFrame(() => {
+      state.visible = true;
+      notify();
+    });
   },
+
   getState() {
     return { ...state };
   },
   subscribe(cb: () => void) {
     listeners.push(cb);
+    return () => {
+      this.unsubscribe(cb);
+    };
   },
   unsubscribe(cb: () => void) {
     listeners = listeners.filter((fn) => fn !== cb);
