@@ -137,7 +137,6 @@ export default function MenuFormPage() {
           (async () => {
             try {
               const data = await getMenuById(id);
-              console.log("data", data);
               setForm({
                 label: data.label ?? "",
                 description: data.description ?? "",

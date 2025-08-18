@@ -61,10 +61,6 @@ menuRoute.get("/", async (c) => {
 
     // filter by permission
     const filteredMenus = filterMenusByPermissions(menus, userPermissions);
-    console.log("userId", userId);
-    console.log("roleId", roleId);
-    console.log("userPermissionIds", userPermissions);
-    console.log(filteredMenus);
 
     // build tree
     const tree = buildMenuTree(filteredMenus);

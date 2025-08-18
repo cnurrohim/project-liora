@@ -55,7 +55,6 @@ export default function MenuListPage() {
         (item: MenuItem) => item.id !== MENU.PINNED_MENUS
       );
       setMenus(data);
-      console.log("data menu", data);
     } catch (err: any) {
       setError(err.message || "Gagal memuat menu");
     } finally {
