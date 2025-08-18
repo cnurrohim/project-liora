@@ -12,4 +12,5 @@ export const MENU = {
     COMMAND: "command",
     GROUP: "group",
   },
+  PINNED_MENUS: "pinned-menus",
 } as const;

@@ -161,7 +161,7 @@ export default function UserProfilePage() {
         />
 
         {errors.profile_photo?.message && (
-          <p className="text-rose-400 text-sm mt-1">
+          <p className="text-blue-400 text-sm mt-1">
             {String(errors.profile_photo.message)}
           </p>
         )}
@@ -175,7 +175,7 @@ export default function UserProfilePage() {
           className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
         />
         {errors.name && (
-          <p className="text-rose-400 text-sm mt-1">{errors.name.message}</p>
+          <p className="text-blue-400 text-sm mt-1">{errors.name.message}</p>
         )}
       </div>
 
@@ -187,7 +187,7 @@ export default function UserProfilePage() {
           className="w-full border-gray-300 rounded-md shadow-sm p-2"
         />
         {errors.username?.message && (
-          <p className="text-rose-400 text-sm mt-1">
+          <p className="text-blue-400 text-sm mt-1">
             {errors.username.message}
           </p>
         )}
@@ -214,7 +214,7 @@ export default function UserProfilePage() {
           className="w-full border-gray-300 rounded-md shadow-sm p-2"
         />
         {errors.confirmPassword && (
-          <p className="text-rose-400 text-sm mt-1">
+          <p className="text-blue-400 text-sm mt-1">
             {errors.confirmPassword.message}
           </p>
         )}
@@ -228,7 +228,7 @@ export default function UserProfilePage() {
           className="w-full border-gray-300 rounded-md shadow-sm p-2"
         />
         {errors.email && (
-          <p className="text-rose-400 text-sm mt-1">{errors.email.message}</p>
+          <p className="text-blue-400 text-sm mt-1">{errors.email.message}</p>
         )}
       </div>
 

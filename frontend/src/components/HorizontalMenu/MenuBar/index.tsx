@@ -44,7 +44,7 @@ export default function MenuBar() {
         } relative w-full h-12 px-4 border-gray-700 bg-gray-900 text-white flex flex-row justify-between py-1 z-100 shadow-md`}
       >
         <div className="flex flex-row items-center">
-          <div className="text-2xl font-bold text-rose-500 mr-5 flex flex-row items-center gap-2">
+          <div className="text-2xl font-bold text-blue-500 mr-5 flex flex-row items-center gap-2">
             <img
               src={`${API_URL}/uploads/${appInfo.logo}`}
               alt={`${appInfo.name} logo`}

@@ -29,7 +29,7 @@ export default function MenuBar() {
       title={entry.label}
       className={`p-2 rounded-md hover:bg-gray-800 text-gray-400 hover:text-white transition cursor-pointer ${
         entry.key === MenuBarController.getActive()
-          ? "text-rose-400 bg-gray-800"
+          ? "text-blue-400 bg-gray-800"
           : ""
       }`}
       onClick={() => handleClick(entry)}

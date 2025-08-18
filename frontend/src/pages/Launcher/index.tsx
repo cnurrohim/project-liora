@@ -107,14 +107,14 @@ export default function AppLauncher() {
           }, {})
         ).map(([parent, items]) => (
           <div key={parent} className="mb-4">
-            <div className="text-rose-400 font-semibold">{parent}</div>
+            <div className="text-blue-400 font-semibold">{parent}</div>
             <div className="pl-2 mt-1 space-y-1">
               {items.map((item, i) => (
                 <div key={i} className="flex flex-row">
                   <button
                     type="button"
                     title={item.isPinned ? "Unpin menu" : "Pin menu"}
-                    className="text-rose-400 cursor-pointer hover:bg-gray-700 p-2"
+                    className="text-blue-400 cursor-pointer hover:bg-gray-700 p-2"
                     onClick={() => {
                       handlePinClick(item);
                     }}
@@ -131,7 +131,7 @@ export default function AppLauncher() {
                     onClick={() => handleClick(item)}
                     className="w-full flex items-center gap-2 text-sm text-gray-200 cursor-pointer hover:bg-gray-800 px-2 py-1 rounded"
                   >
-                    <span className="text-rose-300">
+                    <span className="text-blue-300">
                       {typeof item.icon === "string" && item.icon ? (
                         <IconRenderer
                           name={item.icon}

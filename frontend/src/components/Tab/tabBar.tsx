@@ -75,7 +75,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
             key={tab.key}
             className={`tab-wrapper flex items-center group ${
               tab.key === activeTabKey
-                ? "bg-gray-800 text-gray-300 border-t-2 border-rose-400"
+                ? "bg-gray-800 text-gray-300 border-t-3 border-blue-500"
                 : "bg-gray-900 text-gray-400 hover:bg-gray-800"
             }`}
           >
@@ -84,7 +84,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
               onClick={() => TabController.setActiveTab(tab.key)}
               className={`tab transition-all duration-200 ease-in-out h-full px-4 py-1 text-sm whitespace-nowrap flex items-center gap-x-2`}
             >
-              <span className="text-rose-400">
+              <span className="text-blue-400">
                 {tab.icon ? iconRenderer?.(tab.icon) ?? "🗱" : "🗱"}
               </span>
               <span>{tab.label}</span>
@@ -92,7 +92,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
 
             <button
               onClick={() => TabController.closeTab(tab.key)}
-              className="mr-2 text-lg text-rose-200 cursor-pointer"
+              className="mr-2 text-lg text-blue-200 cursor-pointer"
             >
               &times;
             </button>
@@ -122,7 +122,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
             route: defaultTab?.content ?? "/pages/default",
           });
         }}
-        className="px-2 text-2xl h-10 bg-rose-500 text-gray-900 hover:text-white cursor-pointer"
+        className="px-2 text-2xl h-10 bg-blue-500 text-gray-900 hover:text-white cursor-pointer"
       >
         +
       </button>

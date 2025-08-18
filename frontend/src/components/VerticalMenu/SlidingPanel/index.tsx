@@ -87,7 +87,7 @@ export default function SlidingPanel({
   `}
     >
       {/* Header */}
-      <div className="relative flex flex-row items-start py-4 px-3 justify-between text-2xl font-bold text-rose-500 font-logo">
+      <div className="relative flex flex-row items-start py-4 px-3 justify-between text-2xl font-bold text-blue-500 font-logo">
         <span
           className="text-gray-200 break-words"
           style={{

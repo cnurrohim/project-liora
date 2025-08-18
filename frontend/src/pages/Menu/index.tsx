@@ -20,6 +20,7 @@ import { MenuProviderController } from "@/controller/menuProviderController";
 import { ConfirmationDialogController } from "@/components/ConfirmationDialog/controller";
 import ForbiddenPage from "pages/Misc/403";
 import { usePermissions } from "./permissions";
+import { MENU } from "@/constants/menu";
 
 type MenuItem = {
   id: string;
@@ -49,8 +50,12 @@ export default function MenuListPage() {
   const fetchMenus = async () => {
     setLoading(true);
     try {
-      const data = await getMenus();
+      const rawData = await getMenus();
+      const data = rawData.filter(
+        (item: MenuItem) => item.id !== MENU.PINNED_MENUS
+      );
       setMenus(data);
+      console.log("data menu", data);
     } catch (err: any) {
       setError(err.message || "Gagal memuat menu");
     } finally {
@@ -96,7 +101,7 @@ export default function MenuListPage() {
   const handleMove = async (id: string, isMoveMenuUP: boolean) => {
     try {
       await handleReorder(id, isMoveMenuUP);
-      fetchMenus(); // refresh
+      fetchMenus();
       MenuProviderController.load();
     } catch (err: any) {
       showErrorToast(err.message || "Gagal mengubah urutan");
@@ -116,17 +121,20 @@ export default function MenuListPage() {
   const columns = useMemo<ColumnDef<MenuItem>[]>(
     () => [
       {
-        accessorKey: "ordinal",
+        id: "number",
         header: () => <div className="text-left">#</div>,
+        cell: ({ row }) => {
+          const { pageIndex, pageSize } = table.getState().pagination;
+          return (
+            <div
+              style={{ paddingLeft: `${row.depth * 8}px` }}
+              className="flex items-center gap-2"
+            >
+              {pageIndex * pageSize + row.index + 1}
+            </div>
+          );
+        },
         size: 50,
-        cell: ({ row }) => (
-          <div
-            style={{ paddingLeft: `${row.depth * 8}px` }}
-            className="flex items-center gap-2"
-          >
-            {row.getValue("ordinal")}
-          </div>
-        ),
       },
       {
         accessorKey: "label",

@@ -131,7 +131,7 @@ export default function SlidingPanel({
               onClick={() => SlidingPanelController.goBack()}
               className="text-gray-400 hover:text-white cursor-pointer "
             >
-              <span className="ml-auto text-rose-400 pr-2">⮬</span>
+              <span className="ml-auto text-blue-400 pr-2">⮬</span>
               <span className="text-gray-400">Back</span>
             </div>
           </div>

@@ -40,7 +40,7 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="bg-gray-800 p-6 rounded shadow-md w-80 space-y-4"
       >
-        <h2 className="text-2xl font-bold text-rose-400 text-center flex flex-col items-center">
+        <h2 className="text-2xl font-bold text-blue-400 text-center flex flex-col items-center">
           <IconRenderer
             name="RiLock2Line"
             size={300}
@@ -48,7 +48,7 @@ export default function LoginPage() {
           />
         </h2>
 
-        {error && <div className="text-red-400 text-sm">{error}</div>}
+        {error && <div className="text-blue-400 text-sm">{error}</div>}
 
         <input
           type="text"
@@ -88,7 +88,7 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full py-2 bg-rose-500 hover:bg-rose-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+          className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
           disabled={loading}
         >
           {loading ? (

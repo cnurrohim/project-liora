@@ -25,7 +25,7 @@ export default function ConfirmationDialog() {
               ConfirmationDialogController.closeConfirmation();
               state.onConfirm();
             }}
-            className="px-4 py-2 bg-rose-600 hover:bg-rose-700 rounded cursor-pointer"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded cursor-pointer"
           >
             Ya
           </button>

@@ -80,6 +80,7 @@ export default function UserListPage() {
 
     openTabSmart(
       {
+        id: `/user/${user.id}/edit`,
         route: `/user/${user.id}/edit`,
         label: `Edit: ${user.name}`,
         type: "route",
@@ -179,7 +180,7 @@ export default function UserListPage() {
               {departments.map((d) => (
                 <span
                   key={d.name}
-                  className="bg-gray-100 px-2 py-1 rounded text-xs text-gray-800"
+                  className="bg-gray-600 px-2 py-1 rounded text-xs text-gray-300"
                 >
                   {d.name}
                 </span>
@@ -201,14 +202,16 @@ export default function UserListPage() {
               {roles.map((r) => (
                 <span
                   key={r.name}
-                  className={`px-2 py-1 rounded text-xs ${
+                  className={`px-2 py-1 rounded text-xs relative ${
                     r.is_default
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-gray-100 text-gray-800"
+                      ? "bg-gray-600 text-white"
+                      : "bg-gray-600 text-gray-300"
                   }`}
                 >
                   {r.name}
-                  {r.is_default && " ★"}
+                  {r.is_default && (
+                    <span className="text-amber-400 ml-1 ">★</span>
+                  )}
                 </span>
               ))}
             </div>
@@ -269,6 +272,7 @@ export default function UserListPage() {
   const openInNewTab = (newTab = false) => {
     openTabSmart(
       {
+        id: "/user/create",
         route: "/user/create",
         label: "Tambah User",
         type: "route",

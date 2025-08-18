@@ -137,7 +137,7 @@ export default function MenuFormPage() {
           (async () => {
             try {
               const data = await getMenuById(id);
-
+              console.log("data", data);
               setForm({
                 label: data.label ?? "",
                 description: data.description ?? "",
@@ -151,7 +151,8 @@ export default function MenuFormPage() {
                 alignment: data.alignment ?? MENU.ALIGNMENT.START,
                 permissions:
                   data.permissions?.map((p: any) => ({
-                    label: `${p.domain}.${p.name}`,
+                    id: `${p.id}`,
+                    name: `${p.domain} ${p.name}`,
                     value: p.id,
                   })) ?? [],
               });

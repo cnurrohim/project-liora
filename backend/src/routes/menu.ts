@@ -3,9 +3,16 @@ import { db } from "../db.js";
 import { authMiddleware } from "../middleware/auth.js";
 import type { Variables } from "../types/context.js";
 import { clearRedisCache, redis } from "../lib/redis.js";
+import { MENU } from "../constants/menu.js";
 
 export const menuRoute = new Hono<{ Variables: Variables }>();
 menuRoute.use(authMiddleware);
+
+type Permission = {
+  id: string;
+  domain: string;
+  name: string;
+};
 
 type MenuRow = {
   id: string;
@@ -46,14 +53,18 @@ menuRoute.get("/", async (c) => {
     }
 
     // fetch
-    const [userPermissionIds, menus, pinnedIds] = await Promise.all([
-      getUserPermissionIds(userId),
+    const [userPermissions, menus, pinnedIds] = await Promise.all([
+      getUserPermissions(userId),
       getMenus(),
       getPinnedMenuIds(userId, roleId),
     ]);
 
     // filter by permission
-    const filteredMenus = filterMenusByPermissions(menus, userPermissionIds);
+    const filteredMenus = filterMenusByPermissions(menus, userPermissions);
+    console.log("userId", userId);
+    console.log("roleId", roleId);
+    console.log("userPermissionIds", userPermissions);
+    console.log(filteredMenus);
 
     // build tree
     const tree = buildMenuTree(filteredMenus);
@@ -108,7 +119,19 @@ menuRoute.get("/:id", async (c) => {
     const id = c.req.param("id");
 
     const res = await db.query(
-      `SELECT * FROM menu_items WHERE id = $1 LIMIT 1`,
+      `SELECT mi.*,
+      (
+        SELECT json_agg(json_build_object(
+          'id', r.id,
+          'name', r.name,
+          'label', r.label,
+          'domain', r.domain
+        ))
+        FROM menu_permissions mp
+        JOIN permissions r ON r.id = mp.permission_id
+        WHERE mp.menu_id = mi.id
+      ) AS permissions
+        FROM menu_items mi WHERE mi.id = $1 LIMIT 1`,
       [id]
     );
 
@@ -350,11 +373,6 @@ menuRoute.post("/normalize-ordinal", async (c) => {
   return c.json({ success: true });
 });
 
-interface Permission {
-  id: string;
-  name: string;
-}
-
 async function insertMenuPermissions(
   client: any,
   menuId: string,
@@ -396,7 +414,7 @@ function removeEmptyGroups(nodes: MenuTreeNode[]): MenuTreeNode[] {
 async function getUserPermissionIds(userId: string): Promise<string[]> {
   const res = await db.query(
     `
-    SELECT DISTINCT p.id
+    SELECT DISTINCT p.id,p.domain,p.name
     FROM permissions p
     LEFT JOIN role_permissions rp ON rp.permission_id = p.id
     LEFT JOIN user_roles ur ON ur.role_id = rp.role_id
@@ -405,8 +423,23 @@ async function getUserPermissionIds(userId: string): Promise<string[]> {
     `,
     [userId]
   );
-  const rows = res.rows as { id: string }[];
+  const rows = res.rows as { id: string; domain: string; name: string }[];
   return rows.map((r) => r.id);
+}
+
+async function getUserPermissions(userId: string): Promise<Permission[]> {
+  const res = await db.query(
+    `
+    SELECT DISTINCT p.id, p.domain, p.name
+    FROM permissions p
+    LEFT JOIN role_permissions rp ON rp.permission_id = p.id
+    LEFT JOIN user_roles ur ON ur.role_id = rp.role_id
+    LEFT JOIN user_permissions up ON up.permission_id = p.id
+    WHERE ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true)
+    `,
+    [userId]
+  );
+  return res.rows as Permission[];
 }
 
 async function getMenus(): Promise<MenuRow[]> {
@@ -441,11 +474,21 @@ async function getPinnedMenuIds(
 
 function filterMenusByPermissions(
   menus: MenuRow[],
-  userPermissionIds: string[]
+  userPermissions: Permission[]
 ): MenuRow[] {
+  // cek apakah user punya permission super admin
+  const hasAllAccess = userPermissions.some((p) => p.name === "all_access");
+
+  // kalau iya, langsung return semua menus tanpa filter
+  if (hasAllAccess) {
+    return menus;
+  }
+
+  const userPermissionIds = userPermissions.map((p) => p.id);
+
   return menus.filter((menu) => {
     const perms = menu.permission_ids ?? [];
-    if (perms.length === 0) return true;
+    if (menu.type === MENU.TYPE.GROUP) return true;
     return perms.some((permId) => userPermissionIds.includes(permId));
   });
 }

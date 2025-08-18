@@ -40,9 +40,9 @@ export async function initializeApp(): Promise<() => void> {
 
   registerRoutes();
 
-  const stopRave = startRave(200);
+  // const stopRave = startRave(20000);
   return () => {
-    stopRave?.();
+    // stopRave?.();
   };
 }
 
