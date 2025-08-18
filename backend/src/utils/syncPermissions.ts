@@ -1,5 +1,5 @@
 import { permissionRegistry } from "../config/permissionRegistry.js";
-import { db } from "../db.js";
+import { db } from "../../db.js";
 
 export async function syncPermissions() {
   for (const perm of permissionRegistry) {

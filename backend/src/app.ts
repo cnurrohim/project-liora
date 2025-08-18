@@ -2,18 +2,18 @@
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
-import { authRoute } from "./routes/auth.js";
-import { userRoute } from "./routes/users.js";
-import { roleRoute } from "./routes/role.js";
-import { permissionRoute } from "./routes/permissions.js";
+import { authRoute } from "./routes/core/auth.js";
+import { userRoute } from "./routes/core/users.js";
+import { roleRoute } from "./routes/core/role.js";
+import { permissionRoute } from "./routes/core/permissions.js";
 import type { Variables } from "./types/context.js";
-import { menuRoute } from "./routes/menu.js";
-import { userLayoutRoute } from "./routes/userLayoutRoute.js";
-import { appSettingsRoute } from "./routes/appSettings.js";
+import { menuRoute } from "./routes/core/menu.js";
+import { userLayoutRoute } from "./routes/core/userLayoutRoute.js";
+import { appSettingsRoute } from "./routes/core/appSettings.js";
 import { serveStatic } from "@hono/node-server/serve-static";
-import { departmentRoute } from "./routes/departments.js";
-import { pinnedMenusRoute } from "./routes/pinnedMenus.js";
-import { profileRoute } from "./routes/profile.js";
+import { departmentRoute } from "./routes/core/departments.js";
+import { pinnedMenusRoute } from "./routes/core/pinnedMenus.js";
+import { profileRoute } from "./routes/core/profile.js";
 
 export const app = new Hono<{ Variables: Variables }>();
 
