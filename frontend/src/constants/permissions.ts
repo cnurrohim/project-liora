@@ -47,4 +47,46 @@ export const PERMISSIONS = {
     UPDATE: "user_profile.update",
     DELETE: "user_profile.delete",
   },
+
+  /* LOGISTICS USE CASE */
+  LOCATION: {
+    VIEW: "location.view",
+    CREATE: "location.create",
+    UPDATE: "location.update",
+    DELETE: "location.delete",
+  },
+
+  ITEM: {
+    VIEW: "item.view",
+    CREATE: "item.create",
+    UPDATE: "item.update",
+    DELETE: "item.delete",
+  },
+
+  SUPPLIER: {
+    VIEW: "supplier.view",
+    CREATE: "supplier.create",
+    UPDATE: "supplier.update",
+    DELETE: "supplier.delete",
+  },
+
+  PURCHASE_ORDER: {
+    VIEW: "purchase_order.view",
+    CREATE: "purchase_order.create",
+    UPDATE: "purchase_order.update",
+    DELETE: "purchase_order.delete",
+    APPROVE: "purchase_order.approve",
+    RECEIVE: "purchase_order.receive",
+    CANCEL: "purchase_order.cancel",
+  },
+
+  GOODS_RECEIPTS: {
+    VIEW: "goods_receipts.view",
+    CREATE: "goods_receipts.create",
+    UPDATE: "goods_receipts.update",
+    DELETE: "goods_receipts.delete",
+    APPROVE: "goods_receipts.approve",
+    RECEIVE: "goods_receipts.receive",
+    CANCEL: "goods_receipts.cancel",
+  },
 } as const;

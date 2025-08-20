@@ -194,11 +194,170 @@ export const permissionRegistry = [
     description: "Bisa menambahkan user profile baru",
   },
 
-  /** FOR TEST ONLY */
+  /** LOGISTICS USE CASE */
+  /** LOCATION */
   {
-    domain: "test",
+    domain: "location",
     name: "view",
-    label: "buat testing doang",
-    description: "buat testing doang",
+    label: "buka halaman form location",
+    description: "Bisa membuka halaman location",
+  },
+  {
+    domain: "location",
+    name: "delete",
+    label: "hapus location",
+    description: "Bisa menghapus location",
+  },
+  {
+    domain: "location",
+    name: "update",
+    label: "mengubah location",
+    description: "Bisa mengubah location",
+  },
+  {
+    domain: "location",
+    name: "create",
+    label: "menambahkan location baru",
+    description: "Bisa menambahkan location baru",
+  },
+
+  /** ITEM */
+  {
+    domain: "item",
+    name: "view",
+    label: "buka halaman form item",
+    description: "Bisa membuka halaman item",
+  },
+  {
+    domain: "item",
+    name: "delete",
+    label: "hapus item",
+    description: "Bisa menghapus item",
+  },
+  {
+    domain: "item",
+    name: "update",
+    label: "mengubah item",
+    description: "Bisa mengubah item",
+  },
+  {
+    domain: "item",
+    name: "create",
+    label: "menambahkan item baru",
+    description: "Bisa menambahkan item baru",
+  },
+
+  /** SUPPLIER */
+  {
+    domain: "supplier",
+    name: "view",
+    label: "buka halaman form supplier",
+    description: "Bisa membuka halaman supplier",
+  },
+  {
+    domain: "supplier",
+    name: "delete",
+    label: "hapus supplier",
+    description: "Bisa menghapus supplier",
+  },
+  {
+    domain: "supplier",
+    name: "update",
+    label: "mengubah supplier",
+    description: "Bisa mengubah supplier",
+  },
+  {
+    domain: "supplier",
+    name: "create",
+    label: "menambahkan supplier baru",
+    description: "Bisa menambahkan supplier baru",
+  },
+
+  /** PURCHASE ORDER */
+  {
+    domain: "purchase_order",
+    name: "view",
+    label: "buka halaman form purchase order",
+    description: "Bisa membuka halaman purchase order",
+  },
+  {
+    domain: "purchase_order",
+    name: "delete",
+    label: "hapus purchase order",
+    description: "Bisa menghapus purchase order",
+  },
+  {
+    domain: "purchase_order",
+    name: "update",
+    label: "mengubah purchase order",
+    description: "Bisa mengubah purchase order",
+  },
+  {
+    domain: "purchase_order",
+    name: "create",
+    label: "menambahkan purchase order baru",
+    description: "Bisa menambahkan purchase order baru",
+  },
+  {
+    domain: "purchase_order",
+    name: "approve",
+    label: "approve purchase order",
+    description: "Bisa approve purchase order baru",
+  },
+  {
+    domain: "purchase_order",
+    name: "receive",
+    label: "receive purchase order items",
+    description: "Bisa receive purchase order items",
+  },
+  {
+    domain: "purchase_order",
+    name: "cancel",
+    label: "cancel purchase order items",
+    description: "Bisa cancel purchase order items",
+  },
+
+  /** GOODS RECEIPTS */
+  {
+    domain: "goods_receipts",
+    name: "view",
+    label: "buka halaman form goods receipts",
+    description: "Bisa membuka halaman goods receipts",
+  },
+  {
+    domain: "goods_receipts",
+    name: "delete",
+    label: "hapus goods receipts",
+    description: "Bisa menghapus goods receipts",
+  },
+  {
+    domain: "goods_receipts",
+    name: "update",
+    label: "mengubah goods receipts",
+    description: "Bisa mengubah goods receipts",
+  },
+  {
+    domain: "goods_receipts",
+    name: "create",
+    label: "menambahkan goods receipts baru",
+    description: "Bisa menambahkan goods receipts baru",
+  },
+  {
+    domain: "goods_receipts",
+    name: "approve",
+    label: "approve goods receipts",
+    description: "Bisa approve goods receipts baru",
+  },
+  {
+    domain: "goods_receipts",
+    name: "receive",
+    label: "receive goods receipts",
+    description: "Bisa receive goods receipts",
+  },
+  {
+    domain: "goods_receipts",
+    name: "cancel",
+    label: "cancel goods receipts",
+    description: "Bisa cancel goods receipts",
   },
 ];

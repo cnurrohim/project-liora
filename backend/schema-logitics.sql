@@ -152,6 +152,8 @@ CREATE TABLE logistics.purchase_return_items (
   qty INT NOT NULL
 );
 
+ALTER TABLE logistics.purchase_orders
+ADD COLUMN expected_date DATE NOT NULL DEFAULT (CURRENT_DATE + INTERVAL '1 day');
 
 -- Lokasi penyimpanan
 COMMENT ON TABLE logistics.locations IS 'Tabel menyimpan daftar lokasi penyimpanan di gudang';

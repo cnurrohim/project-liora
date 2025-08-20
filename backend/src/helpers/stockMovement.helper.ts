@@ -7,7 +7,9 @@ export type ReferenceType =
   | "purchase_order"
   | "sales_order"
   | "sales_return"
+  | "purchase_receive"
   | "purchase_return"
+  | "goods_receipt"
   | "stock_opname"
   | "manual_adjustment";
 

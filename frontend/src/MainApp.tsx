@@ -17,6 +17,7 @@ export default function App() {
       <Toaster
         position="top-center"
         toastOptions={{
+          closeButton: true,
           classNames: {
             toast: "!bg-gray-900 !text-white !border !border-gray-700",
             title: "!text-white",

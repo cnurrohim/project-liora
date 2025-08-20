@@ -6,6 +6,6 @@ type Props = {
   onClick: () => void;
 };
 
-export function ViewButtonLink({ label = "Lihat", onClick }: Props) {
+export function ViewButtonLink({ label = "Detail", onClick }: Props) {
   return <ButtonLink icon="RiEyeFill" label={label} onClick={onClick} />;
 }

@@ -7,17 +7,21 @@ export function DetailPane({
   title,
   onClose,
   children,
+  widthClass = "w-[28rem]",
 }: {
   visible: boolean;
   title?: ReactNode;
   onClose: () => void;
   children: ReactNode;
+  widthClass?: string;
 }) {
   if (!visible) return null;
 
   return (
     <div className="fixed inset-0 flex justify-end z-50 bg-black/30 backdrop-blur-sm">
-      <div className="w-full md:w-[28rem] h-full bg-gray-900 text-white shadow-xl transform transition-all duration-300">
+      <div
+        className={`${widthClass} h-full bg-gray-900 text-white shadow-xl transform transition-all duration-300`}
+      >
         <div className="flex justify-between items-center p-4 border-b border-gray-700">
           <h2 className="text-xl font-bold">{title}</h2>
           <button

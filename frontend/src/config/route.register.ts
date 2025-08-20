@@ -13,6 +13,18 @@ import DepartmentListPage from "../pages/Departments";
 import DepartmentFormPage from "../pages/Departments/form";
 import UserFormTabs from "../pages/User/UserFormTabs";
 import UserProfilePage from "@/pages/UserProfile";
+import LocationListPage from "@/pages/Logictics/Location/LocationListPage";
+import LocationFormPage from "@/pages/Logictics/Location/form";
+import ItemFormPage from "@/pages/Logictics/Item/ItemFormPage";
+import ItemListPage from "@/pages/Logictics/Item/ItemListPage";
+import SupplierListPage from "@/pages/Logictics/Supplier/SupplierListPage";
+import SupplierFormPage from "@/pages/Logictics/Supplier/SupplierFormPage";
+import PurchaseOrderListPage from "@/pages/Logictics/PurchaseOrder/PurchaseOrderListPage";
+import PurchaseOrderFormPage from "@/pages/Logictics/PurchaseOrder/PurchaseOrderFormPage";
+import PurchaseReceiveFormPage from "@/pages/Logictics/PurchaseOrder/PurchaseReceiveFormPage";
+import PurchaseReceiveKiosk from "@/pages/Logictics/PurchaseOrder/PurchaseReceiveKiosk";
+import GoodsReceiptFormPage from "@/pages/Logictics/GoodsReceipts/GoodsReceiptFormPage";
+import GoodsReceiptListPage from "@/pages/Logictics/GoodsReceipts/GoodsReceiptListPage";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -20,7 +32,6 @@ export function registerRoutes() {
     "Empty",
     React.createElement(DefaultPage)
   );
-
   RouteRegistry.register(
     "/pages/launcher",
     "default app launcher",
@@ -110,5 +121,84 @@ export function registerRoutes() {
     "/menu/:id/edit",
     "edit menu",
     React.createElement(MenuFormPage)
+  );
+
+  /** LOGITICS USE CASE */
+  RouteRegistry.register(
+    "/pages/logitics/location",
+    "list warehouse store racks",
+    React.createElement(LocationListPage)
+  );
+
+  RouteRegistry.register(
+    "/location/create",
+    "create new warehouse store rack",
+    React.createElement(LocationFormPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/logitics/item",
+    "list available item",
+    React.createElement(ItemListPage)
+  );
+
+  RouteRegistry.register(
+    "/item/create",
+    "create new item",
+    React.createElement(ItemFormPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/logitics/supplier",
+    "list available supplier",
+    React.createElement(SupplierListPage)
+  );
+
+  RouteRegistry.register(
+    "/supplier/create",
+    "create new supplier",
+    React.createElement(SupplierFormPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/logitics/purchase-order",
+    "list purchase-order",
+    React.createElement(PurchaseOrderListPage)
+  );
+
+  RouteRegistry.register(
+    "/purchase-order/create",
+    "create new purchase-order",
+    React.createElement(PurchaseOrderFormPage)
+  );
+
+  RouteRegistry.register(
+    "/purchase-order/:id/receive",
+    "Receive PO",
+    React.createElement(PurchaseReceiveFormPage)
+  );
+
+  RouteRegistry.register(
+    "/purchase-order/:id/edit",
+    "Edit PO",
+    React.createElement(PurchaseOrderFormPage)
+  );
+
+  RouteRegistry.register(
+    "/purchase-order/:id/kiosk",
+    "Receive PO (KIOSK)",
+    React.createElement(PurchaseReceiveKiosk)
+  );
+
+  RouteRegistry.register(
+    "/goods-receipts/create",
+    "create new goods receipts",
+    React.createElement(GoodsReceiptFormPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/logitics/goods-receipts",
+    "list goods receipts",
+    React.createElement(GoodsReceiptListPage)
   );
 }

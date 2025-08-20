@@ -1,0 +1,202 @@
+import { useEffect, useState } from "react";
+import {
+  useForm,
+  FormProvider,
+  useFieldArray,
+  Controller,
+} from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { getPurchaseOrderById } from "./purchaseOrder.api";
+import { createPurchaseReceive } from "./purchaseOrder.api";
+import { useRouteParamsFromTab } from "@/hooks/useRouteParams";
+import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import SingleSelect from "@/components/SelectOptions/SingleSelect";
+
+const receiveItemSchema = z.object({
+  item_id: z.string(),
+  item_name: z.string(),
+  ordered_qty: z.number(),
+  received_qty: z.number().min(0),
+  remaining_qty: z.number().min(0),
+});
+
+const receiveSchema = z.object({
+  purchase_order_id: z.string(),
+  receive_date: z.string(),
+  note: z.string().optional(),
+  items: z.array(receiveItemSchema).min(1),
+});
+
+type ReceiveFormValues = z.infer<typeof receiveSchema>;
+
+export default function PurchaseReceiveFormPage() {
+  const { id } = useRouteParamsFromTab("/purchase-order/:id/receive");
+  const [loading, setLoading] = useState(false);
+
+  const methods = useForm<ReceiveFormValues>({
+    resolver: zodResolver(receiveSchema),
+    defaultValues: {
+      purchase_order_id: id!,
+      receive_date: new Date().toISOString().substring(0, 10),
+      note: "",
+      items: [],
+    },
+  });
+
+  const { control, handleSubmit, reset } = methods;
+  const { fields } = useFieldArray({ control, name: "items" });
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const po = await getPurchaseOrderById(id!);
+        reset({
+          purchase_order_id: po.id,
+          receive_date: new Date().toISOString().substring(0, 10),
+          note: "",
+          items: po.items.map((it: any) => ({
+            item_id: it.item_id,
+            item_name: it.item_name,
+            ordered_qty: it.qty,
+            received_qty: 0,
+            remaining_qty: it.qty - (it.received_qty ?? 0),
+          })),
+        });
+      } catch (err: any) {
+        console.log(err);
+        showErrorToast("Gagal load purchase order");
+      }
+    };
+    init();
+  }, [id, reset]);
+
+  const onSubmit = async (data: ReceiveFormValues) => {
+    try {
+      setLoading(true);
+      // Kirim hanya item_id & received_qty sebagai qty ke backend
+      await createPurchaseReceive(id!, {
+        receive_date: data.receive_date,
+        note: data.note,
+        items: data.items.map((it) => ({
+          item_id: it.item_id,
+          qty: it.received_qty,
+        })),
+      });
+      showSuccessToast("Barang berhasil diterima");
+    } catch (err: any) {
+      showErrorToast(err.message || "Gagal menyimpan penerimaan");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
+        <h1 className="text-xl font-bold">Receive Purchase Order</h1>
+
+        <div>
+          <label>Tanggal Terima</label>
+          <input
+            type="date"
+            className="w-full p-2 bg-gray-800 rounded"
+            {...methods.register("receive_date")}
+          />
+        </div>
+
+        <div>
+          <label>Catatan</label>
+          <textarea
+            className="w-full p-2 bg-gray-800 rounded"
+            {...methods.register("note")}
+          />
+        </div>
+
+        <div>
+          <table className="table-auto border border-gray-700 border-collapse w-full">
+            <thead>
+              <tr>
+                <th className="border border-gray-700 px-2 py-1">Item</th>
+                <th className="border border-gray-700 px-2 py-1">Ordered</th>
+                <th className="border border-gray-700 px-2 py-1">Remaining</th>
+                <th className="border border-gray-700 px-2 py-1">
+                  Qty Received
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {fields.map((field, index) => (
+                <tr key={field.id}>
+                  <td className="border border-gray-700 px-2 py-1">
+                    <Controller
+                      name={`items.${index}.item_id`}
+                      control={control}
+                      render={({ field }) => (
+                        <SingleSelect
+                          options={[]}
+                          value={{
+                            id: field.value,
+                            name: fields[index]?.item_name || field.value,
+                          }}
+                          onChange={(val) => field.onChange(val?.id)}
+                          placeholder="Item"
+                          disabled
+                        />
+                      )}
+                    />
+                  </td>
+                  <td className="border border-gray-700 px-2 py-1">
+                    {field.ordered_qty}
+                  </td>
+                  <td className="border border-gray-700 px-2 py-1">
+                    {field.remaining_qty}
+                  </td>
+                  <td className="border border-gray-700 px-2 py-1">
+                    <input
+                      type="number"
+                      className="w-20 p-2 border border-gray-600 bg-gray-800 rounded text-right"
+                      {...methods.register(`items.${index}.received_qty`, {
+                        valueAsNumber: true,
+                        validate: (value) => {
+                          if (value < 0) return "Qty tidak boleh negatif";
+                          if (value > field.remaining_qty)
+                            return `Maksimal ${field.remaining_qty}`;
+                          return true;
+                        },
+                      })}
+                      onBlur={(e) => {
+                        let val = Number(e.target.value);
+                        if (isNaN(val)) val = 0;
+                        if (val < 0) val = 0;
+                        if (val > field.remaining_qty)
+                          val = field.remaining_qty;
+                        methods.setValue(`items.${index}.received_qty`, val);
+                      }}
+                    />
+                    {methods.formState.errors.items?.[index]?.received_qty && (
+                      <p className="text-red-500 text-xs">
+                        {
+                          methods.formState.errors.items[index]?.received_qty
+                            ?.message as string
+                        }
+                      </p>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          {loading ? "Menyimpan..." : "Simpan"}
+        </button>
+      </form>
+    </FormProvider>
+  );
+}
