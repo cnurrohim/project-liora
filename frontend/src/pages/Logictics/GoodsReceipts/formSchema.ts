@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const goodsReceiptSchema = z.object({
   supplier_id: z.uuid("ID supplier tidak valid"),
+  location_id: z.uuid("stored location tidak valid"),
   receipt_date: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal penerimaan tidak valid"),

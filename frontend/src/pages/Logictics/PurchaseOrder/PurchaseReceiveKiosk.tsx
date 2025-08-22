@@ -9,6 +9,7 @@ import {
 } from "./purchaseOrder.api";
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import SearchSelect from "@/components/SelectOptions/searchSelect";
+import { searchLocation } from "@/api/search.api";
 
 const receiveItemSchema = z.object({
   item_id: z.string(),
@@ -20,6 +21,7 @@ const receiveItemSchema = z.object({
 
 const receiveSchema = z.object({
   purchase_order_id: z.string(),
+  location_id: z.string(),
   receive_date: z.string(),
   note: z.string().optional(),
   items: z.array(receiveItemSchema).min(1),
@@ -30,6 +32,7 @@ type ReceiveFormValues = z.infer<typeof receiveSchema>;
 export default function PurchaseReceiveKiosk() {
   const [loading, setLoading] = useState(false);
   const [selectedPO, setSelectedPO] = useState<any>(null);
+  const [selectedLocation, setSelectedLocation] = useState<any>(null);
 
   const methods = useForm<ReceiveFormValues>({
     resolver: zodResolver(receiveSchema),
@@ -66,6 +69,7 @@ export default function PurchaseReceiveKiosk() {
     if (!po) {
       reset({
         purchase_order_id: "",
+        location_id: "",
         receive_date: new Date().toISOString().substring(0, 10),
         note: "",
         items: [],
@@ -76,6 +80,7 @@ export default function PurchaseReceiveKiosk() {
       const detail = await getPurchaseOrderById(po.id);
       reset({
         purchase_order_id: detail.id,
+        location_id: po.location_id,
         receive_date: new Date().toISOString().substring(0, 10),
         note: "",
         items: detail.items.map((it: any) => ({
@@ -92,11 +97,28 @@ export default function PurchaseReceiveKiosk() {
     }
   };
 
+  const handleTargetLocation = async (keyword: string) => {
+    if (!keyword || keyword.length < 2) return [];
+    try {
+      const results = await searchLocation(keyword);
+      return results.map((location: any) => ({
+        id: location.id,
+        name: `${location.code}-${location.name}`,
+      }));
+    } catch (err) {
+      console.error(err);
+      showErrorToast("Gagal mencari lokasi");
+      return [];
+    }
+  };
+
   const onSubmit = async (data: ReceiveFormValues) => {
+    console.log("submit");
     try {
       setLoading(true);
       await createPurchaseReceive(data.purchase_order_id, {
         receive_date: data.receive_date,
+        location_id: data.location_id,
         note: data.note,
         items: data.items.map((it) => ({
           item_id: it.item_id,
@@ -105,6 +127,7 @@ export default function PurchaseReceiveKiosk() {
       });
       showSuccessToast("Barang berhasil diterima");
       setSelectedPO(null);
+      setSelectedLocation(null);
     } catch (err: any) {
       showErrorToast(err.message || "Gagal menyimpan penerimaan");
     } finally {
@@ -137,6 +160,31 @@ export default function PurchaseReceiveKiosk() {
                 className="w-full p-2 bg-gray-800 rounded"
                 {...methods.register("receive_date")}
               />
+
+              {methods.formState.errors.receive_date && (
+                <p className="text-red-500 text-xs mt-1">
+                  {methods.formState.errors.receive_date.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block">Lokasi Simpan</label>
+              {/* Target Location */}
+              <SearchSelect
+                value={selectedLocation}
+                onChange={(val) => {
+                  setSelectedLocation(val);
+                  methods.setValue("location_id", val?.id || ""); // inject ke form
+                }}
+                fetchOptions={handleTargetLocation}
+              />
+
+              {methods.formState.errors.location_id && (
+                <p className="text-red-500 text-xs mt-1">
+                  {methods.formState.errors.location_id.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -214,6 +262,11 @@ export default function PurchaseReceiveKiosk() {
                   ))}
                 </tbody>
               </table>
+              {methods.formState.errors.items?.message && (
+                <p className="text-red-500 text-xs mt-2">
+                  {methods.formState.errors.items.message}
+                </p>
+              )}
             </div>
 
             <button

@@ -174,7 +174,7 @@ export default function PurchaseOrderFormPage() {
           </div>
 
           {/* Status */}
-          <div>
+          {/* <div>
             <label className="block">Status</label>
             <select
               className="w-full p-2 bg-gray-800 rounded"
@@ -185,7 +185,7 @@ export default function PurchaseOrderFormPage() {
               <option value="received">Received</option>
               <option value="cancelled">Cancelled</option>
             </select>
-          </div>
+          </div> */}
 
           {/* Notes */}
           <div>

@@ -17,14 +17,6 @@ export async function getGoodsReceiptById(id: string) {
   return data.data;
 }
 
-// search goods receipt
-export async function searchGoodsReceipts(term: string) {
-  const res = await apiFetch(`/logistics/goods-receipts/${term}/search`);
-  if (!res.ok) throw new Error("Pencarian goods receipt gagal");
-  const data = await res.json();
-  return data.data;
-}
-
 // ambil goods receipt detail (header + items)
 export async function getGoodsReceiptDetail(id: string) {
   const res = await apiFetch(`/logistics/goods-receipts/${id}/detail`);
@@ -36,6 +28,7 @@ export async function getGoodsReceiptDetail(id: string) {
 // buat goods receipt baru (tanpa PO)
 export async function createGoodsReceipt(input: {
   supplier_id: string;
+  location_id: string;
   receipt_date?: string;
   notes?: string | null;
   items: {
@@ -57,6 +50,7 @@ export async function updateGoodsReceipt(
   id: string,
   input: {
     supplier_id: string;
+    location_id: string;
     receipt_date?: string;
     notes?: string | null;
     items: {

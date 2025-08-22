@@ -17,10 +17,8 @@ const itemSchema = z.object({
 // GET /items - ambil semua barang
 itemRoute.get("/", async (c) => {
   const result = await db.query(
-    `SELECT i.*, l.code AS location_code, s.name AS supplier_name
+    `SELECT i.*
      FROM logistics.items i
-     LEFT JOIN logistics.locations l ON i.location_id = l.id
-     LEFT JOIN logistics.suppliers s ON i.supplier_id = s.id
      ORDER BY i.sku ASC`
   );
   return c.json({ data: result.rows });
@@ -30,16 +28,27 @@ itemRoute.get("/", async (c) => {
 itemRoute.get("/:id", async (c) => {
   const id = c.req.param("id");
   const result = await db.query(
-    `SELECT i.*, l.code AS location_code, s.name AS supplier_name
+    `SELECT i.*
      FROM logistics.items i
-     LEFT JOIN logistics.locations l ON i.location_id = l.id
-     LEFT JOIN logistics.suppliers s ON i.supplier_id = s.id
      WHERE i.id = $1`,
     [id]
   );
   const data = result.rows[0];
   if (!data) return c.json({ error: "Item not found" }, 404);
   return c.json({ data });
+});
+
+itemRoute.get("/:term/search", async (c) => {
+  const term = c.req.param("term");
+  const { rows } = await db.query(
+    `SELECT i.id, i.sku, i.name
+     FROM logistics.items i
+     WHERE i.name ILIKE $1 or i.sku ILIKE $1
+     ORDER BY i.sku DESC
+     LIMIT 20`,
+    [`%${term}%`]
+  );
+  return c.json({ data: rows });
 });
 
 // POST /items - tambah barang baru
@@ -49,16 +58,10 @@ itemRoute.post("/", async (c) => {
     const parsed = itemSchema.parse(body);
 
     const result = await db.query(
-      `INSERT INTO logistics.items (id, sku, name, min_stock, location_id, supplier_id)
-       VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)
+      `INSERT INTO logistics.items (id, sku, name, min_stock)
+       VALUES (gen_random_uuid(), $1, $2, $3)
        RETURNING *`,
-      [
-        parsed.sku,
-        parsed.name,
-        parsed.min_stock ?? 0,
-        parsed.location_id ?? null,
-        parsed.supplier_id ?? null,
-      ]
+      [parsed.sku, parsed.name, parsed.min_stock ?? 0]
     );
     return c.json({ data: result.rows[0] });
   } catch (err: any) {
@@ -79,17 +82,10 @@ itemRoute.put("/:id", async (c) => {
 
     const result = await db.query(
       `UPDATE logistics.items
-       SET sku = $1, name = $2, min_stock = $3, location_id = $4, supplier_id = $5, updated_at = NOW()
+       SET sku = $1, name = $2, min_stock = $3, updated_at = NOW()
        WHERE id = $6
        RETURNING *`,
-      [
-        parsed.sku,
-        parsed.name,
-        parsed.min_stock ?? 0,
-        parsed.location_id ?? null,
-        parsed.supplier_id ?? null,
-        id,
-      ]
+      [parsed.sku, parsed.name, parsed.min_stock ?? 0, id]
     );
     if (!result.rows.length) return c.json({ error: "Item not found" }, 404);
     return c.json({ data: result.rows[0] });

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 type Option = {
   id: string;
   name: string;
+  data?: Record<string, any>;
 };
 
 type SearchSelectProps = {
@@ -52,8 +53,8 @@ export default function SearchSelect({
 
   const selectOption = (opt: Option) => {
     onChange(opt);
-    setInput("");
-    setIsOpen(false);
+    setInput(""); // kosongkan input
+    setIsOpen(false); // tutup dropdown
   };
 
   const clearOption = () => {
@@ -63,32 +64,34 @@ export default function SearchSelect({
 
   return (
     <div className="p-2 relative w-full">
-      {value ? (
-        <div className="flex items-center gap-1 mb-1 w-full">
-          <span className="text-gray-300 px-2 py-1 rounded text-sm w-full flex justify-between">
-            {value.name}
-            {!disabled && (
-              <button
-                type="button"
-                onClick={clearOption}
-                className="text-red-500 cursor-pointer"
-              >
-                ×
-              </button>
-            )}
-          </span>
-        </div>
-      ) : (
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="w-full outline-none"
-          placeholder={placeholder}
-          disabled={disabled}
-          onFocus={() => setIsOpen(true)}
-          onBlur={() => setIsOpen(false)}
-        />
+      <input
+        value={value ? value.name : input}
+        onChange={(e) => {
+          setInput(e.target.value);
+          if (value) onChange(null); // reset kalau user edit lagi
+        }}
+        className="w-full outline-none"
+        placeholder={placeholder}
+        disabled={disabled}
+        onFocus={() => setIsOpen(true)}
+        onBlur={() => setIsOpen(false)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault(); // Cegah submit form saat tekan Enter
+          }
+        }}
+      />
+
+      {value && !disabled && (
+        <button
+          type="button"
+          onClick={clearOption}
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500 cursor-pointer"
+        >
+          ×
+        </button>
       )}
+
       {isOpen && (
         <ul className="absolute left-0 right-0 z-10 mt-1 bg-gray-900 rounded shadow max-h-60 overflow-auto">
           {loading ? (

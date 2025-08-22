@@ -46,6 +46,7 @@ BEFORE INSERT ON logistics.purchase_orders
 FOR EACH ROW
 EXECUTE FUNCTION logistics.set_order_number();
 
+--- #### #### ---
 
 -- Counter untuk nomor goods receipt per bulan
 CREATE TABLE logistics.receipt_number_counters (
@@ -94,3 +95,53 @@ CREATE TRIGGER trg_set_receipt_number
 BEFORE INSERT ON logistics.goods_receipts
 FOR EACH ROW
 EXECUTE FUNCTION logistics.set_receipt_number();
+
+--- #### #### ---
+
+-- Counter untuk nomor goods issue per bulan
+CREATE TABLE logistics.issue_number_counters (
+    year INT NOT NULL,
+    month INT NOT NULL,
+    counter INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (year, month)
+);
+
+-- Function untuk generate nomor Issue
+CREATE OR REPLACE FUNCTION logistics.generate_issue_number()
+RETURNS TEXT AS $$
+DECLARE
+    v_year   INT := EXTRACT(YEAR FROM CURRENT_DATE);
+    v_month  INT := EXTRACT(MONTH FROM CURRENT_DATE);
+    v_counter INT;
+BEGIN
+    -- Insert kalau belum ada, kalau ada langsung naikkan counter
+    INSERT INTO logistics.issue_number_counters(year, month, counter)
+    VALUES (v_year, v_month, 1)
+    ON CONFLICT (year, month)
+    DO UPDATE SET counter = logistics.issue_number_counters.counter + 1
+    RETURNING counter INTO v_counter;
+
+    -- Format: GI-YYYY-MM-XXXX
+    RETURN 'GI-'
+        || v_year::text || '-'
+        || lpad(v_month::text, 2, '0') || '-'
+        || lpad(v_counter::text, 4, '0');
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger function untuk set issue_number otomatis
+CREATE OR REPLACE FUNCTION logistics.set_issue_number()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.issue_number IS NULL THEN
+        NEW.issue_number := logistics.generate_issue_number();
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger di tabel goods_issues
+CREATE TRIGGER trg_set_issue_number
+BEFORE INSERT ON logistics.goods_issues
+FOR EACH ROW
+EXECUTE FUNCTION logistics.set_issue_number();

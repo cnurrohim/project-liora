@@ -1,30 +1,34 @@
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { locationSchema, type LocationFormValues } from "./formSchema";
 import {
-  createLocation,
-  getLocationById,
-  updateLocation,
-} from "./location.api";
+  stockLocationsSchema,
+  type StockLocationsFormValues,
+} from "./formSchema";
+import {
+  createStockLocation,
+  getStockLocationById,
+  updateStockLocation,
+} from "./stockLocations.api";
 import { useEffect, useState } from "react";
 import { useRouteParamsFromTab } from "@/hooks/useRouteParams";
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import ForbiddenPage from "pages/Misc/403";
 import { usePermissions } from "./permissions";
 
-export default function LocationFormPage() {
+export default function StockLocationsFormPage() {
   const { canView, canUpdate, canCreate } = usePermissions();
-
   if (!canView) return <ForbiddenPage />;
 
   const { id } = useRouteParamsFromTab("/locations/:id/edit");
   const isEdit = !!id;
   const [loading, setLoading] = useState(false);
 
-  const methods = useForm<LocationFormValues>({
-    resolver: zodResolver(locationSchema),
+  const methods = useForm<StockLocationsFormValues>({
+    resolver: zodResolver(stockLocationsSchema),
     defaultValues: {
       code: "",
+      name: "",
+      type: "",
       description: "",
     },
   });
@@ -38,16 +42,18 @@ export default function LocationFormPage() {
 
   useEffect(() => {
     if (isEdit && id) {
-      getLocationById(id).then((loc) => {
+      getStockLocationById(id).then((loc) => {
         reset({
           code: loc.code,
+          name: loc.name,
+          type: loc.type,
           description: loc.description,
         });
       });
     }
   }, [isEdit, id, reset]);
 
-  const onSubmit = async (data: LocationFormValues) => {
+  const onSubmit = async (data: StockLocationsFormValues) => {
     if (isEdit && !canUpdate) {
       showErrorToast("Anda tidak punya hak akses untuk update!");
       return;
@@ -61,10 +67,10 @@ export default function LocationFormPage() {
     try {
       setLoading(true);
       if (isEdit) {
-        await updateLocation(id!, data);
+        await updateStockLocation(id!, data);
         showSuccessToast("Lokasi berhasil diperbarui");
       } else {
-        await createLocation(data);
+        await createStockLocation(data);
         showSuccessToast("Lokasi berhasil dibuat");
       }
     } catch (err: any) {
@@ -88,8 +94,37 @@ export default function LocationFormPage() {
               className="w-full p-2 bg-gray-800 rounded"
               {...register("code")}
             />
-            {typeof errors.code?.message === "string" && (
+            {errors.code?.message && (
               <p className="text-red-500 text-sm">{errors.code.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block">Nama Lokasi</label>
+            <input
+              className="w-full p-2 bg-gray-800 rounded"
+              {...register("name")}
+            />
+            {errors.name?.message && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block">Tipe Lokasi</label>
+            <select
+              className="w-full p-2 bg-gray-800 rounded"
+              {...register("type")}
+            >
+              <option value="">Pilih tipe</option>
+              <option value="warehouse">Warehouse</option>
+              <option value="store_display">Store Display</option>
+              <option value="front_desk">Front Desk</option>
+              <option value="cold_storage">Cold Storage</option>
+              <option value="shipping_container">Shipping Container</option>
+            </select>
+            {errors.type?.message && (
+              <p className="text-red-500 text-sm">{errors.type.message}</p>
             )}
           </div>
 
@@ -99,11 +134,6 @@ export default function LocationFormPage() {
               className="w-full p-2 bg-gray-800 rounded"
               {...register("description")}
             />
-            {typeof errors.description?.message === "string" && (
-              <p className="text-red-500 text-sm">
-                {errors.description.message}
-              </p>
-            )}
           </div>
         </div>
 

@@ -9,8 +9,6 @@ export const itemSchema = z.object({
     .int("Minimal stok harus bilangan bulat")
     .min(0, "Minimal stok harus >= 0")
     .optional(),
-  location_id: z.uuid("ID lokasi tidak valid").nullable().optional(),
-  supplier_id: z.uuid("ID supplier tidak valid").nullable().optional(),
 });
 
 export type ItemFormValues = z.infer<typeof itemSchema>;

@@ -12,6 +12,8 @@ import { createPurchaseReceive } from "./purchaseOrder.api";
 import { useRouteParamsFromTab } from "@/hooks/useRouteParams";
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import SingleSelect from "@/components/SelectOptions/SingleSelect";
+import { searchLocation } from "@/api/search.api";
+import SearchSelect from "@/components/SelectOptions/searchSelect";
 
 const receiveItemSchema = z.object({
   item_id: z.string(),
@@ -23,10 +25,16 @@ const receiveItemSchema = z.object({
 
 const receiveSchema = z.object({
   purchase_order_id: z.string(),
+  location_id: z.string(),
   receive_date: z.string(),
   note: z.string().optional(),
   items: z.array(receiveItemSchema).min(1),
 });
+
+type Option = {
+  id: string;
+  name: string;
+};
 
 type ReceiveFormValues = z.infer<typeof receiveSchema>;
 
@@ -44,6 +52,7 @@ export default function PurchaseReceiveFormPage() {
     },
   });
 
+  const [selectedLocation, setSelectedLocation] = useState<Option | null>(null);
   const { control, handleSubmit, reset } = methods;
   const { fields } = useFieldArray({ control, name: "items" });
 
@@ -53,6 +62,7 @@ export default function PurchaseReceiveFormPage() {
         const po = await getPurchaseOrderById(id!);
         reset({
           purchase_order_id: po.id,
+          location_id: po.location_id,
           receive_date: new Date().toISOString().substring(0, 10),
           note: "",
           items: po.items.map((it: any) => ({
@@ -71,12 +81,28 @@ export default function PurchaseReceiveFormPage() {
     init();
   }, [id, reset]);
 
+  const handleTargetLocation = async (keyword: string) => {
+    if (!keyword || keyword.length < 2) return [];
+    try {
+      const results = await searchLocation(keyword);
+      return results.map((location: any) => ({
+        id: location.id,
+        name: `${location.code}-${location.name}`,
+      }));
+    } catch (err) {
+      console.error(err);
+      showErrorToast("Gagal mencari lokasi");
+      return [];
+    }
+  };
+
   const onSubmit = async (data: ReceiveFormValues) => {
     try {
       setLoading(true);
-      // Kirim hanya item_id & received_qty sebagai qty ke backend
+
       await createPurchaseReceive(id!, {
         receive_date: data.receive_date,
+        location_id: data.location_id,
         note: data.note,
         items: data.items.map((it) => ({
           item_id: it.item_id,
@@ -102,6 +128,26 @@ export default function PurchaseReceiveFormPage() {
             type="date"
             className="w-full p-2 bg-gray-800 rounded"
             {...methods.register("receive_date")}
+          />
+        </div>
+
+        <div>
+          <label className="block">Lokasi Simpan</label>
+          {/* Target Location */}
+
+          <Controller
+            name="location_id"
+            control={control}
+            render={({ field }) => (
+              <SearchSelect
+                value={selectedLocation}
+                onChange={(val) => {
+                  setSelectedLocation(val);
+                  field.onChange(val ? val.id : "");
+                }}
+                fetchOptions={handleTargetLocation}
+              />
+            )}
           />
         </div>
 

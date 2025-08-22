@@ -24,10 +24,10 @@ export default function MenuItemComponent({
   onPinClick?: (item: any) => void;
 }) {
   return (
-    <div className="flex flex-row ">
+    <div className="flex flex-row items-center cursor-pointer transition group">
       <div
         key={i}
-        className="group flex w-full items-center gap-4 cursor-pointer px-2 py-2 rounded-md hover:bg-gray-800 transition"
+        className="flex flex-1 items-center hover:bg-gray-800 pl-2 py-2 rounded-md"
         onClick={() => {
           if (item.type === MENU.TYPE.GROUP) {
             SlidingPanelController.setActivePath([...state.activePath, i]);
@@ -40,7 +40,7 @@ export default function MenuItemComponent({
           onItemClick(item);
         }}
       >
-        <span className="text-gray-400 group-hover:text-white">
+        <span className="text-gray-400 group-hover:text-white mr-2">
           {typeof item.icon === "string" && item.icon
             ? iconRenderer?.({
                 name: item.icon,
@@ -53,7 +53,7 @@ export default function MenuItemComponent({
               })}
         </span>
 
-        <span className="font-semibold text-sm text-gray-400 group-hover:text-white flex-1 truncate">
+        <span className="font-semibold text-sm text-gray-400 group-hover:text-white truncate">
           {item.label}
         </span>
 
@@ -61,14 +61,14 @@ export default function MenuItemComponent({
           <span className="ml-auto bg-gray-950 pr-1">⮯</span>
         )}
       </div>
+
+      {/* RIGHT: Pin Button */}
       {item.type !== "group" && onPinClick && (
         <button
           type="button"
           title={item.isPinned ? "Unpin menu" : "Pin menu"}
-          className="ml-auto text-gray-400 cursor-pointer hover:bg-gray-700 hover:text-white p-2"
-          onClick={() => {
-            onPinClick(item);
-          }}
+          className="text-gray-400 hover:bg-gray-700 hover:text-white p-2 rounded cursor-pointer"
+          onClick={() => onPinClick(item)}
         >
           {iconRenderer?.({
             name: item.isPinned ? "RiPushpin2Fill" : "RiPushpin2Line",

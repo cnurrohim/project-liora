@@ -13,8 +13,6 @@ import DepartmentListPage from "../pages/Departments";
 import DepartmentFormPage from "../pages/Departments/form";
 import UserFormTabs from "../pages/User/UserFormTabs";
 import UserProfilePage from "@/pages/UserProfile";
-import LocationListPage from "@/pages/Logictics/Location/LocationListPage";
-import LocationFormPage from "@/pages/Logictics/Location/form";
 import ItemFormPage from "@/pages/Logictics/Item/ItemFormPage";
 import ItemListPage from "@/pages/Logictics/Item/ItemListPage";
 import SupplierListPage from "@/pages/Logictics/Supplier/SupplierListPage";
@@ -25,6 +23,10 @@ import PurchaseReceiveFormPage from "@/pages/Logictics/PurchaseOrder/PurchaseRec
 import PurchaseReceiveKiosk from "@/pages/Logictics/PurchaseOrder/PurchaseReceiveKiosk";
 import GoodsReceiptFormPage from "@/pages/Logictics/GoodsReceipts/GoodsReceiptFormPage";
 import GoodsReceiptListPage from "@/pages/Logictics/GoodsReceipts/GoodsReceiptListPage";
+import GoodsIssueListPage from "@/pages/Logictics/GoodsIssue/GoodsIssueListPage";
+import GoodsIssueFormPage from "@/pages/Logictics/GoodsIssue/GoodsIssueFormPage";
+import StockLocationsFormPage from "@/pages/Logictics/stockLocations/form";
+import StockLocationsListPage from "@/pages/Logictics/stockLocations/stockLocationsListPage";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -125,15 +127,15 @@ export function registerRoutes() {
 
   /** LOGITICS USE CASE */
   RouteRegistry.register(
-    "/pages/logitics/location",
-    "list warehouse store racks",
-    React.createElement(LocationListPage)
+    "/pages/logitics/stock-location",
+    "list stock locations",
+    React.createElement(StockLocationsListPage)
   );
 
   RouteRegistry.register(
-    "/location/create",
-    "create new warehouse store rack",
-    React.createElement(LocationFormPage)
+    "/stock-location/create",
+    "create new stock location",
+    React.createElement(StockLocationsFormPage)
   );
 
   RouteRegistry.register(
@@ -200,5 +202,17 @@ export function registerRoutes() {
     "/pages/logitics/goods-receipts",
     "list goods receipts",
     React.createElement(GoodsReceiptListPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/logitics/goods-issues",
+    "list goods issues",
+    React.createElement(GoodsIssueListPage)
+  );
+
+  RouteRegistry.register(
+    "/goods-issues/create",
+    "Issue Goods Inbound or Outbound",
+    React.createElement(GoodsIssueFormPage)
   );
 }

@@ -12,14 +12,15 @@ goodsReceiptRoute.use(authMiddleware);
 
 // schema item GR
 const grItemSchema = z.object({
-  item_id: z.string().uuid(),
+  item_id: z.uuid(),
   quantity: z.number().min(1),
   notes: z.string().nullable().optional(),
 });
 
 // schema header GR
 const grSchema = z.object({
-  supplier_id: z.string().uuid(),
+  supplier_id: z.uuid(),
+  location_id: z.uuid(),
   receipt_date: z.string().optional(),
   notes: z.string().nullable().optional(),
   items: z.array(grItemSchema).min(1),
@@ -39,11 +40,12 @@ goodsReceiptRoute.post("/", async (c) => {
 
     const grRes = await client.query(
       `INSERT INTO logistics.goods_receipts
-       (supplier_id, receipt_date, notes, created_by)
-       VALUES ($1, $2, $3, $4)
+       (supplier_id,location_id, receipt_date, notes, created_by)
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
       [
         parsed.supplier_id,
+        parsed.location_id,
         parsed.receipt_date ?? new Date().toISOString().substring(0, 10),
         parsed.notes ?? null,
         user.id,
@@ -62,16 +64,20 @@ goodsReceiptRoute.post("/", async (c) => {
       );
 
       // 2. buat stock movement inbound
-      await createStockMovement({
-        item_id: item.item_id,
-        movement_type: "inbound",
-        adjustment_direction: "increase",
-        qty: item.quantity,
-        reference_type: "goods_receipt",
-        reference_id: grId,
-        note: `Goods Receipt ${grRes.rows[0].receipt_number ?? ""}`,
-        created_by: user.id,
-      });
+      await createStockMovement(
+        {
+          item_id: item.item_id,
+          movement_type: "inbound",
+          adjustment_direction: "increase",
+          qty: item.quantity,
+          reference_type: "goods_receipt",
+          reference_id: grId,
+          note: `Goods Receipt ${grRes.rows[0].receipt_number ?? ""}`,
+          created_by: user.id,
+          target_location_id: parsed.location_id,
+        },
+        client
+      );
     }
 
     await client.query("COMMIT");
@@ -113,7 +119,9 @@ goodsReceiptRoute.get("/:id/detail", async (c) => {
         gr.receipt_date,
         gr.notes,
         gr.supplier_id,
+        gr.location_id,
         s.name AS supplier_name,
+        sl.code || ' ' || sl.name AS stored_location,
         u.name AS created_by,
 
         -- items
@@ -148,11 +156,13 @@ goodsReceiptRoute.get("/:id/detail", async (c) => {
                 'reference_type', sm.reference_type,
                 'note', sm.note,
                 'created_at', sm.created_at,
-                'created_by', sm.created_by
+                'created_by', sm.created_by,
+                'stored_location', sl.code || ' ' || sl.name
               ) ORDER BY sm.created_at
             )
             FROM logistics.stock_movements sm
             JOIN logistics.items i2 ON i2.id = sm.item_id
+            JOIN logistics.stock_locations sl ON sl.id = sm.target_location_id
             WHERE sm.reference_type = 'goods_receipt'
               AND sm.reference_id = gr.id
           ),
@@ -161,11 +171,12 @@ goodsReceiptRoute.get("/:id/detail", async (c) => {
 
       FROM logistics.goods_receipts gr
       JOIN logistics.suppliers s ON s.id = gr.supplier_id
+      JOIN logistics.stock_locations sl ON sl.id = gr.location_id
       JOIN public.users u ON u.id = gr.created_by
       LEFT JOIN logistics.goods_receipt_items gri ON gri.goods_receipt_id = gr.id
       LEFT JOIN logistics.items i ON i.id = gri.item_id
       WHERE gr.id = $1
-      GROUP BY gr.id, s.name, u.name
+      GROUP BY gr.id, s.name, u.name, sl.code, sl.name
       `,
       [id]
     );
@@ -240,10 +251,11 @@ goodsReceiptRoute.put("/:id", async (c) => {
 
     await client.query(
       `UPDATE logistics.goods_receipts
-       SET supplier_id=$1, receipt_date=$2, notes=$3
-       WHERE id=$4`,
+       SET supplier_id=$1,location_id=$2 receipt_date=$3, notes=$4
+       WHERE id=$5`,
       [
         parsed.supplier_id,
+        parsed.location_id,
         parsed.receipt_date ?? new Date().toISOString().substring(0, 10),
         parsed.notes ?? null,
         id,

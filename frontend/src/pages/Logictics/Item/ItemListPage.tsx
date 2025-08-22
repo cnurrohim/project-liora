@@ -9,11 +9,7 @@ import {
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
-import {
-  getItems,
-  deleteItem,
-  getItemById,
-} from "@/pages/Logictics/Item/item.api";
+import { getItems, deleteItem } from "@/pages/Logictics/Item/item.api";
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import { openTabSmart } from "@/utils/handleMenuClick/openTabSmart";
 import { IconRenderer } from "@/components/IconRenderer";
@@ -29,10 +25,6 @@ type Item = {
   sku: string;
   name: string;
   min_stock: number;
-  location_id: string | null;
-  location_code: string | null;
-  supplier_id: string | null;
-  supplier_name: string | null;
 };
 
 export default function ItemListPage() {
@@ -81,15 +73,6 @@ export default function ItemListPage() {
     );
   };
 
-  const handleView = async (id: string) => {
-    try {
-      const detail = await getItemById(id);
-      showSuccessToast(`Barang: ${detail.sku} - ${detail.name}`);
-    } catch (err) {
-      console.error("Gagal ambil data", err);
-    }
-  };
-
   const handleDelete = async (id: string) => {
     if (!canDelete) {
       showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
@@ -132,16 +115,6 @@ export default function ItemListPage() {
       {
         accessorKey: "min_stock",
         header: "Min Stok",
-      },
-      {
-        accessorKey: "location_code",
-        header: "Lokasi",
-        cell: ({ row }) => row.original.location_code || "-",
-      },
-      {
-        accessorKey: "supplier_name",
-        header: "Supplier",
-        cell: ({ row }) => row.original.supplier_name || "-",
       },
       {
         id: "aksi",

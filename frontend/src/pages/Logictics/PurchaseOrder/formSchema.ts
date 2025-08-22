@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 export const purchaseOrderSchema = z.object({
-  supplier_id: z.string().uuid("ID supplier tidak valid"),
+  supplier_id: z.uuid("ID supplier tidak valid"),
   order_date: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal order tidak valid"),
@@ -16,7 +16,7 @@ export const purchaseOrderSchema = z.object({
   items: z
     .array(
       z.object({
-        item_id: z.string().uuid("ID item tidak valid"),
+        item_id: z.uuid("ID item tidak valid"),
         qty: z.number().int().min(1, "Qty minimal 1"),
         price: z.number().min(0, "Harga tidak boleh negatif"),
       })

@@ -55,6 +55,7 @@ export async function createPurchaseReceive(
   purchaseOrderId: string,
   input: {
     receive_date?: string;
+    location_id?: string;
     note?: string;
     items: {
       item_id: string;

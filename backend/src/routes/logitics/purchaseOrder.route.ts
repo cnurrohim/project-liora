@@ -183,6 +183,7 @@ purchaseOrderRoute.get("/:id/detail", async (c) => {
             SELECT json_agg(
               json_build_object(
                 'id', pr.id,
+                'stored_location', sl.code || ' ' || sl.name,
                 'receive_date', pr.receive_date,
                 'received_by', u2.name,
                 'note', pr.note,
@@ -206,6 +207,7 @@ purchaseOrderRoute.get("/:id/detail", async (c) => {
             )
             FROM logistics.purchase_receives pr
             JOIN public.users u2 ON u2.id = pr.received_by
+            JOIN logistics.stock_locations sl on sl.id = pr.location_id
             WHERE pr.purchase_order_id = po.id
           ),
           '[]'
@@ -228,11 +230,13 @@ purchaseOrderRoute.get("/:id/detail", async (c) => {
                 'reference_type', sm.reference_type,
                 'note', sm.note,
                 'created_at', sm.created_at,
-                'created_by', sm.created_by
+                'created_by', sm.created_by,
+                'stored_location', sl.code || ' ' || sl.name
               ) ORDER BY sm.created_at
             )
             FROM logistics.stock_movements sm
             JOIN logistics.items i3 ON i3.id = sm.item_id
+            JOIN logistics.stock_locations sl on sl.id = sm.target_location_id
             WHERE sm.reference_type = 'purchase_receive'
               AND sm.reference_id IN (
                 SELECT id FROM logistics.purchase_receives WHERE purchase_order_id = po.id
@@ -326,11 +330,12 @@ purchaseOrderRoute.post("/:id/receive", async (c) => {
 
   const schema = z.object({
     receive_date: z.string().optional(),
+    location_id: z.string(),
     note: z.string().optional(),
     items: z
       .array(
         z.object({
-          item_id: z.string().uuid(),
+          item_id: z.uuid(),
           qty: z.number().min(1),
         })
       )
@@ -352,11 +357,12 @@ purchaseOrderRoute.post("/:id/receive", async (c) => {
     // 1. Insert ke purchase_receives
     const receiveRes = await client.query(
       `INSERT INTO logistics.purchase_receives
-       (purchase_order_id, receive_date, received_by, note)
-       VALUES ($1, $2, $3, $4)
+       (purchase_order_id,location_id, receive_date, received_by, note)
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
       [
         id,
+        parsed.location_id,
         parsed.receive_date ?? new Date().toISOString().substring(0, 10),
         user.id,
         parsed.note ?? null,
@@ -383,16 +389,20 @@ purchaseOrderRoute.post("/:id/receive", async (c) => {
 
       // Buat stock movement (inbound)
       // asumsi kita sudah punya helper createStockMovement
-      await createStockMovement({
-        item_id: item.item_id,
-        movement_type: "inbound",
-        adjustment_direction: "increase",
-        qty: item.qty,
-        reference_type: "purchase_receive",
-        reference_id: receiveId,
-        note: `Receive PO ${orderNumber}`,
-        created_by: user.id,
-      });
+      await createStockMovement(
+        {
+          item_id: item.item_id,
+          movement_type: "inbound",
+          adjustment_direction: "increase",
+          qty: item.qty,
+          reference_type: "purchase_receive",
+          reference_id: receiveId,
+          note: `Receive PO ${orderNumber}`,
+          created_by: user.id,
+          target_location_id: parsed.location_id, // WAJIB
+        },
+        client
+      );
     }
 
     // 3. Cek apakah semua item sudah fully received

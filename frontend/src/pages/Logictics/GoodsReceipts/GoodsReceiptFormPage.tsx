@@ -20,6 +20,8 @@ import { goodsReceiptSchema, type GoodsReceiptFormValues } from "./formSchema";
 import SingleSelect from "@/components/SelectOptions/SingleSelect";
 import { getSuppliers } from "../Supplier/supplier.api";
 import { getItems } from "../Item/item.api";
+import SearchSelect from "@/components/SelectOptions/searchSelect";
+import { searchLocation } from "@/api/search.api";
 
 type Option = {
   id: string;
@@ -36,6 +38,7 @@ export default function GoodsReceiptFormPage() {
 
   const [allSuppliers, setAllSuppliers] = useState<Option[]>([]);
   const [allItems, setAllItems] = useState<Option[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<Option | null>(null);
 
   const today = new Date();
 
@@ -43,6 +46,7 @@ export default function GoodsReceiptFormPage() {
     resolver: zodResolver(goodsReceiptSchema),
     defaultValues: {
       supplier_id: "",
+      location_id: "",
       receipt_date: today.toISOString().substring(0, 10),
       notes: "",
       items: [],
@@ -76,6 +80,7 @@ export default function GoodsReceiptFormPage() {
         const gr = await getGoodsReceiptById(id);
         reset({
           supplier_id: gr.supplier_id ?? "",
+          location_id: gr.location_id ?? "",
           receipt_date: gr.receipt_date,
           notes: gr.notes ?? "",
           items: gr.items ?? [],
@@ -85,6 +90,21 @@ export default function GoodsReceiptFormPage() {
 
     init();
   }, [isEdit, id, reset]);
+
+  const handleTargetLocation = async (keyword: string) => {
+    if (!keyword || keyword.length < 2) return [];
+    try {
+      const results = await searchLocation(keyword);
+      return results.map((location: any) => ({
+        id: location.id,
+        name: `${location.code}-${location.name}`,
+      }));
+    } catch (err) {
+      console.error(err);
+      showErrorToast("Gagal mencari lokasi");
+      return [];
+    }
+  };
 
   const onSubmit = async (data: GoodsReceiptFormValues) => {
     if (isEdit && !canUpdate) {
@@ -142,6 +162,26 @@ export default function GoodsReceiptFormPage() {
                 {errors.supplier_id.message}
               </p>
             )}
+          </div>
+
+          <div>
+            <label className="block">Lokasi Simpan</label>
+            {/* Target Location */}
+
+            <Controller
+              name="location_id"
+              control={control}
+              render={({ field }) => (
+                <SearchSelect
+                  value={selectedLocation}
+                  onChange={(val) => {
+                    setSelectedLocation(val);
+                    field.onChange(val ? val.id : "");
+                  }}
+                  fetchOptions={handleTargetLocation}
+                />
+              )}
+            />
           </div>
 
           {/* Receipt date */}

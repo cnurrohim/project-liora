@@ -8,101 +8,64 @@ import {
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
-import { getLocations, deleteLocation, getLocationById } from "./location.api";
-import { showErrorToast, showSuccessToast } from "@/utils/toast";
+import { getGoodsIssues, getGoodsIssueDetail } from "./goodsIssue.api";
 import { openTabSmart } from "@/utils/handleMenuClick/openTabSmart";
 import { IconRenderer } from "@/components/IconRenderer";
-import { EditButtonLink } from "@/components/Buttons/EditButtonLink";
-import { DeleteButtonLink } from "@/components/Buttons/DeleteButtonLink";
-import { ButtonGroupWithDropdown } from "@/components/Buttons/ButtonGroupWithDropdown";
-import { ConfirmationDialogController } from "@/components/ConfirmationDialog/controller";
 import { ViewButtonLink } from "@/components/Buttons/ViewButtonLink";
+import { ButtonGroupWithDropdown } from "@/components/Buttons/ButtonGroupWithDropdown";
 import ForbiddenPage from "pages/Misc/403";
 import { usePermissions } from "./permissions";
+import {
+  GoodsIssueDetailPane,
+  GoodsIssueDetailPaneController,
+} from "./GoodsIssueDetailPane";
 
-type Location = {
+type Issue = {
   id: string;
-  code: string;
-  description: string | null;
+  issue_number: string;
+  issue_date: string;
+  created_by_name?: string | null;
+  notes?: string | null;
 };
 
-export default function LocationListPage() {
-  const { canView, canDelete, canUpdate, canCreate } = usePermissions();
+export default function GoodsIssueListPage() {
+  const { canView, canCreate } = usePermissions();
 
   if (!canView) return <ForbiddenPage />;
 
-  const [locations, setLocations] = useState<Location[]>([]);
+  const [issues, setIssues] = useState<Issue[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchLocations = async () => {
+  const fetchIssues = async () => {
     setLoading(true);
     try {
-      const data = await getLocations();
-      setLocations(data);
+      const data = await getGoodsIssues();
+      setIssues(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat lokasi");
+      setError(err.message || "Gagal memuat data Issue");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchLocations();
+    fetchIssues();
   }, []);
 
-  const data = useMemo(() => locations, [locations]);
-
-  const handleEdit = (location: Location) => {
-    if (!canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
-      return;
-    }
-
-    openTabSmart(
-      {
-        id: `/location/${location.id}/edit`,
-        route: `/location/${location.id}/edit`,
-        label: `Edit: ${location.code}`,
-        type: "route",
-        icon: "RiPencilFill",
-      },
-      { replace: true }
-    );
-  };
+  const data = useMemo(() => issues, [issues]);
 
   const handleView = async (id: string) => {
     try {
-      const detail = await getLocationById(id);
-      // bisa pakai detail pane seperti user, untuk sekarang simple
-      showSuccessToast(`Lokasi: ${detail.code}`);
+      const detail = await getGoodsIssueDetail(id);
+      GoodsIssueDetailPaneController.open(detail);
     } catch (err) {
-      console.error("Gagal ambil data", err);
+      console.error("Gagal ambil detail Issue", err);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!canDelete) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
-      return;
-    }
-
-    ConfirmationDialogController.askConfirmation(
-      "Yakin ingin menghapus lokasi ini?",
-      async () => {
-        try {
-          await deleteLocation(id);
-          showSuccessToast("Lokasi berhasil dihapus");
-          fetchLocations();
-        } catch (err: any) {
-          showErrorToast(err.message);
-        }
-      }
-    );
-  };
-
-  const columns = useMemo<ColumnDef<Location>[]>(
+  const columns = useMemo<ColumnDef<Issue>[]>(
     () => [
       {
         id: "number",
@@ -114,25 +77,31 @@ export default function LocationListPage() {
         size: 50,
       },
       {
-        accessorKey: "code",
-        header: "Kode Lokasi",
+        accessorKey: "issue_number",
+        header: "Nomor Issue",
       },
       {
-        accessorKey: "description",
-        header: "Deskripsi",
-        cell: ({ row }) => row.original.description || "-",
+        accessorKey: "issue_date",
+        header: "Tanggal",
+        cell: ({ row }) =>
+          new Date(row.original.issue_date).toLocaleDateString(),
+      },
+      {
+        accessorKey: "created_by_name",
+        header: "issued by",
+        cell: ({ row }) => row.original.created_by_name || "-",
+      },
+      {
+        accessorKey: "notes",
+        header: "Catatan",
+        cell: ({ row }) => row.original.notes || "-",
       },
       {
         id: "aksi",
         header: "Aksi",
         cell: ({ row }) => (
           <div className="flex gap-1">
-            {canUpdate && (
-              <EditButtonLink onClick={() => handleEdit(row.original)} />
-            )}
-            {canDelete && (
-              <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
-            )}
+            <ViewButtonLink onClick={() => handleView(row.original.id)} />
           </div>
         ),
       },
@@ -161,11 +130,11 @@ export default function LocationListPage() {
   const openInNewTab = (newTab = false) => {
     openTabSmart(
       {
-        id: "/location/create",
-        route: "/location/create",
-        label: "Tambah Lokasi",
+        id: "/goods-issues/create",
+        route: "/goods-issues/create",
+        label: "Tambah Issue",
         type: "route",
-        icon: "RiMapPinAddLine",
+        icon: "RiArrowRightUpBoxLine",
       },
       { replace: !newTab, remember: true }
     );
@@ -174,17 +143,17 @@ export default function LocationListPage() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Daftar Lokasi</h1>
+        <h1 className="text-xl font-bold">Goods Issue List</h1>
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={
               <>
                 <IconRenderer
-                  name="RiMapPinAddLine"
+                  name="RiAddBoxLine"
                   size={15}
                   className="text-white"
                 />
-                Tambah Lokasi
+                Tambah Issue
               </>
             }
             onClick={() => openInNewTab(false)}
@@ -278,6 +247,7 @@ export default function LocationListPage() {
           </div>
         </>
       )}
+      <GoodsIssueDetailPane />
     </div>
   );
 }

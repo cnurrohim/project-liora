@@ -89,4 +89,14 @@ export const PERMISSIONS = {
     RECEIVE: "goods_receipts.receive",
     CANCEL: "goods_receipts.cancel",
   },
+
+  GOODS_ISSUE: {
+    VIEW: "goods_issue.view",
+    CREATE: "goods_issue.create",
+    UPDATE: "goods_issue.update",
+    DELETE: "goods_issue.delete",
+    APPROVE: "goods_issue.approve",
+    RECEIVE: "goods_issue.receive",
+    CANCEL: "goods_issue.cancel",
+  },
 } as const;

@@ -23,6 +23,7 @@ export type PurchaseReceive = {
   receive_date: string;
   received_by: string;
   note?: string;
+  stored_location: string;
   items: PurchaseReceiveItem[];
 };
 
@@ -40,6 +41,7 @@ export type StockMovement = {
   note?: string;
   created_at: string;
   created_by: string;
+  stored_location: string;
 };
 
 export type PurchaseOrderDetailData = {
@@ -146,7 +148,7 @@ export function PurchaseOrderDetailPane() {
             {receives.map((r) => (
               <details key={r.id} className="bg-gray-800 rounded mb-2">
                 <summary className="cursor-pointer px-4 py-2 font-semibold">
-                  {r.receive_date} - {r.received_by}
+                  {r.receive_date} - {r.received_by} - {r.stored_location}
                 </summary>
                 <div className="p-4 text-sm space-y-2">
                   {r.note && <p className="text-gray-300">{r.note}</p>}
@@ -185,8 +187,9 @@ export function PurchaseOrderDetailPane() {
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Item</th>
                   <th className="px-2 py-1 text-right">Qty</th>
-                  <th className="px-2 py-1 text-right">Balance</th>
+                  <th className="px-2 py-1 text-right">Blc</th>
                   <th className="px-2 py-1 text-left">Note</th>
+                  <th className="px-2 py-1 text-left">Stored</th>
                 </tr>
               </thead>
               <tbody>
@@ -200,6 +203,7 @@ export function PurchaseOrderDetailPane() {
                     <td className="px-2 py-1 text-right">{sm.qty}</td>
                     <td className="px-2 py-1 text-right">{sm.balance_after}</td>
                     <td className="px-2 py-1">{sm.note}</td>
+                    <td className="px-2 py-1">{sm.stored_location}</td>
                   </tr>
                 ))}
               </tbody>

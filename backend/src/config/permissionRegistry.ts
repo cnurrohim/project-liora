@@ -195,30 +195,30 @@ export const permissionRegistry = [
   },
 
   /** LOGISTICS USE CASE */
-  /** LOCATION */
+  /** STOCK-LOCATION */
   {
-    domain: "location",
+    domain: "stock_location",
     name: "view",
-    label: "buka halaman form location",
-    description: "Bisa membuka halaman location",
+    label: "buka halaman form stock location",
+    description: "Bisa membuka halaman stock location",
   },
   {
-    domain: "location",
+    domain: "stock_location",
     name: "delete",
-    label: "hapus location",
-    description: "Bisa menghapus location",
+    label: "hapus stock location",
+    description: "Bisa menghapus stock location",
   },
   {
-    domain: "location",
+    domain: "stock_location",
     name: "update",
-    label: "mengubah location",
-    description: "Bisa mengubah location",
+    label: "mengubah stock location",
+    description: "Bisa mengubah stock location",
   },
   {
-    domain: "location",
+    domain: "stock_location",
     name: "create",
-    label: "menambahkan location baru",
-    description: "Bisa menambahkan location baru",
+    label: "menambahkan stock location baru",
+    description: "Bisa menambahkan stock location baru",
   },
 
   /** ITEM */

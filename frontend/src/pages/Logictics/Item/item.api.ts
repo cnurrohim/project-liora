@@ -19,8 +19,6 @@ export async function createItem(input: {
   sku: string;
   name: string;
   min_stock?: number;
-  location_id?: string | null;
-  supplier_id?: string | null;
 }) {
   const res = await apiFetch("/logistics/items", {
     method: "POST",
@@ -36,8 +34,6 @@ export async function updateItem(
     sku: string;
     name: string;
     min_stock?: number;
-    location_id?: string | null;
-    supplier_id?: string | null;
   }
 ) {
   const res = await apiFetch(`/logistics/items/${id}`, {
