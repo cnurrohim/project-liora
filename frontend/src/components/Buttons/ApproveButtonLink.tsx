@@ -10,7 +10,7 @@ type Props = {
 export function ApproveButtonLink({
   label = "Approve",
   onClick,
-  className,
+  className = "flex cursor-pointer hover:bg-green-500 px-2 py-1 rounded text-white text-xs font-semibold bg-green-400",
 }: Props) {
   return (
     <ButtonLink
@@ -19,11 +19,5 @@ export function ApproveButtonLink({
       onClick={onClick}
       className={className}
     />
-  );
-}
-
-export function ApprovedButtonLink({ label = "Approved", onClick }: Props) {
-  return (
-    <ButtonLink icon="RiCheckDoubleLine" label={label} onClick={onClick} />
   );
 }

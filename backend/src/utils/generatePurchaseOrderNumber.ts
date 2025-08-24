@@ -14,7 +14,7 @@ Nomor urut selalu konsisten per periode.
 Kekurangan:
 Harus pakai transaction + FOR UPDATE (lebih rumit daripada sequence).
 
-CREATE TABLE logistics.po_counters (
+CREATE TABLE inventory.po_counters (
   date_key DATE PRIMARY KEY,
   last_number INT NOT NULL DEFAULT 0
 );
@@ -31,7 +31,7 @@ export async function getNextOrderNumber(client: any, now = new Date()) {
 
   // Lock row berdasarkan tanggal
   const { rows } = await client.query(
-    `SELECT last_number FROM logistics.po_counters
+    `SELECT last_number FROM inventory.po_counters
      WHERE date_key = $1
      FOR UPDATE`,
     [dateKey]
@@ -40,14 +40,14 @@ export async function getNextOrderNumber(client: any, now = new Date()) {
   let seq = 1;
   if (rows.length === 0) {
     await client.query(
-      `INSERT INTO logistics.po_counters(date_key, last_number)
+      `INSERT INTO inventory.po_counters(date_key, last_number)
        VALUES ($1, 1)`,
       [dateKey]
     );
   } else {
     seq = rows[0].last_number + 1;
     await client.query(
-      `UPDATE logistics.po_counters
+      `UPDATE inventory.po_counters
        SET last_number = $2
        WHERE date_key = $1`,
       [dateKey, seq]

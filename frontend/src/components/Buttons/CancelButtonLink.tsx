@@ -10,7 +10,7 @@ type Props = {
 export function CancelButtonLink({
   label = "Cancel",
   onClick,
-  className,
+  className = "flex gap-1 cursor-pointer hover:bg-amber-500 px-2 py-1 rounded text-white text-xs font-semibold bg-amber-600",
 }: Props) {
   return (
     <ButtonLink
@@ -19,11 +19,5 @@ export function CancelButtonLink({
       onClick={onClick}
       className={className}
     />
-  );
-}
-
-export function ApprovedButtonLink({ label = "Canceled", onClick }: Props) {
-  return (
-    <ButtonLink icon="RiCloseCircleLine" label={label} onClick={onClick} />
   );
 }

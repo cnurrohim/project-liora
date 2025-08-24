@@ -13,20 +13,24 @@ import DepartmentListPage from "../pages/Departments";
 import DepartmentFormPage from "../pages/Departments/form";
 import UserFormTabs from "../pages/User/UserFormTabs";
 import UserProfilePage from "@/pages/UserProfile";
-import ItemFormPage from "@/pages/Logictics/Item/ItemFormPage";
-import ItemListPage from "@/pages/Logictics/Item/ItemListPage";
-import SupplierListPage from "@/pages/Logictics/Supplier/SupplierListPage";
-import SupplierFormPage from "@/pages/Logictics/Supplier/SupplierFormPage";
-import PurchaseOrderListPage from "@/pages/Logictics/PurchaseOrder/PurchaseOrderListPage";
-import PurchaseOrderFormPage from "@/pages/Logictics/PurchaseOrder/PurchaseOrderFormPage";
-import PurchaseReceiveFormPage from "@/pages/Logictics/PurchaseOrder/PurchaseReceiveFormPage";
-import PurchaseReceiveKiosk from "@/pages/Logictics/PurchaseOrder/PurchaseReceiveKiosk";
-import GoodsReceiptFormPage from "@/pages/Logictics/GoodsReceipts/GoodsReceiptFormPage";
-import GoodsReceiptListPage from "@/pages/Logictics/GoodsReceipts/GoodsReceiptListPage";
-import GoodsIssueListPage from "@/pages/Logictics/GoodsIssue/GoodsIssueListPage";
-import GoodsIssueFormPage from "@/pages/Logictics/GoodsIssue/GoodsIssueFormPage";
-import StockLocationsFormPage from "@/pages/Logictics/stockLocations/form";
-import StockLocationsListPage from "@/pages/Logictics/stockLocations/stockLocationsListPage";
+import ItemFormPage from "@/pages/Inventory/Item/ItemFormPage";
+import ItemListPage from "@/pages/Inventory/Item/ItemListPage";
+import SupplierListPage from "@/pages/Inventory/Supplier/SupplierListPage";
+import SupplierFormPage from "@/pages/Inventory/Supplier/SupplierFormPage";
+import PurchaseOrderListPage from "@/pages/Inventory/PurchaseOrder/PurchaseOrderListPage";
+import PurchaseOrderFormPage from "@/pages/Inventory/PurchaseOrder/PurchaseOrderFormPage";
+import PurchaseReceiveFormPage from "@/pages/Inventory/PurchaseOrder/PurchaseReceiveFormPage";
+import PurchaseReceiveKiosk from "@/pages/Inventory/PurchaseOrder/PurchaseReceiveKiosk";
+import GoodsReceiptFormPage from "@/pages/Inventory/GoodsReceipts/GoodsReceiptFormPage";
+import GoodsReceiptListPage from "@/pages/Inventory/GoodsReceipts/GoodsReceiptListPage";
+import GoodsIssueListPage from "@/pages/Inventory/GoodsIssue/GoodsIssueListPage";
+import GoodsIssueFormPage from "@/pages/Inventory/GoodsIssue/GoodsIssueFormPage";
+import StockLocationsFormPage from "@/pages/Inventory/stockLocations/form";
+import StockLocationsListPage from "@/pages/Inventory/stockLocations/stockLocationsListPage";
+import StockAdjustmentListPage from "@/pages/Inventory/StocksAdjustment/StockAdjustmentListPage";
+import StockAdjustmentFormPage from "@/pages/Inventory/StocksAdjustment/StockAdjustmentFormPage";
+import StockOpnameListPage from "@/pages/Inventory/StockOpname/StockOpnameListPage";
+import StockOpnameFormPage from "@/pages/Inventory/StockOpname/StockOpnameFormPage";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -125,9 +129,9 @@ export function registerRoutes() {
     React.createElement(MenuFormPage)
   );
 
-  /** LOGITICS USE CASE */
+  /** INVENTORY USE CASE */
   RouteRegistry.register(
-    "/pages/logitics/stock-location",
+    "/pages/inventory/stock-location",
     "list stock locations",
     React.createElement(StockLocationsListPage)
   );
@@ -139,7 +143,7 @@ export function registerRoutes() {
   );
 
   RouteRegistry.register(
-    "/pages/logitics/item",
+    "/pages/inventory/item",
     "list available item",
     React.createElement(ItemListPage)
   );
@@ -151,7 +155,7 @@ export function registerRoutes() {
   );
 
   RouteRegistry.register(
-    "/pages/logitics/supplier",
+    "/pages/inventory/supplier",
     "list available supplier",
     React.createElement(SupplierListPage)
   );
@@ -163,7 +167,7 @@ export function registerRoutes() {
   );
 
   RouteRegistry.register(
-    "/pages/logitics/purchase-order",
+    "/pages/inventory/purchase-order",
     "list purchase-order",
     React.createElement(PurchaseOrderListPage)
   );
@@ -199,13 +203,13 @@ export function registerRoutes() {
   );
 
   RouteRegistry.register(
-    "/pages/logitics/goods-receipts",
+    "/pages/inventory/goods-receipts",
     "list goods receipts",
     React.createElement(GoodsReceiptListPage)
   );
 
   RouteRegistry.register(
-    "/pages/logitics/goods-issues",
+    "/pages/inventory/goods-issues",
     "list goods issues",
     React.createElement(GoodsIssueListPage)
   );
@@ -214,5 +218,41 @@ export function registerRoutes() {
     "/goods-issues/create",
     "Issue Goods Inbound or Outbound",
     React.createElement(GoodsIssueFormPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/inventory/stock-adjustments",
+    "list stock adjustments",
+    React.createElement(StockAdjustmentListPage)
+  );
+
+  RouteRegistry.register(
+    "/stock-adjustment/create",
+    "stock adjustment form",
+    React.createElement(StockAdjustmentFormPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/inventory/stock-opnames",
+    "list stock opnames",
+    React.createElement(StockOpnameListPage)
+  );
+
+  RouteRegistry.register(
+    "/stock-opname/create",
+    "stock opname form",
+    React.createElement(StockOpnameFormPage)
+  );
+
+  RouteRegistry.register(
+    "/stock-opname/:id/edit",
+    "stock opname edit form",
+    React.createElement(StockOpnameFormPage)
+  );
+
+  RouteRegistry.register(
+    "/stock-opname/:id/review",
+    "stock opname review form",
+    React.createElement(StockOpnameFormPage)
   );
 }

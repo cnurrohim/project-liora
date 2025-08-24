@@ -48,7 +48,7 @@ export const PERMISSIONS = {
     DELETE: "user_profile.delete",
   },
 
-  /* LOGISTICS USE CASE */
+  /* INVENTORY USE CASE */
   LOCATION: {
     VIEW: "location.view",
     CREATE: "location.create",
@@ -95,8 +95,25 @@ export const PERMISSIONS = {
     CREATE: "goods_issue.create",
     UPDATE: "goods_issue.update",
     DELETE: "goods_issue.delete",
-    APPROVE: "goods_issue.approve",
-    RECEIVE: "goods_issue.receive",
     CANCEL: "goods_issue.cancel",
+  },
+
+  STOCK_ADJUSTMENT: {
+    VIEW: "stock_adjustment.view",
+    CREATE: "stock_adjustment.create",
+    UPDATE: "stock_adjustment.update",
+    DELETE: "stock_adjustment.delete",
+    APPROVE: "stock_adjustment.approve",
+    CANCEL: "stock_adjustment.cancel",
+  },
+
+  STOCK_OPNAME: {
+    VIEW: "stock_opname.view",
+    CREATE: "stock_opname.create",
+    UPDATE: "stock_opname.update",
+    DELETE: "stock_opname.delete",
+    APPROVE: "stock_opname.approve",
+    REVIEW: "stock_opname.review",
+    CANCEL: "stock_opname.cancel",
   },
 } as const;

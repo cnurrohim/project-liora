@@ -194,7 +194,7 @@ export const permissionRegistry = [
     description: "Bisa menambahkan user profile baru",
   },
 
-  /** LOGISTICS USE CASE */
+  /** INVENTORY USE CASE */
   /** STOCK-LOCATION */
   {
     domain: "stock_location",
@@ -359,5 +359,87 @@ export const permissionRegistry = [
     name: "cancel",
     label: "cancel goods receipts",
     description: "Bisa cancel goods receipts",
+  },
+
+  /** STOCK ADJUSTMENT */
+  {
+    domain: "stock_adjustment",
+    name: "view",
+    label: "buka halaman form stock adjustment",
+    description: "Bisa membuka halaman stock adjustment",
+  },
+  {
+    domain: "stock_adjustment",
+    name: "delete",
+    label: "hapus stock adjustment",
+    description: "Bisa menghapus stock adjustment",
+  },
+  {
+    domain: "stock_adjustment",
+    name: "update",
+    label: "mengubah stock adjustment",
+    description: "Bisa mengubah stock adjustment",
+  },
+  {
+    domain: "stock_adjustment",
+    name: "create",
+    label: "menambahkan stock adjustment baru",
+    description: "Bisa menambahkan stock adjustment baru",
+  },
+  {
+    domain: "stock_adjustment",
+    name: "approve",
+    label: "approve stock adjustment",
+    description: "Bisa approve stock adjustment baru",
+  },
+  {
+    domain: "stock_adjustment",
+    name: "cancel",
+    label: "cancel stock adjustment",
+    description: "Bisa cancel stock adjustment",
+  },
+
+  /** STOCK OPNAME */
+  {
+    domain: "stock_opname",
+    name: "view",
+    label: "buka halaman form stock opname",
+    description: "Bisa membuka halaman stock opname",
+  },
+  {
+    domain: "stock_opname",
+    name: "delete",
+    label: "hapus stock opname",
+    description: "Bisa menghapus stock opname",
+  },
+  {
+    domain: "stock_opname",
+    name: "update",
+    label: "mengubah stock opname",
+    description: "Bisa mengubah stock opname",
+  },
+  {
+    domain: "stock_opname",
+    name: "create",
+    label: "menambahkan stock opname baru",
+    description: "Bisa menambahkan stock opname baru",
+  },
+  {
+    domain: "stock_opname",
+    name: "approve",
+    label: "approve stock opname",
+    description: "Bisa approve stock opname baru",
+  },
+  {
+    domain: "stock_opname",
+    name: "review",
+    label: "review stock opname",
+    description: "Bisa review stock opname",
+  },
+  {
+    domain: "stock_opname",
+    name: "cancel",
+    label: "cancel stock opname",
+    description: "Bisa cancel stock opname",
   },
 ];

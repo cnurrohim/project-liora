@@ -14,7 +14,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { departmentRoute } from "./routes/core/departments.js";
 import { pinnedMenusRoute } from "./routes/core/pinnedMenus.js";
 import { profileRoute } from "./routes/core/profile.js";
-import { logisticsRoute } from "./routes/logitics/index.js";
+import { inventoryRoute } from "./routes/inventory/index.js";
 
 export const app = new Hono<{ Variables: Variables }>();
 
@@ -41,7 +41,7 @@ app.route("/permissions", permissionRoute);
 app.route("/departments", departmentRoute);
 app.route("/pinned-menus", pinnedMenusRoute);
 
-// LOGITICS USE CASE
-app.route("/logistics", logisticsRoute);
+// INVENTORY USE CASE
+app.route("/inventory", inventoryRoute);
 
 app.get("/", (c) => c.text("Backend running"));

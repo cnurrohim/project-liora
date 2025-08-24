@@ -6,13 +6,10 @@ export type MovementType = "inbound" | "outbound" | "adjustment";
 export type AdjustmentDirection = "increase" | "decrease";
 export type ReferenceType =
   | "purchase_order"
-  | "sales_order"
-  | "sales_return"
   | "purchase_receive"
-  | "purchase_return"
   | "goods_receipt"
+  | "stock_adjustment"
   | "stock_opname"
-  | "manual_adjustment"
   | "goods_issue"
   | "transfer";
 
@@ -54,7 +51,7 @@ export async function createStockMovement(
 
     // Ambil saldo terakhir dari stock_balances
     const balResult = await localClient.query(
-      `SELECT qty FROM logistics.stock_balances
+      `SELECT qty FROM inventory.stock_balances
        WHERE item_id = $1 AND location_id = $2`,
       [payload.item_id, locationId]
     );
@@ -72,7 +69,7 @@ export async function createStockMovement(
 
     // Update / Insert ke stock_balances
     await localClient.query(
-      `INSERT INTO logistics.stock_balances (item_id, location_id, qty)
+      `INSERT INTO inventory.stock_balances (item_id, location_id, qty)
        VALUES ($1, $2, $3)
        ON CONFLICT (item_id, location_id)
        DO UPDATE SET qty = EXCLUDED.qty`,
@@ -81,7 +78,7 @@ export async function createStockMovement(
 
     // Insert ke stock_movements
     const result = await localClient.query(
-      `INSERT INTO logistics.stock_movements
+      `INSERT INTO inventory.stock_movements
        (id, item_id, source_location_id, target_location_id,
         movement_type, adjustment_direction, qty, balance_after,
         reference_type, reference_id, note, created_by)
