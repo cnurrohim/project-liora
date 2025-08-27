@@ -12,6 +12,10 @@ import { goodsReceiptRoute } from "./goodsReceipt.route.js";
 import { goodsIssueRoute } from "./goodsIssue.route.js";
 import { stockLocationsRoute } from "./stockLocations.route.js";
 import { stockAdjustmentRoute } from "./stockAdjustment.route.js";
+import { stockOnHandRoute } from "./stockOnHand.route.js";
+import { poSummaryRoute } from "./poSummary.route.js";
+import { stockHistoryReportRoute } from "./stockHistoryReport.route.js";
+import { stockLocationReportRoute } from "./stockLocationReport.route.js";
 
 export const inventoryRoute = new Hono();
 
@@ -27,3 +31,8 @@ inventoryRoute.route("/goods-receipts", goodsReceiptRoute);
 inventoryRoute.route("/goods-issues", goodsIssueRoute);
 inventoryRoute.route("/stock-adjustments", stockAdjustmentRoute);
 inventoryRoute.route("/stock-opnames", stockOpnameRoute);
+
+inventoryRoute.route("/stock-on-hand", stockOnHandRoute);
+inventoryRoute.route("/po-summary", poSummaryRoute);
+inventoryRoute.route("/stock-history-report", stockHistoryReportRoute);
+inventoryRoute.route("/stock-location-report", stockLocationReportRoute);

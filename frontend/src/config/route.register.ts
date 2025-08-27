@@ -31,6 +31,11 @@ import StockAdjustmentListPage from "@/pages/Inventory/StocksAdjustment/StockAdj
 import StockAdjustmentFormPage from "@/pages/Inventory/StocksAdjustment/StockAdjustmentFormPage";
 import StockOpnameListPage from "@/pages/Inventory/StockOpname/StockOpnameListPage";
 import StockOpnameFormPage from "@/pages/Inventory/StockOpname/StockOpnameFormPage";
+import StockMovementListPage from "@/pages/Inventory/ReportStockMovement/StockMovementListPage";
+import StockOnHandListPage from "@/pages/Inventory/ReportStockOnHand/StockOnHandListPage";
+import POSummaryListPage from "@/pages/Inventory/ReportPurchaseSummary/POSummaryListPage";
+import StockHistoryReportPage from "@/pages/Inventory/ReportStockHistory/StockHistoryReportPage";
+import StockLocationReportPage from "@/pages/Inventory/ReportStockLocation/StockLocationReportPage";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -254,5 +259,35 @@ export function registerRoutes() {
     "/stock-opname/:id/review",
     "stock opname review form",
     React.createElement(StockOpnameFormPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/inventory/stock-movements",
+    "Stock Movements",
+    React.createElement(StockMovementListPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/inventory/stock-on-hand",
+    "Stock On Hand",
+    React.createElement(StockOnHandListPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/inventory/po-summary",
+    "Purchase Order Summary",
+    React.createElement(POSummaryListPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/inventory/stock-history-report/",
+    "Stock History",
+    React.createElement(StockHistoryReportPage)
+  );
+
+  RouteRegistry.register(
+    "/pages/inventory/stock-location-report",
+    "Stock Per Location",
+    React.createElement(StockLocationReportPage)
   );
 }

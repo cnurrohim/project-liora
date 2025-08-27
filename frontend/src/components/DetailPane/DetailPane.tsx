@@ -1,6 +1,4 @@
-// src/components/DetailPane/BaseDetailPane.tsx
-
-import { type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 export function DetailPane({
   visible,
@@ -15,17 +13,43 @@ export function DetailPane({
   children: ReactNode;
   widthClass?: string;
 }) {
-  if (!visible) return null;
+  const [isRendered, setIsRendered] = useState(visible);
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    if (visible) {
+      setIsRendered(true);
+      requestAnimationFrame(() => setAnimateIn(true));
+    } else {
+      setAnimateIn(false);
+      const timeout = setTimeout(() => setIsRendered(false), 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [visible]);
+
+  const handleClose = () => {
+    setAnimateIn(false);
+    setTimeout(() => {
+      setIsRendered(false);
+      onClose();
+    }, 300);
+  };
+
+  if (!isRendered) return null;
 
   return (
-    <div className="fixed inset-0 flex justify-end z-50 bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 flex justify-end z-50 bg-black/30 backdrop-blur-sm transition-opacity">
       <div
-        className={`${widthClass} h-full bg-gray-900 text-white shadow-xl transform transition-all duration-300`}
+        className={`
+          ${widthClass}
+          h-full bg-gray-900 text-white shadow-xl transform transition-transform duration-300
+          ${animateIn ? "translate-x-0" : "translate-x-full"}
+        `}
       >
         <div className="flex justify-between items-center p-4 border-b border-gray-700">
           <h2 className="text-xl font-bold">{title}</h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-gray-400 hover:text-white text-2xl font-bold"
             title="Tutup"
           >

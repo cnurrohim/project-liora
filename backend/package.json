@@ -10,10 +10,12 @@
     "@hono/node-server": "^1.15.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.1.0",
+    "exceljs": "^4.4.0",
     "hono": "^4.8.4",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "pg": "^8.16.3",
+    "puppeteer": "^24.17.0",
     "redis": "^5.8.0",
     "uuid": "^11.1.0",
     "zod": "^4.0.17"
