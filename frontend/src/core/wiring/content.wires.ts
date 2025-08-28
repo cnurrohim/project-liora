@@ -19,7 +19,7 @@ export const contentWires: Wire[] = [
       DefaultPageController.setDefaultPage({
         key: `tab-${Date.now()}`,
         label: "New Tab",
-        content: "/pages/launcher",
+        content: "/pages/boxy-launcher",
       });
     },
   },

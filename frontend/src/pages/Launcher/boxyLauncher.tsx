@@ -5,8 +5,9 @@ import { TabController } from "@/components/Tab/controller";
 import { handleMenuClick } from "@/utils/handleMenuClick";
 import { IconRenderer } from "@/components/IconRenderer";
 import { PinnedMenuController } from "@/controller/PinnedMenuController";
+import UserProfileWidget from "./userProfile";
 
-export default function AppLauncher() {
+export default function BoxyLauncher() {
   const [search, setSearch] = useState("");
   const [menu, setMenu] = useState<FlatMenuItem[]>([]);
 
@@ -17,10 +18,8 @@ export default function AppLauncher() {
       setMenu(flat);
     };
 
-    // initial load
     updateMenu();
 
-    // subscribe to updates
     MenuProviderController.subscribe(updateMenu);
 
     return () => {
@@ -68,7 +67,7 @@ export default function AppLauncher() {
   };
 
   const handlePinClick = async (flatItem: FlatMenuItem) => {
-    const menuItem = flatItem.original; // langsung pakai MenuItem asli
+    const menuItem = flatItem.original;
     const isPinned = PinnedMenuController.getPinnedMenus().some(
       (m) => m.id === menuItem.id
     );
@@ -86,16 +85,23 @@ export default function AppLauncher() {
   };
 
   return (
-    <div className="p-4 space-y-4">
-      <input
-        type="text"
-        placeholder="Search..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full px-3 py-2 bg-gray-800 text-white border-none outline-none"
-      />
+    <>
+      <div className="px-10 space-y-4">
+        <div className="flex justify-center w-full items-">
+          <div className="relative my-6 w-2/3 ">
+            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400">
+              <IconRenderer name={"RiSearchLine"} size={18} color={"#9c9c9c"} />
+            </span>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-15 px-3 py-2 bg-gray-900 text-white rounded-lg border-none outline-none"
+            />
+          </div>
+        </div>
 
-      <div>
         {filtered.length === 0 && (
           <div className="text-gray-400">No results.</div>
         )}
@@ -106,50 +112,55 @@ export default function AppLauncher() {
             return acc;
           }, {})
         ).map(([parent, items]) => (
-          <div key={parent} className="mb-4">
-            <div className="text-blue-400 font-semibold">{parent}</div>
-            <div className="pl-2 mt-1 space-y-1">
+          <div key={parent} className="mb-6">
+            <div className="text-gray-600 font-semibold mb-2">{parent}</div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {items.map((item, i) => (
-                <div key={i} className="flex flex-row">
+                <div
+                  key={i}
+                  onClick={() => handleClick(item)}
+                  className=" relative group gap-2 hover:bg-gray-900 cursor-pointer p-4  flex flex-row shadow transition"
+                >
+                  {/* Pin button pojok kanan atas */}
                   <button
                     type="button"
                     title={item.isPinned ? "Unpin menu" : "Pin menu"}
-                    className="text-blue-400 cursor-pointer hover:bg-gray-700 p-2"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handlePinClick(item);
                     }}
+                    className="cursor-pointer absolute top-2 right-2 text-gray-400 hover:text-blue-400"
                   >
                     <IconRenderer
                       name={item.isPinned ? "RiPushpin2Fill" : "RiPushpin2Line"}
-                      size={15}
-                      color="#9c9c9c"
+                      size={16}
                     />
                   </button>
 
-                  <div
-                    key={i}
-                    onClick={() => handleClick(item)}
-                    className="w-full flex items-center gap-2 text-sm text-gray-200 cursor-pointer hover:bg-gray-800 px-2 py-1 rounded"
-                  >
-                    <span className="text-blue-300">
-                      {typeof item.icon === "string" && item.icon ? (
-                        <IconRenderer
-                          name={item.icon}
-                          size={15}
-                          color={item.icon_color}
-                        />
-                      ) : (
-                        <IconRenderer
-                          name="RiApps2Line"
-                          size={15}
-                          color={item.icon_color}
-                        />
-                      )}
-                    </span>
-                    <span>{item.label}</span>
-                    <span className="ml-auto text-gray-400 text-xs">
-                      {item.route || item.command}
-                    </span>
+                  {/* Icon */}
+                  <div className=" text-gray-300 w-10 flex items-center justify-center">
+                    {typeof item.icon === "string" && item.icon ? (
+                      <IconRenderer
+                        name={item.icon}
+                        size={38}
+                        color={item.icon_color}
+                      />
+                    ) : (
+                      <IconRenderer name="RiApps2Line" size={32} />
+                    )}
+                  </div>
+
+                  <div className="flex flex-col">
+                    {/* Label */}
+                    <div className=" text-gray-300 font-medium">
+                      {item.label}
+                    </div>
+
+                    {/* Route / command kecil */}
+                    <div className=" text-xs text-gray-500">
+                      {item.description}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -157,6 +168,7 @@ export default function AppLauncher() {
           </div>
         ))}
       </div>
-    </div>
+      <UserProfileWidget />
+    </>
   );
 }

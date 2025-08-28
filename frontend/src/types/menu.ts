@@ -9,6 +9,7 @@ export type MenuRoute = {
   icon_color?: string;
   route: string;
   alignment?: MenuAlignment;
+  description?: string;
 };
 
 export type MenuCommand = {
@@ -19,6 +20,7 @@ export type MenuCommand = {
   icon_color?: string;
   command: string;
   alignment?: MenuAlignment;
+  description?: string;
 };
 
 export type MenuGroup = {
@@ -29,6 +31,7 @@ export type MenuGroup = {
   icon_color?: string;
   items: MenuItem[];
   alignment?: MenuAlignment;
+  description?: string;
 };
 
 export type MenuItem = MenuRoute | MenuCommand | MenuGroup;

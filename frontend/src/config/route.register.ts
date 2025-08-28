@@ -7,7 +7,8 @@ import RoleFormPage from "../pages/role/roleForm";
 import MenuListPage from "../pages/Menu";
 import MenuFormPage from "../pages/Menu/form";
 import AppSettingPage from "../pages/AppSettings";
-import AppLauncher from "../pages/Launcher";
+import ListLauncher from "../pages/Launcher/listLauncher";
+import BoxyLauncher from "@/pages/Launcher/boxyLauncher";
 import DefaultPage from "../pages/Misc/DefaultPage";
 import DepartmentListPage from "../pages/Departments";
 import DepartmentFormPage from "../pages/Departments/form";
@@ -43,10 +44,17 @@ export function registerRoutes() {
     "Empty",
     React.createElement(DefaultPage)
   );
+
   RouteRegistry.register(
-    "/pages/launcher",
-    "default app launcher",
-    React.createElement(AppLauncher)
+    "/pages/list-launcher",
+    "list app launcher",
+    React.createElement(ListLauncher)
+  );
+
+  RouteRegistry.register(
+    "/pages/boxy-launcher",
+    "boxy app launcher",
+    React.createElement(BoxyLauncher)
   );
 
   RouteRegistry.register(
