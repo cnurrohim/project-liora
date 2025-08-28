@@ -4,6 +4,7 @@ import { createVerticalMenu } from "../factory/createVerticalMenu";
 import { createHorizontalMenu } from "../factory/createHorizontalMenu";
 import { createTabBar } from "../factory/createTabBar";
 import { IconRenderer } from "../components/IconRenderer";
+import { createVerticalExpandedMenu } from "@/factory/createVerticalExpandedMenu";
 
 export type LayoutPosition =
   | "leftPane"
@@ -31,6 +32,14 @@ export const layoutComponentRegistry: LayoutComponentDefinition[] = [
     id: "VMenuBar",
     label: "Vertical Menu",
     create: (position) => React.createElement(createVerticalMenu(position)),
+    allowedPositions: ["leftPane", "rightPane"],
+    singleton: true,
+  },
+  {
+    id: "VExpandedMenuBar",
+    label: "Vertical Expanded Menu",
+    create: (position) =>
+      React.createElement(createVerticalExpandedMenu(position)),
     allowedPositions: ["leftPane", "rightPane"],
     singleton: true,
   },

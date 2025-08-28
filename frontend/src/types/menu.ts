@@ -1,4 +1,3 @@
-// src/types/menu.ts
 export type MenuMode = "sliding" | "context"; // future: modal, etc.
 export type MenuAlignment = "start" | "end";
 
@@ -37,6 +36,7 @@ export type MenuItem = MenuRoute | MenuCommand | MenuGroup;
 export type MenuSection = {
   id: string;
   label?: string;
+  description?: string;
   icon?: string;
   icon_color?: string;
   mode: MenuMode;

@@ -84,11 +84,11 @@ menuRoute.get("/", async (c) => {
       .filter(Boolean) as MenuTreeNode[];
 
     // remove empty groups but keep pinned nodes
-    const cleanedTree = removeEmptyGroups(tree);
+    // const cleanedTree = removeEmptyGroups(tree);
 
     // pinned group
     const pinnedTree = makePinnedTree(pinnedMenusOrdered);
-    const finalMenuTree = [...(pinnedTree ? [pinnedTree] : []), ...cleanedTree];
+    const finalMenuTree = [...(pinnedTree ? [pinnedTree] : []), ...tree];
 
     // final response
     const response = { data: finalMenuTree };

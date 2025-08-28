@@ -17,7 +17,9 @@ export const MenuProviderController = {
     try {
       const res = await apiFetch("/menu");
       const data = (await res.json()).data;
+      console.log("data", data);
       state.sections = data;
+      console.log("state.sections", state.sections);
       notify();
     } catch (err) {
       console.error("Failed to load menu", err);

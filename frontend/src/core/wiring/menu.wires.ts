@@ -9,6 +9,11 @@ import { IconRenderer } from "@/components/IconRenderer";
 import React from "react";
 import { SlidingPanelController as VSlidingPanelController } from "@/components/VerticalMenu";
 import { SlidingPanelController as HSlidingPanelController } from "@/components/HorizontalMenu";
+import {
+  MenuBarController as VEMenuBarController,
+  SlidingPanelController as VESlidingPanelController,
+  type MenuBarEntry as VEMenuBarEntry,
+} from "@/components/VerticalMenuExpanded";
 
 export function menuWires(): Wire[] {
   return [
@@ -31,7 +36,6 @@ export function menuWires(): Wire[] {
         const miniEntries: VMenuBarEntry[] = sections.map((section) => ({
           key: section.id,
           label: section.label ?? section.id,
-          //icon: section.icon ?? "•",
           icon: React.createElement(IconRenderer, {
             name: section.icon,
             color: section.icon_color,
@@ -73,6 +77,36 @@ export function menuWires(): Wire[] {
         }));
 
         HMenuBarController.setEntries(miniEntries);
+      },
+    },
+    {
+      from: MenuProviderController.subscribe,
+      to: () => {
+        const sections = MenuProviderController.getState().sections;
+        VESlidingPanelController.setAllMenu(sections);
+        const hActive = VEMenuBarController.getActive();
+        if (hActive) {
+          const section = sections.find((s) => s.id === hActive);
+          if (section) {
+            VESlidingPanelController.setMenu(section);
+          } else {
+            VESlidingPanelController.close();
+          }
+        }
+
+        const miniEntries: VEMenuBarEntry[] = sections.map((section) => ({
+          key: section.id,
+          label: section.label ?? section.id,
+          icon: React.createElement(IconRenderer, {
+            name: section.icon,
+            color: section.icon_color,
+            size: 20,
+          }),
+          mode: section.mode,
+          alignment: section.alignment,
+        }));
+
+        VEMenuBarController.setEntries(miniEntries);
       },
     },
   ];
