@@ -168,7 +168,7 @@ export default function BoxyLauncher() {
           </div>
         ))}
       </div>
-      <UserProfileWidget />
+      {/* <UserProfileWidget /> */}
     </>
   );
 }

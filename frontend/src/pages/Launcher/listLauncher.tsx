@@ -160,7 +160,7 @@ export default function ListLauncher() {
           ))}
         </div>
       </div>
-      <UserProfileWidget />
+      {/* <UserProfileWidget /> */}
     </>
   );
 }

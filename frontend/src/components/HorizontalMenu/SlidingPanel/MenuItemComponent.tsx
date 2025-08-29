@@ -56,10 +56,6 @@ export default function MenuItemComponent({
         <span className="font-semibold text-sm text-gray-400 group-hover:text-white flex-1 truncate">
           {item.label}
         </span>
-
-        {item.type === "group" && (
-          <span className="ml-auto bg-gray-950 pr-1">⮯</span>
-        )}
       </div>
       {item.type !== "group" && onPinClick && (
         <button
@@ -76,6 +72,15 @@ export default function MenuItemComponent({
             color: "",
           })}
         </button>
+      )}
+
+      {item.type === "group" && (
+        <span className="ml-auto text-gray-500 p-2">
+          {iconRenderer?.({
+            name: "RiArrowDownDoubleLine",
+            size: 20,
+          })}
+        </span>
       )}
     </div>
   );

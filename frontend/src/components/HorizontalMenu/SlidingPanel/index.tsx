@@ -86,7 +86,7 @@ export default function SlidingPanel({
   `}
     >
       <div className="flex flex-col w-full mt-2 pl-3">
-        <div className="relative w-full">
+        <div className="relative w-full mb-2">
           <span className="absolute left-3 top-1/4 text-gray-400">
             {iconRenderer?.({
               name: "RiSearchLine",
@@ -126,13 +126,21 @@ export default function SlidingPanel({
         </nav>
 
         {state.activePath.length > 0 && (
-          <div className="mt-4 border-t border-lime-700 pt-2 ">
+          <div className="mt-4  pt-2 pl-4">
             <div
               onClick={() => SlidingPanelController.goBack()}
-              className="text-gray-400 hover:text-white cursor-pointer "
+              className="text-gray-400 group hover:text-white cursor-pointer flex flex-row items-center"
             >
-              <span className="ml-auto text-blue-400 pr-2">⮬</span>
-              <span className="text-gray-400">Back</span>
+              <span className=" group-hover:text-gray-300 text-gray-400 pr-2">
+                {iconRenderer?.({
+                  name: "RiArrowLeftUpBoxFill",
+                  size: 18,
+                  color: "#9c9c9c",
+                })}
+              </span>
+              <span className="text-gray-400 group-hover:text-gray-300">
+                Back
+              </span>
             </div>
           </div>
         )}
