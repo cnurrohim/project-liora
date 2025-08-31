@@ -42,260 +42,304 @@ export function registerRoutes() {
   RouteRegistry.register(
     "/pages/default",
     "Empty",
-    React.createElement(DefaultPage)
+    React.createElement(DefaultPage),
+    "default"
   );
 
   RouteRegistry.register(
     "/pages/list-launcher",
     "list app launcher",
-    React.createElement(ListLauncher)
+    React.createElement(ListLauncher),
+    "default"
   );
 
   RouteRegistry.register(
     "/pages/boxy-launcher",
     "boxy app launcher",
-    React.createElement(BoxyLauncher)
+    React.createElement(BoxyLauncher),
+    "default"
   );
 
   RouteRegistry.register(
     "/pages/app-settings",
     "app settings",
-    React.createElement(AppSettingPage)
+    React.createElement(AppSettingPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/preferences",
     "preferences",
-    React.createElement(Preferences)
+    React.createElement(Preferences),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/departmemts",
     "list departments",
-    React.createElement(DepartmentListPage)
+    React.createElement(DepartmentListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/departments/create",
     "add new departments",
-    React.createElement(DepartmentFormPage)
+    React.createElement(DepartmentFormPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/departments/:id/edit",
     "edit department",
-    React.createElement(DepartmentFormPage)
+    React.createElement(DepartmentFormPage),
+    "action"
   );
 
   RouteRegistry.register(
     "/pages/users",
     "list users",
-    React.createElement(UserListPage)
+    React.createElement(UserListPage),
+    "page"
   );
   RouteRegistry.register(
     "/user/create",
     "create user",
-    React.createElement(UserFormTabs)
+    React.createElement(UserFormTabs),
+    "page"
   );
 
   RouteRegistry.register(
     "/profile",
     "User Profile",
-    React.createElement(UserProfilePage)
+    React.createElement(UserProfilePage),
+    "page"
   );
 
   RouteRegistry.register(
     "/user/:id/edit",
     "create user",
-    React.createElement(UserFormTabs)
+    React.createElement(UserFormTabs),
+    "action"
   );
 
   RouteRegistry.register(
     "/pages/roles",
-    "Edit User",
-    React.createElement(RoleListPage)
+    "List Role",
+    React.createElement(RoleListPage),
+    "page"
   );
   RouteRegistry.register(
     "/roles/create",
     "create roles",
-    React.createElement(RoleFormPage)
+    React.createElement(RoleFormPage),
+    "page"
   );
   RouteRegistry.register(
     "/roles/:id/edit",
     "edit roles",
-    React.createElement(RoleFormPage)
+    React.createElement(RoleFormPage),
+    "action"
   );
 
   RouteRegistry.register(
     "/pages/menu",
     "list menu",
-    React.createElement(MenuListPage)
+    React.createElement(MenuListPage),
+    "page"
   );
   RouteRegistry.register(
     "/menu/create",
     "create menu",
-    React.createElement(MenuFormPage)
+    React.createElement(MenuFormPage),
+    "page"
   );
   RouteRegistry.register(
     "/menu/:id/edit",
     "edit menu",
-    React.createElement(MenuFormPage)
+    React.createElement(MenuFormPage),
+    "action"
   );
 
   /** INVENTORY USE CASE */
   RouteRegistry.register(
     "/pages/inventory/stock-location",
     "list stock locations",
-    React.createElement(StockLocationsListPage)
+    React.createElement(StockLocationsListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/stock-location/create",
     "create new stock location",
-    React.createElement(StockLocationsFormPage)
+    React.createElement(StockLocationsFormPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/item",
     "list available item",
-    React.createElement(ItemListPage)
+    React.createElement(ItemListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/item/create",
     "create new item",
-    React.createElement(ItemFormPage)
+    React.createElement(ItemFormPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/supplier",
     "list available supplier",
-    React.createElement(SupplierListPage)
+    React.createElement(SupplierListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/supplier/create",
     "create new supplier",
-    React.createElement(SupplierFormPage)
+    React.createElement(SupplierFormPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/purchase-order",
     "list purchase-order",
-    React.createElement(PurchaseOrderListPage)
+    React.createElement(PurchaseOrderListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/purchase-order/create",
     "create new purchase-order",
-    React.createElement(PurchaseOrderFormPage)
+    React.createElement(PurchaseOrderFormPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/purchase-order/:id/receive",
     "Receive PO",
-    React.createElement(PurchaseReceiveFormPage)
+    React.createElement(PurchaseReceiveFormPage),
+    "action"
   );
 
   RouteRegistry.register(
     "/purchase-order/:id/edit",
     "Edit PO",
-    React.createElement(PurchaseOrderFormPage)
+    React.createElement(PurchaseOrderFormPage),
+    "action"
   );
 
   RouteRegistry.register(
     "/purchase-order/:id/kiosk",
     "Receive PO (KIOSK)",
-    React.createElement(PurchaseReceiveKiosk)
+    React.createElement(PurchaseReceiveKiosk),
+    "action"
   );
 
   RouteRegistry.register(
     "/goods-receipts/create",
     "create new goods receipts",
-    React.createElement(GoodsReceiptFormPage)
+    React.createElement(GoodsReceiptFormPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/goods-receipts",
     "list goods receipts",
-    React.createElement(GoodsReceiptListPage)
+    React.createElement(GoodsReceiptListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/goods-issues",
     "list goods issues",
-    React.createElement(GoodsIssueListPage)
+    React.createElement(GoodsIssueListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/goods-issues/create",
     "Issue Goods Inbound or Outbound",
-    React.createElement(GoodsIssueFormPage)
+    React.createElement(GoodsIssueFormPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/stock-adjustments",
     "list stock adjustments",
-    React.createElement(StockAdjustmentListPage)
+    React.createElement(StockAdjustmentListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/stock-adjustment/create",
     "stock adjustment form",
-    React.createElement(StockAdjustmentFormPage)
+    React.createElement(StockAdjustmentFormPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/stock-opnames",
     "list stock opnames",
-    React.createElement(StockOpnameListPage)
+    React.createElement(StockOpnameListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/stock-opname/create",
     "stock opname form",
-    React.createElement(StockOpnameFormPage)
+    React.createElement(StockOpnameFormPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/stock-opname/:id/edit",
     "stock opname edit form",
-    React.createElement(StockOpnameFormPage)
+    React.createElement(StockOpnameFormPage),
+    "action"
   );
 
   RouteRegistry.register(
     "/stock-opname/:id/review",
     "stock opname review form",
-    React.createElement(StockOpnameFormPage)
+    React.createElement(StockOpnameFormPage),
+    "action"
   );
 
   RouteRegistry.register(
     "/pages/inventory/stock-movements",
     "Stock Movements",
-    React.createElement(StockMovementListPage)
+    React.createElement(StockMovementListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/stock-on-hand",
     "Stock On Hand",
-    React.createElement(StockOnHandListPage)
+    React.createElement(StockOnHandListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/po-summary",
     "Purchase Order Summary",
-    React.createElement(POSummaryListPage)
+    React.createElement(POSummaryListPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/stock-history-report/",
     "Stock History",
-    React.createElement(StockHistoryReportPage)
+    React.createElement(StockHistoryReportPage),
+    "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/stock-location-report",
     "Stock Per Location",
-    React.createElement(StockLocationReportPage)
+    React.createElement(StockLocationReportPage),
+    "page"
   );
 }

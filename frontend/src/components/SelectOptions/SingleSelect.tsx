@@ -42,7 +42,7 @@ export default function SingleSelect({
     <div className="p-2 relative w-full">
       {value && (
         <div className="flex items-center gap-1 mb-1 w-full">
-          <span className=" text-gray-300 px-2 py-1 rounded text-sm w-full flex justify-between">
+          <span className=" text-gray-300 px-2 py-1 rounded w-full flex justify-between">
             {value.name}
             {!disabled && (
               <button

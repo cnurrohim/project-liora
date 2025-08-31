@@ -113,7 +113,6 @@ export default function PurchaseReceiveKiosk() {
   };
 
   const onSubmit = async (data: ReceiveFormValues) => {
-    console.log("submit");
     try {
       setLoading(true);
       await createPurchaseReceive(data.purchase_order_id, {

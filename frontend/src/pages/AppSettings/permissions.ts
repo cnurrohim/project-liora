@@ -3,18 +3,22 @@ import { useHasPermission } from "@/hooks/useHasPermission";
 
 export function useDepartmentPermissions() {
   const canView = useHasPermission([
+    PERMISSIONS.SUPERADMIN.ALL_ACCESS,
     PERMISSIONS.DEV.ALL_ACCESS,
     PERMISSIONS.APP_SETTING.VIEW,
   ]);
   const canCreate = useHasPermission([
+    PERMISSIONS.SUPERADMIN.ALL_ACCESS,
     PERMISSIONS.DEV.ALL_ACCESS,
     PERMISSIONS.APP_SETTING.CREATE,
   ]);
   const canUpdate = useHasPermission([
+    PERMISSIONS.SUPERADMIN.ALL_ACCESS,
     PERMISSIONS.DEV.ALL_ACCESS,
     PERMISSIONS.APP_SETTING.UPDATE,
   ]);
   const canDelete = useHasPermission([
+    PERMISSIONS.SUPERADMIN.ALL_ACCESS,
     PERMISSIONS.DEV.ALL_ACCESS,
     PERMISSIONS.APP_SETTING.DELETE,
   ]);
