@@ -29,10 +29,38 @@ userLayoutRoute.get("/:userId/:roleId", async (c) => {
   }
 });
 
+userLayoutRoute.get("config/:userId/:roleId", async (c) => {
+  const user_id = c.req.param("userId");
+  const role_id = c.req.param("roleId");
+
+  if (!user_id || !role_id) {
+    return c.json({ error: "user_id and role_id are required" }, 400);
+  }
+
+  try {
+    const result = await db.query(
+      `SELECT default_page, default_new_tab FROM user_layout_preferences WHERE user_id = $1 AND role_id = $2`,
+      [user_id, role_id]
+    );
+
+    if (result.rows.length === 0) {
+      return c.json({ default_page: null, default_new_tab: null });
+    }
+
+    return c.json({
+      default_page: result.rows[0].default_page,
+      default_new_tab: result.rows[0].default_new_tab,
+    });
+  } catch (err) {
+    console.error("Failed to get layout:", err);
+    return c.json({ error: "Failed to fetch layout" }, 500);
+  }
+});
+
 // POST or UPDATE (upsert) layout preference
 userLayoutRoute.post("/", async (c) => {
   const body = await c.req.json();
-  const { user_id, role_id, layout } = body;
+  const { user_id, role_id, layout, config } = body;
 
   if (!user_id || !role_id || !layout) {
     return c.json({ error: "user_id, role_id, and layout are required" }, 400);
@@ -41,12 +69,12 @@ userLayoutRoute.post("/", async (c) => {
   try {
     await db.query(
       `
-      INSERT INTO user_layout_preferences (user_id, role_id, layout)
-      VALUES ($1, $2, $3)
+      INSERT INTO user_layout_preferences (user_id, role_id, layout, default_page, default_new_tab)
+      VALUES ($1, $2, $3, $4, $5)
       ON CONFLICT (user_id, role_id)
-      DO UPDATE SET layout = EXCLUDED.layout, updated_at = now()
+      DO UPDATE SET layout = EXCLUDED.layout, default_page = EXCLUDED.default_page, default_new_tab = EXCLUDED.default_new_tab, updated_at = now()
       `,
-      [user_id, role_id, layout]
+      [user_id, role_id, layout, config.default_page, config.default_new_tab]
     );
 
     return c.json({ success: true });

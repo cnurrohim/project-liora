@@ -10,6 +10,7 @@ import { layoutComponentRegistry } from "./layoutComponentRegistry";
 import { registerRoutes } from "./route.register";
 import { ProfileController } from "@/controller/ProfileController";
 import { TabController } from "@/components/Tab/controller";
+import { UserPreferencesController } from "@/controller/UserPreferencesController";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -24,8 +25,7 @@ export async function initializeApp(): Promise<() => void> {
     if (!hydrated) {
       console.warn("❗ Layout tidak berhasil dihydrasi");
     }
-
-    await hydrateUserTab(user);
+    await hydratePreferences(user);
   }
 
   await AppConfigController.loadConfig();
@@ -48,6 +48,15 @@ export async function initializeApp(): Promise<() => void> {
 
 export async function hydrateUserTab(user: ActiveUser) {
   TabController.setTabStorageKey(user.id, user.defaultRole.id);
+}
+
+export async function hydratePreferences(user: ActiveUser) {
+  await UserPreferencesController.load(user.id, user.defaultRole.id);
+
+  const defaultPage = UserPreferencesController.get("defaultPage");
+  TabController.setDefaultPage(defaultPage);
+
+  await hydrateUserTab(user);
 }
 
 export async function hydrateUserLayout(user: ActiveUser): Promise<boolean> {

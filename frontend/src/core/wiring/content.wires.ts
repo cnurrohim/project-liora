@@ -1,7 +1,6 @@
-// src/core/wiring/content.wires.ts
 import { LayoutController } from "@/controller/layoutController";
 import { MenuProviderController } from "@/controller/menuProviderController";
-import { DefaultPageController } from "@/controller/DefaultPageController";
+//import { UserPreferencesController } from "@/controller/UserPreferencesController";
 import TabContent from "@/components/Tab/TabContent";
 import React from "react";
 import type { Wire } from "./setupWiring";
@@ -13,14 +12,14 @@ export const contentWires: Wire[] = [
       LayoutController.setPane("content", React.createElement(TabContent));
     },
   },
-  {
-    from: MenuProviderController.subscribe,
-    to: () => {
-      DefaultPageController.setDefaultPage({
-        key: `tab-${Date.now()}`,
-        label: "New Tab",
-        content: "/pages/boxy-launcher",
-      });
-    },
-  },
+  // {
+  //   from: MenuProviderController.subscribe,
+  //   to: () => {
+  //     UserPreferencesController.set("defaultNewTab", {
+  //       key: `tab-${Date.now()}`,
+  //       label: "New Tab",
+  //       content: "/pages/boxy-launcher",
+  //     });
+  //   },
+  // },
 ];

@@ -9,14 +9,15 @@ export async function getLayout(userId: string, roleId: string) {
 export async function saveLayout(
   userId: string,
   roleId: string,
-  layout: Record<string, unknown>
+  layout: Record<string, unknown>,
+  config: Record<string, unknown>
 ) {
   const res = await apiFetch("/user-layout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ user_id: userId, role_id: roleId, layout }),
+    body: JSON.stringify({ user_id: userId, role_id: roleId, layout, config }),
   });
   if (!res.ok) throw new Error("Gagal menyimpan layout user");
   return (await res.json()).data;

@@ -50,14 +50,14 @@ export function registerRoutes() {
     "/pages/list-launcher",
     "list app launcher",
     React.createElement(ListLauncher),
-    "default"
+    "launcher"
   );
 
   RouteRegistry.register(
     "/pages/boxy-launcher",
     "boxy app launcher",
     React.createElement(BoxyLauncher),
-    "default"
+    "launcher"
   );
 
   RouteRegistry.register(

@@ -12,15 +12,17 @@ type TabStorageKey = {
 };
 
 export type TabState = {
-  openTabs: TabItem[]; // daftar tab yang sedang terbuka
-  activeTabKey: string | null; // tab yang sedang aktif
+  openTabs: TabItem[];
+  activeTabKey: string | null;
   tabStorageKey?: TabStorageKey;
+  defaultPage: string | null;
 };
 
 const state: TabState = {
   openTabs: [],
   activeTabKey: null,
   tabStorageKey: {},
+  defaultPage: null,
 };
 
 let updateCallbacks: (() => void)[] = [];
@@ -182,6 +184,11 @@ export const TabController = {
 
   getTabByRoute(route: string): TabItem | undefined {
     return state.openTabs.find((tab) => tab.route === route);
+  },
+
+  setDefaultPage(defaultPage: string | null) {
+    state.defaultPage = defaultPage;
+    notify();
   },
 
   subscribe(cb: () => void) {

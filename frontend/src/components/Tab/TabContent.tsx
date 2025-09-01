@@ -5,14 +5,25 @@ import NoTabOpen from "@/pages/Misc/NoTabOpen";
 import { TabController } from "./controller";
 
 export default function TabContent() {
-  const { openTabs, activeTabKey } = useController(TabController, (s) => ({
-    openTabs: s.openTabs,
-    activeTabKey: s.activeTabKey,
-  }));
+  const { openTabs, activeTabKey, defaultPage } = useController(
+    TabController,
+    (s) => ({
+      openTabs: s.openTabs,
+      activeTabKey: s.activeTabKey,
+      defaultPage: s.defaultPage,
+    })
+  );
+
+  console.log("here", defaultPage);
 
   const activeTab = openTabs.find((t) => t.key === activeTabKey);
   const content = (() => {
-    if (!activeTab?.route) return <NoTabOpen />;
+    const emptyTab = defaultPage ? (
+      RouteRegistry.get(defaultPage)
+    ) : (
+      <NoTabOpen />
+    );
+    if (!activeTab?.route) return emptyTab;
     return RouteRegistry.get(activeTab.route);
   })();
 

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-type RouteCategory = "page" | "action" | "default";
+type RouteCategory = "page" | "action" | "default" | "launcher";
 
 type RegisteredRoute = {
   path: string;

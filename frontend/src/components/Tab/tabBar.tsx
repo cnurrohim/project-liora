@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { TabController } from "./controller";
 import { useController } from "@/hooks/useController";
-import { DefaultPageController } from "@/controller/DefaultPageController";
+import { UserPreferencesController } from "@/controller/UserPreferencesController";
 
 type TabBarProps = {
   iconRenderer?: (iconName?: string) => React.ReactNode;
@@ -114,12 +114,12 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
 
       <button
         onClick={() => {
-          const defaultTab = DefaultPageController.getDefaultPage();
+          const defaultTab = UserPreferencesController.get("defaultNewTab");
 
           TabController.openTab({
-            key: `tab-${Date.now()}`, // selalu unik
-            label: defaultTab?.label ?? "New Tab",
-            route: defaultTab?.content ?? "/pages/default",
+            key: `tab-${Date.now()}`,
+            label: "New Tab",
+            route: defaultTab ?? "/pages/default",
           });
         }}
         className="px-2 text-2xl h-10 bg-blue-500 text-gray-900 hover:text-white cursor-pointer"

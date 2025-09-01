@@ -10,6 +10,7 @@ type SingleSelectProps = {
   value: Option | null;
   onChange: (value: Option | null) => void;
   placeholder?: string;
+  className?: string;
   disabled?: boolean;
 };
 
@@ -18,6 +19,7 @@ export default function SingleSelect({
   value = null,
   onChange,
   placeholder = "Pilih...",
+  className = "w-full outline-none bg-gray-900 p-1",
   disabled = false,
 }: SingleSelectProps) {
   const [input, setInput] = useState("");
@@ -39,9 +41,9 @@ export default function SingleSelect({
   };
 
   return (
-    <div className="p-2 relative w-full">
+    <div className="relative w-full">
       {value && (
-        <div className="flex items-center gap-1 mb-1 w-full">
+        <div className="flex items-center gap-1 mb-1 w-full bg-gray-950">
           <span className=" text-gray-300 px-2 py-1 rounded w-full flex justify-between">
             {value.name}
             {!disabled && (
@@ -60,7 +62,7 @@ export default function SingleSelect({
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="w-full outline-none"
+          className={className}
           placeholder={placeholder}
           disabled={disabled}
           onFocus={() => setIsOpen(true)}
