@@ -42,15 +42,17 @@ export function DetailPane({
       <div
         className={`
           ${widthClass}
-          h-full bg-gray-900 text-white shadow-xl transform transition-transform duration-300
+          h-full bg-[var(--foreground)] text-[var(--text-primary)] shadow-xl transform transition-transform duration-300
           ${animateIn ? "translate-x-0" : "translate-x-full"}
         `}
       >
-        <div className="flex justify-between items-center p-4 border-b border-gray-700">
-          <h2 className="text-xl font-bold">{title}</h2>
+        <div className="flex justify-between items-center p-4 border-b border-[var(--panel-border)]">
+          <h2 className="text-xl font-bold text-[var(--panel-text-primary)]">
+            {title}
+          </h2>
           <button
             onClick={handleClose}
-            className="text-gray-400 hover:text-white text-2xl font-bold"
+            className="text-[var(--panel-text-primary)] cursor-pointer hover:text-[var(--panel-text-muted)] text-2xl font-bold"
             title="Tutup"
           >
             &times;

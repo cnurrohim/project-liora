@@ -12,7 +12,7 @@ export async function generateStockLocationExcel(
   filters: Record<string, string | undefined>
 ): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Stock per Location");
+  const sheet = workbook.addWorksheet("Inventory per Location");
 
   const { location_name } = filters;
 

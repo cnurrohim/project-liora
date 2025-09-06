@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
-  flexRender,
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
@@ -31,6 +30,7 @@ import { ConfirmationDialogController } from "@/components/ConfirmationDialog/co
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import { EditButtonLink } from "@/components/Buttons/EditButtonLink";
 import { PreviewButtonLink } from "@/components/Buttons/ReviewButtonLink";
+import { DataTable } from "@/components/Table/DataTable";
 
 type StockOpname = {
   id: string;
@@ -58,7 +58,7 @@ export default function StockOpnameListPage() {
       const data = await getStockOpnames();
       setOpnames(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data Stock Opname");
+      setError(err.message || "Failed to fetch Stock Opname");
     } finally {
       setLoading(false);
     }
@@ -75,21 +75,21 @@ export default function StockOpnameListPage() {
       const detail = await getStockOpnameDetail(id);
       StockOpnameDetailPaneController.open(detail);
     } catch (err) {
-      console.error("Gagal ambil detail Stock Opname", err);
+      console.error("Failed to fetch Stock Opname Details", err);
     }
   };
 
   const handleConfirm = async (id: string) => {
     if (!canApprove) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin finalisasi stock opname ini, stock akan berubah mengikuti hasil opname?",
+      "Are you sure you want to finalize this adjustment take, the inventory quantity will change according to the results of the adjustment take?",
       async () => {
         try {
           await finalizeStockOpname(id);
-          showSuccessToast("Stock opname berhasil difinalisasi");
+          showSuccessToast("adjustment take finalized");
           fetchOpnames();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -100,15 +100,15 @@ export default function StockOpnameListPage() {
 
   const handleCancel = async (id: string) => {
     if (!canApprove) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin membatalkan stock opname ini?",
+      "Are you sure you want to cancel this adjustment take?",
       async () => {
         try {
           await cancelStockOpname(id);
-          showSuccessToast("Stock opname berhasil dibatalkan");
+          showSuccessToast("Inventory opname successfully cancelled");
           fetchOpnames();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -119,7 +119,7 @@ export default function StockOpnameListPage() {
 
   const handleEdit = async (so: StockOpname) => {
     if (!canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -137,7 +137,7 @@ export default function StockOpnameListPage() {
 
   const handleReview = async (so: StockOpname) => {
     if (!canReview) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -166,11 +166,11 @@ export default function StockOpnameListPage() {
       },
       {
         accessorKey: "opname_number",
-        header: "Nomor Opname",
+        header: "Opname Number",
       },
       {
         accessorKey: "opname_date",
-        header: "Tanggal",
+        header: "Date",
         cell: ({ row }) =>
           new Date(row.original.opname_date).toLocaleDateString(),
       },
@@ -181,9 +181,10 @@ export default function StockOpnameListPage() {
           <div className="flex gap-2">
             <span
               className={`px-2 py-0.5 rounded text-xs ${
-                row.original.status === "confirmed"
-                  ? "bg-emerald-700 text-white"
-                  : "bg-gray-700 text-gray-300"
+                row.original.status === "confirmed" ||
+                row.original.status === "finalized"
+                  ? "bg-[var(--info)] text-[var(--info-foreground)]"
+                  : "bg-[var(--warning)] text-[var(--warning-foreground)]"
               }`}
             >
               {row.original.status}
@@ -214,7 +215,7 @@ export default function StockOpnameListPage() {
       },
       {
         id: "aksi",
-        header: "Aksi",
+        header: "Action",
         cell: ({ row }) => (
           <div className="flex gap-1">
             <ViewButtonLink onClick={() => handleView(row.original.id)} />
@@ -272,16 +273,12 @@ export default function StockOpnameListPage() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Stock Opname List</h1>
+        <h1 className="text-xl font-bold">Inventory Opname List</h1>
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={
               <>
-                <IconRenderer
-                  name="RiAddBoxLine"
-                  size={15}
-                  className="text-white"
-                />
+                <IconRenderer name="RiAddBoxLine" size={15} />
                 Create New Opname
               </>
             }
@@ -301,79 +298,12 @@ export default function StockOpnameListPage() {
         )}
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        style={
-                          header.column.id === "number"
-                            ? { width: "40px" }
-                            : undefined
-                        }
-                        className="p-2 text-left cursor-pointer select-none"
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: " ↑",
-                          desc: " ↓",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="p-2 align-top">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex justify-between items-center mt-4 text-sm">
-            <div>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Prev
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          <DataTable table={table} />
         </>
       )}
       <StockOpnameDetailPane />

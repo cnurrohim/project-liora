@@ -58,28 +58,30 @@ export function UserDetailPane() {
       <section className="space-y-4 mb-52">
         {/* Info User */}
         <div>
-          <p className="text-sm text-gray-400">Email</p>
-          <p className="text-white">{user.email}</p>
+          <p className="text-sm text-[var(--panel-text-muted)]">Email</p>
+          <p className="text-[var(--panel-text-primary)]">{user.email}</p>
         </div>
         <div>
-          <p className="text-sm text-gray-400">Username</p>
-          <p className="text-white">{user.username}</p>
+          <p className="text-sm text-[var(--panel-text-muted)]">Username</p>
+          <p className="text-[var(--panel-text-primary)]">{user.username}</p>
         </div>
         <div>
-          <p className="text-sm text-gray-400">Status</p>
-          <p className="text-white">{user.is_active ? "Aktif" : "Nonaktif"}</p>
+          <p className="text-sm text-[var(--panel-text-muted)]">Status</p>
+          <p className="text-[var(--panel-text-primary)]">
+            {user.is_active ? "Aktif" : "Nonaktif"}
+          </p>
         </div>
 
         {/* Roles */}
         {roles.length > 0 && (
           <div>
-            <p className="text-sm text-gray-400">Roles</p>
-            <ul className="list-disc pl-5 text-white">
+            <p className="text-sm text-[var(--panel-text-muted)]">Roles</p>
+            <ul className="list-disc pl-5 text-[var(--panel-text-primary)]">
               {roles.map((r) => (
                 <li key={r.id}>
                   {r.name}
                   {r.is_default && (
-                    <span className="ml-2 text-xs text-yellow-400 bg-yellow-900 px-2 py-0.5 rounded">
+                    <span className="ml-2 text-xs text-[var(--panel-text-primary)] bg-[var(--panel-background)] px-2 py-0.5 rounded">
                       default
                     </span>
                   )}
@@ -92,8 +94,10 @@ export function UserDetailPane() {
         {/* Departments */}
         {departments.length > 0 && (
           <div>
-            <p className="text-sm text-gray-400">Departments</p>
-            <ul className="list-disc pl-5 text-white">
+            <p className="text-sm text-[var(--panel-text-muted)]">
+              Departments
+            </p>
+            <ul className="list-disc pl-5 text-[var(--panel-text-primary)]">
               {departments.map((d) => (
                 <li key={d.id}>{d.name}</li>
               ))}
@@ -103,13 +107,15 @@ export function UserDetailPane() {
 
         {/* Permissions */}
         <div>
-          <p className="text-sm text-gray-400 mb-2">Permissions</p>
+          <p className="text-sm text-[var(--panel-text-muted)] mb-2">
+            Permissions
+          </p>
           <div className="space-y-2">
             {Object.entries(permissions).map(([domain, perms]) => (
-              <details key={domain} className="bg-gray-800 rounded">
-                <summary className="cursor-pointer px-4 py-2 font-semibold">
+              <details key={domain} className="bg-[var(--background)] rounded">
+                <summary className="cursor-pointer px-4 py-2 font-semibold text-[var(--panel-text-primary)]">
                   {domain}
-                  <span className="ml-2 text-sm text-gray-400">
+                  <span className="ml-2 text-sm text-[var(--panel-text-primary)]">
                     ({perms.length})
                   </span>
                 </summary>
@@ -117,17 +123,24 @@ export function UserDetailPane() {
                   {perms.map((p) => (
                     <div
                       key={p.id}
-                      className="border-b border-gray-700 pb-2 space-y-1"
+                      className="border-b border-[var(--panel-border)] pb-2 space-y-1"
                     >
-                      <div className="font-semibold text-white">
+                      <div className="font-semibold text-[var(--panel-text-primary)]">
                         {p.label}
                         {p.source === "user" && (
-                          <span className="ml-2 text-xs text-yellow-400 bg-yellow-900 px-2 py-0.5 rounded">
+                          <span
+                            className={`${
+                              p.granted
+                                ? "text-[var(--success-foreground)] bg-[var(--success)]"
+                                : "text-[var(--danger-foreground)] bg-[var(--danger)]"
+                            }
+                          ml-2 text-xs  px-2 py-0.5 rounded`}
+                          >
                             {p.granted ? "granted" : "revoke"}
                           </span>
                         )}
                       </div>
-                      <div className="text-gray-400 text-sm">
+                      <div className="text-[var(--panel-text-primary)] text-sm">
                         {p.description}
                       </div>
                       <div className="text-gray-500 text-xs italic">

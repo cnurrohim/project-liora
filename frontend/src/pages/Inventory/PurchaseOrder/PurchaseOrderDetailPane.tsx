@@ -89,37 +89,39 @@ export function PurchaseOrderDetailPane() {
         {/* Header */}
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-gray-400">Supplier</p>
-            <p className="text-white">{supplier_name}</p>
+            <p className="text-sm text-[var(--panel-text-muted)]">Supplier</p>
+            <p className="text-[var(--text-primary)]">{supplier_name}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-400">Order Date</p>
-            <p className="text-white">{order_date}</p>
+            <p className="text-sm text-[var(--panel-text-muted)]">Order Date</p>
+            <p className="text-[var(--text-primary)]">{order_date}</p>
           </div>
           {expected_date && (
             <div>
-              <p className="text-sm text-gray-400">Expected Date</p>
-              <p className="text-white">{expected_date}</p>
+              <p className="text-sm text-[var(--panel-text-muted)]">
+                Expected Date
+              </p>
+              <p className="text-[var(--text-primary)]">{expected_date}</p>
             </div>
           )}
           <div>
-            <p className="text-sm text-gray-400">Status</p>
-            <p className="text-white capitalize">{status}</p>
+            <p className="text-sm text-[var(--panel-text-muted)]">Status</p>
+            <p className="text-[var(--text-primary)] capitalize">{status}</p>
           </div>
           {notes && (
             <div>
-              <p className="text-sm text-gray-400">Notes</p>
-              <p className="text-white">{notes}</p>
+              <p className="text-sm text-[var(--panel-text-muted)]">Notes</p>
+              <p className="text-[var(--text-primary)]">{notes}</p>
             </div>
           )}
         </div>
 
         {/* Items */}
         {items.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">Items</p>
-            <table className="w-full text-sm border border-gray-700">
-              <thead className="bg-gray-800 text-gray-300">
+          <div className="text-[var(--panel-text-primary)]">
+            <p className="text-sm  mb-2">Items</p>
+            <table className="w-full text-sm border border-[var(--border)]">
+              <thead className="bg-[var(--background)] text-[var(--text-primary)]">
                 <tr>
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
@@ -129,7 +131,7 @@ export function PurchaseOrderDetailPane() {
               </thead>
               <tbody>
                 {items.map((it) => (
-                  <tr key={it.id} className="border-t border-gray-700">
+                  <tr key={it.id} className="border-t border-[var(--border)]">
                     <td className="px-2 py-1">{it.sku}</td>
                     <td className="px-2 py-1">{it.item_name}</td>
                     <td className="px-2 py-1 text-right">{it.qty}</td>
@@ -143,17 +145,24 @@ export function PurchaseOrderDetailPane() {
 
         {/* Receives */}
         {receives.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">Receives</p>
+          <div className="text-[var(--panel-text-primary)]">
+            <p className="text-sm text-[var(--panel-text-primary)] mb-2">
+              Receives
+            </p>
             {receives.map((r) => (
-              <details key={r.id} className="bg-gray-800 rounded mb-2">
+              <details
+                key={r.id}
+                className="bg-[var(--background)] rounded mb-2"
+              >
                 <summary className="cursor-pointer px-4 py-2 font-semibold">
                   {r.receive_date} - {r.received_by} - {r.stored_location}
                 </summary>
                 <div className="p-4 text-sm space-y-2">
-                  {r.note && <p className="text-gray-300">{r.note}</p>}
-                  <table className="w-full text-sm border border-gray-700">
-                    <thead className="bg-gray-900 text-gray-400">
+                  {r.note && (
+                    <p className="text-[var(--text-primary)]">{r.note}</p>
+                  )}
+                  <table className="w-full text-sm border border-[var(--border)]">
+                    <thead className="bg-[var(--foreground)] text-[var(--panel-text-primary)]">
                       <tr>
                         <th className="px-2 py-1 text-left">SKU</th>
                         <th className="px-2 py-1 text-left">Name</th>
@@ -162,7 +171,10 @@ export function PurchaseOrderDetailPane() {
                     </thead>
                     <tbody>
                       {r.items.map((ri) => (
-                        <tr key={ri.id} className="border-t border-gray-700">
+                        <tr
+                          key={ri.id}
+                          className="border-t border-[var(--border)]"
+                        >
                           <td className="px-2 py-1">{ri.sku}</td>
                           <td className="px-2 py-1">{ri.item_name}</td>
                           <td className="px-2 py-1 text-right">{ri.qty}</td>
@@ -178,10 +190,12 @@ export function PurchaseOrderDetailPane() {
 
         {/* Stock Movements */}
         {stock_movements.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">Stock Movements</p>
-            <table className="w-full text-sm border border-gray-700">
-              <thead className="bg-gray-800 text-gray-300">
+          <div className="text-[var(--panel-text-primary)]">
+            <p className="text-sm text-[var(--panel-text-primary)] mb-2">
+              Stock Movements
+            </p>
+            <table className="w-full text-sm border border-[var(--border)]">
+              <thead className="bg-[var(--background)] text-[var(--text-primary)]">
                 <tr>
                   <th className="px-2 py-1 text-left">Date</th>
                   <th className="px-2 py-1 text-left">SKU</th>
@@ -194,7 +208,7 @@ export function PurchaseOrderDetailPane() {
               </thead>
               <tbody>
                 {stock_movements.map((sm) => (
-                  <tr key={sm.id} className="border-t border-gray-700">
+                  <tr key={sm.id} className="border-t border-[var(--border)]">
                     <td className="px-2 py-1">
                       {new Date(sm.created_at).toLocaleString()}
                     </td>

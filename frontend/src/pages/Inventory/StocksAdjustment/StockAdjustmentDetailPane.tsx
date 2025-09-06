@@ -1,6 +1,7 @@
 // src/routes/StockAdjustmentDetailPane.tsx
 import { Controller } from "@/components/DetailPane/Controller";
 import { DetailPane } from "@/components/DetailPane/DetailPane";
+import { formatDate } from "@/utils/date";
 
 export type StockAdjustmentItem = {
   id: string;
@@ -71,31 +72,35 @@ export function StockAdjustmentDetailPane() {
         {/* Header */}
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-gray-400">Adjustment Date</p>
-            <p className="text-white">{adjustment_date}</p>
+            <p className="text-sm text-[var(--text-muted)]">Adjustment Date</p>
+            <p className="text-[var(--text-primary)]">
+              {formatDate(adjustment_date)}
+            </p>
           </div>
           <div>
-            <p className="text-sm text-gray-400">Status</p>
-            <p className="text-white capitalize">{status}</p>
+            <p className="text-sm text-[var(--text-muted)]">Status</p>
+            <p className="text-[var(--text-primary)] capitalize">{status}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-400">Created By</p>
-            <p className="text-white">{created_by}</p>
+            <p className="text-sm text-[var(--text-muted)]">Created By</p>
+            <p className="text-[var(--text-primary)]">{created_by}</p>
           </div>
           {reason && (
             <div>
-              <p className="text-sm text-gray-400">Reason</p>
-              <p className="text-white">{reason}</p>
+              <p className="text-sm text-[var(--text-muted)]">Reason</p>
+              <p className="text-[var(--text-primary)]">{reason}</p>
             </div>
           )}
         </div>
 
         {/* Items */}
         {items.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">Adjusted Items</p>
-            <table className="w-full text-sm border border-gray-700">
-              <thead className="bg-gray-800 text-gray-300">
+          <div className="text-[var(--text-primary)]">
+            <p className="text-sm text-[var(--text-muted)] mb-2">
+              Adjusted Items
+            </p>
+            <table className="w-full text-sm border border-[var(--border)]">
+              <thead className="bg-[var(--background)] text-[var(--text-primary)]">
                 <tr>
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
@@ -107,7 +112,7 @@ export function StockAdjustmentDetailPane() {
               </thead>
               <tbody>
                 {items.map((it) => (
-                  <tr key={it.id} className="border-t border-gray-700">
+                  <tr key={it.id} className="border-t border-[var(--border)]">
                     <td className="px-2 py-1">{it.sku}</td>
                     <td className="px-2 py-1">{it.item_name}</td>
                     <td className="px-2 py-1 text-right">
@@ -135,10 +140,12 @@ export function StockAdjustmentDetailPane() {
 
         {/* Stock Movements */}
         {stock_movements.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">Stock Movements</p>
-            <table className="w-full text-sm border border-gray-700">
-              <thead className="bg-gray-800 text-gray-300">
+          <div className="text-[var(--text-primary)]">
+            <p className="text-sm text-[var(--text-muted)] mb-2">
+              Stock Movements
+            </p>
+            <table className="w-full text-sm border border-[var(--border)]">
+              <thead className="bg-[var(--background)] text-[var(--text-primary)]">
                 <tr>
                   <th className="px-2 py-1 text-left">Date</th>
                   <th className="px-2 py-1 text-left">Item</th>
@@ -149,7 +156,7 @@ export function StockAdjustmentDetailPane() {
               </thead>
               <tbody>
                 {stock_movements.map((sm) => (
-                  <tr key={sm.id} className="border-t border-gray-700">
+                  <tr key={sm.id} className="border-t border-[var(--border)]">
                     <td className="px-2 py-1">
                       {new Date(sm.created_at).toLocaleString()}
                     </td>

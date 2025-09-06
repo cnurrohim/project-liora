@@ -13,15 +13,16 @@ export default function App() {
   if (!isReady) return <Loading />;
 
   return (
-    <div className="bg-gray-950 w-full h-screen flex flex-col">
+    <div className="bg-gray-950 w-full h-screen flex flex-col text-[var(--text-primary)]">
       <Toaster
         position="top-center"
         toastOptions={{
           closeButton: true,
           classNames: {
-            toast: "!bg-gray-900 !text-white !border !border-gray-700",
-            title: "!text-white",
-            description: "!text-gray-400",
+            toast:
+              "!bg-[var(--foreground)] !text-[var(--text-primary)] border !border-[var(--panel-border)]",
+            title: "!text-[var(--text-primary)]",
+            description: "!text-[var(--text-primary)]",
           },
         }}
       />

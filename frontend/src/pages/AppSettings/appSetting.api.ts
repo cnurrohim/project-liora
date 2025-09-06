@@ -18,7 +18,7 @@ export async function updateAppSetting(data: {
     method: "PUT",
     body: form,
   });
-  if (!res.ok) throw new Error("Gagal menyimpan layout user");
+  if (!res.ok) throw new Error("Gagal Saving layout user");
 
   return await res.json();
 }

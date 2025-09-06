@@ -31,7 +31,7 @@ export const SlidingPanelController = {
     notify();
   },
   setAllMenu(sections: MenuSection[]) {
-    state.allMenus = sections; // simpan semua menu
+    state.allMenus = sections; // Save semua menu
     notify();
   },
   getAllMenuItems(): MenuItem[] {

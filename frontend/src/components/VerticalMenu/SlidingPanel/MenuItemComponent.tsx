@@ -27,7 +27,9 @@ export default function MenuItemComponent({
     <div className="flex flex-row items-center cursor-pointer transition group">
       <div
         key={i}
-        className="flex flex-1 items-center hover:bg-gray-800 pl-2 py-2 rounded-md"
+        className="flex flex-1 items-center text-[var(--panel-secondary-text-primary)] 
+                          hover:text-[var(--panel-secondary-text-highlight)] 
+                          hover:bg-[var(--accent-primary)]  pl-2 py-2 rounded-md"
         onClick={() => {
           if (item.type === MENU.TYPE.GROUP) {
             SlidingPanelController.setActivePath([...state.activePath, i]);
@@ -40,7 +42,7 @@ export default function MenuItemComponent({
           onItemClick(item);
         }}
       >
-        <span className="text-gray-400 group-hover:text-white mr-2">
+        <span className="rounded mr-2">
           {typeof item.icon === "string" && item.icon
             ? iconRenderer?.({
                 name: item.icon,
@@ -53,13 +55,9 @@ export default function MenuItemComponent({
               })}
         </span>
 
-        <span className="font-semibold text-sm text-gray-400 group-hover:text-white truncate">
-          {item.label}
-        </span>
+        <span className="font-semibold text-sm truncate">{item.label}</span>
 
-        {item.type === "group" && (
-          <span className="ml-auto bg-gray-950 pr-1">⮯</span>
-        )}
+        {item.type === "group" && <span className="ml-auto  pr-3">⮯</span>}
       </div>
 
       {/* RIGHT: Pin Button */}
@@ -67,7 +65,7 @@ export default function MenuItemComponent({
         <button
           type="button"
           title={item.isPinned ? "Unpin menu" : "Pin menu"}
-          className="text-gray-400 hover:bg-gray-700 hover:text-white p-2 rounded cursor-pointer"
+          className="text-[var(--panel-text-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--panel-secondary-text-highlight)]  p-2 rounded cursor-pointer"
           onClick={() => onPinClick(item)}
         >
           {iconRenderer?.({

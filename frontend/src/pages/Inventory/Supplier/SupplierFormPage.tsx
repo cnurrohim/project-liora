@@ -15,6 +15,7 @@ import {
   supplierSchema,
   type SupplierFormValues,
 } from "@/pages/Inventory/Supplier/formSchema";
+import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
 export default function SupplierFormPage() {
   const { canView, canUpdate, canCreate } = usePermissions();
@@ -55,12 +56,12 @@ export default function SupplierFormPage() {
 
   const onSubmit = async (data: SupplierFormValues) => {
     if (isEdit && !canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk update!");
+      showErrorToast("We're sorry, you don't have access for update!");
       return;
     }
 
     if (!isEdit && !canCreate) {
-      showErrorToast("Anda tidak punya hak akses untuk create!");
+      showErrorToast("We're sorry, you don't have access for create!");
       return;
     }
 
@@ -74,7 +75,7 @@ export default function SupplierFormPage() {
         showSuccessToast("Supplier berhasil dibuat");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal menyimpan supplier");
+      showErrorToast(err.message || "Gagal Saving supplier");
     } finally {
       setLoading(false);
     }
@@ -82,42 +83,57 @@ export default function SupplierFormPage() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full p-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 max-w-3/4 mx-auto w-full p-4"
+      >
+        <BackToListLink
+          route="/pages/inventory/supplier"
+          label="list suppliers"
+        />
         <h1 className="text-xl font-bold">
-          {isEdit ? "Edit Supplier" : "Tambah Supplier"}
+          {isEdit ? "Edit Supplier" : "Add New Supplier"}
         </h1>
 
-        <div className="space-y-4 max-w-xl p-4">
+        <div className="space-y-4">
           <div>
-            <label className="block">Nama Supplier</label>
+            <label className="block text-[var(--text-muted)]">
+              Supplier Name
+            </label>
             <input
-              className="w-full p-2 bg-gray-800 rounded"
+              className="w-full p-2 bg-[var(--background)] rounded"
               {...register("name")}
             />
             {typeof errors.name?.message === "string" && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
+              <p className="text-[var(--danger)] text-sm">
+                {errors.name.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block">Kontak</label>
+            <label className="block text-[var(--text-muted)]">Contact</label>
             <input
-              className="w-full p-2 bg-gray-800 rounded"
+              className="w-full p-2 bg-[var(--background)] rounded"
               {...register("contact")}
             />
             {typeof errors.contact?.message === "string" && (
-              <p className="text-red-500 text-sm">{errors.contact.message}</p>
+              <p className="text-[var(--danger)] text-sm">
+                {errors.contact.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block">Alamat</label>
+            <label className="block text-[var(--text-muted)]">Address</label>
             <textarea
-              className="w-full p-2 bg-gray-800 rounded"
+              className="w-full p-2 bg-[var(--background)] rounded"
               {...register("address")}
             />
             {typeof errors.address?.message === "string" && (
-              <p className="text-red-500 text-sm">{errors.address.message}</p>
+              <p className="text-[var(--danger)] text-sm">
+                {errors.address.message}
+              </p>
             )}
           </div>
         </div>
@@ -125,9 +141,9 @@ export default function SupplierFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 rounded text-white"
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
-          {loading ? "Menyimpan..." : "Simpan"}
+          {loading ? "Saving..." : "Save"}
         </button>
       </form>
     </FormProvider>

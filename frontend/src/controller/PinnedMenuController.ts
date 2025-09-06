@@ -32,7 +32,7 @@ export const PinnedMenuController = {
     try {
       await pinMenu(menu.id);
     } catch (err) {
-      console.error("Gagal menyimpan pinned menu:", err);
+      console.error("Gagal Saving pinned menu:", err);
       // rollback
       pinnedMenus = pinnedMenus.filter((m) => m.id !== menu.id);
       notify();

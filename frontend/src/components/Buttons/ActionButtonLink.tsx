@@ -10,7 +10,7 @@ export function ActionButtonLink({ mainLabel, onClick, icon }: Props) {
   return (
     <button
       onClick={onClick}
-      className="px-2 py-1 text-gray-300 rounded hover:border-lime-400 hover:text-lime-400 text-sm flex items-center gap-1 cursor-pointer"
+      className="px-2 py-1 text-[var(--text-primary)] rounded hover:border-lime-400 hover:text-lime-400 text-sm flex items-center gap-1 cursor-pointer"
     >
       {icon} {mainLabel}
     </button>

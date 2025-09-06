@@ -1,3 +1,4 @@
+import { themes, type ThemeId } from "@/config/themes";
 import { apiFetch } from "@/utils/apiFetch";
 
 export type TabItem = {
@@ -30,16 +31,17 @@ export const UserPreferencesController = {
       const res = await apiFetch(`/user-layout/config/${userID}/${roleID}`);
       const config = await res.json();
 
-      const d = this.get("defaultPage");
-
-      console.log("config", config);
-      console.log("d", d);
-
       if (config.default_page) {
         this.set("defaultPage", config.default_page);
       }
+
       if (config.default_new_tab) {
         this.set("defaultNewTab", config.default_new_tab);
+      }
+
+      if (config.theme) {
+        this.set("theme", config.theme);
+        this.applyTheme(config.theme as ThemeId);
       }
 
       notify();
@@ -66,6 +68,13 @@ export const UserPreferencesController = {
     state.defaultNewTab = null;
     state.theme = "light";
     state.language = "en";
+  },
+
+  applyTheme(theme: ThemeId) {
+    const root = document.documentElement;
+    root.classList.remove(...themes.map((t) => t.id));
+    root.classList.add(theme);
+    localStorage.setItem("theme", theme);
   },
 
   subscribe(cb: () => void) {

@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
-  flexRender,
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
@@ -33,6 +32,7 @@ import {
   PurchaseOrderDetailPaneController,
 } from "./PurchaseOrderDetailPane";
 import { CancelButtonLink } from "@/components/Buttons/CancelButtonLink";
+import { DataTable } from "@/components/Table/DataTable";
 
 type PurchaseOrder = {
   id: string;
@@ -69,7 +69,7 @@ export default function PurchaseOrderListPage() {
       const data = await getPurchaseOrders();
       setPurchaseOrders(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data purchase order");
+      setError(err.message || "Failed to load purchase order data");
     } finally {
       setLoading(false);
     }
@@ -83,7 +83,7 @@ export default function PurchaseOrderListPage() {
 
   const handleEdit = (po: PurchaseOrder) => {
     if (!canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -101,7 +101,7 @@ export default function PurchaseOrderListPage() {
 
   const handleReceive = (po: PurchaseOrder) => {
     if (!canReceive) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -119,16 +119,16 @@ export default function PurchaseOrderListPage() {
 
   const handleApprove = async (id: string) => {
     if (!canApprove) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin setujui PO ini?",
+      "You're about to approve this PO, proceed?",
       async () => {
         try {
           await approvePurchaseOrder(id);
-          showSuccessToast("Purchase Order berhasil disetujui");
+          showSuccessToast("Purchase Order Approved");
           fetchPurchaseOrders();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -139,16 +139,16 @@ export default function PurchaseOrderListPage() {
 
   const handleCancel = async (id: string) => {
     if (!canCancel) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin membatalkan PO ini?",
+      "You're about to cancel this PO, proceed?",
       async () => {
         try {
           await cancelPurchaseOrder(id);
-          showSuccessToast("Purchase Order berhasil dibatalkan");
+          showSuccessToast("Purchase Order Canceled");
           fetchPurchaseOrders();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -162,22 +162,22 @@ export default function PurchaseOrderListPage() {
       const detail = await getPurchaseOrderDetail(id);
       PurchaseOrderDetailPaneController.open(detail);
     } catch (err) {
-      console.error("Gagal ambil data", err);
+      console.error("Failed to fetch data", err);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!canDelete) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin menghapus purchase order ini?",
+      "You're about to delete this PO, proceed?",
       async () => {
         try {
           await deletePurchaseOrder(id);
-          showSuccessToast("Purchase Order berhasil dihapus");
+          showSuccessToast("Purchase Order Deleted");
           fetchPurchaseOrders();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -199,7 +199,7 @@ export default function PurchaseOrderListPage() {
       },
       {
         accessorKey: "order_number",
-        header: "Nomor PO",
+        header: "PO Number",
       },
       {
         accessorKey: "supplier_name",
@@ -208,13 +208,13 @@ export default function PurchaseOrderListPage() {
       },
       {
         accessorKey: "order_date",
-        header: "Tanggal Order",
+        header: "Order Date",
         cell: ({ row }) =>
           new Date(row.original.order_date).toLocaleDateString(),
       },
       {
         accessorKey: "expected_date",
-        header: "Tanggal Estimasi",
+        header: "Estimation Date",
         cell: ({ row }) =>
           row.original.expected_date
             ? new Date(row.original.expected_date).toLocaleDateString()
@@ -227,23 +227,23 @@ export default function PurchaseOrderListPage() {
           const status = row.original.status;
           const color =
             status === "draft"
-              ? "bg-gray-500"
+              ? "bg-[var(--warning)] text-[var(--warning-foreground)]"
               : status === "confirmed"
-              ? "bg-blue-500"
+              ? "bg-[var(--info)] text-[var(--info-foreground)]"
               : status === "received"
-              ? "bg-green-500"
-              : "bg-red-500";
+              ? "bg-[var(--success)] text-[var(--success-foreground)]"
+              : "bg-[var(--danger)] text-[var(--danger-foreground)]";
           return (
             <div className="flex gap-2">
               <span
-                className={`px-2 py-1 rounded text-white text-xs font-semibold ${color}`}
+                className={`px-2 py-1 w-20 text-center rounded  text-xs font-semibold ${color}`}
               >
                 {status}
               </span>
               {canApprove && status === "draft" && (
                 <ApproveButtonLink
                   onClick={() => handleApprove(row.original.id)}
-                  className={`flex cursor-pointer hover:bg-emerald-500 px-2 py-1 rounded text-white text-xs font-semibold ${color}`}
+                  className={`flex cursor-pointer bg-[var(--info)] hover:bg-[var(--info-hover)] px-2 py-1 rounded text-[var(--text-primary)] text-xs font-semibold`}
                 />
               )}
             </div>
@@ -252,7 +252,7 @@ export default function PurchaseOrderListPage() {
       },
       {
         id: "aksi",
-        header: "Aksi",
+        header: "Action",
         cell: ({ row }) => {
           const status = row.original.status;
 
@@ -319,7 +319,7 @@ export default function PurchaseOrderListPage() {
       {
         id: "/purchase-order/create",
         route: "/purchase-order/create",
-        label: "Tambah Purchase Order",
+        label: "Add New Purchase Order",
         type: "route",
         icon: "RiAddBoxLine",
       },
@@ -330,17 +330,13 @@ export default function PurchaseOrderListPage() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Daftar Purchase Order</h1>
+        <h1 className="text-xl font-bold">Purchase Order List</h1>
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={
               <>
-                <IconRenderer
-                  name="RiAddBoxLine"
-                  size={15}
-                  className="text-white"
-                />
-                Tambah Purchase Order
+                <IconRenderer name="RiAddBoxLine" size={15} />
+                Add New Purchase Order
               </>
             }
             onClick={() => openInNewTab(false)}
@@ -359,79 +355,12 @@ export default function PurchaseOrderListPage() {
         )}
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        style={
-                          header.column.id === "number"
-                            ? { width: "40px" }
-                            : undefined
-                        }
-                        className="p-2 text-left cursor-pointer select-none"
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: " ↑",
-                          desc: " ↓",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="p-2 align-top">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex justify-between items-center mt-4 text-sm">
-            <div>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Prev
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          <DataTable table={table} />
         </>
       )}
 

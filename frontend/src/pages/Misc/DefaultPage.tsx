@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { IconRenderer } from "@/components/IconRenderer";
 import { getAppSetting } from "../AppSettings/appSetting.api";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
@@ -23,14 +22,6 @@ export default function DefaultPage() {
             src={previewUrl}
             alt="Logo Preview"
             className="h-100 object-contain"
-          />
-        )}
-
-        {!previewUrl && (
-          <IconRenderer
-            name="RiGhostSmileLine"
-            className="text-gray-900"
-            size={300}
           />
         )}
       </div>

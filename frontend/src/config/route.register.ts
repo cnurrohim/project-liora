@@ -48,14 +48,14 @@ export function registerRoutes() {
 
   RouteRegistry.register(
     "/pages/list-launcher",
-    "list app launcher",
+    "List navigation menu",
     React.createElement(ListLauncher),
     "launcher"
   );
 
   RouteRegistry.register(
     "/pages/boxy-launcher",
-    "boxy app launcher",
+    "Compact navigation menu",
     React.createElement(BoxyLauncher),
     "launcher"
   );
@@ -75,7 +75,7 @@ export function registerRoutes() {
   );
 
   RouteRegistry.register(
-    "/pages/departmemts",
+    "/pages/departments",
     "list departments",
     React.createElement(DepartmentListPage),
     "page"
@@ -185,6 +185,13 @@ export function registerRoutes() {
   RouteRegistry.register(
     "/item/create",
     "create new item",
+    React.createElement(ItemFormPage),
+    "page"
+  );
+
+  RouteRegistry.register(
+    "/item/:id/edit",
+    "edit inventory item",
     React.createElement(ItemFormPage),
     "page"
   );
@@ -338,7 +345,7 @@ export function registerRoutes() {
 
   RouteRegistry.register(
     "/pages/inventory/stock-location-report",
-    "Stock Per Location",
+    "Inventory Per Location",
     React.createElement(StockLocationReportPage),
     "page"
   );

@@ -88,83 +88,89 @@ export function StockOpnameDetailPane() {
         {/* Header */}
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-gray-400">Opname Location</p>
-            <p className="text-white">{location}</p>
+            <p className="text-sm text-[var(--text-muted)]">Opname Location</p>
+            <p className="text-[var(--text-primary)]">{location}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-400">Opname Date</p>
-            <p className="text-white">{formatDate(opname_date)}</p>
+            <p className="text-sm text-[var(--text-muted)]">Opname Date</p>
+            <p className="text-[var(--text-primary)]">
+              {formatDate(opname_date)}
+            </p>
           </div>
           <div>
-            <p className="text-sm text-gray-400">Created By</p>
-            <p className="text-white">{created_by}</p>
+            <p className="text-sm text-[var(--text-muted)]">Created By</p>
+            <p className="text-[var(--text-primary)]">{created_by}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-400">Current Status</p>
-            <p className="text-white">{status}</p>
+            <p className="text-sm text-[var(--text-muted)]">Current Status</p>
+            <p className="text-[var(--text-primary)]">{status}</p>
           </div>
           {!updated_at && (
             <div>
-              <p className="text-sm text-gray-400">Note</p>
-              <p className="text-white">{notes}</p>
+              <p className="text-sm text-[var(--text-muted)]">Note</p>
+              <p className="text-[var(--text-primary)]">{notes}</p>
             </div>
           )}
         </div>
 
         {status !== "draft" && (
-          <table className="w-full text-sm border border-gray-700 mb-4">
-            <thead className="bg-gray-800 text-gray-300">
-              <tr>
-                <th className="px-2 py-1 text-left">Progress</th>
-                <th className="px-2 py-1 text-left">Note</th>
-                <th className="px-2 py-1 text-left">By</th>
-                <th className="px-2 py-1 text-left">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {updated_at && (
+          <div className="text-[var(--text-primary)]">
+            <table className="w-full text-sm border border-[var(--border)] mb-4 ">
+              <thead className="bg-[var(--background)] text-[var(--text-primary)]">
                 <tr>
-                  <td className="px-2 py-1">Updated</td>
-                  <td className="px-2 py-1">{notes}</td>
-                  <td className="px-2 py-1">{updated_by}</td>
-                  <td className="px-2 py-1">{formatDate(updated_at)}</td>
+                  <th className="px-2 py-1 text-left">Progress</th>
+                  <th className="px-2 py-1 text-left">Note</th>
+                  <th className="px-2 py-1 text-left">By</th>
+                  <th className="px-2 py-1 text-left">Date</th>
                 </tr>
-              )}
+              </thead>
+              <tbody>
+                {updated_at && (
+                  <tr>
+                    <td className="px-2 py-1">Updated</td>
+                    <td className="px-2 py-1">{notes}</td>
+                    <td className="px-2 py-1">{updated_by}</td>
+                    <td className="px-2 py-1">{formatDate(updated_at)}</td>
+                  </tr>
+                )}
 
-              {reviewed_at && (
-                <tr>
-                  <td className="px-2 py-1">Reviewed</td>
-                  <td className="px-2 py-1">{review_note ?? "-"}</td>
-                  <td className="px-2 py-1">{reviewed_by}</td>
-                  <td className="px-2 py-1">{formatDate(reviewed_at)}</td>
-                </tr>
-              )}
-              {finalized_at && (
-                <tr>
-                  <td className="px-2 py-1">Finalized</td>
-                  <td className="px-2 py-1">-</td>
-                  <td className="px-2 py-1">{finalized_by}</td>
-                  <td className="px-2 py-1">{formatDate(finalized_at)}</td>
-                </tr>
-              )}
-              {canceled_at && (
-                <tr>
-                  <td className="px-2 py-1">Canceled</td>
-                  <td className="px-2 py-1">-</td>
-                  <td className="px-2 py-1">{canceled_by}</td>
-                  <td className="px-2 py-1">{formatDate(canceled_at)}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                {reviewed_at && (
+                  <tr>
+                    <td className="px-2 py-1">Reviewed</td>
+                    <td className="px-2 py-1">{review_note ?? "-"}</td>
+                    <td className="px-2 py-1">{reviewed_by}</td>
+                    <td className="px-2 py-1">{formatDate(reviewed_at)}</td>
+                  </tr>
+                )}
+                {finalized_at && (
+                  <tr>
+                    <td className="px-2 py-1">Finalized</td>
+                    <td className="px-2 py-1">-</td>
+                    <td className="px-2 py-1">{finalized_by}</td>
+                    <td className="px-2 py-1">{formatDate(finalized_at)}</td>
+                  </tr>
+                )}
+                {canceled_at && (
+                  <tr>
+                    <td className="px-2 py-1">Canceled</td>
+                    <td className="px-2 py-1">-</td>
+                    <td className="px-2 py-1">{canceled_by}</td>
+                    <td className="px-2 py-1">{formatDate(canceled_at)}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
 
         {/* Items */}
         {items.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">Opname Items</p>
-            <table className="w-full text-sm border border-gray-700">
-              <thead className="bg-gray-800 text-gray-300">
+          <div className="text-[var(--text-primary)]">
+            <p className="text-sm text-[var(--text-muted)] mb-2">
+              Opname Items
+            </p>
+            <table className="w-full text-sm border border-[var(--border)]">
+              <thead className="bg-[var(--background)] text-[var(--text-primary)]">
                 <tr>
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
@@ -177,7 +183,7 @@ export function StockOpnameDetailPane() {
                 {items.map((it) => {
                   const diff = it.quantity_counted - it.quantity_system;
                   return (
-                    <tr key={it.id} className="border-t border-gray-700">
+                    <tr key={it.id} className="border-t border-[var(--border)]">
                       <td className="px-2 py-1">{it.sku}</td>
                       <td className="px-2 py-1">{it.item_name}</td>
                       <td className="px-2 py-1 text-right">
@@ -207,10 +213,12 @@ export function StockOpnameDetailPane() {
 
         {/* Stock Movements */}
         {stock_movements.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">Stock Movements</p>
-            <table className="w-full text-sm border border-gray-700">
-              <thead className="bg-gray-800 text-gray-300">
+          <div className="text-[var(--text-primary)]">
+            <p className="text-sm text-[var(--text-muted)] mb-2">
+              Stock Movements
+            </p>
+            <table className="w-full text-sm border border-[var(--border)]">
+              <thead className="bg-[var(--background)] text-[var(--text-primary)]">
                 <tr>
                   <th className="px-2 py-1 text-left">Date</th>
                   <th className="px-2 py-1 text-left">Item</th>
@@ -221,7 +229,7 @@ export function StockOpnameDetailPane() {
               </thead>
               <tbody>
                 {stock_movements.map((sm) => (
-                  <tr key={sm.id} className="border-t border-gray-700">
+                  <tr key={sm.id} className="border-t border-[var(--border)]">
                     <td className="px-2 py-1">
                       {new Date(sm.created_at).toLocaleString()}
                     </td>

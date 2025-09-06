@@ -87,17 +87,24 @@ export default function ListLauncher() {
   return (
     <>
       <div className="p-4 space-y-4">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-3 py-2 bg-gray-800 text-white border-none outline-none"
-        />
+        <div className="flex justify-center w-full items-">
+          <div className="relative my-6 w-2/3 ">
+            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--panel-text-primary)]">
+              <IconRenderer name={"RiSearchLine"} size={18} color={"#9c9c9c"} />
+            </span>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-15 px-3 py-2 bg-[var(--background)] text-[var(--text-primary)] rounded-lg border-none outline-none"
+            />
+          </div>
+        </div>
 
         <div>
           {filtered.length === 0 && (
-            <div className="text-gray-400">No results.</div>
+            <div className="text-[var(--panel-text-primary)]">No results.</div>
           )}
           {Object.entries(
             filtered.reduce<Record<string, FlatMenuItem[]>>((acc, item) => {
@@ -131,7 +138,7 @@ export default function ListLauncher() {
                     <div
                       key={i}
                       onClick={() => handleClick(item)}
-                      className="w-full flex items-center gap-2 text-sm text-gray-200 cursor-pointer hover:bg-gray-800 px-2 py-1 rounded"
+                      className="w-full flex items-center gap-2 text-sm text-[var(--panel-text-highlight)] cursor-pointer hover:bg-[var(--background)] px-2 py-1 rounded"
                     >
                       <span className="text-blue-300">
                         {typeof item.icon === "string" && item.icon ? (
@@ -149,7 +156,7 @@ export default function ListLauncher() {
                         )}
                       </span>
                       <span>{item.label}</span>
-                      <span className="ml-auto text-gray-400 text-xs">
+                      <span className="ml-auto text-[var(--panel-text-primary)] text-xs">
                         {item.route || item.command}
                       </span>
                     </div>

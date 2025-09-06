@@ -30,20 +30,20 @@ export const IconPicker: React.FC<IconPickerProps> = ({
   const previousSelectedIconVisible = selectedIcon && isSearching;
 
   return (
-    <div className="p-2 bg-gray-900 rounded shadow max-h-[400px] overflow-y-auto w-full">
+    <div className="p-2 bg-[var(--background)] rounded shadow max-h-[400px] overflow-y-auto w-full">
       <input
         type="text"
         placeholder="Cari icon..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-2 p-2 bg-gray-800 rounded text-white"
+        className="w-full mb-2 p-2 bg-[var(--background)] rounded text-[var(--primary)]"
       />
 
       <div className="grid grid-cols-6 gap-2">
         {previousSelectedIconVisible && (
           <button
             type="button"
-            className={`flex items-center justify-center p-2 rounded hover:bg-gray-700 bg-blue-600`}
+            className={`flex items-center justify-center p-2 rounded hover:bg-[var(--hover)] text-[var(--primary)] bg-[var(--inset)]`}
           >
             {(() => {
               const Icon =
@@ -63,8 +63,8 @@ export const IconPicker: React.FC<IconPickerProps> = ({
               key={name}
               title={name}
               onClick={() => onSelect(name)}
-              className={`flex items-center justify-center p-2 rounded hover:bg-gray-700 ${
-                selectedIcon === name ? "bg-blue-600" : ""
+              className={`flex items-center justify-center p-2 rounded hover:bg-[var(--hover)] ${
+                selectedIcon === name ? "bg-[var(--inset)]" : ""
               }`}
             >
               <Icon size={24} />

@@ -43,7 +43,7 @@ export default function StockLocationsListPage() {
       const data = await getStockLocations();
       setLocations(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat lokasi");
+      setError(err.message || "Failed to load inventory location");
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ export default function StockLocationsListPage() {
 
   const handleEdit = (location: StockLocation) => {
     if (!canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -75,16 +75,16 @@ export default function StockLocationsListPage() {
 
   const handleDelete = async (id: string) => {
     if (!canDelete) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin menghapus lokasi ini?",
+      "You're about to delete this location, proceed?",
       async () => {
         try {
           await deleteStockLocation(id);
-          showSuccessToast("Lokasi berhasil dihapus");
+          showSuccessToast("Location deleted");
           fetchLocations();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -106,15 +106,15 @@ export default function StockLocationsListPage() {
       },
       {
         accessorKey: "code",
-        header: "Kode",
+        header: "Location Code",
       },
       {
         accessorKey: "name",
-        header: "Nama Lokasi",
+        header: "Location name",
       },
       {
         accessorKey: "type",
-        header: "Tipe",
+        header: "Type",
       },
       {
         accessorKey: "description",
@@ -123,7 +123,7 @@ export default function StockLocationsListPage() {
       },
       {
         id: "aksi",
-        header: "Aksi",
+        header: "Action",
         cell: ({ row }) => (
           <div className="flex gap-1">
             {canUpdate && (
@@ -157,7 +157,7 @@ export default function StockLocationsListPage() {
       {
         id: "/stock-location/create",
         route: "/stock-location/create",
-        label: "Tambah Lokasi Simpan Stock",
+        label: "Add Inventory Location ",
         type: "route",
         icon: "RiMapPinAddLine",
       },
@@ -168,17 +168,13 @@ export default function StockLocationsListPage() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Daftar Lokasi Stok</h1>
+        <h1 className="text-xl font-bold">Inventory Locations</h1>
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={
               <>
-                <IconRenderer
-                  name="RiMapPinAddLine"
-                  size={15}
-                  className="text-white"
-                />
-                Tambah Lokasi Simpan Stock
+                <IconRenderer name="RiMapPinAddLine" size={15} />
+                Add new inv. location
               </>
             }
             onClick={() => openInNewTab(false)}
@@ -197,14 +193,14 @@ export default function StockLocationsListPage() {
         )}
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
+              <thead className="bg-[var(--background)] text-[var(--text-muted)]">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -233,7 +229,7 @@ export default function StockLocationsListPage() {
               </thead>
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
+                  <tr key={row.id} className="border-b border-[var(--border)]">
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="p-2 align-top">
                         {flexRender(
@@ -257,14 +253,14 @@ export default function StockLocationsListPage() {
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
+                className="px-2 py-1 bg-gray-700 text-[var(--text-primary)] rounded disabled:opacity-50"
               >
                 Prev
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
+                className="px-2 py-1 bg-gray-700 text-[var(--text-primary)] rounded disabled:opacity-50"
               >
                 Next
               </button>

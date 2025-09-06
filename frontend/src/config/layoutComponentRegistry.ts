@@ -49,8 +49,8 @@ export const layoutComponentRegistry: LayoutComponentDefinition[] = [
     create: () =>
       React.createElement(
         createTabBar({
-          iconRenderer: (name) =>
-            React.createElement(IconRenderer, { name: name, size: 15 }),
+          iconRenderer: (name, size = 15) =>
+            React.createElement(IconRenderer, { name: name, size: size }),
         })
       ),
     allowedPositions: ["topPane", "bottomPane"],

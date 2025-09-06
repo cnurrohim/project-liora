@@ -22,6 +22,7 @@ import { getSuppliers } from "../Supplier/supplier.api";
 import { getItems } from "../Item/item.api";
 import SearchSelect from "@/components/SelectOptions/searchSelect";
 import { searchLocation } from "@/api/search.api";
+import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
 type Option = {
   id: string;
@@ -101,18 +102,18 @@ export default function GoodsReceiptFormPage() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari lokasi");
+      showErrorToast("Failed to fetch inventory location");
       return [];
     }
   };
 
   const onSubmit = async (data: GoodsReceiptFormValues) => {
     if (isEdit && !canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk update!");
+      showErrorToast("We're sorry, you don't have access for update!");
       return;
     }
     if (!isEdit && !canCreate) {
-      showErrorToast("Anda tidak punya hak akses untuk create!");
+      showErrorToast("We're sorry, you don't have access for create!");
       return;
     }
 
@@ -120,13 +121,13 @@ export default function GoodsReceiptFormPage() {
       setLoading(true);
       if (isEdit) {
         await updateGoodsReceipt(id!, data);
-        showSuccessToast("Goods Receipt berhasil diperbarui");
+        showSuccessToast("Goods Receipt updated");
       } else {
         await createGoodsReceipt(data);
-        showSuccessToast("Goods Receipt berhasil dibuat");
+        showSuccessToast("Goods Receipt created");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal menyimpan goods receipt");
+      showErrorToast(err.message || "Saving goods receipt failed");
     } finally {
       setLoading(false);
     }
@@ -134,15 +135,23 @@ export default function GoodsReceiptFormPage() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full p-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 max-w-2/3 mx-auto w-full p-4"
+      >
+        <BackToListLink
+          route="/pages/inventory/goods-receipts"
+          label="list good receipts"
+        />
+
         <h1 className="text-xl font-bold">
-          {isEdit ? "Edit Goods Receipt" : "Tambah Goods Receipt"}
+          {isEdit ? "Edit Goods Receipt" : "Create Goods Receipt"}
         </h1>
 
-        <div className="space-y-4 max-w-xl p-4">
+        <div className="space-y-4">
           {/* Supplier */}
           <div>
-            <label className="block">Supplier (opsional)</label>
+            <label className="block">Supplier (optional)</label>
             <Controller
               name="supplier_id"
               control={control}
@@ -158,14 +167,14 @@ export default function GoodsReceiptFormPage() {
               )}
             />
             {typeof errors.supplier_id?.message === "string" && (
-              <p className="text-red-500 text-sm">
+              <p className="text-[var(--danger)] text-sm">
                 {errors.supplier_id.message}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block">Lokasi Simpan</label>
+            <label className="block">Stored Location</label>
             {/* Target Location */}
 
             <Controller
@@ -186,37 +195,43 @@ export default function GoodsReceiptFormPage() {
 
           {/* Receipt date */}
           <div>
-            <label className="block">Tanggal Penerimaan</label>
+            <label className="block">Receipt Date</label>
             <input
               type="date"
-              className="w-full p-2 bg-gray-800 rounded"
+              className="w-full p-2 bg-[var(--background)] rounded"
               {...register("receipt_date")}
             />
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block">Catatan</label>
+            <label className="block">Note</label>
             <textarea
-              className="w-full p-2 bg-gray-800 rounded"
+              className="w-full p-2 bg-[var(--background)] rounded"
               {...register("notes")}
             />
           </div>
 
           {/* Items */}
           <div>
-            <table className="table-auto border border-gray-700 border-collapse w-full">
+            <table className="table-auto border border-[var(--border)] border-collapse w-full">
               <thead>
                 <tr>
-                  <th className="border border-gray-700 px-2 py-1">Items</th>
-                  <th className="border border-gray-700 px-2 py-1">Qty</th>
-                  <th className="border border-gray-700 px-2 py-1">Action</th>
+                  <th className="border border-[var(--border)] px-2 py-1">
+                    Items
+                  </th>
+                  <th className="border border-[var(--border)] px-2 py-1">
+                    Qty
+                  </th>
+                  <th className="border border-[var(--border)] px-2 py-1">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {fields.map((field, index) => (
                   <tr key={field.id}>
-                    <td className="border border-gray-700 px-2 py-1">
+                    <td className="border border-[var(--border)] px-2 py-1">
                       <Controller
                         name={`items.${index}.item_id`}
                         control={control}
@@ -235,37 +250,37 @@ export default function GoodsReceiptFormPage() {
                         )}
                       />
                     </td>
-                    <td className="border border-gray-700 px-2 py-1">
+                    <td className="border border-[var(--border)] px-2 py-1">
                       <input
                         type="number"
                         placeholder="Qty"
-                        className="w-24 p-2 bg-gray-800 rounded"
+                        className="w-24 p-2 bg-[var(--background)] rounded"
                         {...register(`items.${index}.quantity`, {
                           valueAsNumber: true,
                         })}
                       />
                     </td>
-                    <td className="border border-gray-700 px-2 py-1">
+                    <td className="border border-[var(--border)] px-2 py-1">
                       <button
                         type="button"
                         onClick={() => remove(index)}
-                        className="px-2 py-1 bg-red-600 text-white rounded"
+                        className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--text-primary)] rounded"
                       >
-                        Hapus
+                        delete
                       </button>
                     </td>
                   </tr>
                 ))}
                 <tr>
-                  <td colSpan={3} className="text-center">
+                  <td className="text-lefet">
                     <button
                       type="button"
                       onClick={() =>
                         append({ item_id: "", quantity: 1, notes: "" })
                       }
-                      className="px-3 py-1 bg-green-600 text-white rounded"
+                      className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--text-primary)] rounded"
                     >
-                      + Tambah Item
+                      + Add Item
                     </button>
                   </td>
                 </tr>
@@ -277,9 +292,9 @@ export default function GoodsReceiptFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 rounded text-white"
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
-          {loading ? "Menyimpan..." : "Simpan"}
+          {loading ? "Saving..." : "Save"}
         </button>
       </form>
     </FormProvider>

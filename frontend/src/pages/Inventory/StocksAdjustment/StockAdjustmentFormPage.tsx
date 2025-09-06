@@ -22,6 +22,7 @@ import {
 } from "./formSchema";
 import SearchSelect from "@/components/SelectOptions/searchSelect";
 import { searchItems, searchLocationWithItem } from "@/api/search.api";
+import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
 export default function StockAdjustmentFormPage() {
   const { canView, canUpdate, canCreate } = usePermissions();
@@ -80,7 +81,7 @@ export default function StockAdjustmentFormPage() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari item");
+      showErrorToast("Failed to fetch item");
       return [];
     }
   };
@@ -90,7 +91,7 @@ export default function StockAdjustmentFormPage() {
     const itemId = methods.getValues(`items.${index}.item_id`);
 
     if (!itemId) {
-      showErrorToast("Pilih item terlebih dahulu");
+      showErrorToast("Pick item first");
       return;
     }
 
@@ -103,18 +104,18 @@ export default function StockAdjustmentFormPage() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari lokasi");
+      showErrorToast("Failed to fetch inventory location");
       return [];
     }
   };
 
   const onSubmit = async (data: StockAdjustmentFormValues) => {
     if (isEdit && !canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk update!");
+      showErrorToast("We're sorry, you don't have access for update!");
       return;
     }
     if (!isEdit && !canCreate) {
-      showErrorToast("Anda tidak punya hak akses untuk create!");
+      showErrorToast("We're sorry, you don't have access for create!");
       return;
     }
 
@@ -127,13 +128,13 @@ export default function StockAdjustmentFormPage() {
 
       if (isEdit) {
         await updateStockAdjustment(id!, cleanedData);
-        showSuccessToast("Stock Adjustment berhasil diperbarui");
+        showSuccessToast("Inventory Adjustment updated");
       } else {
         await createStockAdjustment(cleanedData);
-        showSuccessToast("Stock Adjustment berhasil dibuat");
+        showSuccessToast("Inventory Adjustment created");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal menyimpan Stock Adjustment");
+      showErrorToast(err.message || "Saving Inventory Adjustment Failed");
     } finally {
       setLoading(false);
     }
@@ -142,26 +143,33 @@ export default function StockAdjustmentFormPage() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full p-4">
+        <BackToListLink
+          route="/pages/inventory/stock-adjustments"
+          label="list inventory adjustments"
+        />
+
         <h1 className="text-xl font-bold">
-          {isEdit ? "Edit Stock Adjustment" : "Tambah Stock Adjustment"}
+          {isEdit ? "Edit Inventory Adjustment" : "Create Inventory Adjustment"}
         </h1>
 
         {/* Adjustment Date */}
         <div>
-          <label className="block">Tanggal Adjustment</label>
+          <label className="block text-[var(--text-muted)]">
+            Adjustment Date
+          </label>
           <Controller
             name="adjustment_date"
             control={control}
             render={({ field }) => (
               <input
                 type="date"
-                className="w-full p-2 bg-gray-800 rounded"
+                className="w-full p-2 bg-[var(--background)] rounded"
                 {...field}
               />
             )}
           />
           {errors.adjustment_date && (
-            <p className="text-red-500 text-sm">
+            <p className="text-[var(--danger)] text-sm">
               {errors.adjustment_date.message}
             </p>
           )}
@@ -169,13 +177,15 @@ export default function StockAdjustmentFormPage() {
 
         {/* Reason */}
         <div>
-          <label className="block">Alasan</label>
+          <label className="block text-[var(--text-muted)]">
+            Adjustment Note
+          </label>
           <Controller
             name="reason"
             control={control}
             render={({ field }) => (
               <textarea
-                className="w-full p-2 bg-gray-800 rounded"
+                className="w-full p-2 bg-[var(--background)] rounded"
                 {...field}
                 value={field.value ?? ""} // <--- null/undefined jadi string kosong
               />
@@ -183,28 +193,40 @@ export default function StockAdjustmentFormPage() {
           />
 
           {errors.reason && (
-            <p className="text-red-500 text-sm">{errors.reason.message}</p>
+            <p className="text-[var(--danger)] text-sm">
+              {errors.reason.message}
+            </p>
           )}
         </div>
 
         {/* Items */}
         <div>
-          <table className="table-auto border border-gray-700 border-collapse w-full">
+          <table className="table-auto border border-[var(--border)] border-collapse w-full">
             <thead>
               <tr>
-                <th className="border border-gray-700 px-2 py-1">Item</th>
-                <th className="border border-gray-700 px-2 py-1">Lokasi</th>
-                <th className="border border-gray-700 px-2 py-1">Qty</th>
-                <th className="border border-gray-700 px-2 py-1">Adj. (+/-)</th>
-                <th className="border border-gray-700 px-2 py-1">Notes</th>
-                <th className="border border-gray-700 px-2 py-1">Action</th>
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Item
+                </th>
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Lokasi
+                </th>
+                <th className="border border-[var(--border)] px-2 py-1">Qty</th>
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Adj. (+/-)
+                </th>
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Notes
+                </th>
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
               {fields.map((field, index) => (
                 <tr key={field.id}>
                   {/* Item */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.item_id`}
                       control={control}
@@ -245,14 +267,14 @@ export default function StockAdjustmentFormPage() {
 
                     {typeof errors.items?.[index]?.item_id?.message ===
                       "string" && (
-                      <p className="text-red-500 text-sm">
+                      <p className="text-[var(--danger)] text-sm">
                         {errors.items[index]?.item_id?.message}
                       </p>
                     )}
                   </td>
 
                   {/* Location */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.location_id`}
                       control={control}
@@ -298,14 +320,14 @@ export default function StockAdjustmentFormPage() {
 
                     {typeof errors.items?.[index]?.location_id?.message ===
                       "string" && (
-                      <p className="text-red-500 text-sm">
+                      <p className="text-[var(--danger)] text-sm">
                         {errors.items[index]?.location_id?.message}
                       </p>
                     )}
                   </td>
 
                   {/* Current Quantity */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_before`}
                       control={control}
@@ -315,21 +337,21 @@ export default function StockAdjustmentFormPage() {
                           disabled
                           readOnly
                           placeholder="current qty"
-                          className="w-24 p-2 bg-gray-800 rounded"
+                          className="w-24 p-2 bg-[var(--background)] rounded"
                           {...field}
                           value={field.value ?? 0}
                         />
                       )}
                     />
                     {errors.items?.[index]?.quantity_before && (
-                      <p className="text-red-500 text-sm">
+                      <p className="text-[var(--danger)] text-sm">
                         {errors.items[index]?.quantity_before?.message}
                       </p>
                     )}
                   </td>
 
                   {/* Quantity Diff */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_diff`}
                       control={control}
@@ -338,7 +360,7 @@ export default function StockAdjustmentFormPage() {
                           type="string"
                           inputMode="numeric"
                           placeholder="+/- Qty"
-                          className="w-24 p-2 bg-gray-800 rounded"
+                          className="w-24 p-2 bg-[var(--background)] rounded"
                           {...field}
                           value={field.value ?? ""}
                           onChange={(e) => field.onChange(e.target.value)}
@@ -347,14 +369,14 @@ export default function StockAdjustmentFormPage() {
                     />
 
                     {errors.items?.[index]?.quantity_diff && (
-                      <p className="text-red-500 text-sm">
+                      <p className="text-[var(--danger)] text-sm">
                         {errors.items[index]?.quantity_diff?.message}
                       </p>
                     )}
                   </td>
 
                   {/* Notes */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.notes`}
                       control={control}
@@ -362,7 +384,7 @@ export default function StockAdjustmentFormPage() {
                         <input
                           type="text"
                           placeholder="Catatan"
-                          className="w-full p-2 bg-gray-800 rounded"
+                          className="w-full p-2 bg-[var(--background)] rounded"
                           {...field}
                           value={field.value ?? ""} // <-- pastikan bukan null
                         />
@@ -371,13 +393,13 @@ export default function StockAdjustmentFormPage() {
                   </td>
 
                   {/* Action */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="px-2 py-1 bg-red-600 text-white rounded"
+                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--text-primary)] rounded"
                     >
-                      Hapus
+                      delete
                     </button>
                   </td>
                 </tr>
@@ -396,9 +418,9 @@ export default function StockAdjustmentFormPage() {
                         notes: "",
                       })
                     }
-                    className="px-3 py-1 bg-green-600 text-white rounded"
+                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--text-primary)] rounded"
                   >
-                    + Tambah Item
+                    + Add Item
                   </button>
                 </td>
               </tr>
@@ -409,9 +431,9 @@ export default function StockAdjustmentFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 rounded text-white"
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
-          {loading ? "Menyimpan..." : "Simpan"}
+          {loading ? "Saving..." : "Save"}
         </button>
       </form>
     </FormProvider>

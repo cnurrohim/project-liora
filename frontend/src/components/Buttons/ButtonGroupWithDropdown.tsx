@@ -30,22 +30,25 @@ export function ButtonGroupWithDropdown({
   }, []);
 
   return (
-    <div className="relative inline-flex" ref={dropdownRef}>
+    <div
+      className="relative inline-flex text-[var(--text-primary)]"
+      ref={dropdownRef}
+    >
       <button
         onClick={onClick}
-        className="px-4 py-2 bg-blue-600 text-white rounded-l hover:bg-gray-900 flex flex-row justify-center items-center gap-1 cursor-pointer"
+        className="px-4 py-2 bg-[var(--accent-primary)] text-[var(--accent-foreground)] rounded-l hover:bg-[var(--accent-highlight)] flex flex-row justify-center items-center gap-1 cursor-pointer"
       >
         {mainLabel}
       </button>
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="px-2 py-2 bg-blue-600 text-white hover:bg-gray-900 rounded-r cursor-pointer"
+        className="px-2 py-2 bg-[var(--accent-primary)] text-[var(--accent-foreground)] hover:bg-[var(--accent-highlight)] rounded-r cursor-pointer"
       >
-        <IconRenderer name="RiMoreFill" size={20} className="text-white" />
+        <IconRenderer name="RiMoreFill" size={20} />
       </button>
 
       {open && (
-        <ul className="absolute top-full right-0 z-10 mt-1 w-48 bg-gray-900 text-white rounded shadow">
+        <ul className="absolute top-full right-0 z-10 mt-1 w-48 bg-[var(--accent-primary)] text-[var(--accent-foreground)] rounded shadow">
           {dropdownItems.map((item, idx) => (
             <li key={idx}>
               <button
@@ -53,7 +56,7 @@ export function ButtonGroupWithDropdown({
                   item.onClick();
                   setOpen(false);
                 }}
-                className="w-full text-left px-4 py-2 hover:bg-gray-950 flex flex-row items-center gap-1"
+                className="w-full text-left px-4 py-2 hover:bg-[var(--accent-highlight)] flex flex-row items-center gap-1"
               >
                 {item.label}
               </button>

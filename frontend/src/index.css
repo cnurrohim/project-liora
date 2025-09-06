@@ -11,6 +11,309 @@
 @import "@fontsource-variable/inter";
 @import "tailwindcss";
 
+@layer base {
+  :root {
+    /* ============ Ratio 60 (Dominant Layer) ============ */
+    --background: #272822; /* dasar halaman */
+    --foreground: #32342c; /* panel utama di atas background */
+    --inset: #3b3c36; /* elemen terbenam */
+    --hover: #3e4037; /* hover state */
+    --border: #46483e;
+
+    --text-primary: #f8f8f2; /* teks utama */
+    --text-highlight: #a6e22e; /* teks link/hover (greenish) */
+    --text-muted: #75715e; /* teks sekunder */
+
+    /* ============ Ratio 30 (Panels / Surfaces) ============ */
+    --panel-background: #272822;
+    --panel-foreground: #32342c;
+    --panel-inset: #3e4037;
+    --panel-hover: #46483e;
+    --panel-border: #5a5c50;
+
+    --panel-text-primary: #f8f8f2;
+    --panel-text-hover: #e6db74;
+    --panel-text-highlight: #a6e22e;
+    --panel-text-muted: #75715e;
+
+    --panel-secondary-background: #1e1f1c;
+    --panel-secondary-foreground: #2d2e2a;
+    --panel-secondary-inset: #3a3b34;
+    --panel-secondary-hover: #46483e;
+    --panel-secondary-border: #5a5c50;
+
+    --panel-secondary-text-primary: #f8f8f2;
+    --panel-secondary-text-hover: #fd971f;
+    --panel-secondary-text-highlight: #dae5ea;
+    --panel-secondary-text-muted: #75715e;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #f92672; /* pink */
+    --accent-highlight: #fd971f; /* orange */
+    --accent-muted: #75715e; /* muted gray */
+
+    /* ============ Semantic Colors ============ */
+    --success: #5fbf00; /* hijau cerah */
+    --success-hover: #72d118; /* versi lebih terang */
+    --success-foreground: #ffffff;
+
+    --warning: #ff9e2c; /* oranye terang */
+    --warning-hover: #ffb547; /* versi lebih terang */
+    --warning-foreground: #ffffff;
+
+    --danger: #e6406c; /* merah-pink tegas */
+    --danger-hover: #ff5c85; /* versi lebih terang */
+    --danger-foreground: #ffffff;
+
+    --info: #2db9d9; /* biru-cyan */
+    --info-hover: #4fd0eb; /* versi lebih terang */
+    --info-foreground: #ffffff;
+  }
+
+  /* ================= LIGHT THEME ================= */
+  .light {
+    /* ============ Ratio 60 (Dominant Layer) ============ */
+    --background: #dae5ea;
+    --foreground: #ebf1f7;
+    --inset: #bec8cc;
+    --hover: #b5bec9;
+    --border: #b9cbdd;
+
+    --text-primary: #1e293b;
+    --text-highlight: #1d4ed8;
+    --text-muted: #484d57;
+
+    /* ============ Ratio 30 (Panels / Surfaces) ============ */
+    --panel-background: #dae5ea;
+    --panel-foreground: #ebf1f7;
+    --panel-inset: #bec8cc;
+    --panel-hover: #b5bec9;
+    --panel-border: #95b2d2;
+
+    --panel-text-primary: #1e293b;
+    --panel-text-hover: #484f57;
+    --panel-text-highlight: #2563eb;
+    --panel-text-muted: #818997;
+
+    --panel-secondary-background: #dae5ea;
+    --panel-secondary-foreground: #ebf1f7;
+    --panel-secondary-inset: #bec8cc;
+    --panel-secondary-hover: #b5bec9;
+    --panel-secondary-border: #95b2d2;
+
+    --panel-secondary-text-primary: #1e293b;
+    --panel-secondary-text-hover: #484f57;
+    --panel-secondary-text-highlight: #dae5ea;
+    --panel-secondary-text-muted: #818997;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #2d80d3;
+    --accent-highlight: #2874d1;
+    --accent-foreground: #ffffff;
+    --accent-muted: #cbd5e1;
+
+    /* ============ Semantic Colors ============ */
+    --success: #19b954;
+    --success-hover: #49d17b;
+    --success-foreground: #ffffff;
+
+    --warning: #e78300;
+    --warning-hover: #e48e54;
+    --warning-foreground: #ffffff;
+
+    --danger: #e43030;
+    --danger-hover: #e45454;
+    --danger-foreground: #ffffff;
+
+    --info: #3b82f6;
+    --info-hover: #5294ff;
+    --info-foreground: #ffffff;
+  }
+
+  /* ================= Dark Theme ================= */
+  .dark {
+    /* ============ Ratio 60 (Dominant Layer) ============ */
+    --background: #0f172a; /* dasar halaman */
+    --foreground: #1e293b; /* panel utama di atas background */
+    --inset: #2d3748; /* elemen terbenam */
+    --hover: #374151; /* hover state */
+    --border: #334155;
+
+    --text-primary: #f8fafc; /* teks utama */
+    --text-highlight: #60a5fa; /* teks link/hover */
+    --text-muted: #94a3b8; /* teks sekunder */
+
+    /* ============ Ratio 30 (Panels / Surfaces) ============ */
+    --panel-background: #0f172a;
+    --panel-foreground: #1e293b;
+    --panel-inset: #2a3a4d;
+    --panel-hover: #334155;
+    --panel-border: #3b4a61;
+
+    --panel-text-primary: #f1f5f9;
+    --panel-text-hover: #cbd5e1;
+    --panel-text-highlight: #60a5fa;
+    --panel-text-muted: #94a3b8;
+
+    --panel-secondary-background: #111827;
+    --panel-secondary-foreground: #1f2937;
+    --panel-secondary-inset: #2d3748;
+    --panel-secondary-hover: #374151;
+    --panel-secondary-border: #4b5563;
+
+    --panel-secondary-text-primary: #f1f5f9;
+    --panel-secondary-text-hover: #16191d;
+    --panel-secondary-text-highlight: #16191d;
+    --panel-secondary-text-muted: #94a3b8;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #ec5c19;
+    --accent-highlight: #fa5f22;
+    --accent-foreground: #ffffff;
+    --accent-muted: #b8d0f3;
+
+    /* ============ Semantic Colors ============ */
+    --accent-primary: #f92672; /* pink */
+    --accent-highlight: #fd971f; /* orange */
+    --accent-muted: #75715e; /* muted gray */
+
+    /* ============ Semantic Colors ============ */
+    --success: #5fbf00; /* hijau cerah */
+    --success-hover: #72d118; /* versi lebih terang */
+    --success-foreground: #ffffff;
+
+    --warning: #ff9e2c; /* oranye terang */
+    --warning-hover: #ffb547; /* versi lebih terang */
+    --warning-foreground: #ffffff;
+
+    --danger: #e6406c; /* merah-pink tegas */
+    --danger-hover: #ff5c85; /* versi lebih terang */
+    --danger-foreground: #ffffff;
+
+    --info: #2db9d9; /* biru-cyan */
+    --info-hover: #4fd0eb; /* versi lebih terang */
+    --info-foreground: #ffffff;
+  }
+
+  .dark-monokai {
+    /* ============ Ratio 60 (Dominant Layer) ============ */
+    --background: #272822; /* dasar halaman */
+    --foreground: #32342c; /* panel utama di atas background */
+    --inset: #3b3c36; /* elemen terbenam */
+    --hover: #3e4037; /* hover state */
+    --border: #46483e;
+
+    --text-primary: #f8f8f2; /* teks utama */
+    --text-highlight: #a6e22e; /* teks link/hover (greenish) */
+    --text-muted: #75715e; /* teks sekunder */
+
+    /* ============ Ratio 30 (Panels / Surfaces) ============ */
+    --panel-background: #272822;
+    --panel-foreground: #32342c;
+    --panel-inset: #3e4037;
+    --panel-hover: #46483e;
+    --panel-border: #5a5c50;
+
+    --panel-text-primary: #f8f8f2;
+    --panel-text-hover: #e6db74;
+    --panel-text-highlight: #a6e22e;
+    --panel-text-muted: #75715e;
+
+    --panel-secondary-background: #1e1f1c;
+    --panel-secondary-foreground: #2d2e2a;
+    --panel-secondary-inset: #3a3b34;
+    --panel-secondary-hover: #46483e;
+    --panel-secondary-border: #5a5c50;
+
+    --panel-secondary-text-primary: #f8f8f2;
+    --panel-secondary-text-hover: #fd971f;
+    --panel-secondary-text-highlight: #dae5ea;
+    --panel-secondary-text-muted: #75715e;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #f92672; /* pink */
+    --accent-highlight: #fd971f; /* orange */
+    --accent-foreground: #ffffff;
+    --accent-muted: #75715e; /* muted gray */
+
+    /* ============ Semantic Colors ============ */
+    --success: #5fbf00; /* hijau cerah */
+    --success-hover: #72d118; /* versi lebih terang */
+    --success-foreground: #ffffff;
+
+    --warning: #ff9e2c; /* oranye terang */
+    --warning-hover: #ffb547; /* versi lebih terang */
+    --warning-foreground: #ffffff;
+
+    --danger: #e6406c; /* merah-pink tegas */
+    --danger-hover: #ff5c85; /* versi lebih terang */
+    --danger-foreground: #ffffff;
+
+    --info: #2db9d9; /* biru-cyan */
+    --info-hover: #4fd0eb; /* versi lebih terang */
+    --info-foreground: #ffffff;
+  }
+
+  .solarized-dark {
+    /* ============ Base Layer ============ */
+    --background: #002b36; /* dasar halaman */
+    --foreground: #073642; /* panel utama */
+    --inset: #0d4a56;
+    --hover: #0a3742;
+    --border: #002b36;
+
+    --text-primary: #c7d3d4; /* teks default */
+    --text-highlight: #becfcf; /* teks hover/link */
+    --text-muted: #8aa2aa; /* teks sekunder */
+
+    /* ============ Panel Layer ============ */
+    --panel-background: #002b36;
+    --panel-foreground: #073642;
+    --panel-inset: #0d4a56;
+    --panel-hover: #0a3742;
+    --panel-border: #002b36;
+
+    --panel-text-primary: #b4c0d3;
+    --panel-text-hover: #93a1a1;
+    --panel-text-highlight: #b58900; /* kuning khas solarized */
+    --panel-text-muted: #657b83;
+
+    --panel-secondary-background: #073642;
+    --panel-secondary-foreground: #0d4a56;
+    --panel-secondary-inset: #124c56;
+    --panel-secondary-hover: #0f3942;
+    --panel-secondary-border: #586e75;
+
+    --panel-secondary-text-primary: #d3dedf;
+    --panel-secondary-text-hover: #c5cece;
+    --panel-secondary-text-highlight: #073642; /* biru */
+    --panel-secondary-text-muted: #c4ced1;
+
+    /* ============ Accent Layer ============ */
+    --accent-primary: #32a7a7; /* blue */
+    --accent-highlight: #2aa198; /* cyan */
+    --accent-foreground: #ffffff;
+    --accent-muted: #586e75; /* gray */
+
+    /* ============ Semantic Colors ============ */
+    --success: #859900; /* green */
+    --success-hover: #9baf00;
+    --success-foreground: #fdf6e3;
+
+    --warning: #b58900; /* yellow */
+    --warning-hover: #d4a200;
+    --warning-foreground: #fdf6e3;
+
+    --danger: #dc322f; /* red */
+    --danger-hover: #e74c3c;
+    --danger-foreground: #fdf6e3;
+
+    --info: #2aa198; /* cyan */
+    --info-hover: #33b4a8;
+    --info-foreground: #fdf6e3;
+  }
+}
+
 @theme {
   --font-custom: "Playwrite IT Moderna Variable";
   --font-pacifico: "pacifico";
@@ -23,6 +326,40 @@
 
   --font-primary: "Mona Sans Variable", system-ui, sans-serif;
   --font-secondary: "manrope", system-ui, sans-serif;
+
+  /* ============ Ratio 60 (Dominant Layer) ============ */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-highlight: var(--text-highlight);
+  --color-text-muted: var(--text-muted);
+
+  /* ============ Ratio 30 (Panels / Surfaces) ============ */
+  --color-panel-background: var(--panel-background);
+  --color-panel-foreground: var(--panel-foreground);
+
+  --color-panel-text-primary: var(--panel-text-primary);
+  --color-panel-text-highlight: var(--panel-text-highlight);
+  --color-panel-text-muted: var(--panel-text-muted);
+
+  /* ============ Ratio 10 (Accents / Borders) ============ */
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-highlight: var(--accent-highlight);
+  --color-accent-muted: var(--accent-muted);
+
+  /* ============ Semantic Colors ============ */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
 }
 
 html {

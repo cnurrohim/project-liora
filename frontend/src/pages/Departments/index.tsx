@@ -112,11 +112,11 @@ export default function DepartmentListPage() {
                 <div>{row.getValue("name")} </div>
                 <div>
                   {row.getIsExpanded() ? (
-                    <div className=" text-gray-400 w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className=" text-[var(--text-primary)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowUpWideFill" size={20} />
                     </div>
                   ) : (
-                    <div className="text-gray-300 w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className="text-[var(--text-primary)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowDownWideFill" size={20} />
                     </div>
                   )}
@@ -173,7 +173,7 @@ export default function DepartmentListPage() {
       {
         id: "/departments/create",
         route: "/departments/create",
-        label: "Tambah Department",
+        label: "Add New Department",
         type: "route",
         icon: "RiApps2AddFill",
       },
@@ -184,12 +184,12 @@ export default function DepartmentListPage() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Daftar Department</h1>
+        <h1 className="text-xl font-bold">Departments</h1>
         <ButtonGroupWithDropdown
           mainLabel={
             <>
               <IconRenderer name="RiApps2AddFill" size={15} />
-              Tambah Departement
+              Add New Departement
             </>
           }
           onClick={() => openCreateTab(false)}
@@ -207,14 +207,14 @@ export default function DepartmentListPage() {
         />
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
 
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-800 text-white">
+            <thead className="bg-[var(--background)] text-[var(--text-muted)]">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -243,7 +243,7 @@ export default function DepartmentListPage() {
             </thead>
             <tbody>
               {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="border-b border-gray-700">
+                <tr key={row.id} className="border-b border-[var(--border)]">
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="p-2">
                       {flexRender(

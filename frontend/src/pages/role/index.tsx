@@ -29,21 +29,25 @@ export default function RoleListPage() {
 
   const handleDelete = (id: string, name: string) => {
     if (!canDelete) {
-      showErrorToast("Anda tidak punya hak akses untuk menghapus data ini!");
+      showErrorToast("We're sorry, you don't have access to delete this data!");
       return;
     }
 
     ConfirmationDialogController.askConfirmation(
-      `Yakin ingin menghapus role "${name}"?`,
+      `You're about to delete this role: "${name}"?`,
       async () => {
-        await deleteRole(id);
-        setRoles((prev) => prev.filter((r) => r.id !== id));
+        try {
+          await deleteRole(id);
+          setRoles((prev) => prev.filter((r) => r.id !== id));
+        } catch (err: any) {
+          showErrorToast(err.response?.data?.error || err.message);
+        }
       }
     );
   };
   function openInNewTab(newTab: boolean = false) {
     if (!canCreate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -60,7 +64,7 @@ export default function RoleListPage() {
 
   function handleEditClick(roleId: string, name: string) {
     if (!canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -80,24 +84,20 @@ export default function RoleListPage() {
       const detail = await getRoleDetail(roleId);
       RoleDetailPaneController.open(detail);
     } catch (err) {
-      console.error("Gagal ambil data", err);
+      console.error("Failed to fetch data", err);
     }
   }
 
   return (
-    <div className="p-4 text-white">
+    <div className="p-4 text-[var(--primary)]">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Daftar Role</h1>
+        <h1 className="text-2xl font-bold">Roles</h1>
 
         <ButtonGroupWithDropdown
           mainLabel={
             <>
-              <IconRenderer
-                name="RiShieldUserLine"
-                size={15}
-                className="text-white"
-              />
-              Tambah Role
+              <IconRenderer name="RiShieldUserLine" size={15} />
+              Add new role
             </>
           }
           onClick={() => openInNewTab(false)}
@@ -105,11 +105,7 @@ export default function RoleListPage() {
             {
               label: (
                 <>
-                  <IconRenderer
-                    name="RiArrowRightUpBoxLine"
-                    size={15}
-                    className="text-white"
-                  />
+                  <IconRenderer name="RiArrowRightUpBoxLine" size={15} />
                   Open in new tab
                 </>
               ),
@@ -122,26 +118,24 @@ export default function RoleListPage() {
       {loading ? (
         <div>Loading...</div>
       ) : roles.length === 0 ? (
-        <div>Tidak ada role</div>
+        <div>There is no role</div>
       ) : (
-        <table className="w-full border-collapse border border-gray-700">
-          <thead className="bg-gray-800">
+        <table className="w-full border-collapse ">
+          <thead className="bg-[var(--background)]">
             <tr>
-              <th className="p-2 border border-gray-700 text-left">Nama</th>
-              <th className="p-2 border border-gray-700 text-left">
+              <th className="p-2  text-left text-[var(--text-muted)]">Nama</th>
+              <th className="p-2  text-left text-[var(--text-muted)]">
                 Deskripsi
               </th>
-              <th className="p-2 border border-gray-700 text-left">Aksi</th>
+              <th className="p-2  text-left text-[var(--text-muted)]">Aksi</th>
             </tr>
           </thead>
           <tbody>
             {roles.map((role) => (
-              <tr key={role.id} className="hover:bg-gray-800">
-                <td className="p-2 border border-gray-700">{role.name}</td>
-                <td className="p-2 border border-gray-700">
-                  {role.description || "-"}
-                </td>
-                <td className="p-2 border border-gray-700 flex">
+              <tr key={role.id} className="hover:bg-[var(--background)]">
+                <td className="p-2  ">{role.name}</td>
+                <td className="p-2 ">{role.description || "-"}</td>
+                <td className="p-2  flex">
                   {canUpdate && (
                     <EditButtonLink
                       onClick={() => handleEditClick(role.id, role.name)}

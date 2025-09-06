@@ -126,7 +126,7 @@ authRoute.post("/switch-role", authMiddleware, async (c) => {
   const role = roleCheck.rows[0];
   if (!role) return c.json({ error: "Invalid role or not assigned" }, 403);
 
-  // simpan role aktif
+  // Save role aktif
   await db.query("UPDATE users SET active_role_id = $1 WHERE id = $2", [
     role.id,
     user.id,
@@ -186,7 +186,7 @@ authRoute.get("/me", authMiddleware, async (c) => {
     });
   } catch (err) {
     console.error("Error getting user permissions:", err);
-    return c.json({ error: "Gagal memuat data user" }, 500);
+    return c.json({ error: "Failed to fetch user" }, 500);
   }
 });
 

@@ -35,10 +35,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--foreground)] text-[var(--text-primary)]">
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-800 p-6 rounded shadow-md w-80 space-y-4"
+        className="bg-[var(--background)] p-6 rounded shadow-md w-80 space-y-4"
       >
         <h2 className="text-2xl font-bold text-blue-400 text-center flex flex-col items-center">
           <IconRenderer
@@ -55,7 +55,7 @@ export default function LoginPage() {
           placeholder="Username or Email"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white outline-none"
+          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-[var(--text-primary)] outline-none"
           required
         />
 
@@ -65,30 +65,34 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white outline-none pr-10"
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-[var(--text-primary)] outline-none pr-10"
             required
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--panel-text-primary)] hover:text-[var(--text-primary)] cursor-pointer"
             tabIndex={-1}
           >
             {showPassword ? (
               <IconRenderer
                 name="RiEyeCloseLine"
                 size={20}
-                className="text-white"
+                className="text-[var(--text-primary)]"
               />
             ) : (
-              <IconRenderer name="RiEyeFill" size={20} className="text-white" />
+              <IconRenderer
+                name="RiEyeFill"
+                size={20}
+                className="text-[var(--text-primary)]"
+              />
             )}
           </button>
         </div>
 
         <button
           type="submit"
-          className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+          className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-[var(--text-primary)] rounded flex flex-row gap-1 text-center items-center justify-center"
           disabled={loading}
         >
           {loading ? (
@@ -96,13 +100,17 @@ export default function LoginPage() {
               <IconRenderer
                 name="RiKey2Line"
                 size={20}
-                className="text-white"
+                className="text-[var(--text-primary)]"
               />
               Loggin in ...
             </>
           ) : (
             <>
-              <IconRenderer name="RiKeyLine" size={20} className="text-white" />
+              <IconRenderer
+                name="RiKeyLine"
+                size={20}
+                className="text-[var(--text-primary)]"
+              />
               Login
             </>
           )}

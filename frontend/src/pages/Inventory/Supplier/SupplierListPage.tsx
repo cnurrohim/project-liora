@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
-  flexRender,
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
@@ -23,6 +22,7 @@ import { ButtonGroupWithDropdown } from "@/components/Buttons/ButtonGroupWithDro
 import { ConfirmationDialogController } from "@/components/ConfirmationDialog/controller";
 import ForbiddenPage from "pages/Misc/403";
 import { usePermissions } from "./permissions"; // sesuaikan modul permissions
+import { DataTable } from "@/components/Table/DataTable";
 
 type Supplier = {
   id: string;
@@ -47,7 +47,7 @@ export default function SupplierListPage() {
       const data = await getSuppliers();
       setSuppliers(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data supplier");
+      setError(err.message || "Failed to fetch supplier data");
     } finally {
       setLoading(false);
     }
@@ -61,7 +61,7 @@ export default function SupplierListPage() {
 
   const handleEdit = (supplier: Supplier) => {
     if (!canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -82,22 +82,22 @@ export default function SupplierListPage() {
       const detail = await getSupplierById(id);
       showSuccessToast(`Supplier: ${detail.name}`);
     } catch (err) {
-      console.error("Gagal ambil data", err);
+      console.error("Failed to fetch data", err);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!canDelete) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin menghapus supplier ini?",
+      "You're about to delete this data, proceed?",
       async () => {
         try {
           await deleteSupplier(id);
-          showSuccessToast("Supplier berhasil dihapus");
+          showSuccessToast("Supplier deleted");
           fetchSuppliers();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -119,21 +119,21 @@ export default function SupplierListPage() {
       },
       {
         accessorKey: "name",
-        header: "Nama Supplier",
+        header: "Supplier Name",
       },
       {
         accessorKey: "contact",
-        header: "Kontak",
+        header: "Contact Number",
         cell: ({ row }) => row.original.contact || "-",
       },
       {
         accessorKey: "address",
-        header: "Alamat",
+        header: "Address",
         cell: ({ row }) => row.original.address || "-",
       },
       {
         id: "aksi",
-        header: "Aksi",
+        header: "Action",
         cell: ({ row }) => (
           <div className="flex gap-1">
             {canUpdate && (
@@ -172,7 +172,7 @@ export default function SupplierListPage() {
       {
         id: "/supplier/create",
         route: "/supplier/create",
-        label: "Tambah Supplier",
+        label: "Add New Supplier",
         type: "route",
         icon: "RiAddBoxLine",
       },
@@ -183,17 +183,13 @@ export default function SupplierListPage() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Daftar Supplier</h1>
+        <h1 className="text-xl font-bold">Suppliers</h1>
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={
               <>
-                <IconRenderer
-                  name="RiAddBoxLine"
-                  size={15}
-                  className="text-white"
-                />
-                Tambah Supplier
+                <IconRenderer name="RiAddBoxLine" size={15} />
+                Add New Supplier
               </>
             }
             onClick={() => openInNewTab(false)}
@@ -212,79 +208,12 @@ export default function SupplierListPage() {
         )}
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        style={
-                          header.column.id === "number"
-                            ? { width: "40px" }
-                            : undefined
-                        }
-                        className="p-2 text-left cursor-pointer select-none"
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: " ↑",
-                          desc: " ↓",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="p-2 align-top">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex justify-between items-center mt-4 text-sm">
-            <div>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Prev
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          <DataTable table={table} />
         </>
       )}
     </div>

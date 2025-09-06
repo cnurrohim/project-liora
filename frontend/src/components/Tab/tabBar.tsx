@@ -4,7 +4,7 @@ import { useController } from "@/hooks/useController";
 import { UserPreferencesController } from "@/controller/UserPreferencesController";
 
 type TabBarProps = {
-  iconRenderer?: (iconName?: string) => React.ReactNode;
+  iconRenderer?: (iconName?: string, iconSize?: number) => React.ReactNode;
 };
 
 export default function TabBar({ iconRenderer }: TabBarProps) {
@@ -53,11 +53,11 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
   }, [activeTabKey]);
 
   return (
-    <div className="flex items-center  bg-gray-900 mt-5 ml-5 mr-5">
+    <div className="flex items-center bg-[var(--panel-background)] ">
       {showArrows && (
         <button
           ref={leftBtnRef}
-          className="px-2 text-xl text-gray-100"
+          className="px-2 text-xl text-[var(--accent-primary)]"
           onClick={() =>
             scrollRef.current?.scrollBy({ left: -100, behavior: "smooth" })
           }
@@ -68,15 +68,15 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
 
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto no-scrollbar flex-1 h-10 items-stretch"
+        className="flex overflow-x-auto no-scrollbar flex-1 h-12 items-stretch p-2"
       >
         {tabList.map((tab) => (
           <div
             key={tab.key}
             className={`tab-wrapper flex items-center group ${
               tab.key === activeTabKey
-                ? "bg-gray-800 text-gray-300 border-t-3 border-blue-500"
-                : "bg-gray-900 text-gray-400 hover:bg-gray-800"
+                ? "bg-[var(--panel-inset)] text-[var(--text-primary)] rounded-3xl"
+                : "bg-[var(--panel-background)] text-[var(--panel-text-primary)] hover:bg-[var(--background)]"
             }`}
           >
             <button
@@ -84,17 +84,36 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
               onClick={() => TabController.setActiveTab(tab.key)}
               className={`tab transition-all duration-200 ease-in-out h-full px-4 py-1 text-sm whitespace-nowrap flex items-center gap-x-2`}
             >
-              <span className="text-blue-400">
+              <span
+                className={`${
+                  tab.key === activeTabKey
+                    ? "text-[var(--panel-text-primary)]"
+                    : "text-[var(--panel-text-muted)]"
+                }`}
+              >
                 {tab.icon ? iconRenderer?.(tab.icon) ?? "🗱" : "🗱"}
               </span>
-              <span>{tab.label}</span>
+              <span
+                className={`${
+                  tab.key === activeTabKey
+                    ? "text-[var(--panel-text-primary)]"
+                    : "text-[var(--panel-text-muted)]"
+                }`}
+              >
+                {tab.label}
+              </span>
             </button>
 
             <button
               onClick={() => TabController.closeTab(tab.key)}
-              className="mr-2 text-lg text-blue-200 cursor-pointer"
+              className={`mr-2 text-lg ${
+                tab.key === activeTabKey
+                  ? "text-[var(--panel-text-primary)]"
+                  : "text-[var(--panel-text-muted)]"
+              }
+                 cursor-pointer`}
             >
-              &times;
+              {iconRenderer?.("RiCloseFill")}
             </button>
           </div>
         ))}
@@ -103,7 +122,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
       {showArrows && (
         <button
           ref={rightBtnRef}
-          className="px-2 text-xl text-gray-100"
+          className="px-2 text-xl text-[var(--accent-primary)]"
           onClick={() =>
             scrollRef.current?.scrollBy({ left: 100, behavior: "smooth" })
           }
@@ -122,9 +141,11 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
             route: defaultTab ?? "/pages/default",
           });
         }}
-        className="px-2 text-2xl h-10 bg-blue-500 text-gray-900 hover:text-white cursor-pointer"
+        className=" h-12 w-12 cursor-pointer flex items-center justify-center 
+        text-[var(--accent-primary)] 
+        hover:text-[var(--accent-hover)]"
       >
-        +
+        {iconRenderer?.("RiAddCircleFill", 23)}
       </button>
     </div>
   );

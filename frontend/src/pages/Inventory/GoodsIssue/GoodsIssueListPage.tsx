@@ -4,7 +4,6 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
-  flexRender,
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
@@ -19,6 +18,7 @@ import {
   GoodsIssueDetailPane,
   GoodsIssueDetailPaneController,
 } from "./GoodsIssueDetailPane";
+import { DataTable } from "@/components/Table/DataTable";
 
 type Issue = {
   id: string;
@@ -44,7 +44,7 @@ export default function GoodsIssueListPage() {
       const data = await getGoodsIssues();
       setIssues(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data Issue");
+      setError(err.message || "Failed to fetch Goods Issue");
     } finally {
       setLoading(false);
     }
@@ -61,7 +61,7 @@ export default function GoodsIssueListPage() {
       const detail = await getGoodsIssueDetail(id);
       GoodsIssueDetailPaneController.open(detail);
     } catch (err) {
-      console.error("Gagal ambil detail Issue", err);
+      console.error("Failed to fetch detail Issue", err);
     }
   };
 
@@ -78,11 +78,11 @@ export default function GoodsIssueListPage() {
       },
       {
         accessorKey: "issue_number",
-        header: "Nomor Issue",
+        header: "Issue Number",
       },
       {
         accessorKey: "issue_date",
-        header: "Tanggal",
+        header: "Issue Date",
         cell: ({ row }) =>
           new Date(row.original.issue_date).toLocaleDateString(),
       },
@@ -93,12 +93,12 @@ export default function GoodsIssueListPage() {
       },
       {
         accessorKey: "notes",
-        header: "Catatan",
+        header: "Note",
         cell: ({ row }) => row.original.notes || "-",
       },
       {
         id: "aksi",
-        header: "Aksi",
+        header: "Action",
         cell: ({ row }) => (
           <div className="flex gap-1">
             <ViewButtonLink onClick={() => handleView(row.original.id)} />
@@ -132,7 +132,7 @@ export default function GoodsIssueListPage() {
       {
         id: "/goods-issues/create",
         route: "/goods-issues/create",
-        label: "Tambah Issue",
+        label: "Create Goods Issue",
         type: "route",
         icon: "RiArrowRightUpBoxLine",
       },
@@ -148,12 +148,8 @@ export default function GoodsIssueListPage() {
           <ButtonGroupWithDropdown
             mainLabel={
               <>
-                <IconRenderer
-                  name="RiAddBoxLine"
-                  size={15}
-                  className="text-white"
-                />
-                Tambah Issue
+                <IconRenderer name="RiAddBoxLine" size={15} />
+                Create Issue
               </>
             }
             onClick={() => openInNewTab(false)}
@@ -172,79 +168,12 @@ export default function GoodsIssueListPage() {
         )}
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        style={
-                          header.column.id === "number"
-                            ? { width: "40px" }
-                            : undefined
-                        }
-                        className="p-2 text-left cursor-pointer select-none"
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: " ↑",
-                          desc: " ↓",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="p-2 align-top">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex justify-between items-center mt-4 text-sm">
-            <div>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Prev
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          <DataTable table={table} />
         </>
       )}
       <GoodsIssueDetailPane />

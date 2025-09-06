@@ -17,7 +17,7 @@ type SearchSelectProps = {
 export default function SearchSelect({
   value,
   onChange,
-  placeholder = "Cari...",
+  placeholder = "Search...",
   disabled = false,
   fetchOptions,
 }: SearchSelectProps) {
@@ -63,14 +63,14 @@ export default function SearchSelect({
   };
 
   return (
-    <div className="p-2 relative w-full">
+    <div className="relative w-full">
       <input
         value={value ? value.name : input}
         onChange={(e) => {
           setInput(e.target.value);
           if (value) onChange(null); // reset kalau user edit lagi
         }}
-        className="w-full outline-none"
+        className="w-full outline-none bg-[var(--background)] p-2"
         placeholder={placeholder}
         disabled={disabled}
         onFocus={() => setIsOpen(true)}
@@ -86,28 +86,32 @@ export default function SearchSelect({
         <button
           type="button"
           onClick={clearOption}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-red-500 cursor-pointer"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--danger)] cursor-pointer"
         >
           ×
         </button>
       )}
 
       {isOpen && (
-        <ul className="absolute left-0 right-0 z-10 mt-1 bg-gray-900 rounded shadow max-h-60 overflow-auto">
+        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--background)] rounded shadow max-h-60 overflow-auto">
           {loading ? (
-            <li className="px-2 py-1 text-gray-400">Loading...</li>
+            <li className="px-2 py-1 text-[var(--panel-text-primary)]">
+              Loading...
+            </li>
           ) : options.length > 0 ? (
             options.map((opt) => (
               <li
                 key={opt.id}
-                className="px-2 py-1 hover:bg-gray-950 cursor-pointer"
+                className="px-2 py-1 hover:bg-[var(--hover)] cursor-pointer"
                 onMouseDown={() => selectOption(opt)}
               >
                 {opt.name}
               </li>
             ))
           ) : (
-            <li className="px-2 py-1 text-gray-400">Tidak ada hasil</li>
+            <li className="px-2 py-1 text-[var(--panel-text-primary)]">
+              Not found
+            </li>
           )}
         </ul>
       )}

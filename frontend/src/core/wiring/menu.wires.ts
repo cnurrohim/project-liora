@@ -21,7 +21,6 @@ export function menuWires(): Wire[] {
       from: MenuProviderController.subscribe,
       to: () => {
         const sections = MenuProviderController.getState().sections;
-
         VSlidingPanelController.setAllMenu(sections);
         const vActive = VMenuBarController.getActive();
         if (vActive) {

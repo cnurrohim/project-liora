@@ -7,6 +7,7 @@ import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import ForbiddenPage from "pages/Misc/403";
 import { usePermissions } from "./permissions";
 import { itemSchema, type ItemFormValues } from "./formSchema";
+import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
 export default function ItemFormPage() {
   const { canView, canUpdate, canCreate } = usePermissions();
@@ -51,12 +52,12 @@ export default function ItemFormPage() {
 
   const onSubmit = async (data: ItemFormValues) => {
     if (isEdit && !canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk update!");
+      showErrorToast("We're sorry, you don't have access for update!");
       return;
     }
 
     if (!isEdit && !canCreate) {
-      showErrorToast("Anda tidak punya hak akses untuk create!");
+      showErrorToast("We're sorry, you don't have access for create!");
       return;
     }
 
@@ -70,7 +71,7 @@ export default function ItemFormPage() {
         showSuccessToast("Barang berhasil dibuat");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal menyimpan barang");
+      showErrorToast(err.message || "Gagal Saving barang");
     } finally {
       setLoading(false);
     }
@@ -78,43 +79,57 @@ export default function ItemFormPage() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full p-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 max-w-3/4 mx-auto w-full p-4"
+      >
+        <BackToListLink route="/pages/inventory/item" label="list items" />
         <h1 className="text-xl font-bold">
-          {isEdit ? "Edit Barang" : "Tambah Barang"}
+          {isEdit ? "Edit Inventory Item" : "Add Inventory Item"}
         </h1>
 
-        <div className="space-y-4 max-w-xl p-4">
+        <div className="space-y-4">
           <div>
-            <label className="block">SKU</label>
+            <label className="block text-[var(--text-muted)]">SKU</label>
             <input
-              className="w-full p-2 bg-gray-800 rounded"
+              className="w-full p-2 bg-[var(--background)] rounded"
               {...register("sku")}
             />
             {typeof errors.sku?.message === "string" && (
-              <p className="text-red-500 text-sm">{errors.sku.message}</p>
+              <p className="text-[var(--danger)] text-sm">
+                {errors.sku.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block">Nama Barang</label>
+            <label className="block text-[var(--text-muted)]">
+              Nama Barang
+            </label>
             <input
-              className="w-full p-2 bg-gray-800 rounded"
+              className="w-full p-2 bg-[var(--background)] rounded"
               {...register("name")}
             />
             {typeof errors.name?.message === "string" && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
+              <p className="text-[var(--danger)] text-sm">
+                {errors.name.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block">Minimal Stok</label>
+            <label className="block text-[var(--text-muted)]">
+              Minimal Stok
+            </label>
             <input
               type="number"
-              className="w-full p-2 bg-gray-800 rounded"
+              className="w-full p-2 bg-[var(--background)] rounded"
               {...register("min_stock", { valueAsNumber: true })}
             />
             {typeof errors.min_stock?.message === "string" && (
-              <p className="text-red-500 text-sm">{errors.min_stock.message}</p>
+              <p className="text-[var(--danger)] text-sm">
+                {errors.min_stock.message}
+              </p>
             )}
           </div>
         </div>
@@ -122,9 +137,9 @@ export default function ItemFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 rounded text-white"
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
-          {loading ? "Menyimpan..." : "Simpan"}
+          {loading ? "Saving..." : "Save"}
         </button>
       </form>
     </FormProvider>

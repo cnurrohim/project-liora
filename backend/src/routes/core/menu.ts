@@ -37,6 +37,13 @@ type MenuTreeNode = MenuRow & {
   isPinned?: boolean;
 };
 
+type RouteMenuMeta = {
+  icon: string | null;
+  icon_color: string | null;
+  label: string;
+  id: string;
+};
+
 // GET /menus
 menuRoute.get("/", async (c) => {
   try {
@@ -90,8 +97,21 @@ menuRoute.get("/", async (c) => {
     const pinnedTree = makePinnedTree(pinnedMenusOrdered);
     const finalMenuTree = [...(pinnedTree ? [pinnedTree] : []), ...tree];
 
+    const routeMenuMap: Record<string, RouteMenuMeta> = {};
+
+    for (const menu of menus) {
+      if (menu.type === "route" && menu.route) {
+        routeMenuMap[menu.route] = {
+          id: menu.id,
+          label: menu.label,
+          icon: menu.icon ?? null,
+          icon_color: menu.icon_color ?? null,
+        };
+      }
+    }
+
     // final response
-    const response = { data: finalMenuTree };
+    const response = { data: finalMenuTree, routeMenuMap };
 
     // cache (store the full response object)
     await redis.set(cacheKey, JSON.stringify(response), { EX: 300 });

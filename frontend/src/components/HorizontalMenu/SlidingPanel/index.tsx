@@ -71,7 +71,7 @@ export default function SlidingPanel({
       className={`
     fixed
     ${state.position === "top" ? "top-0" : "bottom-0"}
-    h-64 w-full bg-gray-900 text-white shadow-lg
+    h-64 w-full bg-[var(--foreground)] text-[var(--text-primary)] shadow-lg
     transform transition-transform duration-300 z-40 flex flex-row  py-4 gap-3 
     ${
       visible
@@ -87,7 +87,7 @@ export default function SlidingPanel({
     >
       <div className="flex flex-col w-full mt-2 pl-3">
         <div className="relative w-full mb-2">
-          <span className="absolute left-3 top-1/4 text-gray-400">
+          <span className="absolute left-3 top-1/4 text-[var(--panel-text-primary)]">
             {iconRenderer?.({
               name: "RiSearchLine",
               size: 18,
@@ -101,12 +101,12 @@ export default function SlidingPanel({
             placeholder="Search menu..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full mb-3 p-2 pl-10 rounded bg-gray-800 text-white focus:outline-none"
+            className="w-full mb-3 p-2 pl-10 rounded bg-[var(--background)] text-[var(--text-primary)] focus:outline-none"
           />
         </div>
 
         {state.start?.label && (
-          <div className="text-sm uppercase text-gray-400 mb-2 px-1">
+          <div className="text-sm uppercase text-[var(--panel-text-primary)] mb-2 px-1">
             {state.start.label}
           </div>
         )}
@@ -129,16 +129,16 @@ export default function SlidingPanel({
           <div className="mt-4  pt-2 pl-4">
             <div
               onClick={() => SlidingPanelController.goBack()}
-              className="text-gray-400 group hover:text-white cursor-pointer flex flex-row items-center"
+              className="text-[var(--panel-text-primary)] group hover:text-[var(--text-primary)] cursor-pointer flex flex-row items-center"
             >
-              <span className=" group-hover:text-gray-300 text-gray-400 pr-2">
+              <span className=" group-hover:text-[var(--text-primary)] text-[var(--panel-text-primary)] pr-2">
                 {iconRenderer?.({
                   name: "RiArrowLeftUpBoxFill",
                   size: 18,
                   color: "#9c9c9c",
                 })}
               </span>
-              <span className="text-gray-400 group-hover:text-gray-300">
+              <span className="text-[var(--panel-text-primary)] group-hover:text-[var(--text-primary)]">
                 Back
               </span>
             </div>
@@ -147,9 +147,9 @@ export default function SlidingPanel({
       </div>
 
       {/* Header */}
-      <div className="w-1/3 border-l border-gray-700 px-4 relative">
+      <div className="w-1/3 border-l border-[var(--border)] px-4 relative">
         <button
-          className="cursor-pointer hover:bg-gray-700 bg-gray-800 rounded-full absolute right-5 top-2"
+          className="cursor-pointer hover:bg-gray-700 bg-[var(--background)] rounded-full absolute right-5 top-2"
           title="Collapse menu"
           onClick={() => SlidingPanelController.close()}
         >
@@ -178,10 +178,10 @@ export default function SlidingPanel({
                 className="w-[52px] h-[52px] rounded-full object-cover border border-gray-600"
               />
               <div className="flex flex-col">
-                <span className="font-semibold text-white text-sm">
+                <span className="font-semibold text-[var(--text-primary)] text-sm">
                   {userProfile.user?.name}
                 </span>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-[var(--panel-text-primary)]">
                   @{userProfile.user?.username}
                 </span>
                 <span className="text-xs text-gray-500">
@@ -196,7 +196,7 @@ export default function SlidingPanel({
                 <button
                   onClick={() => setShowRoles((prev) => !prev)}
                   className={`cursor-pointer relative w-full hover:bg-gray-700 ${
-                    showRoles ? "text-gray-500" : "text-gray-300"
+                    showRoles ? "text-gray-500" : "text-[var(--text-primary)]"
                   } text-sm py-1 rounded flex justify-between items-center px-3`}
                 >
                   Switch Role
@@ -230,7 +230,7 @@ export default function SlidingPanel({
                           <button
                             key={role.id}
                             onClick={() => onSwitchRole(role.id)}
-                            className="cursor-pointer bg-gray-800 block w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded"
+                            className="cursor-pointer bg-[var(--background)] block w-full text-left px-3 py-2 text-sm text-[var(--text-primary)] hover:bg-gray-700 rounded"
                           >
                             {role.name}
                           </button>
@@ -246,7 +246,7 @@ export default function SlidingPanel({
               {onViewProfileClick && (
                 <button
                   onClick={onViewProfileClick}
-                  className="cursor-pointer mt-3 w-full bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm py-1 rounded"
+                  className="cursor-pointer mt-3 w-full bg-[var(--background)] hover:bg-gray-700 text-[var(--text-primary)] text-sm py-1 rounded"
                 >
                   View Profile
                 </button>
@@ -254,7 +254,7 @@ export default function SlidingPanel({
               {onLogout && (
                 <button
                   onClick={onLogout}
-                  className="cursor-pointer mt-3 px-2 w-fit border-gray-800 border-2 hover:bg-gray-700 text-white text-sm py-1 rounded"
+                  className="cursor-pointer mt-3 px-2 w-fit border-gray-800 border-2 hover:bg-gray-700 text-[var(--text-primary)] text-sm py-1 rounded"
                 >
                   {iconRenderer?.({
                     name: "RiShutDownLine",

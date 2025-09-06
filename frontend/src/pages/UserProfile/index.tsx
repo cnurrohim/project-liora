@@ -125,9 +125,9 @@ export default function UserProfilePage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-6">
+    <form onSubmit={handleSubmit} className="p-6 max-w-3/4 space-y-6 mx-auto">
       <div>
-        <label className="block text-sm font-medium mb-1">Foto Profil</label>
+        <label className="block text-sm font-medium mb-1">Profile Photo</label>
         <Controller
           name="profile_photo"
           control={control}
@@ -141,12 +141,12 @@ export default function UserProfilePage() {
                   field.onChange(file);
                   if (file) setPreviewUrl(URL.createObjectURL(file));
                 }}
-                className="block w-full text-sm text-gray-500
+                className="block w-full text-sm text-[var(--text-primary)]
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-md file:border-0
                   file:text-sm file:font-semibold
-                  file:bg-gray-700 file:text-gray-200
-                  hover:file:bg-gray-900
+                  file:bg-[var(--background)] file:text-[var(--text-primary)]
+                  hover:file:bg-[var(--hover)]
                   cursor-pointer"
               />
               {previewUrl && (
@@ -161,21 +161,23 @@ export default function UserProfilePage() {
         />
 
         {errors.profile_photo?.message && (
-          <p className="text-blue-400 text-sm mt-1">
+          <p className="text-[var(--text-danger)] text-sm mt-1">
             {String(errors.profile_photo.message)}
           </p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Nama Lengkap</label>
+        <label className="block text-sm font-medium mb-1">Name</label>
         <input
           type="text"
           {...register("name")}
-          className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
         />
         {errors.name && (
-          <p className="text-blue-400 text-sm mt-1">{errors.name.message}</p>
+          <p className="text-[var(--text-danger)] text-sm mt-1">
+            {errors.name.message}
+          </p>
         )}
       </div>
 
@@ -184,37 +186,37 @@ export default function UserProfilePage() {
         <input
           type="text"
           {...register("username")}
-          className="w-full border-gray-300 rounded-md shadow-sm p-2"
+          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
         />
         {errors.username?.message && (
-          <p className="text-blue-400 text-sm mt-1">
+          <p className="text-[var(--text-danger)] text-sm mt-1">
             {errors.username.message}
           </p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Password Baru</label>
+        <label className="block text-sm font-medium mb-1">New Password</label>
         <input
           type="password"
           {...register("password")}
-          placeholder="Kosongkan jika tidak ingin mengganti"
-          className="w-full border-gray-300 rounded-md shadow-sm p-2"
+          placeholder="Leave it empty, if not changing password"
+          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
         />
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-1">
-          Konfirmasi Password
+          Confirm Password
         </label>
         <input
           type="password"
           {...register("confirmPassword")}
-          placeholder="Ulangi password baru"
-          className="w-full border-gray-300 rounded-md shadow-sm p-2"
+          placeholder="confirm new password"
+          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
         />
         {errors.confirmPassword && (
-          <p className="text-blue-400 text-sm mt-1">
+          <p className="text-[var(--text-danger)] text-sm mt-1">
             {errors.confirmPassword.message}
           </p>
         )}
@@ -225,27 +227,29 @@ export default function UserProfilePage() {
         <input
           type="email"
           {...register("email")}
-          className="w-full border-gray-300 rounded-md shadow-sm p-2"
+          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
         />
         {errors.email && (
-          <p className="text-blue-400 text-sm mt-1">{errors.email.message}</p>
+          <p className="text-[var(--text-danger)] text-sm mt-1">
+            {errors.email.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">No. HP</label>
+        <label className="block text-sm font-medium mb-1">Phone Number</label>
         <input
           type="tel"
           {...register("phone_number")}
-          className="w-full border-gray-300 rounded-md shadow-sm p-2"
+          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Alamat</label>
+        <label className="block text-sm font-medium mb-1">Address</label>
         <textarea
           {...register("address")}
-          className="w-full border-gray-300 rounded-md shadow-sm p-2"
+          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
         />
       </div>
 
@@ -253,9 +257,9 @@ export default function UserProfilePage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full flex justify-center items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          className="w-full flex justify-center text-[var(--text-primary)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
-          {loading ? "Menyimpan..." : "Simpan"}
+          {loading ? "Saving..." : "Save"}
         </button>
       )}
     </form>

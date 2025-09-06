@@ -18,13 +18,13 @@ export function Tabs({ defaultValue = "", children }: TabsProps) {
 
   return (
     <TabsContext.Provider value={{ activeValue, setActiveValue }}>
-      <div className="w-full p-4">{children}</div>
+      <div className="w-full">{children}</div>
     </TabsContext.Provider>
   );
 }
 
 export function TabsList({ children }: { children: ReactNode }) {
-  return <div className="flex  mb-4 space-x-2">{children}</div>;
+  return <div className="flex mb-4 space-x-2">{children}</div>;
 }
 
 export function TabsTrigger({
@@ -43,10 +43,10 @@ export function TabsTrigger({
     <button
       type="button"
       onClick={() => ctx.setActiveValue(value)}
-      className={`px-3 py-1.5 text-sm font-medium rounded-t border-b-2 flex flex-row gap-2 cursor-pointer ${
+      className={` px-3 py-1.5 text-sm font-medium rounded-t border-b-1 flex flex-row gap-2 cursor-pointer ${
         isActive
-          ? "border-blue-500 text-white"
-          : "border-transparent text-gray-400 hover:text-white"
+          ? "border-[var(--accent-primary)] text-[var(--primary)]"
+          : "border-transparent text-[var(--panel-text-primary)] hover:text-[var(--text-muted)]"
       }`}
     >
       {children}

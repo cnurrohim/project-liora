@@ -19,7 +19,7 @@ export default function SingleSelect({
   value = null,
   onChange,
   placeholder = "Pilih...",
-  className = "w-full outline-none bg-gray-900 p-1",
+  className = "w-full outline-none bg-[var(--background)] p-1",
   disabled = false,
 }: SingleSelectProps) {
   const [input, setInput] = useState("");
@@ -43,14 +43,14 @@ export default function SingleSelect({
   return (
     <div className="relative w-full">
       {value && (
-        <div className="flex items-center gap-1 mb-1 w-full bg-gray-950">
-          <span className=" text-gray-300 px-2 py-1 rounded w-full flex justify-between">
+        <div className="flex items-center gap-1 mb-1 w-full bg-[var(--background)] ">
+          <span className=" text-[var(--text-primary)] px-2 py-1 rounded w-full flex justify-between">
             {value.name}
             {!disabled && (
               <button
                 type="button"
                 onClick={clearOption}
-                className="text-red-500 cursor-pointer"
+                className="text-[var(--text-primary)] cursor-pointer"
               >
                 ×
               </button>
@@ -70,11 +70,11 @@ export default function SingleSelect({
         />
       )}
       {isOpen && filtered.length > 0 && (
-        <ul className="absolute left-0 right-0 z-10 mt-1 bg-gray-900 rounded shadow max-h-60 overflow-auto">
+        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--background)] rounded shadow max-h-60 overflow-auto">
           {filtered.map((opt) => (
             <li
               key={opt.id}
-              className="px-2 py-1 hover:bg-gray-950 cursor-pointer"
+              className="px-2 py-1 hover:bg-[var(--hover)] cursor-pointer"
               onMouseDown={() => selectOption(opt)}
             >
               {opt.name}
@@ -83,8 +83,10 @@ export default function SingleSelect({
         </ul>
       )}
       {isOpen && filtered.length === 0 && (
-        <ul className="absolute left-0 right-0 z-10 mt-1 bg-gray-900 rounded shadow">
-          <li className="px-2 py-1 text-gray-400">Tidak ada opsi</li>
+        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--background)] rounded shadow">
+          <li className="px-2 py-1 text-[var(--panel-text-primary)]">
+            Tidak ada opsi
+          </li>
         </ul>
       )}
     </div>

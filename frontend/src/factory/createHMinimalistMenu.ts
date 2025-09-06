@@ -61,7 +61,7 @@ export function createHorizontalMenu(position: LayoutPosition) {
       "div",
       {
         className:
-          "relative flex h-full w-full z-10 justify-center bg-gray-900",
+          "relative flex h-full w-full z-10 justify-center bg-[var(--foreground)]",
       },
       React.createElement(SlidingPanel, {
         onItemClick: (item) => {

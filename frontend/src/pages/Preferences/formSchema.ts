@@ -8,6 +8,7 @@ export const layoutSchema = z.object({
   bottomPane: z.string().nullable(),
   defaultPage: z.string().nullable().optional(),
   defaultNewTab: z.string().nullable().optional(),
+  theme: z.string(),
 });
 
 export type LayoutFormValues = z.infer<typeof layoutSchema>;

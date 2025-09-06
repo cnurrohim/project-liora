@@ -17,6 +17,7 @@ import SingleSelect from "@/components/SelectOptions/SingleSelect";
 import { layoutSchema, type LayoutFormValues } from "./formSchema";
 import { UserPreferencesController } from "@/controller/UserPreferencesController";
 import { TabController } from "@/components/Tab/controller";
+import { useUserPreferences } from "@/hooks/useUserPreferences";
 
 type LayoutPosition = "leftPane" | "rightPane" | "topPane" | "bottomPane";
 
@@ -35,9 +36,7 @@ export default function PreferencesForm() {
   const current = LayoutController.getState();
   const DefaultNewTab = UserPreferencesController.get("defaultNewTab");
   const DefaultPage = UserPreferencesController.get("defaultPage");
-
-  console.log(DefaultNewTab);
-  console.log(DefaultPage);
+  const { theme, setTheme, themes } = useUserPreferences();
 
   const methods = useForm<LayoutFormValues>({
     resolver: zodResolver(layoutSchema),
@@ -48,6 +47,7 @@ export default function PreferencesForm() {
       bottomPane: current.bottomPaneKey ?? null,
       defaultPage: DefaultPage ?? null,
       defaultNewTab: DefaultNewTab ?? null,
+      theme: theme ?? "light",
     },
   });
 
@@ -66,6 +66,7 @@ export default function PreferencesForm() {
         bottomPane: s.bottomPaneKey ?? null,
         defaultPage: DefaultPage ?? null,
         defaultNewTab: DefaultNewTab ?? null,
+        theme: theme ?? "light",
       });
     };
 
@@ -111,18 +112,19 @@ export default function PreferencesForm() {
       const config = {
         default_page: data.defaultPage,
         default_new_tab: data.defaultNewTab,
+        theme: data.theme,
       };
 
       await saveLayout(user.id, user.defaultRole.id, layoutConfig, config);
-      localStorage.setItem("user_layout", JSON.stringify(layoutConfig));
+
       UserPreferencesController.load(user.id, user.defaultRole.id);
       if (config.default_page)
         TabController.setDefaultPage(config.default_page);
 
-      showSuccessToast("Layout berhasil disimpan.");
+      showSuccessToast("Preferences saved");
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal menyimpan layout.");
+      showErrorToast("Failed to save preferences");
     } finally {
       setIsSaving(false);
     }
@@ -133,9 +135,13 @@ export default function PreferencesForm() {
     iconName: string,
     label: string
   ) => (
-    <div className="space-y-2 w-full">
-      <label className="text-sm text-gray-400 capitalize flex flex-row gap-2">
-        <IconRenderer name={iconName} className="text-gray-400" size={20} />
+    <div className="space-y-2 w-full ">
+      <label className="text-sm text-[var(--text-primary)] capitalize flex flex-row gap-2">
+        <IconRenderer
+          name={iconName}
+          className="text-[var(--text-primary)]"
+          size={20}
+        />
         {label}
       </label>
       <Controller
@@ -143,7 +149,7 @@ export default function PreferencesForm() {
         control={control}
         render={({ field }) => (
           <select
-            className="w-full p-2 bg-gray-800 text-white rounded"
+            className="w-full p-2 bg-[var(--background)] text-[var(--text-primary)]  rounded"
             value={field.value ?? "none"}
             onChange={(e) => {
               const nextKey = e.target.value === "none" ? null : e.target.value;
@@ -185,20 +191,39 @@ export default function PreferencesForm() {
 
   return (
     <FormProvider {...methods}>
+      <div className="pt-6 max-w-3/4 mx-auto px-6">
+        <h1 className="text-2xl font-bold text-[var(--accent-primary)] flex flex-row gap-2">
+          Preferences
+        </h1>
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed mt-2">
+          This page allows you to customize the application layout and default
+          behavior according to your needs. Each{" "}
+          <span className="font-medium">pane</span>
+          (top, left, right, bottom) represents a distinct area of the screen
+          where you can place predefined components such as navigation menus,
+          tab bars, and dashboards. The layout is highly flexible: every
+          component can be enabled, disabled, or repositioned to support
+          different use cases and different roles. For example, in a
+          <span className="font-medium"> kiosk environment</span>, certain panes
+          or components may be intentionally hidden so that users only have
+          access to a limited set of features, ensuring focus and security.
+        </p>
+      </div>
+
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="p-6 space-y-6 text-white"
+        className="p-6 max-w-3/4 mx-auto space-y-4 "
       >
-        <h2 className="text-xl font-semibold text-gray-200 flex flex-row gap-2">
+        <h2 className="text-xl font-semibold text-[var(--accent-primary)] flex flex-row gap-2">
           <IconRenderer
             name="RiLayoutLine"
-            className="text-gray-200"
+            className="text-[var(--accent-primary)]"
             size={30}
           />
-          Layout Preferences
+          Layout
         </h2>
 
-        <div className="ml-10 flex flex-col gap-5 mb-20">
+        <div className="ml-10 flex flex-col gap-5 mb-15">
           {renderSelect("topPane", "RiLayoutTopLine", "Top Pane")}
           <div className="flex flex-row w-full gap-5 ">
             {renderSelect("leftPane", "RiLayoutLeftLine", "Left Pane")}
@@ -207,27 +232,31 @@ export default function PreferencesForm() {
           {renderSelect("bottomPane", "RiLayoutBottomLine", "Bottom Pane")}
         </div>
 
-        <h2 className="text-xl font-semibold text-gray-200 flex flex-row gap-2 ">
-          <IconRenderer name="RiAppsLine" className="text-gray-200" size={30} />
+        <h2 className="text-xl font-semibold text-[var(--accent-primary)] flex flex-row gap-2 ">
+          <IconRenderer
+            name="RiAppsLine"
+            className="text-[var(--accent-primary)]"
+            size={30}
+          />
           Others
         </h2>
 
         <div className="ml-10 flex flex-col gap-5 mb-20">
           <div className="flex flex-row items-center">
-            <label className="text-gray-400 flex flex-row gap-2 w-58">
+            <label className="text-[var(--text-primary)] flex flex-row gap-2 w-58">
               <IconRenderer
                 name="RiPagesLine"
-                className="text-gray-400"
+                className="text-[var(--text-primary)]"
                 size={20}
               />
-              Default New Tab :
+              Default New Tab
             </label>
             <Controller
               name="defaultNewTab"
               control={control}
               render={({ field }) => (
                 <select
-                  className="w-full p-2 bg-gray-900 text-white rounded"
+                  className="w-full p-2 bg-[var(--background)] text-[var(--text-primary)] rounded"
                   value={field.value ?? ""}
                   onChange={(e) => field.onChange(e.target.value || null)}
                 >
@@ -243,13 +272,13 @@ export default function PreferencesForm() {
           </div>
 
           <div className="flex flex-row items-center">
-            <label className="text-gray-400 flex flex-row gap-2 w-58">
+            <label className="text-[var(--text-primary)] flex flex-row gap-2 w-58">
               <IconRenderer
                 name="RiPagesLine"
-                className="text-gray-400"
+                className="text-[var(--text-primary)]"
                 size={20}
               />
-              Dashboard :
+              Dashboard
             </label>
             <Controller
               name="defaultPage"
@@ -266,16 +295,47 @@ export default function PreferencesForm() {
               )}
             />
           </div>
+
+          <div className="flex flex-row items-center">
+            <label className="text-[var(--text-primary)] flex flex-row gap-2 w-58">
+              <IconRenderer
+                name="RiPagesLine"
+                className="text-[var(--text-primary)]"
+                size={20}
+              />
+              Theme
+            </label>
+            <Controller
+              name="theme"
+              control={control}
+              render={({ field }) => (
+                <select
+                  value={field.value ?? ""}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    setTheme(e.target.value as any); // ✅ apply langsung ke hook
+                  }}
+                  className="w-full p-2 bg-[var(--background)] text-[var(--text-primary)] rounded"
+                >
+                  {themes.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+          </div>
         </div>
 
-        <div className="pt-4">
+        <div className="pt-4 ">
           {canSubmit && (
             <button
               type="submit"
               disabled={isSaving}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50"
+              className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer"
             >
-              {isSaving ? "Menyimpan..." : "Apply"}
+              {isSaving ? "Saving..." : "Apply"}
             </button>
           )}
         </div>

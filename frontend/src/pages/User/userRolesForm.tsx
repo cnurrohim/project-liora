@@ -33,7 +33,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
   const { permissions, loading } = useRolePermissions(selectedRoleIds);
 
   return (
-    <div className="space-y-4 max-w-xl p-4">
+    <div className="space-y-4 py-4">
       <h1 className="text-xl font-bold">{isEdit ? "Edit" : "Tambah"} Roles</h1>
 
       <div>
@@ -50,7 +50,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
                 placeholder="Pilih roles"
               />
               {fieldState.error && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-[var(--danger)] text-sm mt-1">
                   {fieldState.error.message}
                 </p>
               )}
@@ -63,7 +63,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
         <div>
           <label className="block">Default Role</label>
           <select
-            className="w-full p-2 bg-gray-800 rounded"
+            className="w-full p-2 bg-[var(--background)] rounded"
             {...register("defaultRole")}
           >
             <option value="">Pilih default role</option>
@@ -74,7 +74,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
             ))}
           </select>
           {typeof errors.defaultRole?.message === "string" && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="text-[var(--danger)] text-sm mt-1">
               {errors.defaultRole.message}
             </p>
           )}
@@ -87,13 +87,15 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
             Permissions dari Roles
           </label>
           {loading ? (
-            <p className="text-sm text-gray-400">Loading permissions...</p>
+            <p className="text-sm text-[var(--panel-text-primary)]">
+              Loading permissions...
+            </p>
           ) : permissions.length === 0 ? (
             <p className="text-sm text-gray-500 italic">
               Tidak ada permission.
             </p>
           ) : (
-            <ul className="mt-2 text-sm text-gray-300 list-disc list-inside space-y-1">
+            <ul className="mt-2 text-sm text-[var(--text-primary)] list-disc list-inside space-y-1">
               {permissions.map((p) => (
                 <li key={p.id}>
                   <strong>{p.label}</strong> — {p.description}

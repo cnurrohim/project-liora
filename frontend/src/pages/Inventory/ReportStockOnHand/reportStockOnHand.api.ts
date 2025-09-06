@@ -32,7 +32,7 @@ export async function printStockOnHandsPDF(filters: StockOnHandFilters = {}) {
   const res = await apiFetch(
     `/inventory/stock-on-hand/pdf?${query ? `?${query}` : ""}`
   );
-  if (!res.ok) throw new Error("Gagal download PDF");
+  if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }
 
@@ -41,6 +41,6 @@ export async function printStockOnHandsExcel(filters: StockOnHandFilters = {}) {
   const res = await apiFetch(
     `/inventory/stock-on-hand/excel?${query ? `?${query}` : ""}`
   );
-  if (!res.ok) throw new Error("Gagal download Excel");
+  if (!res.ok) throw new Error("Excel report export failed");
   return await res.blob();
 }

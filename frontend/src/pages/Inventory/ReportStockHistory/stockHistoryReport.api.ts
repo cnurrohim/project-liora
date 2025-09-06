@@ -35,7 +35,7 @@ export async function printStockHistoryReportsPDF(
   const res = await apiFetch(
     `/inventory/stock-history-report/pdf${query ? `?${query}` : ""}`
   );
-  if (!res.ok) throw new Error("Gagal download PDF");
+  if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }
 
@@ -46,6 +46,6 @@ export async function printStockHistoryReportsExcel(
   const res = await apiFetch(
     `/inventory/stock-history-report/excel${query ? `?${query}` : ""}`
   );
-  if (!res.ok) throw new Error("Gagal download Excel");
+  if (!res.ok) throw new Error("Excel report export failed");
   return await res.blob();
 }

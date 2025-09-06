@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
-  flexRender,
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
@@ -15,6 +14,8 @@ import {
   printStockMovementsExcel,
 } from "./reportStockMovement.api";
 import { showErrorToast } from "@/utils/toast";
+import { DataTable } from "@/components/Table/DataTable";
+import { IconRenderer } from "@/components/IconRenderer";
 
 type StockMovement = {
   id: string;
@@ -64,8 +65,8 @@ export default function StockMovementListPage() {
       });
       setMovements(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data Stock Movements");
-      showErrorToast(err.message || "Gagal memuat data");
+      setError(err.message || "Failed to fetch Stock Movements");
+      showErrorToast(err.message || "Failed to fetch");
     } finally {
       setLoading(false);
     }
@@ -92,7 +93,7 @@ export default function StockMovementListPage() {
 
       downloadBlob(blob, "stock-movement.pdf");
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal cetak PDF");
+      showErrorToast(err.message || "Export to PDF failed");
     } finally {
       setLoading(false);
     }
@@ -110,7 +111,7 @@ export default function StockMovementListPage() {
 
       downloadBlob(blob, "stock-movement.xlsx");
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal cetak Excel");
+      showErrorToast(err.message || "Export to excel failed");
     } finally {
       setLoading(false);
     }
@@ -133,7 +134,7 @@ export default function StockMovementListPage() {
       },
       {
         accessorKey: "created_at",
-        header: "Tanggal",
+        header: "Movement Date",
         cell: ({ row }) =>
           new Date(row.original.created_at).toLocaleString("id-ID"),
       },
@@ -143,19 +144,19 @@ export default function StockMovementListPage() {
       },
       {
         accessorKey: "item_name",
-        header: "Nama Barang",
+        header: "Item",
       },
       {
         accessorKey: "movement_type",
-        header: "Tipe",
+        header: "Type",
         cell: ({ row }) => (
           <span
             className={`px-2 py-0.5 rounded text-xs ${
               row.original.movement_type === "inbound"
-                ? "bg-emerald-600 text-white"
+                ? "bg-[var(--success)] text-[var(--success-foreground)]"
                 : row.original.movement_type === "outbound"
-                ? "bg-red-600 text-white"
-                : "bg-gray-600 text-white"
+                ? "bg-[var(--warning)] text-[var(--warning-foreground)]"
+                : "bg-[var(--inset)] text-[var(--text-primary)]"
             }`}
           >
             {row.original.movement_type}
@@ -164,7 +165,7 @@ export default function StockMovementListPage() {
       },
       {
         accessorKey: "adjustment_direction",
-        header: "Arah",
+        header: "Direction",
       },
       {
         accessorKey: "qty",
@@ -173,8 +174,8 @@ export default function StockMovementListPage() {
           <span
             className={
               row.original.adjustment_direction === "increase"
-                ? "text-green-500 font-semibold"
-                : "text-red-500 font-semibold"
+                ? "text-[var(--success)] font-semibold"
+                : "text-[var(--danger)] font-semibold"
             }
           >
             {row.original.qty}
@@ -183,30 +184,30 @@ export default function StockMovementListPage() {
       },
       {
         accessorKey: "balance_after",
-        header: "Saldo Setelah",
+        header: "Balance After",
       },
       {
         accessorKey: "source_location_name",
-        header: "Lokasi Asal",
+        header: "Transfered From",
         cell: ({ row }) => row.original.source_location_name || "-",
       },
       {
         accessorKey: "target_location_name",
-        header: "Lokasi Tujuan",
+        header: "Transfered To",
         cell: ({ row }) => row.original.target_location_name || "-",
       },
       {
         accessorKey: "reference_type",
-        header: "Ref Type",
+        header: "Ref. Type",
       },
       {
         accessorKey: "note",
-        header: "Catatan",
+        header: "Note",
         cell: ({ row }) => row.original.note || "-",
       },
       {
         accessorKey: "created_by",
-        header: "Dibuat Oleh",
+        header: "Created By",
         cell: ({ row }) => row.original.created_by || "-",
       },
     ],
@@ -236,127 +237,67 @@ export default function StockMovementListPage() {
       <h1 className="text-xl font-bold mb-4">Stock Movement Ledger</h1>
 
       {/* 🔹 filter section */}
-      <div className="flex flex-wrap gap-4 mb-4 text-sm">
+      <div className="flex flex-wrap gap-4 mb-10 text-sm">
         <input
           type="text"
-          placeholder="Cari SKU / Nama barang..."
+          placeholder="Enter SKU / Item Name..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border p-2 rounded w-60"
+          className="border border-[var(--border)] p-1 rounded w-60"
         />
         <select
           value={movementType}
           onChange={(e) => setMovementType(e.target.value as MovementType)}
-          className="border p-2 rounded"
+          className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
         >
-          <option value="">Semua Tipe</option>
+          <option value="">All Type</option>
           <option value="inbound">Inbound</option>
           <option value="outbound">Outbound</option>
           <option value="adjustment">Adjustment</option>
         </select>
         <div className="flex items-center gap-2">
-          <label>Dari:</label>
+          <label>From:</label>
           <input
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="border p-1 rounded"
+            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
           />
         </div>
         <div className="flex items-center gap-2">
-          <label>Sampai:</label>
+          <label>To:</label>
           <input
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="border p-1 rounded"
+            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
           />
         </div>
         <button
           onClick={handleDownloadPDF}
-          className="px-3 py-1 bg-blue-600 cursor-pointer text-white rounded"
+          className="px-3 py-1 bg-[var(--warning)] hover:bg-[var(--warning-hover)] cursor-pointer text-[var(--warning-foreground)] rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
-          {loading ? "Loading ..." : "Download PDF"}
+          <IconRenderer name="RiFilePdf2Line" size={20} />{" "}
+          {loading ? "Loading ..." : "Export to PDF"}
         </button>
 
         <button
           onClick={handleDownloadExcel}
-          className="px-3 py-1 bg-blue-600 cursor-pointer text-white rounded"
+          className="px-3 py-1 bg-[var(--success)] hover:bg-[var(--success-hover)] cursor-pointer text-[var(--success-foreground)] rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
-          {loading ? "Loading ..." : "Download Excel"}
+          <IconRenderer name="RiFileExcel2Line" size={20} />{" "}
+          {loading ? "Loading ..." : "Export to Excel"}
         </button>
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        className="p-2 text-left cursor-pointer select-none"
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: " ↑",
-                          desc: " ↓",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="p-2 align-top">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex justify-between items-center mt-4 text-sm">
-            <div>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Prev
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          <DataTable table={table} />
         </>
       )}
     </div>

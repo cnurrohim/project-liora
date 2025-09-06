@@ -60,7 +60,7 @@ export default function UserListPage() {
       const data = await getUsers();
       setUsers(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat user");
+      setError(err.message || "Failed to fetch users");
     } finally {
       setLoading(false);
     }
@@ -74,7 +74,7 @@ export default function UserListPage() {
 
   const handleEdit = (user: User) => {
     if (!canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -95,13 +95,13 @@ export default function UserListPage() {
       const detail = await getUserDetail(id);
       UserDetailPaneController.open(detail);
     } catch (err) {
-      console.error("Gagal ambil data", err);
+      console.error("Failed to fetch data", err);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!canDelete) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -110,7 +110,7 @@ export default function UserListPage() {
       async () => {
         try {
           await deleteUser(id);
-          showSuccessToast("User berhasil dihapus");
+          showSuccessToast("User deleted");
           fetchUsers();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -121,20 +121,18 @@ export default function UserListPage() {
 
   const toggleUserActivation = async (id: string, status: boolean) => {
     if (!canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
     ConfirmationDialogController.askConfirmation(
       status
-        ? "Yakin ingin mengnonaktifkan user ini?"
-        : "Yakin ingin mengaktifkan user ini?",
+        ? "Are you sure deactivate this user?"
+        : "Are you sure to activate this user?",
       async () => {
         try {
           await toggleActivationUser(id);
-          const msg = status
-            ? "User berhasil dinonaktifkan"
-            : "User berhasil diaktifkan";
+          const msg = status ? "User deactivated" : "User activated";
           showSuccessToast(msg);
           fetchUsers();
         } catch (err: any) {
@@ -157,13 +155,13 @@ export default function UserListPage() {
       },
       {
         accessorKey: "name",
-        header: "Nama",
+        header: "Name",
       },
       {
         accessorKey: "is_active",
         header: "Status",
         cell: ({ row }) => {
-          return row.original.is_active ? "Aktif" : "Nonaktif";
+          return row.original.is_active ? "Active" : "Inactive";
         },
       },
       {
@@ -176,7 +174,7 @@ export default function UserListPage() {
               {departments.map((d) => (
                 <span
                   key={d.name}
-                  className="bg-gray-600 px-2 py-1 rounded text-xs text-gray-300"
+                  className="bg-[var(--background)] px-2 py-1 rounded text-xs text-[var(--text-primary)]"
                 >
                   {d.name}
                 </span>
@@ -198,15 +196,17 @@ export default function UserListPage() {
               {roles.map((r) => (
                 <span
                   key={r.name}
-                  className={`px-2 py-1 rounded text-xs relative ${
+                  className={`px-2 py-1 rounded text-xs relative bg-[var(--background)] ${
                     r.is_default
-                      ? "bg-gray-600 text-white"
-                      : "bg-gray-600 text-gray-300"
+                      ? " text-[var(--text-primary)]"
+                      : " text-[var(--text-primary)]"
                   }`}
                 >
                   {r.name}
                   {r.is_default && (
-                    <span className="text-amber-400 ml-1 ">★</span>
+                    <span className="text-[var(--accent-primary)] ml-1 ">
+                      ★
+                    </span>
                   )}
                 </span>
               ))}
@@ -281,16 +281,12 @@ export default function UserListPage() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Daftar User</h1>
+        <h1 className="text-xl font-bold">Users</h1>
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={
               <>
-                <IconRenderer
-                  name="RiUserAddLine"
-                  size={15}
-                  className="text-white"
-                />
+                <IconRenderer name="RiUserAddLine" size={15} />
                 Tambah User
               </>
             }
@@ -310,14 +306,14 @@ export default function UserListPage() {
         )}
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
+              <thead className="bg-[var(--background)] text-[var(--text-muted)]">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -346,7 +342,7 @@ export default function UserListPage() {
               </thead>
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
+                  <tr key={row.id} className="border-b border-[var(--border)]">
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="p-2 align-top">
                         {flexRender(
@@ -370,14 +366,14 @@ export default function UserListPage() {
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
+                className="px-2 py-1 bg-[var(--background)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
               >
                 Prev
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
+                className="px-2 py-1 bg-[var(--background)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
               >
                 Next
               </button>

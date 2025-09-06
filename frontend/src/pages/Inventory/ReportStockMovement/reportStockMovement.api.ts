@@ -31,7 +31,7 @@ export async function printStockMovementsPDF(
 ) {
   const query = buildStockMovementQueryParams(filters);
   const res = await apiFetch(`/inventory/stock-movements/pdf?${query}`);
-  if (!res.ok) throw new Error("Gagal download PDF");
+  if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }
 
@@ -40,6 +40,6 @@ export async function printStockMovementsExcel(
 ) {
   const query = buildStockMovementQueryParams(filters);
   const res = await apiFetch(`/inventory/stock-movements/excel?${query}`);
-  if (!res.ok) throw new Error("Gagal download PDF");
+  if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }

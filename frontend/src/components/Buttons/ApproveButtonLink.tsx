@@ -10,7 +10,7 @@ type Props = {
 export function ApproveButtonLink({
   label = "Approve",
   onClick,
-  className = "flex cursor-pointer hover:bg-green-500 px-2 py-1 rounded text-white text-xs font-semibold bg-green-400",
+  className = "flex cursor-pointer bg-[var(--info)] hover:bg-[var(--info-hover)] px-2 py-1 rounded text-[var(--text-primary)] text-xs font-semibold ",
 }: Props) {
   return (
     <ButtonLink

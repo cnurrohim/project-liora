@@ -69,7 +69,7 @@ export default function UserProfileWidget() {
   }
 
   return (
-    <div className="bg-gray-900 mt-4 p-10 relative">
+    <div className="bg-[var(--foreground)] mt-4 p-10 relative">
       {/* Fixed footer */}
       {userProfile.user && (
         <div className=" py-4 transition-all duration-300 px-3 ">
@@ -87,16 +87,16 @@ export default function UserProfileWidget() {
               className="w-[82px] h-[82px] rounded-full object-cover border border-gray-600"
             />
             <div className="flex flex-col gap-1">
-              <span className="font-semibold text-gray-300 text-base ">
+              <span className="font-semibold text-[var(--text-primary)] text-base ">
                 {userProfile.user?.name}
               </span>
-              <span className="text-sm text-gray-400 ">
+              <span className="text-sm text-[var(--panel-text-primary)] ">
                 @{userProfile.user?.username}
               </span>
-              <span className="text-sm text-gray-400 ">
+              <span className="text-sm text-[var(--panel-text-primary)] ">
                 {userProfile.user?.defaultRole?.name}
               </span>
-              <span className="text-sm text-gray-400 ">
+              <span className="text-sm text-[var(--panel-text-primary)] ">
                 {/* Actions */}
                 {onViewProfileClick && (
                   <button
@@ -107,12 +107,12 @@ export default function UserProfileWidget() {
                   </button>
                 )}
               </span>
-              <span className="text-sm text-gray-400 ">
+              <span className="text-sm text-[var(--panel-text-primary)] ">
                 {/* Actions */}
                 {onLogout && (
                   <button
                     onClick={onLogout}
-                    className="cursor-pointer w-full text-left hover:text-gray-300 text-sm"
+                    className="cursor-pointer w-full text-left hover:text-[var(--text-primary)] text-sm"
                   >
                     Logout
                   </button>
@@ -127,7 +127,7 @@ export default function UserProfileWidget() {
                   <button
                     onClick={() => setShowRoles((prev) => !prev)}
                     className={`cursor-pointer relative w-full hover:bg-gray-700 ${
-                      showRoles ? "text-gray-500" : "text-gray-300"
+                      showRoles ? "text-gray-500" : "text-[var(--text-primary)]"
                     } text-sm py-1 rounded flex justify-between items-center px-3 `}
                   >
                     Switch Role
@@ -161,7 +161,7 @@ export default function UserProfileWidget() {
                             <button
                               key={role.id}
                               onClick={() => handleSwitchRole(role.id)}
-                              className="cursor-pointer bg-gray-800 block w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded"
+                              className="cursor-pointer bg-[var(--background)] block w-full text-left px-3 py-2 text-sm text-[var(--text-primary)] hover:bg-gray-700 rounded"
                             >
                               {role.name}
                             </button>

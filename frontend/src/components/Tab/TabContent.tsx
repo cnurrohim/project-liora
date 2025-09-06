@@ -14,8 +14,6 @@ export default function TabContent() {
     })
   );
 
-  console.log("here", defaultPage);
-
   const activeTab = openTabs.find((t) => t.key === activeTabKey);
   const content = (() => {
     const emptyTab = defaultPage ? (
@@ -30,7 +28,7 @@ export default function TabContent() {
   return (
     <div
       key={activeTab?.key}
-      className="flex-1 bg-gray-800 text-white overflow-auto"
+      className="flex-1 bg-[var(--foreground)] border-[var(--border)] border-1 shadow-md rounded-2xl overflow-auto m-1 p-5"
     >
       {!content ? <PagesNotFound /> : content}
     </div>

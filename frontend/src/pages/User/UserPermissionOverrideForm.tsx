@@ -97,7 +97,7 @@ export default function UserPermissionOverrideForm({
   );
 
   return (
-    <div className="grid gap-10 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
+    <div className="grid gap-10 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] py-4">
       {Object.entries(grouped).map(([domain, perms]) => (
         <div key={domain} className="w-fit">
           <h3 className="font-bold text-sm mb-2">{domain}</h3>
@@ -120,7 +120,7 @@ export default function UserPermissionOverrideForm({
                   />
                   {perm.label || perm.name}
                   {override !== undefined && (
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-[var(--panel-text-primary)]">
                       ({override ? "granted" : "revoked"})
                     </span>
                   )}

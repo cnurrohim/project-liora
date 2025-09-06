@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
-  flexRender,
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
@@ -17,6 +16,8 @@ import {
 import { showErrorToast } from "@/utils/toast";
 import SearchSelect from "@/components/SelectOptions/searchSelect";
 import { searchLocation } from "@/api/search.api";
+import { IconRenderer } from "@/components/IconRenderer";
+import { DataTable } from "@/components/Table/DataTable";
 
 type StockOnHand = {
   item_code: string;
@@ -53,8 +54,8 @@ export default function StockOnHandListPage() {
       });
       setData(result);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data Stock On Hand");
-      showErrorToast(err.message || "Gagal memuat data");
+      setError(err.message || "Failed to fetch Stock On Hand");
+      showErrorToast(err.message || "Failed to fetch");
     } finally {
       setLoading(false);
     }
@@ -79,7 +80,7 @@ export default function StockOnHandListPage() {
       });
       downloadBlob(blob, "stock-on-hand.pdf");
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal cetak PDF");
+      showErrorToast(err.message || "Export to PDF failed");
     } finally {
       setLoading(false);
     }
@@ -95,7 +96,7 @@ export default function StockOnHandListPage() {
       });
       downloadBlob(blob, "stock-on-hand.xlsx");
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal cetak Excel");
+      showErrorToast(err.message || "Export to excel failed");
     } finally {
       setLoading(false);
     }
@@ -115,7 +116,7 @@ export default function StockOnHandListPage() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari lokasi");
+      showErrorToast("Failed to fetch inventory location");
       return [];
     }
   };
@@ -131,19 +132,19 @@ export default function StockOnHandListPage() {
         },
         size: 40,
       },
-      { accessorKey: "item_code", header: "Kode Barang" },
-      { accessorKey: "item_name", header: "Nama Barang" },
-      { accessorKey: "location", header: "Lokasi" },
+      { accessorKey: "item_code", header: "Item Code" },
+      { accessorKey: "item_name", header: "Item Name" },
+      { accessorKey: "location", header: "Stored Location" },
       {
         accessorKey: "current_qty",
-        header: "Qty Saat Ini",
+        header: "Current QTY",
         cell: ({ row }) => (
           <span className="font-semibold">{row.original.current_qty}</span>
         ),
       },
       {
         accessorKey: "last_movement",
-        header: "Terakhir Bergerak",
+        header: "Last Movement",
         cell: ({ row }) =>
           row.original.last_movement
             ? new Date(row.original.last_movement).toLocaleString("id-ID")
@@ -176,16 +177,16 @@ export default function StockOnHandListPage() {
       <div className="flex flex-wrap gap-4 mb-4 text-sm">
         <input
           type="text"
-          placeholder="Cari SKU / Nama barang..."
+          placeholder="Enter SKU / Item Name..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border p-2 rounded w-60"
+          className="border border-[var(--border)] p-1 rounded text-[var(--muted)] w-60"
         />
 
         <div className="w-48">
           <SearchSelect
             value={selectedLocation}
-            placeholder="Cari Lokasi"
+            placeholder="Enter Location"
             onChange={(val) => {
               setSelectedLocation(val);
               setLocationId(val?.id);
@@ -197,89 +198,29 @@ export default function StockOnHandListPage() {
 
         <button
           onClick={handleDownloadPDF}
-          className="px-3 py-1 bg-blue-600 cursor-pointer text-white rounded"
+          className="px-3 py-1 bg-[var(--warning)] hover:bg-[var(--warning-hover)] cursor-pointer text-[var(--warning-foreground)] rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
-          {loading ? "Loading ..." : "Download PDF"}
+          <IconRenderer name="RiFilePdf2Line" size={20} />{" "}
+          {loading ? "Loading ..." : "Export to PDF"}
         </button>
 
         <button
           onClick={handleDownloadExcel}
-          className="px-3 py-1 bg-blue-600 cursor-pointer text-white rounded"
+          className="px-3 py-1 bg-[var(--success)] hover:bg-[var(--success-hover)] cursor-pointer text-[var(--success-foreground)] rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
-          {loading ? "Loading ..." : "Download Excel"}
+          <IconRenderer name="RiFileExcel2Line" size={20} />{" "}
+          {loading ? "Loading ..." : "Export to Excel"}
         </button>
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        className="p-2 text-left cursor-pointer select-none"
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: " ↑",
-                          desc: " ↓",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="p-2 align-top">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex justify-between items-center mt-4 text-sm">
-            <div>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Prev
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          <DataTable table={table} />
         </>
       )}
     </div>

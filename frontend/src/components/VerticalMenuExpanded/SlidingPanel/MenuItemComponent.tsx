@@ -33,8 +33,10 @@ export default function MenuItemComponent({
       >
         <div
           key={i}
-          className={`flex flex-1 items-center ${
-            !isGroupActive ? "hover:bg-gray-800 p-2" : ""
+          className={`group text-[var(--panel-secondary-text-primary)] flex flex-1 items-center ${
+            !isGroupActive
+              ? " hover:text-[var(--panel-secondary-text-highlight)] hover:bg-[var(--accent-primary)] p-2"
+              : "text-[var(--panel-secondary-text-muted)]"
           }  rounded-md`}
           onClick={() => {
             if (
@@ -52,10 +54,8 @@ export default function MenuItemComponent({
           }}
         >
           <span
-            className={`${
-              item.items?.length && isGroupActive
-                ? "text-gray-600 hidden"
-                : "text-gray-400 group-hover:text-white"
+            className={` ${
+              item.items?.length && isGroupActive ? " hidden" : " "
             }  mr-3`}
           >
             {typeof item.icon === "string" && item.icon
@@ -73,15 +73,17 @@ export default function MenuItemComponent({
           <span
             className={` font-semibold text-sm ${
               item.items?.length && isGroupActive
-                ? "text-gray-600 w-full uppercase text-xs"
-                : "text-gray-400 group-hover:text-white "
+                ? " w-full uppercase text-xs text-[var(--panel-secondary-text-muted)]"
+                : ""
             }   truncate`}
           >
             {item.label}
           </span>
 
           {item.type === "group" && state.activePath.length !== 0 && (
-            <span className="ml-auto pr-1 text-gray-400">⮯</span>
+            <span className="ml-auto pr-1 text-[var(--panel-secondary-text-primary)]">
+              ⮯
+            </span>
           )}
         </div>
         {/* RIGHT: Pin Button */}
@@ -89,13 +91,12 @@ export default function MenuItemComponent({
           <button
             type="button"
             title={item.isPinned ? "Unpin menu" : "Pin menu"}
-            className="text-gray-400 hover:bg-gray-700 hover:text-white p-2 rounded cursor-pointer"
+            className="text-[var(--panel-text-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--panel-secondary-text-highlight)] p-2 rounded cursor-pointer"
             onClick={() => onPinClick(item)}
           >
             {iconRenderer?.({
               name: item.isPinned ? "RiPushpin2Fill" : "RiPushpin2Line",
               size: 15,
-              color: "",
             })}
           </button>
         )}

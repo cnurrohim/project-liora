@@ -1,6 +1,5 @@
 import { PinnedMenuController } from "@/controller/PinnedMenuController";
 import { AppConfigController } from "../components/AppConfig/controller";
-import { startRave } from "../components/Effects/raveEffect";
 import { LayoutController } from "../controller/layoutController";
 import { MenuProviderController } from "../controller/menuProviderController";
 import { connectOutputToInput, setupWiring, wiringMap } from "../core/wiring";
@@ -19,11 +18,11 @@ export async function initializeApp(): Promise<() => void> {
 
   const user = getActiveUser();
   if (!user) {
-    console.warn("❗ Tidak ada user aktif, skip layout & tab hydrate");
+    console.warn("❗ There is no active user, skip layout & tab hydrate");
   } else {
     const hydrated = await hydrateUserLayout(user);
     if (!hydrated) {
-      console.warn("❗ Layout tidak berhasil dihydrasi");
+      console.warn("❗ Failed to hydrate layout");
     }
     await hydratePreferences(user);
   }
@@ -40,10 +39,7 @@ export async function initializeApp(): Promise<() => void> {
 
   registerRoutes();
 
-  // const stopRave = startRave(20000);
-  return () => {
-    // stopRave?.();
-  };
+  return () => {};
 }
 
 export async function hydrateUserTab(user: ActiveUser) {

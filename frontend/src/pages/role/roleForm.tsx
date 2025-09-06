@@ -14,6 +14,7 @@ import PermissionForm from "./permissionForm";
 import { useRouteParamsFromTab } from "@/hooks/useRouteParams";
 import { usePermissions } from "./permissions";
 import ForbiddenPage from "pages/Misc/403";
+import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
 export default function RoleFormPage() {
   const { canView, canSubmit, canUpdate, canCreate } = usePermissions();
@@ -52,7 +53,7 @@ export default function RoleFormPage() {
               });
             } catch (err) {
               console.error(err);
-              showErrorToast("Gagal memuat data role");
+              showErrorToast("Failed to load role data");
             }
           })();
         }
@@ -85,23 +86,23 @@ export default function RoleFormPage() {
     e.preventDefault();
 
     if (isEdit && !canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
     if (!isEdit && !canCreate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
     setError("");
 
     if (!form.name.trim()) {
-      setError("Nama role tidak boleh kosong");
+      setError("Role name can't be empty");
       return;
     }
     if (form.permissions.length === 0) {
-      setError("Minimal satu permission harus dipilih");
+      setError("Choose minimum one permission");
       return;
     }
 
@@ -115,10 +116,10 @@ export default function RoleFormPage() {
 
       if (isEdit) {
         await updateRole(id!, form);
-        showSuccessToast("Role berhasil diperbarui");
+        showSuccessToast("Role updated");
       } else {
         await createRole(form);
-        showSuccessToast("Role berhasil dibuat");
+        showSuccessToast("Role created");
       }
 
       TabController.replaceTabWithBackStack(tab);
@@ -127,15 +128,17 @@ export default function RoleFormPage() {
     }
   };
 
-  if (loading) return <div className="text-white">Loading...</div>;
+  if (loading)
+    return <div className="text-[var(--text-primary)]">Loading...</div>;
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 text-white max-w-xl">
+    <form onSubmit={handleSubmit} className="p-4 space-y-4 max-w-3/4 mx-auto">
+      <BackToListLink route="/pages/roles" label="list roles" />
       <h1 className="text-2xl font-bold mb-4">
-        {isEdit ? "Edit Role" : "Tambah Role"}
+        {isEdit ? "Edit Role" : "Add New Role"}
       </h1>
 
-      {error && <div className="text-red-400 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
 
       <div className="mb-4">
         <label className="block mb-1">Nama Role</label>
@@ -144,7 +147,7 @@ export default function RoleFormPage() {
           name="name"
           value={form.name}
           onChange={handleChange}
-          className="w-full p-2 bg-gray-700 rounded"
+          className="w-full p-2 bg-[var(--background)] rounded"
         />
       </div>
 
@@ -154,7 +157,7 @@ export default function RoleFormPage() {
           name="description"
           value={form.description}
           onChange={handleChange}
-          className="w-full p-2 bg-gray-700 rounded"
+          className="w-full p-2 bg-[var(--background)] rounded"
         />
       </div>
 
@@ -168,9 +171,10 @@ export default function RoleFormPage() {
       {canSubmit && (
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
+          disabled={loading}
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
-          Simpan
+          {loading ? "Saving..." : "Save"}
         </button>
       )}
     </form>

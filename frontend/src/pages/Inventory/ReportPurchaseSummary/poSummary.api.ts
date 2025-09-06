@@ -31,7 +31,7 @@ export async function printPOSummaryReportsPDF(filters: POSummaryFilters = {}) {
   const res = await apiFetch(
     `/inventory/po-summary/pdf${query ? `?${query}` : ""}`
   );
-  if (!res.ok) throw new Error("Gagal download PDF PO Summary");
+  if (!res.ok) throw new Error("PDF report export failed PO Summary");
   return await res.blob();
 }
 
@@ -42,6 +42,6 @@ export async function printPOSummaryReportsExcel(
   const res = await apiFetch(
     `/inventory/po-summary/excel${query ? `?${query}` : ""}`
   );
-  if (!res.ok) throw new Error("Gagal download Excel PO Summary");
+  if (!res.ok) throw new Error("Excel report export failed PO Summary");
   return await res.blob();
 }

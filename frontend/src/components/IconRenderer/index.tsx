@@ -1,5 +1,3 @@
-// src/components/IconRenderer.tsx
-
 import { RiQuestionLine } from "@remixicon/react";
 import { iconRegistry } from "@/assets/icons/iconRegistry";
 import type { ReactNode } from "react";

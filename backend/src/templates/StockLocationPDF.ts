@@ -36,7 +36,7 @@ export function generateStockLocationHTML(
         </style>
       </head>
       <body>
-        <h2>Laporan Stock per Lokasi</h2>
+        <h2>Laporan Inventory per Lokasi</h2>
 
         <div class="filters">
           <div><strong>Lokasi:</strong> ${location_name || "-"}</div>

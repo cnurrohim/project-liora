@@ -58,7 +58,7 @@ export default function PurchaseReceiveKiosk() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari purchase order");
+      showErrorToast("Failed to fetch purchase order");
       return [];
     }
   };
@@ -93,7 +93,7 @@ export default function PurchaseReceiveKiosk() {
       });
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal load detail PO");
+      showErrorToast("failed to load purchase order");
     }
   };
 
@@ -107,7 +107,7 @@ export default function PurchaseReceiveKiosk() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari lokasi");
+      showErrorToast("failed to fetch inventory location");
       return [];
     }
   };
@@ -124,11 +124,11 @@ export default function PurchaseReceiveKiosk() {
           qty: it.received_qty,
         })),
       });
-      showSuccessToast("Barang berhasil diterima");
+      showSuccessToast("Item received successfuly");
       setSelectedPO(null);
       setSelectedLocation(null);
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal menyimpan penerimaan");
+      showErrorToast(err.message || "Failed to received item");
     } finally {
       setLoading(false);
     }
@@ -136,13 +136,16 @@ export default function PurchaseReceiveKiosk() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 max-w-3/4 mx-auto p-4"
+      >
         <h1 className="text-xl font-bold">Receive Purchase Order</h1>
 
         {/* Search PO */}
         <div>
-          <label className="block mb-1">Pilih Purchase Order</label>
           <SearchSelect
+            placeholder="Enter Purchase Order Number"
             value={selectedPO}
             onChange={(val) => handleSelectPO(val)}
             fetchOptions={handleSearchPO}
@@ -156,19 +159,19 @@ export default function PurchaseReceiveKiosk() {
               <label>Tanggal Terima</label>
               <input
                 type="date"
-                className="w-full p-2 bg-gray-800 rounded"
+                className="w-full p-2 bg-[var(--background)] rounded"
                 {...methods.register("receive_date")}
               />
 
               {methods.formState.errors.receive_date && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-[var(--danger)] text-xs mt-1">
                   {methods.formState.errors.receive_date.message}
                 </p>
               )}
             </div>
 
             <div>
-              <label className="block">Lokasi Simpan</label>
+              <label className="block">Lokasi Save</label>
               {/* Target Location */}
               <SearchSelect
                 value={selectedLocation}
@@ -180,7 +183,7 @@ export default function PurchaseReceiveKiosk() {
               />
 
               {methods.formState.errors.location_id && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-[var(--danger)] text-xs mt-1">
                   {methods.formState.errors.location_id.message}
                 </p>
               )}
@@ -189,23 +192,25 @@ export default function PurchaseReceiveKiosk() {
             <div>
               <label>Catatan</label>
               <textarea
-                className="w-full p-2 bg-gray-800 rounded"
+                className="w-full p-2 bg-[var(--background)] rounded"
                 {...methods.register("note")}
               />
             </div>
 
             <div>
-              <table className="table-auto border border-gray-700 border-collapse w-full">
+              <table className="table-auto border border-[var(--border)] border-collapse w-full">
                 <thead>
                   <tr>
-                    <th className="border border-gray-700 px-2 py-1">Item</th>
-                    <th className="border border-gray-700 px-2 py-1">
+                    <th className="border border-[var(--border)] px-2 py-1">
+                      Item
+                    </th>
+                    <th className="border border-[var(--border)] px-2 py-1">
                       Ordered
                     </th>
-                    <th className="border border-gray-700 px-2 py-1">
+                    <th className="border border-[var(--border)] px-2 py-1">
                       Remaining
                     </th>
-                    <th className="border border-gray-700 px-2 py-1">
+                    <th className="border border-[var(--border)] px-2 py-1">
                       Qty Received
                     </th>
                   </tr>
@@ -213,19 +218,19 @@ export default function PurchaseReceiveKiosk() {
                 <tbody>
                   {fields.map((field, index) => (
                     <tr key={field.id}>
-                      <td className="border border-gray-700 px-2 py-1">
+                      <td className="border border-[var(--border)] px-2 py-1">
                         {field.item_name}
                       </td>
-                      <td className="border border-gray-700 px-2 py-1">
+                      <td className="border border-[var(--border)] px-2 py-1 text-right">
                         {field.ordered_qty}
                       </td>
-                      <td className="border border-gray-700 px-2 py-1">
+                      <td className="border border-[var(--border)] px-2 py-1 text-right">
                         {field.remaining_qty}
                       </td>
-                      <td className="border border-gray-700 px-2 py-1">
+                      <td className="w-40 border border-[var(--border)] px-2 py-1">
                         <input
                           type="number"
-                          className="w-20 p-2 border border-gray-600 bg-gray-800 rounded text-right"
+                          className="w-40 p-2 border border-[var(--border)] bg-[var(--background)] rounded text-right"
                           {...methods.register(`items.${index}.received_qty`, {
                             valueAsNumber: true,
                             validate: (value) => {
@@ -249,7 +254,7 @@ export default function PurchaseReceiveKiosk() {
                         />
                         {methods.formState.errors.items?.[index]
                           ?.received_qty && (
-                          <p className="text-red-500 text-xs">
+                          <p className="text-[var(--danger)] text-xs">
                             {
                               methods.formState.errors.items[index]
                                 ?.received_qty?.message as string
@@ -262,7 +267,7 @@ export default function PurchaseReceiveKiosk() {
                 </tbody>
               </table>
               {methods.formState.errors.items?.message && (
-                <p className="text-red-500 text-xs mt-2">
+                <p className="text-[var(--danger)] text-xs mt-2">
                   {methods.formState.errors.items.message}
                 </p>
               )}
@@ -271,9 +276,9 @@ export default function PurchaseReceiveKiosk() {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded"
+              className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
             >
-              {loading ? "Menyimpan..." : "Simpan"}
+              {loading ? "Saving..." : "Save"}
             </button>
           </>
         )}

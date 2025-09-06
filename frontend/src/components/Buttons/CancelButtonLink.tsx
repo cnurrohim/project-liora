@@ -10,7 +10,7 @@ type Props = {
 export function CancelButtonLink({
   label = "Cancel",
   onClick,
-  className = "flex gap-1 cursor-pointer hover:bg-amber-500 px-2 py-1 rounded text-white text-xs font-semibold bg-amber-600",
+  className = "flex items-center gap-1 cursor-pointer text-[var(--warning-foreground)] bg-[var(--warning)] hover:bg-[var(--warning-hover)] px-2 py-1 rounded text-xs font-semibold",
 }: Props) {
   return (
     <ButtonLink

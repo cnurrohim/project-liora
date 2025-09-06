@@ -156,18 +156,18 @@ ALTER TABLE inventory.purchase_orders
 ADD COLUMN expected_date DATE NOT NULL DEFAULT (CURRENT_DATE + INTERVAL '1 day');
 
 -- Lokasi penyimpanan
-COMMENT ON TABLE inventory.locations IS 'Tabel menyimpan daftar lokasi penyimpanan di gudang';
+COMMENT ON TABLE inventory.locations IS 'Tabel Saving daftar lokasi penyimpanan di gudang';
 COMMENT ON COLUMN inventory.locations.code IS 'Kode unik lokasi, contoh: R1-A3';
 COMMENT ON COLUMN inventory.locations.description IS 'Deskripsi lokasi';
 
 -- Supplier
-COMMENT ON TABLE inventory.suppliers IS 'Tabel menyimpan informasi supplier';
+COMMENT ON TABLE inventory.suppliers IS 'Tabel Saving informasi supplier';
 COMMENT ON COLUMN inventory.suppliers.name IS 'Nama supplier';
 COMMENT ON COLUMN inventory.suppliers.contact IS 'Kontak supplier';
 COMMENT ON COLUMN inventory.suppliers.address IS 'Alamat supplier';
 
 -- Barang di gudang (metadata barang)
-COMMENT ON TABLE inventory.items IS 'Tabel menyimpan informasi barang di gudang';
+COMMENT ON TABLE inventory.items IS 'Tabel Saving informasi barang di gudang';
 COMMENT ON COLUMN inventory.items.sku IS 'Kode unik barang (SKU)';
 COMMENT ON COLUMN inventory.items.name IS 'Nama barang';
 COMMENT ON COLUMN inventory.items.min_stock IS 'Minimal stok untuk trigger reorder';

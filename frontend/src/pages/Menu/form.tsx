@@ -20,6 +20,7 @@ import { IconPicker } from "@/components/IconRenderer/IconPicker";
 import SingleSelect from "@/components/SelectOptions/SingleSelect";
 import { CommandRegistry } from "@/config/commandRegistry";
 import MultiSelect from "@/components/SelectOptions/MultiSelect";
+import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
 const modeOptions = [MENU.MODE.SLIDING, MENU.MODE.SLIDING];
 const alignmentOptions = [MENU.ALIGNMENT.START, MENU.ALIGNMENT.END];
@@ -81,7 +82,7 @@ export default function MenuFormPage() {
       }
       MenuProviderController.load();
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal menyimpan menu");
+      showErrorToast(err.message || "Gagal Saving menu");
     } finally {
       setLoading(false);
     }
@@ -136,8 +137,10 @@ export default function MenuFormPage() {
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="p-4 space-y-4 max-w-xl"
+        className="p-4 space-y-4 max-w-3/4 mx-auto"
       >
+        <BackToListLink route="/pages/menu" label="list menus" />
+
         <h1 className="text-xl font-bold">
           {isEdit ? "Edit Menu" : "Tambah Menu"}
         </h1>
@@ -146,11 +149,13 @@ export default function MenuFormPage() {
         <div>
           <label>Label</label>
           <input
-            className="w-full p-2 bg-gray-800 rounded"
+            className="w-full p-2 bg-[var(--background)] rounded"
             {...register("label")}
           />
           {errors.label && (
-            <p className="text-red-500 text-sm">{errors.label.message}</p>
+            <p className="text-[var(--danger)] text-sm">
+              {errors.label.message}
+            </p>
           )}
         </div>
 
@@ -158,7 +163,7 @@ export default function MenuFormPage() {
         <div>
           <label>Description</label>
           <input
-            className="w-full p-2 bg-gray-800 rounded"
+            className="w-full p-2 bg-[var(--background)] rounded"
             {...register("description")}
           />
         </div>
@@ -177,7 +182,9 @@ export default function MenuFormPage() {
             )}
           />
           {errors.icon && (
-            <p className="text-red-500 text-sm">{errors.icon.message}</p>
+            <p className="text-[var(--danger)] text-sm">
+              {errors.icon.message}
+            </p>
           )}
         </div>
 
@@ -185,7 +192,7 @@ export default function MenuFormPage() {
         <div>
           <label>Tipe</label>
           <select
-            className="w-full p-2 bg-gray-800 rounded"
+            className="w-full p-2 bg-[var(--background)] rounded"
             {...register("type")}
           >
             {typeOptions.map((opt) => (
@@ -220,7 +227,7 @@ export default function MenuFormPage() {
           <div>
             <label>Command</label>
             <select
-              className="w-full p-2 bg-gray-800 rounded"
+              className="w-full p-2 bg-[var(--background)] rounded"
               {...register("command")}
             >
               <option value="">(pilih command)</option>
@@ -237,7 +244,7 @@ export default function MenuFormPage() {
         <div>
           <label>Parent Menu (opsional)</label>
           <select
-            className="w-full p-2 bg-gray-800 rounded"
+            className="w-full p-2 bg-[var(--background)] rounded"
             {...register("parent_id")}
           >
             <option value="">(tanpa parent)</option>
@@ -255,7 +262,7 @@ export default function MenuFormPage() {
         <div>
           <label>Alignment</label>
           <select
-            className="w-full p-2 bg-gray-800 rounded"
+            className="w-full p-2 bg-[var(--background)] rounded"
             {...register("alignment")}
           >
             {alignmentOptions.map((a) => (
@@ -284,9 +291,9 @@ export default function MenuFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-600 px-4 py-2 rounded text-white disabled:opacity-50"
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer"
         >
-          {loading ? "Menyimpan..." : "Simpan"}
+          {loading ? "Saving..." : "Save"}
         </button>
       </form>
     </FormProvider>

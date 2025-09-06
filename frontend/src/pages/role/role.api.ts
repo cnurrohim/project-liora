@@ -1,5 +1,5 @@
 import { apiFetch } from "@/utils/apiFetch";
-import { showErrorToast, toastConfirmSuccess } from "@/utils/toast";
+import { toastConfirmSuccess } from "@/utils/toast";
 
 export async function getRoles() {
   const res = await apiFetch("/roles");
@@ -42,14 +42,9 @@ export async function updateRole(
 }
 
 export async function deleteRole(id: string) {
-  const res = await apiFetch(`/roles/${id}`, {
+  await apiFetch(`/roles/${id}`, {
     method: "DELETE",
   });
-  if (!res.ok) {
-    const err = await res.json();
-    showErrorToast(err?.error);
-    throw new Error(err?.error || "Gagal menghapus role");
-  }
 
   toastConfirmSuccess("role berhasil dihapus!");
 }

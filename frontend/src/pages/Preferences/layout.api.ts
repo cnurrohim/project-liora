@@ -19,6 +19,6 @@ export async function saveLayout(
     },
     body: JSON.stringify({ user_id: userId, role_id: roleId, layout, config }),
   });
-  if (!res.ok) throw new Error("Gagal menyimpan layout user");
+  if (!res.ok) throw new Error("Gagal Saving layout user");
   return (await res.json()).data;
 }

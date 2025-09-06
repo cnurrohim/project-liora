@@ -19,7 +19,7 @@ export function LayoutRenderer() {
 
       <main
         id="mainContent"
-        className="flex flex-col flex-1 min-w-0 h-full bg-gray-800"
+        className="flex flex-col flex-1 min-w-0 h-full bg-[var(--background)]"
       >
         {layout.topPane && <div className="w-full">{layout.topPane}</div>}
         {layout.content ?? <EmptyPage />}

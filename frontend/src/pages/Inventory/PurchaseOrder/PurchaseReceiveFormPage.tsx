@@ -91,7 +91,7 @@ export default function PurchaseReceiveFormPage() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari lokasi");
+      showErrorToast("Failed to fetch inventory location");
       return [];
     }
   };
@@ -111,7 +111,7 @@ export default function PurchaseReceiveFormPage() {
       });
       showSuccessToast("Barang berhasil diterima");
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal menyimpan penerimaan");
+      showErrorToast(err.message || "Gagal Saving penerimaan");
     } finally {
       setLoading(false);
     }
@@ -126,13 +126,13 @@ export default function PurchaseReceiveFormPage() {
           <label>Tanggal Terima</label>
           <input
             type="date"
-            className="w-full p-2 bg-gray-800 rounded"
+            className="w-full p-2 bg-[var(--background)] rounded"
             {...methods.register("receive_date")}
           />
         </div>
 
         <div>
-          <label className="block">Lokasi Simpan</label>
+          <label className="block">Lokasi Save</label>
           {/* Target Location */}
 
           <Controller
@@ -154,19 +154,25 @@ export default function PurchaseReceiveFormPage() {
         <div>
           <label>Catatan</label>
           <textarea
-            className="w-full p-2 bg-gray-800 rounded"
+            className="w-full p-2 bg-[var(--background)] rounded"
             {...methods.register("note")}
           />
         </div>
 
         <div>
-          <table className="table-auto border border-gray-700 border-collapse w-full">
+          <table className="table-auto border border-[var(--border)] border-collapse w-full">
             <thead>
               <tr>
-                <th className="border border-gray-700 px-2 py-1">Item</th>
-                <th className="border border-gray-700 px-2 py-1">Ordered</th>
-                <th className="border border-gray-700 px-2 py-1">Remaining</th>
-                <th className="border border-gray-700 px-2 py-1">
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Item
+                </th>
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Ordered
+                </th>
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Remaining
+                </th>
+                <th className="border border-[var(--border)] px-2 py-1">
                   Qty Received
                 </th>
               </tr>
@@ -174,7 +180,7 @@ export default function PurchaseReceiveFormPage() {
             <tbody>
               {fields.map((field, index) => (
                 <tr key={field.id}>
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.item_id`}
                       control={control}
@@ -192,16 +198,16 @@ export default function PurchaseReceiveFormPage() {
                       )}
                     />
                   </td>
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     {field.ordered_qty}
                   </td>
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     {field.remaining_qty}
                   </td>
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <input
                       type="number"
-                      className="w-20 p-2 border border-gray-600 bg-gray-800 rounded text-right"
+                      className="w-20 p-2 border border-gray-600 bg-[var(--background)] rounded text-right"
                       {...methods.register(`items.${index}.received_qty`, {
                         valueAsNumber: true,
                         validate: (value) => {
@@ -221,7 +227,7 @@ export default function PurchaseReceiveFormPage() {
                       }}
                     />
                     {methods.formState.errors.items?.[index]?.received_qty && (
-                      <p className="text-red-500 text-xs">
+                      <p className="text-[var(--danger)] text-xs">
                         {
                           methods.formState.errors.items[index]?.received_qty
                             ?.message as string
@@ -238,9 +244,9 @@ export default function PurchaseReceiveFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
-          {loading ? "Menyimpan..." : "Simpan"}
+          {loading ? "Saving..." : "Save"}
         </button>
       </form>
     </FormProvider>

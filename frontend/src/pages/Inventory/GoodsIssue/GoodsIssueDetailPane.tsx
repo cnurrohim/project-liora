@@ -67,27 +67,27 @@ export function GoodsIssueDetailPane() {
         {/* Header */}
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-gray-400">Issue Date</p>
-            <p className="text-white">{issue_date}</p>
+            <p className="text-sm text-[var(--text-muted)]">Issue Date</p>
+            <p className="text-[var(--text-primary)]">{issue_date}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-400">Created By</p>
-            <p className="text-white">{created_by}</p>
+            <p className="text-sm text-[var(--text-muted)]">Created By</p>
+            <p className="text-[var(--text-primary)]">{created_by}</p>
           </div>
           {notes && (
             <div>
-              <p className="text-sm text-gray-400">Notes</p>
-              <p className="text-white">{notes}</p>
+              <p className="text-sm text-[var(--text-muted)]">Notes</p>
+              <p className="text-[var(--text-primary)]">{notes}</p>
             </div>
           )}
         </div>
 
         {/* Items */}
         {items.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">Items</p>
-            <table className="w-full text-sm border border-gray-700">
-              <thead className="bg-gray-800 text-gray-300">
+          <div className="text-[var(--text-primary)]">
+            <p className="text-sm text-[var(--text-muted)] mb-2">Items</p>
+            <table className="w-full text-sm border border-[var(--border)]">
+              <thead className="bg-[var(--background)] text-[var(--text-muted)]">
                 <tr>
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
@@ -98,7 +98,7 @@ export function GoodsIssueDetailPane() {
               </thead>
               <tbody>
                 {items.map((it) => (
-                  <tr key={it.id} className="border-t border-gray-700">
+                  <tr key={it.id} className="border-t border-[var(--border)]">
                     <td className="px-2 py-1">{it.sku}</td>
                     <td className="px-2 py-1">{it.item_name}</td>
                     <td className="px-2 py-1 text-right">{it.qty}</td>
@@ -113,10 +113,12 @@ export function GoodsIssueDetailPane() {
 
         {/* Stock Movements */}
         {stock_movements.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-400 mb-2">Stock Movements</p>
-            <table className="w-full text-sm border border-gray-700">
-              <thead className="bg-gray-800 text-gray-300">
+          <div className="text-[var(--text-primary)]">
+            <p className="text-sm text-[var(--text-muted)] mb-2">
+              Stock Movements
+            </p>
+            <table className="w-full text-sm border border-[var(--border)]">
+              <thead className="bg-[var(--background)] text-[var(--text-muted)]">
                 <tr>
                   <th className="px-2 py-1 text-left">Date</th>
                   <th className="px-2 py-1 text-left">Item</th>
@@ -127,7 +129,7 @@ export function GoodsIssueDetailPane() {
               </thead>
               <tbody>
                 {stock_movements.map((sm) => (
-                  <tr key={sm.id} className="border-t border-gray-700">
+                  <tr key={sm.id} className="border-t border-[var(--border)]">
                     <td className="px-2 py-1">
                       {new Date(sm.created_at).toLocaleString()}
                     </td>
@@ -139,7 +141,7 @@ export function GoodsIssueDetailPane() {
                         ? sm.target_location
                         : sm.source_location}
                     </td>
-                    <td className="px-2 py-1 text-right">
+                    <td className="px-2 py-1 text-right align-top">
                       {sm.balance_after}
                       {sm.movement_type == "outbound" && (
                         <span className="ml-1 text-red-400">(-{sm.qty})</span>

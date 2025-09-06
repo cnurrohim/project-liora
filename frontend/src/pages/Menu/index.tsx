@@ -56,7 +56,7 @@ export default function MenuListPage() {
       );
       setMenus(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat menu");
+      setError(err.message || "Fetching menu failed ");
     } finally {
       setLoading(false);
     }
@@ -64,16 +64,16 @@ export default function MenuListPage() {
 
   const handleDelete = async (id: string) => {
     if (!canDelete) {
-      showErrorToast("Anda tidak punya akses untuk menghapus data ini");
+      showErrorToast("We're sorry, you don't have access to delete this data!");
       return;
     }
 
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin menghapus menu ini?",
+      "You're about to delete this menu, proceed?",
       async () => {
         try {
           await deleteMenu(id);
-          showSuccessToast("Menu berhasil dihapus");
+          showSuccessToast("Menu deleted");
           fetchMenus();
           MenuProviderController.load();
         } catch (err: any) {
@@ -103,7 +103,7 @@ export default function MenuListPage() {
       fetchMenus();
       MenuProviderController.load();
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal mengubah urutan");
+      showErrorToast(err.message || "Failed to change the order");
     }
   };
 
@@ -151,11 +151,11 @@ export default function MenuListPage() {
                 <div>{row.getValue("label")} </div>
                 <div>
                   {row.getIsExpanded() ? (
-                    <div className=" text-gray-400 w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className=" text-[var(--panel-text-primary)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowUpWideFill" size={20} />
                     </div>
                   ) : (
-                    <div className="text-gray-300 w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className="text-[var(--text-primary)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowDownWideFill" size={20} />
                     </div>
                   )}
@@ -178,7 +178,7 @@ export default function MenuListPage() {
             name={row.original.icon}
             size={20}
             color={row.original.icon_color}
-            className="text-white"
+            className="text-[var(--text-primary)]"
           />
         ),
       },
@@ -231,7 +231,7 @@ export default function MenuListPage() {
               {index > 0 && (
                 <button
                   onClick={() => handleMove(row.original.id, true)}
-                  className="hover:text-green-500"
+                  className="hover:text-[var(--success)] cursor-pointer"
                 >
                   <IconRenderer name="RiArrowUpBoxFill" size={18} />
                 </button>
@@ -239,7 +239,7 @@ export default function MenuListPage() {
               {index < siblingRows.length - 1 && (
                 <button
                   onClick={() => handleMove(row.original.id, false)}
-                  className="hover:text-red-500"
+                  className="hover:text-[var(--danger)] cursor-pointer"
                 >
                   <IconRenderer name="RiArrowDownBoxLine" size={18} />
                 </button>
@@ -296,11 +296,7 @@ export default function MenuListPage() {
           <ButtonGroupWithDropdown
             mainLabel={
               <>
-                <IconRenderer
-                  name="RiApps2AddLine"
-                  size={15}
-                  className="text-white"
-                />
+                <IconRenderer name="RiApps2AddLine" size={15} />
                 Tambah Menu
               </>
             }
@@ -320,14 +316,14 @@ export default function MenuListPage() {
         )}
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
+              <thead className="bg-[var(--background)] text-[var(--text-muted)]">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -356,7 +352,7 @@ export default function MenuListPage() {
               </thead>
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
+                  <tr key={row.id} className="border-b border-[var(--border)]">
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="p-2">
                         {flexRender(
@@ -380,14 +376,14 @@ export default function MenuListPage() {
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
+                className="px-2 py-1 bg-[var(--background)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
               >
                 Prev
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
+                className="px-2 py-1 bg-[var(--background)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
               >
                 Next
               </button>

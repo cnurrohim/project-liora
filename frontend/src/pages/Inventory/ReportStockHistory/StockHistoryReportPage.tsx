@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   getPaginationRowModel,
-  flexRender,
   type ColumnDef,
   type SortingState,
 } from "@tanstack/react-table";
@@ -15,6 +14,8 @@ import {
   printStockHistoryReportsExcel,
 } from "./stockHistoryReport.api";
 import { showErrorToast } from "@/utils/toast";
+import { IconRenderer } from "@/components/IconRenderer";
+import { DataTable } from "@/components/Table/DataTable";
 
 type StockHistory = {
   item_code: string;
@@ -46,8 +47,8 @@ export default function StockHistoryReportPage() {
       });
       setHistories(data);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat data Riwayat Masuk/Keluar");
-      showErrorToast(err.message || "Gagal memuat data");
+      setError(err.message || "Failed to fetch Riwayat Masuk/Keluar");
+      showErrorToast(err.message || "Failed to fetch");
     } finally {
       setLoading(false);
     }
@@ -73,7 +74,7 @@ export default function StockHistoryReportPage() {
 
       downloadBlob(blob, "stock-history.pdf");
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal cetak PDF");
+      showErrorToast(err.message || "Export to PDF failed");
     } finally {
       setLoading(false);
     }
@@ -90,7 +91,7 @@ export default function StockHistoryReportPage() {
 
       downloadBlob(blob, "stock-history.xlsx");
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal cetak Excel");
+      showErrorToast(err.message || "Export to excel failed");
     } finally {
       setLoading(false);
     }
@@ -113,7 +114,7 @@ export default function StockHistoryReportPage() {
       },
       {
         accessorKey: "period",
-        header: "Periode",
+        header: "Period",
         cell: ({ row }) =>
           new Date(row.original.period).toLocaleDateString("id-ID"),
       },
@@ -123,11 +124,11 @@ export default function StockHistoryReportPage() {
       },
       {
         accessorKey: "item_name",
-        header: "Nama Barang",
+        header: "Item Name",
       },
       {
         accessorKey: "total_in",
-        header: "Masuk",
+        header: "Total Inbound",
         cell: ({ row }) => (
           <span className="text-green-600 font-semibold">
             {row.original.total_in}
@@ -136,7 +137,7 @@ export default function StockHistoryReportPage() {
       },
       {
         accessorKey: "total_out",
-        header: "Keluar",
+        header: "Total Outbond",
         cell: ({ row }) => (
           <span className="text-red-600 font-semibold">
             {row.original.total_out}
@@ -145,7 +146,7 @@ export default function StockHistoryReportPage() {
       },
       {
         accessorKey: "closing_balance",
-        header: "Saldo Akhir",
+        header: "Closing Balance",
       },
     ],
     [histories]
@@ -171,7 +172,9 @@ export default function StockHistoryReportPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Report Riwayat Masuk / Keluar</h1>
+      <h1 className="text-xl font-bold mb-4">
+        Inbound / Outbond Historical Report
+      </h1>
 
       {/* 🔹 filter section */}
       <div className="flex flex-wrap gap-4 mb-4 text-sm">
@@ -180,117 +183,57 @@ export default function StockHistoryReportPage() {
           onChange={(e) =>
             setPeriod(e.target.value as "day" | "week" | "month")
           }
-          className="border p-2 rounded"
+          className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
         >
-          <option value="day">Harian</option>
-          <option value="week">Mingguan</option>
-          <option value="month">Bulanan</option>
+          <option value="day">Daily</option>
+          <option value="week">Weekly</option>
+          <option value="month">Monthly</option>
         </select>
 
         <div className="flex items-center gap-2">
-          <label>Dari:</label>
+          <label>From:</label>
           <input
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="border p-1 rounded"
+            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
           />
         </div>
         <div className="flex items-center gap-2">
-          <label>Sampai:</label>
+          <label>To:</label>
           <input
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="border p-1 rounded"
+            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
           />
         </div>
 
         <button
           onClick={handleDownloadPDF}
-          className="px-3 py-1 bg-blue-600 cursor-pointer text-white rounded"
+          className="px-3 py-1 bg-[var(--warning)] hover:bg-[var(--warning-hover)] cursor-pointer text-[var(--warning-foreground)] rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
-          {loading ? "Loading ..." : "Download PDF"}
+          <IconRenderer name="RiFilePdf2Line" size={20} />{" "}
+          {loading ? "Loading ..." : "Export to PDF"}
         </button>
 
         <button
           onClick={handleDownloadExcel}
-          className="px-3 py-1 bg-blue-600 cursor-pointer text-white rounded"
+          className="px-3 py-1 bg-[var(--success)] hover:bg-[var(--success-hover)] cursor-pointer text-[var(--success-foreground)] rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
-          {loading ? "Loading ..." : "Download Excel"}
+          <IconRenderer name="RiFileExcel2Line" size={20} />{" "}
+          {loading ? "Loading ..." : "Export to Excel"}
         </button>
       </div>
 
-      {error && <div className="text-red-500 mb-2">{error}</div>}
+      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
       {loading ? (
-        <div>Memuat...</div>
+        <div>Fetching...</div>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-800 text-white">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        className="p-2 text-left cursor-pointer select-none"
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {{
-                          asc: " ↑",
-                          desc: " ↓",
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-gray-700">
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="p-2 align-top">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex justify-between items-center mt-4 text-sm">
-            <div>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Prev
-              </button>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-white rounded disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          <DataTable table={table} />
         </>
       )}
     </div>

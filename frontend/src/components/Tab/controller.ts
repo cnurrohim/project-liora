@@ -1,7 +1,7 @@
 export type TabItem = {
-  key: string; // ID unik tab
-  label: string; // Nama tab yang tampil
-  route?: string; // Untuk routing (opsional)
+  key: string;
+  label: string;
+  route?: string;
   icon?: string;
   content?: React.ReactNode;
 };
@@ -77,7 +77,7 @@ export const TabController = {
     if (activeKey) {
       const currentTab = state.openTabs.find((t) => t.key === activeKey);
       if (currentTab) {
-        tabHistory.push({ ...currentTab }); // simpan seluruh tab
+        tabHistory.push({ ...currentTab }); // Save seluruh tab
       }
     }
 
@@ -188,7 +188,6 @@ export const TabController = {
 
   setDefaultPage(defaultPage: string | null) {
     state.defaultPage = defaultPage;
-    notify();
   },
 
   subscribe(cb: () => void) {
@@ -201,8 +200,6 @@ export const TabController = {
 };
 
 function notify() {
-  // Buang properti yang tidak serializable
-
   const openTabsForStorage = state.openTabs.map(
     ({ key, label, route, icon }) => ({
       key,

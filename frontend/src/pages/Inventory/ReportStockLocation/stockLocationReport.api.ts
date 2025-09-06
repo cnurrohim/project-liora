@@ -23,7 +23,7 @@ export async function getStockLocationReports(
   const res = await apiFetch(
     `/inventory/stock-location-report${query ? `?${query}` : ""}`
   );
-  if (!res.ok) throw new Error("Gagal mengambil data stock per location");
+  if (!res.ok) throw new Error("Failed to fetch data inventory per location");
   return (await res.json()).data;
 }
 
@@ -34,7 +34,7 @@ export async function printStockLocationReportsPDF(
   const res = await apiFetch(
     `/inventory/stock-location-report/pdf${query ? `?${query}` : ""}`
   );
-  if (!res.ok) throw new Error("Gagal download PDF");
+  if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }
 
@@ -45,6 +45,6 @@ export async function printStockLocationReportsExcel(
   const res = await apiFetch(
     `/inventory/stock-location-report/excel${query ? `?${query}` : ""}`
   );
-  if (!res.ok) throw new Error("Gagal download Excel");
+  if (!res.ok) throw new Error("Excel report export failed");
   return await res.blob();
 }

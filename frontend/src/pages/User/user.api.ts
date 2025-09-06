@@ -90,6 +90,6 @@ export async function getDepartments() {
 
 export async function getUserPermissions(userId: string) {
   const res = await apiFetch(`/permissions/${userId}`);
-  if (!res.ok) throw new Error("Gagal ambil data override");
+  if (!res.ok) throw new Error("Failed to fetch data override");
   return (await res.json()).permissions;
 }

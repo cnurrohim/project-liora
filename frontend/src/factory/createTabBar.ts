@@ -2,7 +2,7 @@ import React from "react";
 import TabBar from "../components/Tab/tabBar";
 
 type TabBarFactoryOptions = {
-  iconRenderer?: (iconName?: string) => React.ReactNode;
+  iconRenderer?: (iconName?: string, iconSize?: number) => React.ReactNode;
 };
 
 export function createTabBar({ iconRenderer }: TabBarFactoryOptions = {}) {

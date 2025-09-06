@@ -39,17 +39,18 @@ userLayoutRoute.get("config/:userId/:roleId", async (c) => {
 
   try {
     const result = await db.query(
-      `SELECT default_page, default_new_tab FROM user_layout_preferences WHERE user_id = $1 AND role_id = $2`,
+      `SELECT default_page, default_new_tab, theme FROM user_layout_preferences WHERE user_id = $1 AND role_id = $2`,
       [user_id, role_id]
     );
 
     if (result.rows.length === 0) {
-      return c.json({ default_page: null, default_new_tab: null });
+      return c.json({ default_page: null, default_new_tab: null, theme: null });
     }
 
     return c.json({
       default_page: result.rows[0].default_page,
       default_new_tab: result.rows[0].default_new_tab,
+      theme: result.rows[0].theme,
     });
   } catch (err) {
     console.error("Failed to get layout:", err);
@@ -69,17 +70,24 @@ userLayoutRoute.post("/", async (c) => {
   try {
     await db.query(
       `
-      INSERT INTO user_layout_preferences (user_id, role_id, layout, default_page, default_new_tab)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO user_layout_preferences (user_id, role_id, layout, default_page, default_new_tab, theme)
+      VALUES ($1, $2, $3, $4, $5, $6)
       ON CONFLICT (user_id, role_id)
-      DO UPDATE SET layout = EXCLUDED.layout, default_page = EXCLUDED.default_page, default_new_tab = EXCLUDED.default_new_tab, updated_at = now()
+      DO UPDATE SET layout = EXCLUDED.layout, default_page = EXCLUDED.default_page, default_new_tab = EXCLUDED.default_new_tab, theme = EXCLUDED.theme, updated_at = now()
       `,
-      [user_id, role_id, layout, config.default_page, config.default_new_tab]
+      [
+        user_id,
+        role_id,
+        layout,
+        config.default_page,
+        config.default_new_tab,
+        config.theme,
+      ]
     );
 
     return c.json({ success: true });
   } catch (err) {
-    console.error("Failed to save layout:", err);
+    console.error("Failed to save layout & config:", err);
     return c.json({ error: "Failed to save layout" }, 500);
   }
 });

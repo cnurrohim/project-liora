@@ -16,14 +16,15 @@ export function ButtonLink({
 }: Props) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={
         className
           ? className
-          : "px-2 py-1 text-gray-300 rounded hover:border-lime-400 hover:text-lime-400 text-sm flex items-center gap-1 cursor-pointer"
+          : "px-2 py-1 text-[var(--text-primary)] rounded hover:border-[var(--border-highlight)] hover:text-[var(--text-hover)] hover:bg-[var(--background)] text-sm flex items-center gap-1 cursor-pointer"
       }
     >
-      <IconRenderer name={icon} size={15} className="text-white" /> {label}
+      <IconRenderer name={icon} size={15} /> {label}
     </button>
   );
 }

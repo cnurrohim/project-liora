@@ -38,22 +38,24 @@ export default function AppSettingPage() {
     });
     setLoading(false);
     if (result.success) {
-      showSuccessToast("Berhasil Simpan");
+      showSuccessToast("Berhasil Save");
       AppConfigController.loadConfig();
       applyAppMetadata(result.name, result.filename);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-6">
+    <form onSubmit={handleSubmit} className="p-6 max-w-3/4 space-y-6 mx-auto">
       <div>
-        <label className="block text-sm font-medium  mb-1">Nama Aplikasi</label>
+        <label className="block text-sm font-medium  mb-1">
+          Application Name
+        </label>
         <input
           type="text"
           value={appName}
           onChange={(e) => setAppName(e.target.value)}
-          placeholder="Contoh: Aterna Somnia"
-          className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+          placeholder="Eg: Aterna Somnia"
+          className="w-full bg-[var(--background)] rounded-md shadow-sm  p-2"
         />
       </div>
 
@@ -68,13 +70,13 @@ export default function AppSettingPage() {
               setLogoFile(file);
               if (file) setPreviewUrl(URL.createObjectURL(file));
             }}
-            className="block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:text-sm file:font-semibold
-              file:bg-gray-700 file:text-gray-200
-              hover:file:bg-gray-900
-              cursor-pointer"
+            className="block w-full text-sm text-[var(--text-primary)]
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-md file:border-0
+                  file:text-sm file:font-semibold
+                  file:bg-[var(--background)] file:text-[var(--text-primary)]
+                  hover:file:bg-[var(--hover)]
+                  cursor-pointer"
           />
           {previewUrl && (
             <img
@@ -90,9 +92,9 @@ export default function AppSettingPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full flex justify-center items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer"
         >
-          {loading ? "Menyimpan..." : "Simpan"}
+          {loading ? "Saving..." : "Save"}
         </button>
       )}
     </form>

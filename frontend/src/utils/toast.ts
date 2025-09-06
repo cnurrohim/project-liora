@@ -14,7 +14,8 @@ try {
 export function showSuccessToast(message: string) {
   if (hasSonner && toast) {
     toast.success(message, {
-      className: "bg-gray-800 text-white border border-gray-700",
+      className:
+        "bg-[var(--background)] text-[var(--text-primary)] border border-[var(--border)]",
       duration: 4000,
     });
   } else {
@@ -38,7 +39,7 @@ export function toastConfirmSuccess(message: string) {
 export function showErrorToast(message: string) {
   if (hasSonner && toast) {
     toast.error(message, {
-      className: "bg-red-800 text-white border border-red-700",
+      className: "bg-red-800 text-[var(--text-primary)] border border-red-700",
       duration: 5000,
     });
   } else {

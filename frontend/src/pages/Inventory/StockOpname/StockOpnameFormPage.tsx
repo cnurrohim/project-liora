@@ -27,7 +27,7 @@ export default function StockOpnameFormPage() {
   const { id: reviewId } = useRouteParamsFromTab("/stock-opname/:id/review");
   const submitLabelReview = reviewId && "Review";
   const submitLabelEdit = editId && "Update";
-  const submitLabel = submitLabelEdit || submitLabelReview || "Simpan";
+  const submitLabel = submitLabelEdit || submitLabelReview || "Save";
 
   const id = editId || reviewId;
   const isEdit = !!editId;
@@ -106,24 +106,24 @@ export default function StockOpnameFormPage() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari lokasi");
+      showErrorToast("Failed to fetch inventory location");
       return [];
     }
   };
 
   const onSubmit = async (data: StockOpnameFormValues) => {
     if (isEdit && !canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk update!");
+      showErrorToast("We're sorry, you don't have access for update!");
       return;
     }
 
     if (isReview && !canReview) {
-      showErrorToast("Anda tidak punya hak akses untuk update!");
+      showErrorToast("We're sorry, you don't have access for update!");
       return;
     }
 
     if (!isEdit && !canCreate) {
-      showErrorToast("Anda tidak punya hak akses untuk create!");
+      showErrorToast("We're sorry, you don't have access for create!");
       return;
     }
 
@@ -145,7 +145,7 @@ export default function StockOpnameFormPage() {
         showSuccessToast("Stock Opname berhasil dibuat");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal menyimpan Stock Opname");
+      showErrorToast(err.message || "Gagal Saving Stock Opname");
     } finally {
       setLoading(false);
     }
@@ -171,13 +171,15 @@ export default function StockOpnameFormPage() {
             render={({ field }) => (
               <input
                 type="date"
-                className="w-full p-2 bg-gray-800 rounded"
+                className="w-full p-2 bg-[var(--background)] rounded"
                 {...field}
               />
             )}
           />
           {errors.opname_date && (
-            <p className="text-red-500 text-sm">{errors.opname_date.message}</p>
+            <p className="text-[var(--danger)] text-sm">
+              {errors.opname_date.message}
+            </p>
           )}
         </div>
 
@@ -210,7 +212,9 @@ export default function StockOpnameFormPage() {
           />
 
           {typeof errors.location_id?.message === "string" && (
-            <p className="text-red-500 text-sm">{errors.location_id.message}</p>
+            <p className="text-[var(--danger)] text-sm">
+              {errors.location_id.message}
+            </p>
           )}
         </div>
 
@@ -223,7 +227,7 @@ export default function StockOpnameFormPage() {
             render={({ field }) => (
               <textarea
                 readOnly={isReview}
-                className="w-full p-2 bg-gray-800 rounded"
+                className="w-full p-2 bg-[var(--background)] rounded"
                 {...field}
                 value={field.value ?? ""}
               />
@@ -231,7 +235,9 @@ export default function StockOpnameFormPage() {
           />
 
           {errors.notes && (
-            <p className="text-red-500 text-sm">{errors.notes.message}</p>
+            <p className="text-[var(--danger)] text-sm">
+              {errors.notes.message}
+            </p>
           )}
         </div>
 
@@ -245,7 +251,7 @@ export default function StockOpnameFormPage() {
               render={({ field }) => (
                 <textarea
                   readOnly={isEdit}
-                  className="w-full p-2 bg-gray-800 rounded"
+                  className="w-full p-2 bg-[var(--background)] rounded"
                   {...field}
                   value={field.value ?? ""}
                 />
@@ -253,7 +259,7 @@ export default function StockOpnameFormPage() {
             />
 
             {errors.review_note && (
-              <p className="text-red-500 text-sm">
+              <p className="text-[var(--danger)] text-sm">
                 {errors.review_note.message}
               </p>
             )}
@@ -262,22 +268,28 @@ export default function StockOpnameFormPage() {
 
         {/* Items */}
         <div>
-          <table className="table-auto border border-gray-700 border-collapse w-full">
+          <table className="table-auto border border-[var(--border)] border-collapse w-full">
             <thead>
               <tr>
-                <th className="border border-gray-700 px-2 py-1">Item</th>
-                <th className="border border-gray-700 px-2 py-1">Qty System</th>
-                <th className="border border-gray-700 px-2 py-1">
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Item
+                </th>
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Qty System
+                </th>
+                <th className="border border-[var(--border)] px-2 py-1">
                   Qty Counted
                 </th>
-                <th className="border border-gray-700 px-2 py-1">Action</th>
+                <th className="border border-[var(--border)] px-2 py-1">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
               {fields.map((field, index) => (
                 <tr key={field.id}>
                   {/* Item */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.item_id`}
                       control={control}
@@ -321,14 +333,14 @@ export default function StockOpnameFormPage() {
                     />
                     {typeof errors.items?.[index]?.item_id?.message ===
                       "string" && (
-                      <p className="text-red-500 text-sm">
+                      <p className="text-[var(--danger)] text-sm">
                         {errors.items[index]?.item_id?.message}
                       </p>
                     )}
                   </td>
 
                   {/* Qty System */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_system`}
                       control={control}
@@ -337,7 +349,7 @@ export default function StockOpnameFormPage() {
                           type="number"
                           disabled
                           readOnly
-                          className="w-24 p-2 bg-gray-800 rounded"
+                          className="w-24 p-2 bg-[var(--background)] rounded"
                           {...field}
                           value={field.value ?? 0}
                         />
@@ -346,7 +358,7 @@ export default function StockOpnameFormPage() {
                   </td>
 
                   {/* Qty Counted */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_counted`}
                       control={control}
@@ -354,7 +366,7 @@ export default function StockOpnameFormPage() {
                         <input
                           type="string"
                           inputMode="numeric"
-                          className="w-24 p-2 bg-gray-800 rounded"
+                          className="w-24 p-2 bg-[var(--background)] rounded"
                           {...field}
                           value={field.value ?? ""}
                           onChange={(e) =>
@@ -366,11 +378,11 @@ export default function StockOpnameFormPage() {
                   </td>
 
                   {/* Action */}
-                  <td className="border border-gray-700 px-2 py-1">
+                  <td className="border border-[var(--border)] px-2 py-1">
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="px-2 py-1 bg-red-600 text-white rounded"
+                      className="px-2 py-1 bg-red-600 text-[var(--text-primary)] rounded"
                     >
                       Hapus
                     </button>
@@ -389,7 +401,7 @@ export default function StockOpnameFormPage() {
                         quantity_counted: 0,
                       })
                     }
-                    className="px-3 py-1 bg-green-600 text-white rounded"
+                    className="px-3 py-1 bg-green-600 text-[var(--text-primary)] rounded"
                   >
                     + Tambah Item
                   </button>
@@ -402,9 +414,9 @@ export default function StockOpnameFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 rounded text-white"
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
-          {loading ? "Menyimpan..." : submitLabel}
+          {loading ? "Saving..." : submitLabel}
         </button>
       </form>
     </FormProvider>

@@ -36,7 +36,7 @@ export default function PermissionForm({
 
       <input
         type="text"
-        className="mb-4 px-3 py-2 w-full bg-gray-800 text-white rounded"
+        className="mb-4 px-3 py-2 w-full bg-[var(--background)] text-[var(--text-primary)] rounded"
         placeholder="Cari permission..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -53,16 +53,19 @@ export default function PermissionForm({
           if (filtered.length === 0) return null;
 
           return (
-            <details key={group.domain} className="bg-gray-900 rounded">
-              <summary className="cursor-pointer px-4 py-2 bg-gray-800 font-semibold">
+            <details
+              key={group.domain}
+              className="bg-[var(--foreground)] rounded"
+            >
+              <summary className="cursor-pointer px-4 py-2 bg-[var(--background)] font-semibold">
                 {group.domain}
-                <span className="text-sm ml-2 text-gray-400">
+                <span className="text-sm ml-2 text-[var(--panel-text-primary)]">
                   ({filtered.length})
                 </span>
               </summary>
 
               <div className="p-4 grid grid-cols-2 gap-2">
-                <label className="col-span-2">
+                <label className="col-span-2 flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={filtered.every((p) =>
@@ -79,7 +82,7 @@ export default function PermissionForm({
                       }));
                     }}
                   />{" "}
-                  <span className="font-semibold text-sm text-white/90">
+                  <span className=" text-sm text-[var(--text-muted)]/90">
                     Pilih semua di {group.domain}
                   </span>
                 </label>

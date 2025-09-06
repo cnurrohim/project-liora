@@ -27,10 +27,10 @@ export default function MenuBar() {
     <button
       key={entry.key}
       title={entry.label}
-      className={`p-2 rounded-md hover:bg-gray-800 text-gray-400 hover:text-white transition cursor-pointer ${
+      className={`p-2 rounded-md hover:bg-[var(--panel-hover)]  hover:text-[var(--panel-text-hover)] transition cursor-pointer ${
         entry.key === MenuBarController.getActive()
-          ? "text-blue-400 bg-gray-800"
-          : ""
+          ? "text-[var(--panel-background)] bg-[var(--accent-primary)]"
+          : "text-[var(--panel-text-primary)]"
       }`}
       onClick={() => handleClick(entry)}
     >
@@ -40,9 +40,7 @@ export default function MenuBar() {
 
   return (
     <aside
-      className={`${
-        entries.position === "left" ? "border-r-1" : "border-l-1"
-      } relative  h-full w-14 border-gray-700 bg-gray-900 text-white flex flex-col justify-between shadow-md z-40`}
+      className={`relative  h-full w-14 bg-[var(--background)] text-[var(--panel-text-primary)] flex flex-col justify-between z-40`}
     >
       <div className="flex flex-col items-center ">
         <img

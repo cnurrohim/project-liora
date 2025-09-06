@@ -71,7 +71,7 @@ export default function SlidingPanel({
       className={`
     fixed
     ${state.position === "top" ? "top-0" : "bottom-0"}
-    max-h-full  max-w-full bg-gray-900 text-white shadow-lg
+    max-h-full  max-w-full bg-[var(--foreground)] text-[var(--text-primary)] shadow-lg
     transform transition-transform duration-300 z-40 flex flex-row p-4 gap-3 
     ${
       visible
@@ -87,7 +87,7 @@ export default function SlidingPanel({
     >
       <div className="flex flex-col w-full">
         <div className="relative  mb-2">
-          <span className="absolute left-3 top-1/4 text-gray-400">
+          <span className="absolute left-3 top-1/4 text-[var(--panel-text-primary)]">
             {iconRenderer?.({
               name: "RiSearchLine",
               size: 18,
@@ -101,12 +101,12 @@ export default function SlidingPanel({
             placeholder="Search menu..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="mb-3 p-2 pl-10 rounded bg-gray-800 text-white focus:outline-none"
+            className="mb-3 p-2 pl-10 rounded bg-[var(--background)] text-[var(--text-primary)] focus:outline-none"
           />
         </div>
 
         {state.start?.label && (
-          <div className="text-sm uppercase text-gray-400 mb-2 px-1">
+          <div className="text-sm uppercase text-[var(--panel-text-primary)] mb-2 px-1">
             {state.start.label}
           </div>
         )}
@@ -129,16 +129,16 @@ export default function SlidingPanel({
           <div className="mt-4  pt-2 pl-4">
             <div
               onClick={() => SlidingPanelController.goBack()}
-              className="text-gray-400 group hover:text-white cursor-pointer flex flex-row items-center"
+              className="text-[var(--panel-text-primary)] group hover:text-[var(--text-primary)] cursor-pointer flex flex-row items-center"
             >
-              <span className=" group-hover:text-gray-300 text-gray-400 pr-2">
+              <span className=" group-hover:text-[var(--text-primary)] text-[var(--panel-text-primary)] pr-2">
                 {iconRenderer?.({
                   name: "RiArrowLeftUpBoxFill",
                   size: 18,
                   color: "#9c9c9c",
                 })}
               </span>
-              <span className="text-gray-400 group-hover:text-gray-300">
+              <span className="text-[var(--panel-text-primary)] group-hover:text-[var(--text-primary)]">
                 Back
               </span>
             </div>

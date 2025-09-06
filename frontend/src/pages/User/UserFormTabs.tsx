@@ -25,6 +25,7 @@ import { IconRenderer } from "@/components/IconRenderer";
 import { usePermissions } from "./permissions";
 import ForbiddenPage from "pages/Misc/403";
 import { ProfileController } from "@/controller/ProfileController";
+import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
 type FormValues = z.infer<typeof schema>;
 
@@ -96,12 +97,12 @@ export default function UserFormTabs() {
 
   const onSubmit = async (data: FormValues) => {
     if (isEdit && !canUpdate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
     if (!isEdit && !canCreate) {
-      showErrorToast("Anda tidak punya hak akses untuk fitur ini!");
+      showErrorToast("We're sorry, you don't have access for this feature!");
       return;
     }
 
@@ -128,7 +129,7 @@ export default function UserFormTabs() {
         showSuccessToast("User berhasil dibuat");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal menyimpan data user");
+      showErrorToast(err.message || "Gagal Saving data user");
     } finally {
       setLoading(false);
     }
@@ -142,7 +143,11 @@ export default function UserFormTabs() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full p-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4 w-full max-w-4xl mx-auto p-4"
+      >
+        <BackToListLink route="/pages/users" label="list users" />
         <Tabs defaultValue="user">
           <TabsList>
             <TabsTrigger value="user">
@@ -188,19 +193,19 @@ export default function UserFormTabs() {
               setOverrides={setOverrides}
             />
           </TabsContent>
-        </Tabs>
 
-        <div className="pt-4">
-          {canCreate && (
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-blue-600 px-4 py-2 rounded text-white disabled:opacity-50"
-            >
-              {loading ? "Menyimpan..." : "Simpan"}
-            </button>
-          )}
-        </div>
+          <div className="pt-4">
+            {canCreate && (
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-28 flex justify-center text-[var(--text-primary)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer "
+              >
+                {loading ? "Saving..." : "Save"}
+              </button>
+            )}
+          </div>
+        </Tabs>
       </form>
     </FormProvider>
   );

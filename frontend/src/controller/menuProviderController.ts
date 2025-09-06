@@ -2,12 +2,21 @@
 import type { MenuSection, MenuMode, MenuAlignment } from "../types/menu";
 import { apiFetch } from "../utils/apiFetch";
 
+export type RouteMenuMeta = {
+  icon: string | undefined;
+  icon_color: string | undefined;
+  label: string;
+  id: string;
+};
+
 type MenuState = {
   sections: MenuSection[];
+  routeMenuMap: Record<string, RouteMenuMeta | null>;
 };
 
 const state: MenuState = {
   sections: [],
+  routeMenuMap: {},
 };
 
 let subscribers: (() => void)[] = [];
@@ -16,8 +25,11 @@ export const MenuProviderController = {
   async load() {
     try {
       const res = await apiFetch("/menu");
-      const data = (await res.json()).data;
+      const { data, routeMenuMap } = await res.json();
+
       state.sections = data;
+      state.routeMenuMap = routeMenuMap ?? {};
+
       notify();
     } catch (err) {
       console.error("Failed to load menu", err);
@@ -30,6 +42,10 @@ export const MenuProviderController = {
 
   getState() {
     return { ...state };
+  },
+
+  getMenuMetaByRoute(route: string): RouteMenuMeta | null {
+    return state.routeMenuMap[route] ?? null;
   },
 
   getSectionsByMode(mode: MenuMode): MenuSection[] {

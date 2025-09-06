@@ -27,7 +27,7 @@ export default function MenuBar() {
     <button
       key={entry.key}
       title={entry.label}
-      className={`text-2xl w-8 h-8 rounded flex items-center justify-center hover:text-lime-400 text-gray-300 cursor-pointer ${
+      className={`text-2xl w-8 h-8 rounded flex items-center justify-center hover:text-lime-400 text-[var(--text-primary)] cursor-pointer ${
         entry.key === MenuBarController.getActive() ? "" : ""
       }`}
       onClick={() => handleClick(entry)}
@@ -41,7 +41,7 @@ export default function MenuBar() {
       <aside
         className={`${
           entries.position === "top" ? "border-b-1" : "border-t-1"
-        } relative w-full h-12 px-4 border-gray-700 bg-gray-900 text-white flex flex-row justify-between py-1 z-100 shadow-md`}
+        } relative w-full h-12 px-4 border-[var(--border)] bg-[var(--foreground)] text-[var(--text-primary)] flex flex-row justify-between py-1 z-100 shadow-md`}
       >
         <div className="flex flex-row items-center">
           <div className="text-2xl font-bold text-blue-500 mr-5 flex flex-row items-center gap-2">
@@ -51,7 +51,7 @@ export default function MenuBar() {
               className="h-8 w-8 rounded-full  "
             />
             <span
-              className="text-gray-200 break-words"
+              className="text-[var(--panel-text-highlight)] break-words"
               style={{
                 fontSize: "clamp(1rem, 2vw, 1rem)",
                 maxWidth: "80%",
