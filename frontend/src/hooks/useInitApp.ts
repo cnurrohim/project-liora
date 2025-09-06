@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { initializeApp } from "../config/appInit";
 import { PermissionController } from "../controller/permissionController";
-import { initFromStorage } from "../components/Tab/controller";
 
 let globalStopFn: (() => void) | null = null;
 
@@ -12,7 +11,6 @@ export async function reinitializeApp() {
     // init ulang
     await PermissionController.getPermissions();
     const stop = await initializeApp();
-    initFromStorage();
     globalStopFn = stop;
   } catch (err) {
     console.error("Failed to re-initialize app:", err);
@@ -36,7 +34,6 @@ export function useInitApp() {
       try {
         await PermissionController.getPermissions();
         const stop = await initializeApp();
-        initFromStorage();
 
         stopFnRef.current = stop;
         globalStopFn = stop;

@@ -16,6 +16,7 @@ export type TabState = {
   activeTabKey: string | null;
   tabStorageKey?: TabStorageKey;
   defaultPage: string | null;
+  contentMargin: string;
 };
 
 const state: TabState = {
@@ -23,6 +24,7 @@ const state: TabState = {
   activeTabKey: null,
   tabStorageKey: {},
   defaultPage: null,
+  contentMargin: "",
 };
 
 let updateCallbacks: (() => void)[] = [];
@@ -188,6 +190,27 @@ export const TabController = {
 
   setDefaultPage(defaultPage: string | null) {
     state.defaultPage = defaultPage;
+  },
+
+  setContentMargin(margin: {
+    hasTop?: boolean;
+    hasBottom?: boolean;
+    hasLeft?: boolean;
+    hasRight?: boolean;
+  }) {
+    const margins = [
+      margin.hasTop && margin.hasLeft ? "rounded-tl-2xl" : "",
+      margin.hasTop && margin.hasRight ? "rounded-tr-2xl" : "",
+      margin.hasBottom && margin.hasRight ? "rounded-br-2xl" : "",
+      margin.hasBottom && margin.hasLeft ? "rounded-bl-2xl" : "",
+    ].join(" ");
+
+    state.contentMargin = margins;
+    notify();
+  },
+
+  getContentMargin() {
+    return state.contentMargin;
   },
 
   subscribe(cb: () => void) {

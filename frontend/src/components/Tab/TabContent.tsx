@@ -5,12 +5,13 @@ import NoTabOpen from "@/pages/Misc/NoTabOpen";
 import { TabController } from "./controller";
 
 export default function TabContent() {
-  const { openTabs, activeTabKey, defaultPage } = useController(
+  const { openTabs, activeTabKey, defaultPage, contentMargin } = useController(
     TabController,
     (s) => ({
       openTabs: s.openTabs,
       activeTabKey: s.activeTabKey,
       defaultPage: s.defaultPage,
+      contentMargin: s.contentMargin,
     })
   );
 
@@ -28,7 +29,7 @@ export default function TabContent() {
   return (
     <div
       key={activeTab?.key}
-      className="flex-1 bg-[var(--foreground)] border-[var(--border)] border-1 shadow-md rounded-2xl overflow-auto m-1 p-5"
+      className={`${contentMargin} flex-1 bg-[var(--foreground)] border-[var(--border)] border-1 shadow-md overflow-auto p-5`}
     >
       {!content ? <PagesNotFound /> : content}
     </div>

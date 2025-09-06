@@ -117,6 +117,8 @@ export default function PreferencesForm() {
 
       await saveLayout(user.id, user.defaultRole.id, layoutConfig, config);
 
+      setContentMargin();
+
       UserPreferencesController.load(user.id, user.defaultRole.id);
       if (config.default_page)
         TabController.setDefaultPage(config.default_page);
@@ -128,6 +130,19 @@ export default function PreferencesForm() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const setContentMargin = () => {
+    const layout = LayoutController.getState();
+
+    const layoutsPreferences = {
+      hasTop: !!layout.topPane,
+      hasBottom: !!layout.bottomPane,
+      hasLeft: !!layout.leftPane,
+      hasRight: !!layout.rightPane,
+    };
+
+    TabController.setContentMargin(layoutsPreferences);
   };
 
   const renderSelect = (
@@ -173,6 +188,8 @@ export default function PreferencesForm() {
                   }
                 }
               }
+
+              setContentMargin();
             }}
           >
             <option value="none">-- None --</option>
