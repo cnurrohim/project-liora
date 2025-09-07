@@ -154,7 +154,7 @@ export default function StockAdjustmentFormPage() {
 
         {/* Adjustment Date */}
         <div>
-          <label className="block text-[var(--text-muted)]">
+          <label className="block text-[var(--content-text-muted)]">
             Adjustment Date
           </label>
           <Controller
@@ -163,7 +163,7 @@ export default function StockAdjustmentFormPage() {
             render={({ field }) => (
               <input
                 type="date"
-                className="w-full p-2 bg-[var(--background)] rounded"
+                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                 {...field}
               />
             )}
@@ -177,7 +177,7 @@ export default function StockAdjustmentFormPage() {
 
         {/* Reason */}
         <div>
-          <label className="block text-[var(--text-muted)]">
+          <label className="block text-[var(--content-text-muted)]">
             Adjustment Note
           </label>
           <Controller
@@ -185,7 +185,7 @@ export default function StockAdjustmentFormPage() {
             control={control}
             render={({ field }) => (
               <textarea
-                className="w-full p-2 bg-[var(--background)] rounded"
+                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                 {...field}
                 value={field.value ?? ""} // <--- null/undefined jadi string kosong
               />
@@ -201,23 +201,25 @@ export default function StockAdjustmentFormPage() {
 
         {/* Items */}
         <div>
-          <table className="table-auto border border-[var(--border)] border-collapse w-full">
+          <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
             <thead>
               <tr>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Item
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Lokasi
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">Qty</th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
+                  Qty
+                </th>
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Adj. (+/-)
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Notes
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Action
                 </th>
               </tr>
@@ -226,7 +228,7 @@ export default function StockAdjustmentFormPage() {
               {fields.map((field, index) => (
                 <tr key={field.id}>
                   {/* Item */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.item_id`}
                       control={control}
@@ -274,7 +276,7 @@ export default function StockAdjustmentFormPage() {
                   </td>
 
                   {/* Location */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.location_id`}
                       control={control}
@@ -327,7 +329,7 @@ export default function StockAdjustmentFormPage() {
                   </td>
 
                   {/* Current Quantity */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_before`}
                       control={control}
@@ -337,7 +339,7 @@ export default function StockAdjustmentFormPage() {
                           disabled
                           readOnly
                           placeholder="current qty"
-                          className="w-24 p-2 bg-[var(--background)] rounded"
+                          className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
                           {...field}
                           value={field.value ?? 0}
                         />
@@ -351,7 +353,7 @@ export default function StockAdjustmentFormPage() {
                   </td>
 
                   {/* Quantity Diff */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_diff`}
                       control={control}
@@ -360,7 +362,7 @@ export default function StockAdjustmentFormPage() {
                           type="string"
                           inputMode="numeric"
                           placeholder="+/- Qty"
-                          className="w-24 p-2 bg-[var(--background)] rounded"
+                          className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
                           {...field}
                           value={field.value ?? ""}
                           onChange={(e) => field.onChange(e.target.value)}
@@ -376,7 +378,7 @@ export default function StockAdjustmentFormPage() {
                   </td>
 
                   {/* Notes */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.notes`}
                       control={control}
@@ -384,7 +386,7 @@ export default function StockAdjustmentFormPage() {
                         <input
                           type="text"
                           placeholder="Catatan"
-                          className="w-full p-2 bg-[var(--background)] rounded"
+                          className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                           {...field}
                           value={field.value ?? ""} // <-- pastikan bukan null
                         />
@@ -393,11 +395,11 @@ export default function StockAdjustmentFormPage() {
                   </td>
 
                   {/* Action */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--text-primary)] rounded"
+                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--content-text)] rounded"
                     >
                       delete
                     </button>
@@ -418,7 +420,7 @@ export default function StockAdjustmentFormPage() {
                         notes: "",
                       })
                     }
-                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--text-primary)] rounded"
+                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--content-text)] rounded"
                   >
                     + Add Item
                   </button>

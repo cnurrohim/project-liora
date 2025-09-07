@@ -68,31 +68,37 @@ export function GoodsReceiptDetailPane() {
         {/* Header */}
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-[var(--text-muted)]">Supplier</p>
-            <p className="text-[var(--text-primary)]">{supplier_name}</p>
+            <p className="text-sm text-[var(--content-text-muted)]">Supplier</p>
+            <p className="text-[var(--content-text)]">{supplier_name}</p>
           </div>
           <div>
-            <p className="text-sm text-[var(--text-muted)]">Receipt Date</p>
-            <p className="text-[var(--text-primary)]">{receipt_date}</p>
+            <p className="text-sm text-[var(--content-text-muted)]">
+              Receipt Date
+            </p>
+            <p className="text-[var(--content-text)]">{receipt_date}</p>
           </div>
           <div>
-            <p className="text-sm text-[var(--text-muted)]">Stored In</p>
-            <p className="text-[var(--text-primary)]">{stored_location}</p>
+            <p className="text-sm text-[var(--content-text-muted)]">
+              Stored In
+            </p>
+            <p className="text-[var(--content-text)]">{stored_location}</p>
           </div>
           {notes && (
             <div>
-              <p className="text-sm text-[var(--text-muted)]">Notes</p>
-              <p className="text-[var(--text-primary)]">{notes}</p>
+              <p className="text-sm text-[var(--content-text-muted)]">Notes</p>
+              <p className="text-[var(--content-text)]">{notes}</p>
             </div>
           )}
         </div>
 
         {/* Items */}
         {items.length > 0 && (
-          <div className="text-[var(--text-primary)]">
-            <p className="text-sm text-[var(--text-muted)] mb-2">Items</p>
-            <table className="w-full text-sm border border-[var(--border)]">
-              <thead className="bg-[var(--background)] text-[var(--text-primary)]">
+          <div className="text-[var(--content-text)]">
+            <p className="text-sm text-[var(--content-text-muted)] mb-2">
+              Items
+            </p>
+            <table className="w-full text-sm border border-[var(--content-border)]">
+              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
                 <tr>
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
@@ -102,7 +108,10 @@ export function GoodsReceiptDetailPane() {
               </thead>
               <tbody>
                 {items.map((it) => (
-                  <tr key={it.id} className="border-t border-[var(--border)]">
+                  <tr
+                    key={it.id}
+                    className="border-t border-[var(--content-border)]"
+                  >
                     <td className="px-2 py-1">{it.sku}</td>
                     <td className="px-2 py-1">{it.item_name}</td>
                     <td className="px-2 py-1 text-right">{it.qty}</td>
@@ -114,14 +123,13 @@ export function GoodsReceiptDetailPane() {
           </div>
         )}
 
-        {/* Stock Movements */}
         {stock_movements.length > 0 && (
-          <div className="text-[var(--text-primary)]">
-            <p className="text-sm text-[var(--text-muted)] mb-2">
-              Stock Movements
+          <div className="text-[var(--content-text)]">
+            <p className="text-sm text-[var(--content-text-muted)] mb-2">
+              Inventory Movements
             </p>
-            <table className="w-full text-sm border border-[var(--border)]">
-              <thead className="bg-[var(--background)] text-[var(--text-primary)]">
+            <table className="w-full text-sm border border-[var(--content-border)]">
+              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
                 <tr>
                   <th className="px-2 py-1 text-left">Date</th>
                   <th className="px-2 py-1 text-left">SKU</th>
@@ -134,7 +142,10 @@ export function GoodsReceiptDetailPane() {
               </thead>
               <tbody>
                 {stock_movements.map((sm) => (
-                  <tr key={sm.id} className="border-t border-[var(--border)]">
+                  <tr
+                    key={sm.id}
+                    className="border-t border-[var(--content-border)]"
+                  >
                     <td className="px-2 py-1">
                       {new Date(sm.created_at).toLocaleString()}
                     </td>

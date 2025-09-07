@@ -72,43 +72,204 @@
 
   /* ================= LIGHT THEME ================= */
   .light {
-    /* ============ Ratio 60 (Dominant Layer) ============ */
-    --background: #dae5ea;
-    --foreground: #ebf1f7;
-    --inset: #bec8cc;
-    --hover: #b5bec9;
-    --border: #b9cbdd;
+    --base: #eaeaeb;
 
-    --text-primary: #1e293b;
-    --text-highlight: #1d4ed8;
-    --text-muted: #484d57;
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #eaeaeb;
+    --vertical-surface-hover: #d3d3da;
+    --vertical-surface-highlight: #cbd5e1;
+    --vertical-text: #1e293b;
+    --vertical-text-hover: #eef1f7;
+    --vertical-text-muted: #64748b;
+    --vertical-border: #cbd5e1;
 
-    /* ============ Ratio 30 (Panels / Surfaces) ============ */
-    --panel-background: #dae5ea;
-    --panel-foreground: #ebf1f7;
-    --panel-inset: #bec8cc;
-    --panel-hover: #b5bec9;
-    --panel-border: #95b2d2;
+    --vertical-secondary-surface: #ffffff;
+    --vertical-secondary-surface-hover: #e6e7e7;
+    --vertical-secondary-surface-highlight: #d3d3da;
+    --vertical-secondary-text: #1e293b;
+    --vertical-secondary-text-hover: #eef1f7;
+    --vertical-secondary-text-muted: #64748b;
+    --vertical-secondary-border: #cbd5e1;
 
-    --panel-text-primary: #1e293b;
-    --panel-text-hover: #484f57;
-    --panel-text-highlight: #2563eb;
-    --panel-text-muted: #818997;
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #eaeaeb;
+    --horizontal-surface-hover: #d3d3da;
+    --horizontal-surface-highlight: #cbd5e1;
+    --horizontal-text: #1e293b;
+    --horizontal-text-hover: #eef1f7;
+    --horizontal-text-muted: #64748b;
+    --horizontal-border: #cbd5e1;
 
-    --panel-secondary-background: #dae5ea;
-    --panel-secondary-foreground: #ebf1f7;
-    --panel-secondary-inset: #bec8cc;
-    --panel-secondary-hover: #b5bec9;
-    --panel-secondary-border: #95b2d2;
+    --horizontal-secondary-surface: #ffffff;
+    --horizontal-secondary-surface-hover: #e6e7e7;
+    --horizontal-secondary-surface-highlight: #d3d3da;
+    --horizontal-secondary-text: #1e293b;
+    --horizontal-secondary-text-hover: #eef1f7;
+    --horizontal-secondary-text-muted: #64748b;
+    --horizontal-secondary-border: #cbd5e1;
 
-    --panel-secondary-text-primary: #1e293b;
-    --panel-secondary-text-hover: #484f57;
-    --panel-secondary-text-highlight: #dae5ea;
-    --panel-secondary-text-muted: #818997;
+    /* Content (main page) */
+    --content-surface: #ffffff;
+    --content-surface-inset: #f8fafc;
+    --content-surface-hover: #e6e7e7;
+    --content-surface-highlight: #e2e8f0;
+    --content-text: #1e293b;
+    --content-text-hover: #1e293b;
+    --content-text-muted: #64748b;
+    --content-border: #cbd5e1;
+    --content-border-highlight: #94a3b8;
 
     /* ============ Ratio 10 (Accents / Borders) ============ */
-    --accent-primary: #2d80d3;
-    --accent-highlight: #2874d1;
+    --accent-primary: #3088e0;
+    --accent-hover: #468fe7;
+    --accent-highlight: #2563eb;
+    --accent-foreground: #ffffff;
+    --accent-muted: #e2e8f0;
+
+    /* ============ Semantic Colors ============ */
+    --success: #16a34a;
+    --success-hover: #22c55e;
+    --success-foreground: #ffffff;
+
+    --warning: #eab308;
+    --warning-hover: #facc15;
+    --warning-foreground: #ffffff;
+
+    --danger: #dc2626;
+    --danger-hover: #ef4444;
+    --danger-foreground: #ffffff;
+
+    --info: #3b82f6;
+    --info-hover: #60a5fa;
+    --info-foreground: #ffffff;
+  }
+
+  .chrome-dark {
+    --base: #212733;
+
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #212733;
+    --vertical-surface-hover: #2d3747;
+    --vertical-surface-highlight: #334155;
+    --vertical-text: #e2e8f0;
+    --vertical-text-hover: #e2e8f0;
+    --vertical-text-muted: #64748b;
+    --vertical-border: #334155;
+
+    --vertical-secondary-surface: #ffffff;
+    --vertical-secondary-surface-hover: #e6e7e7;
+    --vertical-secondary-surface-highlight: #d3d3da;
+    --vertical-secondary-text: #1e293b;
+    --vertical-secondary-text-hover: #eef1f7;
+    --vertical-secondary-text-muted: #64748b;
+    --vertical-secondary-border: #cbd5e1;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #212733;
+    --horizontal-surface-hover: #2d3747;
+    --horizontal-surface-highlight: #334155;
+    --horizontal-text: #e2e8f0;
+    --horizontal-text-hover: #e2e8f0;
+    --horizontal-text-muted: #64748b;
+    --horizontal-border: #334155;
+
+    --horizontal-secondary-surface: #ffffff;
+    --horizontal-secondary-surface-hover: #e6e7e7;
+    --horizontal-secondary-surface-highlight: #d3d3da;
+    --horizontal-secondary-text: #1e293b;
+    --horizontal-secondary-text-hover: #eef1f7;
+    --horizontal-secondary-text-muted: #64748b;
+    --horizontal-secondary-border: #cbd5e1;
+
+    /* Content (main page) */
+    --content-surface: #ffffff;
+    --content-surface-inset: #f8fafc;
+    --content-surface-hover: #e6e7e7;
+    --content-surface-highlight: #e2e8f0;
+    --content-text: #1e293b;
+    --content-text-hover: #1e293b;
+    --content-text-muted: #64748b;
+    --content-border: #cbd5e1;
+    --content-border-highlight: #94a3b8;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #f07a2c;
+    --accent-hover: #e06716;
+    --accent-highlight: #f78f4a;
+    --accent-foreground: #ffffff;
+    --accent-muted: #e2e8f0;
+
+    /* ============ Semantic Colors ============ */
+    --success: #16a34a;
+    --success-hover: #22c55e;
+    --success-foreground: #ffffff;
+
+    --warning: #eab308;
+    --warning-hover: #facc15;
+    --warning-foreground: #ffffff;
+
+    --danger: #dc2626;
+    --danger-hover: #ef4444;
+    --danger-foreground: #ffffff;
+
+    --info: #3b82f6;
+    --info-hover: #60a5fa;
+    --info-foreground: #ffffff;
+  }
+
+  /* ================= Dark Theme ================= */
+  .dark {
+    /* ============ Ratio 60 (Dominant Layer) ============ */
+    --base: #0f172a;
+
+    --vertical-surface: #0f172a;
+    --vertical-surface-hover: #1e293b;
+    --vertical-surface-highlight: #334155;
+    --vertical-text: #e2e8f0;
+    --vertical-text-hover: #e2e8f0;
+    --vertical-text-muted: #64748b;
+    --vertical-border: #334155;
+
+    --vertical-secondary-surface: #0f172a;
+    --vertical-secondary-surface-hover: #1e293b;
+    --vertical-secondary-surface-highlight: #334155;
+    --vertical-secondary-text: #e2e8f0;
+    --vertical-secondary-text-hover: #e2e8f0;
+    --vertical-secondary-text-muted: #64748b;
+    --vertical-secondary-border: #334155;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #0f172a;
+    --horizontal-surface-hover: #334155;
+    --horizontal-surface-highlight: #475569;
+    --horizontal-text: #f8fafc;
+    --horizontal-text-hover: #f8fafc;
+    --horizontal-text-muted: #94a3b8;
+    --horizontal-border: #475569;
+
+    --horizontal-secondary-surface: #1e293b;
+    --horizontal-secondary-surface-hover: #334155;
+    --horizontal-secondary-surface-highlight: #475569;
+    --horizontal-secondary-text: #f8fafc;
+    --horizontal-secondary-text-hover: #f8fafc;
+    --horizontal-secondary-text-muted: #94a3b8;
+    --horizontal-secondary-border: #475569;
+
+    /* Content (main page) */
+    --content-surface: #0f172a;
+    --content-surface-inset: #071027;
+    --content-surface-hover: #131d2c;
+    --content-surface-highlight: #334155;
+    --content-text: #f1f5f9;
+    --content-text-hover: #f1f5f9;
+    --content-text-muted: #94a3b8;
+    --content-border: #2e323d;
+    --content-border-highlight: #434855;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #3088e0;
+    --accent-hover: #468fe7;
+    --accent-highlight: #358af3;
     --accent-foreground: #ffffff;
     --accent-muted: #cbd5e1;
 
@@ -130,187 +291,588 @@
     --info-foreground: #ffffff;
   }
 
-  /* ================= Dark Theme ================= */
-  .dark {
-    /* ============ Ratio 60 (Dominant Layer) ============ */
-    --background: #0f172a; /* dasar halaman */
-    --foreground: #1e293b; /* panel utama di atas background */
-    --inset: #2d3748; /* elemen terbenam */
-    --hover: #374151; /* hover state */
-    --border: #334155;
+  .monokai-dark {
+    --base: #272822;
 
-    --text-primary: #f8fafc; /* teks utama */
-    --text-highlight: #60a5fa; /* teks link/hover */
-    --text-muted: #94a3b8; /* teks sekunder */
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #272822;
+    --vertical-surface-hover: #3e3d32;
+    --vertical-surface-highlight: #49483e;
+    --vertical-text: #f8f8f2;
+    --vertical-text-hover: #ffffff;
+    --vertical-text-muted: #75715e;
+    --vertical-border: #49483e;
 
-    /* ============ Ratio 30 (Panels / Surfaces) ============ */
-    --panel-background: #0f172a;
-    --panel-foreground: #1e293b;
-    --panel-inset: #2a3a4d;
-    --panel-hover: #334155;
-    --panel-border: #3b4a61;
+    --vertical-secondary-surface: #1e1f1c;
+    --vertical-secondary-surface-hover: #3e3d32;
+    --vertical-secondary-surface-highlight: #49483e;
+    --vertical-secondary-text: #f8f8f2;
+    --vertical-secondary-text-hover: #ffffff;
+    --vertical-secondary-text-muted: #75715e;
+    --vertical-secondary-border: #49483e;
 
-    --panel-text-primary: #f1f5f9;
-    --panel-text-hover: #cbd5e1;
-    --panel-text-highlight: #60a5fa;
-    --panel-text-muted: #94a3b8;
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #272822;
+    --horizontal-surface-hover: #3e3d32;
+    --horizontal-surface-highlight: #49483e;
+    --horizontal-text: #f8f8f2;
+    --horizontal-text-hover: #ffffff;
+    --horizontal-text-muted: #75715e;
+    --horizontal-border: #49483e;
 
-    --panel-secondary-background: #111827;
-    --panel-secondary-foreground: #1f2937;
-    --panel-secondary-inset: #2d3748;
-    --panel-secondary-hover: #374151;
-    --panel-secondary-border: #4b5563;
+    --horizontal-secondary-surface: #1e1f1c;
+    --horizontal-secondary-surface-hover: #3e3d32;
+    --horizontal-secondary-surface-highlight: #49483e;
+    --horizontal-secondary-text: #f8f8f2;
+    --horizontal-secondary-text-hover: #ffffff;
+    --horizontal-secondary-text-muted: #75715e;
+    --horizontal-secondary-border: #49483e;
 
-    --panel-secondary-text-primary: #f1f5f9;
-    --panel-secondary-text-hover: #16191d;
-    --panel-secondary-text-highlight: #16191d;
-    --panel-secondary-text-muted: #94a3b8;
+    /* Content (main page) */
+    --content-surface: #1e1f1c;
+    --content-surface-inset: #2d2e27;
+    --content-surface-hover: #3e3d32;
+    --content-surface-highlight: #49483e;
+    --content-text: #f8f8f2;
+    --content-text-hover: #ffffff;
+    --content-text-muted: #75715e;
+    --content-border: #49483e;
+    --content-border-highlight: #75715e;
 
-    /* ============ Ratio 10 (Accents / Borders) ============ */
-    --accent-primary: #ec5c19;
-    --accent-highlight: #fa5f22;
+    /* Accents */
+    --accent-primary: #f92672;
+    --accent-hover: #ff5995;
+    --accent-highlight: #fd971f;
     --accent-foreground: #ffffff;
-    --accent-muted: #b8d0f3;
+    --accent-muted: #75715e;
 
-    /* ============ Semantic Colors ============ */
-    --accent-primary: #f92672; /* pink */
-    --accent-highlight: #fd971f; /* orange */
-    --accent-muted: #75715e; /* muted gray */
+    /* Semantic Colors */
+    --success: #a6e22e;
+    --success-hover: #b6f442;
+    --success-foreground: #1e1f1c;
 
-    /* ============ Semantic Colors ============ */
-    --success: #5fbf00; /* hijau cerah */
-    --success-hover: #72d118; /* versi lebih terang */
-    --success-foreground: #ffffff;
+    --warning: #fd971f;
+    --warning-hover: #ffb347;
+    --warning-foreground: #1e1f1c;
 
-    --warning: #ff9e2c; /* oranye terang */
-    --warning-hover: #ffb547; /* versi lebih terang */
-    --warning-foreground: #ffffff;
-
-    --danger: #e6406c; /* merah-pink tegas */
-    --danger-hover: #ff5c85; /* versi lebih terang */
+    --danger: #f92672;
+    --danger-hover: #ff5c8a;
     --danger-foreground: #ffffff;
 
-    --info: #2db9d9; /* biru-cyan */
-    --info-hover: #4fd0eb; /* versi lebih terang */
-    --info-foreground: #ffffff;
-  }
-
-  .dark-monokai {
-    /* ============ Ratio 60 (Dominant Layer) ============ */
-    --background: #272822; /* dasar halaman */
-    --foreground: #32342c; /* panel utama di atas background */
-    --inset: #3b3c36; /* elemen terbenam */
-    --hover: #3e4037; /* hover state */
-    --border: #46483e;
-
-    --text-primary: #f8f8f2; /* teks utama */
-    --text-highlight: #a6e22e; /* teks link/hover (greenish) */
-    --text-muted: #75715e; /* teks sekunder */
-
-    /* ============ Ratio 30 (Panels / Surfaces) ============ */
-    --panel-background: #272822;
-    --panel-foreground: #32342c;
-    --panel-inset: #3e4037;
-    --panel-hover: #46483e;
-    --panel-border: #5a5c50;
-
-    --panel-text-primary: #f8f8f2;
-    --panel-text-hover: #e6db74;
-    --panel-text-highlight: #a6e22e;
-    --panel-text-muted: #75715e;
-
-    --panel-secondary-background: #1e1f1c;
-    --panel-secondary-foreground: #2d2e2a;
-    --panel-secondary-inset: #3a3b34;
-    --panel-secondary-hover: #46483e;
-    --panel-secondary-border: #5a5c50;
-
-    --panel-secondary-text-primary: #f8f8f2;
-    --panel-secondary-text-hover: #fd971f;
-    --panel-secondary-text-highlight: #dae5ea;
-    --panel-secondary-text-muted: #75715e;
-
-    /* ============ Ratio 10 (Accents / Borders) ============ */
-    --accent-primary: #f92672; /* pink */
-    --accent-highlight: #fd971f; /* orange */
-    --accent-foreground: #ffffff;
-    --accent-muted: #75715e; /* muted gray */
-
-    /* ============ Semantic Colors ============ */
-    --success: #5fbf00; /* hijau cerah */
-    --success-hover: #72d118; /* versi lebih terang */
-    --success-foreground: #ffffff;
-
-    --warning: #ff9e2c; /* oranye terang */
-    --warning-hover: #ffb547; /* versi lebih terang */
-    --warning-foreground: #ffffff;
-
-    --danger: #e6406c; /* merah-pink tegas */
-    --danger-hover: #ff5c85; /* versi lebih terang */
-    --danger-foreground: #ffffff;
-
-    --info: #2db9d9; /* biru-cyan */
-    --info-hover: #4fd0eb; /* versi lebih terang */
-    --info-foreground: #ffffff;
+    --info: #66d9ef;
+    --info-hover: #80e1f2;
+    --info-foreground: #1e1f1c;
   }
 
   .solarized-dark {
-    /* ============ Base Layer ============ */
-    --background: #002b36; /* dasar halaman */
-    --foreground: #073642; /* panel utama */
-    --inset: #0d4a56;
-    --hover: #0a3742;
-    --border: #002b36;
+    --base: #002b36;
 
-    --text-primary: #c7d3d4; /* teks default */
-    --text-highlight: #becfcf; /* teks hover/link */
-    --text-muted: #8aa2aa; /* teks sekunder */
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #002b36;
+    --vertical-surface-hover: #073642;
+    --vertical-surface-highlight: #586e75;
+    --vertical-text: #eee8d5;
+    --vertical-text-hover: #fdf6e3;
+    --vertical-text-muted: #93a1a1;
+    --vertical-border: #586e75;
 
-    /* ============ Panel Layer ============ */
-    --panel-background: #002b36;
-    --panel-foreground: #073642;
-    --panel-inset: #0d4a56;
-    --panel-hover: #0a3742;
-    --panel-border: #002b36;
+    --vertical-secondary-surface: #073642;
+    --vertical-secondary-surface-hover: #09414f;
+    --vertical-secondary-surface-highlight: #657b83;
+    --vertical-secondary-text: #eee8d5;
+    --vertical-secondary-text-hover: #fdf6e3;
+    --vertical-secondary-text-muted: #93a1a1;
+    --vertical-secondary-border: #586e75;
 
-    --panel-text-primary: #b4c0d3;
-    --panel-text-hover: #93a1a1;
-    --panel-text-highlight: #b58900; /* kuning khas solarized */
-    --panel-text-muted: #657b83;
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #002b36;
+    --horizontal-surface-hover: #073642;
+    --horizontal-surface-highlight: #586e75;
+    --horizontal-text: #eee8d5;
+    --horizontal-text-hover: #fdf6e3;
+    --horizontal-text-muted: #93a1a1;
+    --horizontal-border: #586e75;
 
-    --panel-secondary-background: #073642;
-    --panel-secondary-foreground: #0d4a56;
-    --panel-secondary-inset: #124c56;
-    --panel-secondary-hover: #0f3942;
-    --panel-secondary-border: #586e75;
+    --horizontal-secondary-surface: #073642;
+    --horizontal-secondary-surface-hover: #09414f;
+    --horizontal-secondary-surface-highlight: #657b83;
+    --horizontal-secondary-text: #eee8d5;
+    --horizontal-secondary-text-hover: #fdf6e3;
+    --horizontal-secondary-text-muted: #93a1a1;
+    --horizontal-secondary-border: #586e75;
 
-    --panel-secondary-text-primary: #d3dedf;
-    --panel-secondary-text-hover: #c5cece;
-    --panel-secondary-text-highlight: #073642; /* biru */
-    --panel-secondary-text-muted: #c4ced1;
+    /* Content (main page) */
+    --content-surface: #002b36;
+    --content-surface-inset: #073642;
+    --content-surface-hover: #09414f;
+    --content-surface-highlight: #586e75;
+    --content-text: #eee8d5;
+    --content-text-hover: #fdf6e3;
+    --content-text-muted: #93a1a1;
+    --content-border: #034555;
+    --content-border-highlight: #657b83;
 
-    /* ============ Accent Layer ============ */
-    --accent-primary: #32a7a7; /* blue */
-    --accent-highlight: #2aa198; /* cyan */
-    --accent-foreground: #ffffff;
-    --accent-muted: #586e75; /* gray */
+    /* Accents */
+    --accent-primary: #268bd2;
+    --accent-hover: #3aa6e9;
+    --accent-highlight: #2aa198;
+    --accent-foreground: #fdf6e3;
+    --accent-muted: #93a1a1;
 
-    /* ============ Semantic Colors ============ */
-    --success: #859900; /* green */
-    --success-hover: #9baf00;
+    /* Semantic Colors */
+    --success: #859900;
+    --success-hover: #a4c400;
     --success-foreground: #fdf6e3;
 
-    --warning: #b58900; /* yellow */
-    --warning-hover: #d4a200;
+    --warning: #b58900;
+    --warning-hover: #d49c00;
     --warning-foreground: #fdf6e3;
 
-    --danger: #dc322f; /* red */
-    --danger-hover: #e74c3c;
+    --danger: #dc322f;
+    --danger-hover: #e85c5b;
     --danger-foreground: #fdf6e3;
 
-    --info: #2aa198; /* cyan */
-    --info-hover: #33b4a8;
+    --info: #268bd2;
+    --info-hover: #3aa6e9;
     --info-foreground: #fdf6e3;
+  }
+
+  .ocean-blue-serenity {
+    --base: #03045e;
+
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #03045e;
+    --vertical-surface-hover: #023e8a;
+    --vertical-surface-highlight: #0077b6;
+    --vertical-text: #caf0f8;
+    --vertical-text-hover: #ffffff;
+    --vertical-text-muted: #90e0ef;
+    --vertical-border: #0077b6;
+
+    --vertical-secondary-surface: #023e8a;
+    --vertical-secondary-surface-hover: #0077b6;
+    --vertical-secondary-surface-highlight: #0096c7;
+    --vertical-secondary-text: #e0f7ff;
+    --vertical-secondary-text-hover: #ffffff;
+    --vertical-secondary-text-muted: #90e0ef;
+    --vertical-secondary-border: #48cae4;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #03045e;
+    --horizontal-surface-hover: #023e8a;
+    --horizontal-surface-highlight: #0077b6;
+    --horizontal-text: #caf0f8;
+    --horizontal-text-hover: #ffffff;
+    --horizontal-text-muted: #90e0ef;
+    --horizontal-border: #0077b6;
+
+    --horizontal-secondary-surface: #023e8a;
+    --horizontal-secondary-surface-hover: #0077b6;
+    --horizontal-secondary-surface-highlight: #0096c7;
+    --horizontal-secondary-text: #e0f7ff;
+    --horizontal-secondary-text-hover: #ffffff;
+    --horizontal-secondary-text-muted: #90e0ef;
+    --horizontal-secondary-border: #48cae4;
+
+    /* Content (main page, full dark) */
+    --content-surface: #023e8a;
+    --content-surface-inset: #03045e;
+    --content-surface-hover: #0077b6;
+    --content-surface-highlight: #0096c7;
+    --content-text: #caf0f8;
+    --content-text-hover: #ffffff;
+    --content-text-muted: #90e0ef;
+    --content-border: #0077b6;
+    --content-border-highlight: #48cae4;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #00b4d8;
+    --accent-hover: #48cae4;
+    --accent-highlight: #90e0ef;
+    --accent-foreground: #03045e;
+    --accent-muted: #ade8f4;
+
+    /* ============ Semantic Colors ============ */
+    --success: #16a34a;
+    --success-hover: #22c55e;
+    --success-foreground: #ffffff;
+
+    --warning: #eab308;
+    --warning-hover: #facc15;
+    --warning-foreground: #ffffff;
+
+    --danger: #dc2626;
+    --danger-hover: #ef4444;
+    --danger-foreground: #ffffff;
+
+    --info: #0096c7;
+    --info-hover: #00b4d8;
+    --info-foreground: #ffffff;
+  }
+
+  .ocean-blue-serenity-light {
+    --base: #03045e;
+
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #03045e;
+    --vertical-surface-hover: #023e8a;
+    --vertical-surface-highlight: #0077b6;
+    --vertical-text: #caf0f8;
+    --vertical-text-hover: #ffffff;
+    --vertical-text-muted: #90e0ef;
+    --vertical-border: #0077b6;
+
+    --vertical-secondary-surface: #0077b6;
+    --vertical-secondary-surface-hover: #0096c7;
+    --vertical-secondary-surface-highlight: #00b4d8;
+    --vertical-secondary-text: #e0f7ff;
+    --vertical-secondary-text-hover: #ffffff;
+    --vertical-secondary-text-muted: #90e0ef;
+    --vertical-secondary-border: #48cae4;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #03045e;
+    --horizontal-surface-hover: #023e8a;
+    --horizontal-surface-highlight: #0077b6;
+    --horizontal-text: #caf0f8;
+    --horizontal-text-hover: #ffffff;
+    --horizontal-text-muted: #90e0ef;
+    --horizontal-border: #0077b6;
+
+    --horizontal-secondary-surface: #0077b6;
+    --horizontal-secondary-surface-hover: #0096c7;
+    --horizontal-secondary-surface-highlight: #00b4d8;
+    --horizontal-secondary-text: #e0f7ff;
+    --horizontal-secondary-text-hover: #ffffff;
+    --horizontal-secondary-text-muted: #90e0ef;
+    --horizontal-secondary-border: #48cae4;
+
+    /* Content (main page) */
+    --content-surface: #ffffff;
+    --content-surface-inset: #f8fafc;
+    --content-surface-hover: #e6e7e7;
+    --content-surface-highlight: #e2e8f0;
+    --content-text: #03045e;
+    --content-text-hover: #023e8a;
+    --content-text-muted: #64748b;
+    --content-border: #90e0ef;
+    --content-border-highlight: #48cae4;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #00b4d8;
+    --accent-hover: #48cae4;
+    --accent-highlight: #90e0ef;
+    --accent-foreground: #03045e;
+    --accent-muted: #ade8f4;
+
+    /* ============ Semantic Colors ============ */
+    --success: #16a34a;
+    --success-hover: #22c55e;
+    --success-foreground: #ffffff;
+
+    --warning: #eab308;
+    --warning-hover: #facc15;
+    --warning-foreground: #ffffff;
+
+    --danger: #dc2626;
+    --danger-hover: #ef4444;
+    --danger-foreground: #ffffff;
+
+    --info: #0096c7;
+    --info-hover: #00b4d8;
+    --info-foreground: #ffffff;
+  }
+
+  .vivid-night-light {
+    --base: #10002b;
+
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #10002b;
+    --vertical-surface-hover: #240046;
+    --vertical-surface-highlight: #3c096c;
+    --vertical-text: #e0aaff;
+    --vertical-text-hover: #ffffff;
+    --vertical-text-muted: #9d4edd;
+    --vertical-border: #5a189a;
+
+    --vertical-secondary-surface: #240046;
+    --vertical-secondary-surface-hover: #3c096c;
+    --vertical-secondary-surface-highlight: #5a189a;
+    --vertical-secondary-text: #e0aaff;
+    --vertical-secondary-text-hover: #ffffff;
+    --vertical-secondary-text-muted: #c77dff;
+    --vertical-secondary-border: #7b2cbf;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #10002b;
+    --horizontal-surface-hover: #240046;
+    --horizontal-surface-highlight: #3c096c;
+    --horizontal-text: #e0aaff;
+    --horizontal-text-hover: #ffffff;
+    --horizontal-text-muted: #9d4edd;
+    --horizontal-border: #5a189a;
+
+    --horizontal-secondary-surface: #240046;
+    --horizontal-secondary-surface-hover: #3c096c;
+    --horizontal-secondary-surface-highlight: #5a189a;
+    --horizontal-secondary-text: #e0aaff;
+    --horizontal-secondary-text-hover: #ffffff;
+    --horizontal-secondary-text-muted: #c77dff;
+    --horizontal-secondary-border: #7b2cbf;
+
+    /* Content (main page, tetap light untuk kontras) */
+    --content-surface: #ffffff;
+    --content-surface-inset: #f8fafc;
+    --content-surface-hover: #f1f5f9;
+    --content-surface-highlight: #e2e8f0;
+    --content-text: #1e1b29;
+    --content-text-hover: #3c096c;
+    --content-text-muted: #64748b;
+    --content-border: #cbd5e1;
+    --content-border-highlight: #9d4edd;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #9d4edd;
+    --accent-hover: #c77dff;
+    --accent-highlight: #e0aaff;
+    --accent-foreground: #ffffff;
+    --accent-muted: #7b2cbf;
+
+    /* ============ Semantic Colors ============ */
+    --success: #16a34a;
+    --success-hover: #22c55e;
+    --success-foreground: #ffffff;
+
+    --warning: #eab308;
+    --warning-hover: #facc15;
+    --warning-foreground: #ffffff;
+
+    --danger: #dc2626;
+    --danger-hover: #ef4444;
+    --danger-foreground: #ffffff;
+
+    --info: #3b82f6;
+    --info-hover: #60a5fa;
+    --info-foreground: #ffffff;
+  }
+
+  .vivid-night {
+    --base: #10002b;
+
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #10002b;
+    --vertical-surface-hover: #240046;
+    --vertical-surface-highlight: #3c096c;
+    --vertical-text: #e0aaff;
+    --vertical-text-hover: #ffffff;
+    --vertical-text-muted: #9d4edd;
+    --vertical-border: #5a189a;
+
+    --vertical-secondary-surface: #240046;
+    --vertical-secondary-surface-hover: #3c096c;
+    --vertical-secondary-surface-highlight: #5a189a;
+    --vertical-secondary-text: #e0aaff;
+    --vertical-secondary-text-hover: #ffffff;
+    --vertical-secondary-text-muted: #c77dff;
+    --vertical-secondary-border: #7b2cbf;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #10002b;
+    --horizontal-surface-hover: #240046;
+    --horizontal-surface-highlight: #3c096c;
+    --horizontal-text: #e0aaff;
+    --horizontal-text-hover: #ffffff;
+    --horizontal-text-muted: #9d4edd;
+    --horizontal-border: #5a189a;
+
+    --horizontal-secondary-surface: #240046;
+    --horizontal-secondary-surface-hover: #3c096c;
+    --horizontal-secondary-surface-highlight: #5a189a;
+    --horizontal-secondary-text: #e0aaff;
+    --horizontal-secondary-text-hover: #ffffff;
+    --horizontal-secondary-text-muted: #c77dff;
+    --horizontal-secondary-border: #7b2cbf;
+
+    /* Content (main page, full dark) */
+    --content-surface: #240046;
+    --content-surface-inset: #3c096c;
+    --content-surface-hover: #5a189a;
+    --content-surface-highlight: #7b2cbf;
+    --content-text: #e0aaff;
+    --content-text-hover: #ffffff;
+    --content-text-muted: #c77dff;
+    --content-border: #5a189a;
+    --content-border-highlight: #9d4edd;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #9d4edd;
+    --accent-hover: #c77dff;
+    --accent-highlight: #e0aaff;
+    --accent-foreground: #ffffff;
+    --accent-muted: #7b2cbf;
+
+    /* ============ Semantic Colors ============ */
+    --success: #16a34a;
+    --success-hover: #22c55e;
+    --success-foreground: #ffffff;
+
+    --warning: #eab308;
+    --warning-hover: #facc15;
+    --warning-foreground: #ffffff;
+
+    --danger: #dc2626;
+    --danger-hover: #ef4444;
+    --danger-foreground: #ffffff;
+
+    --info: #3b82f6;
+    --info-hover: #60a5fa;
+    --info-foreground: #ffffff;
+  }
+
+  .military {
+    --base: #2f3e46;
+
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #2f3e46;
+    --vertical-surface-hover: #354f52;
+    --vertical-surface-highlight: #52796f;
+    --vertical-text: #cad2c5;
+    --vertical-text-hover: #ffffff;
+    --vertical-text-muted: #84a98c;
+    --vertical-border: #52796f;
+
+    --vertical-secondary-surface: #354f52;
+    --vertical-secondary-surface-hover: #52796f;
+    --vertical-secondary-surface-highlight: #84a98c;
+    --vertical-secondary-text: #e8f0ec;
+    --vertical-secondary-text-hover: #ffffff;
+    --vertical-secondary-text-muted: #cad2c5;
+    --vertical-secondary-border: #84a98c;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #2f3e46;
+    --horizontal-surface-hover: #354f52;
+    --horizontal-surface-highlight: #52796f;
+    --horizontal-text: #cad2c5;
+    --horizontal-text-hover: #ffffff;
+    --horizontal-text-muted: #84a98c;
+    --horizontal-border: #52796f;
+
+    --horizontal-secondary-surface: #354f52;
+    --horizontal-secondary-surface-hover: #52796f;
+    --horizontal-secondary-surface-highlight: #84a98c;
+    --horizontal-secondary-text: #e8f0ec;
+    --horizontal-secondary-text-hover: #ffffff;
+    --horizontal-secondary-text-muted: #cad2c5;
+    --horizontal-secondary-border: #84a98c;
+
+    /* Content (main page, light) */
+    --content-surface: #cad2c5;
+    --content-surface-inset: #e8f0ec;
+    --content-surface-hover: #84a98c;
+    --content-surface-highlight: #52796f;
+    --content-text: #2f3e46;
+    --content-text-hover: #000000;
+    --content-text-muted: #52796f;
+    --content-border: #84a98c;
+    --content-border-highlight: #354f52;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #84a98c;
+    --accent-hover: #52796f;
+    --accent-highlight: #354f52;
+    --accent-foreground: #ffffff;
+    --accent-muted: #cad2c5;
+
+    /* ============ Semantic Colors ============ */
+    --success: #2f855a;
+    --success-hover: #38a169;
+    --success-foreground: #ffffff;
+
+    --warning: #b7791f;
+    --warning-hover: #d69e2e;
+    --warning-foreground: #ffffff;
+
+    --danger: #c53030;
+    --danger-hover: #e53e3e;
+    --danger-foreground: #ffffff;
+
+    --info: #3182ce;
+    --info-hover: #4299e1;
+    --info-foreground: #ffffff;
+  }
+
+  .military-dark {
+    --base: #2f3e46;
+
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #2f3e46;
+    --vertical-surface-hover: #354f52;
+    --vertical-surface-highlight: #52796f;
+    --vertical-text: #cad2c5;
+    --vertical-text-hover: #ffffff;
+    --vertical-text-muted: #84a98c;
+    --vertical-border: #52796f;
+
+    --vertical-secondary-surface: #354f52;
+    --vertical-secondary-surface-hover: #52796f;
+    --vertical-secondary-surface-highlight: #84a98c;
+    --vertical-secondary-text: #e8f0ec;
+    --vertical-secondary-text-hover: #ffffff;
+    --vertical-secondary-text-muted: #cad2c5;
+    --vertical-secondary-border: #84a98c;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #2f3e46;
+    --horizontal-surface-hover: #354f52;
+    --horizontal-surface-highlight: #52796f;
+    --horizontal-text: #cad2c5;
+    --horizontal-text-hover: #ffffff;
+    --horizontal-text-muted: #84a98c;
+    --horizontal-border: #52796f;
+
+    --horizontal-secondary-surface: #354f52;
+    --horizontal-secondary-surface-hover: #52796f;
+    --horizontal-secondary-surface-highlight: #84a98c;
+    --horizontal-secondary-text: #e8f0ec;
+    --horizontal-secondary-text-hover: #ffffff;
+    --horizontal-secondary-text-muted: #cad2c5;
+    --horizontal-secondary-border: #84a98c;
+
+    /* Content (main page, full dark) */
+    --content-surface: #2f3e46;
+    --content-surface-inset: #354f52;
+    --content-surface-hover: #52796f;
+    --content-surface-highlight: #84a98c;
+    --content-text: #cad2c5;
+    --content-text-hover: #ffffff;
+    --content-text-muted: #84a98c;
+    --content-border: #52796f;
+    --content-border-highlight: #84a98c;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #84a98c;
+    --accent-hover: #52796f;
+    --accent-highlight: #354f52;
+    --accent-foreground: #ffffff;
+    --accent-muted: #cad2c5;
+
+    /* ============ Semantic Colors ============ */
+    --success: #2f855a;
+    --success-hover: #38a169;
+    --success-foreground: #ffffff;
+
+    --warning: #b7791f;
+    --warning-hover: #d69e2e;
+    --warning-foreground: #ffffff;
+
+    --danger: #c53030;
+    --danger-hover: #e53e3e;
+    --danger-foreground: #ffffff;
+
+    --info: #3182ce;
+    --info-hover: #4299e1;
+    --info-foreground: #ffffff;
   }
 }
 
@@ -326,40 +888,6 @@
 
   --font-primary: "Mona Sans Variable", system-ui, sans-serif;
   --font-secondary: "manrope", system-ui, sans-serif;
-
-  /* ============ Ratio 60 (Dominant Layer) ============ */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-
-  --color-text-primary: var(--text-primary);
-  --color-text-highlight: var(--text-highlight);
-  --color-text-muted: var(--text-muted);
-
-  /* ============ Ratio 30 (Panels / Surfaces) ============ */
-  --color-panel-background: var(--panel-background);
-  --color-panel-foreground: var(--panel-foreground);
-
-  --color-panel-text-primary: var(--panel-text-primary);
-  --color-panel-text-highlight: var(--panel-text-highlight);
-  --color-panel-text-muted: var(--panel-text-muted);
-
-  /* ============ Ratio 10 (Accents / Borders) ============ */
-  --color-accent-primary: var(--accent-primary);
-  --color-accent-highlight: var(--accent-highlight);
-  --color-accent-muted: var(--accent-muted);
-
-  /* ============ Semantic Colors ============ */
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-
-  --color-warning: var(--warning);
-  --color-warning-foreground: var(--warning-foreground);
-
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-
-  --color-info: var(--info);
-  --color-info-foreground: var(--info-foreground);
 }
 
 html {

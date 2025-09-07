@@ -92,7 +92,7 @@ export default function GoodsIssueFormPage() {
     const itemId = methods.getValues(`items.${index}.item_id`);
 
     if (!itemId) {
-      showErrorToast("Pilih item terlebih dahulu");
+      showErrorToast("Pick item first");
       return;
     }
 
@@ -116,7 +116,7 @@ export default function GoodsIssueFormPage() {
       const results = await searchLocation(keyword);
       return results.map((location: any) => ({
         id: location.id,
-        name: `${location.code}-${location.name}`,
+        name: `${location.code}-${location.name}, qty:${location.qty}`,
       }));
     } catch (err) {
       console.error(err);
@@ -152,13 +152,13 @@ export default function GoodsIssueFormPage() {
 
       if (isEdit) {
         await updateGoodsIssue(id!, cleanedData);
-        showSuccessToast("Stock Issue berhasil diperbarui");
+        showSuccessToast("Inventory issue updated");
       } else {
         await createGoodsIssue(cleanedData);
-        showSuccessToast("Stock Issue berhasil dibuat");
+        showSuccessToast("Inventory issue created");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal Saving Stock Issue");
+      showErrorToast(err.message || "Failed to create inventory issue");
     } finally {
       setLoading(false);
     }
@@ -191,44 +191,46 @@ export default function GoodsIssueFormPage() {
 
         {/* Issue date */}
         <div>
-          <label className="block text-[var(--text-muted)]">Issued Date</label>
+          <label className="block text-[var(--content-text-muted)]">
+            Issued Date
+          </label>
           <input
             type="date"
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("issue_date")}
           />
         </div>
 
         {/* Notes */}
         <div>
-          <label className="block text-[var(--text-muted)]">Note</label>
+          <label className="block text-[var(--content-text-muted)]">Note</label>
           <textarea
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("notes")}
           />
         </div>
 
         {/* Items */}
         <div>
-          <table className="table-auto border border-[var(--border)] border-collapse w-full">
+          <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
             <thead>
               <tr>
-                <th className="border border-[var(--border)] px-2 py-1 text-[var(--text-muted)]">
+                <th className="border border-[var(--content-border)] px-2 py-1 text-[var(--content-text-muted)]">
                   Inv. Item
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1 text-[var(--text-muted)]">
+                <th className="border border-[var(--content-border)] px-2 py-1 text-[var(--content-text-muted)]">
                   Transfer From
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1 text-[var(--text-muted)]">
+                <th className="border border-[var(--content-border)] px-2 py-1 text-[var(--content-text-muted)]">
                   Transfer To
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1 text-[var(--text-muted)]">
+                <th className="border border-[var(--content-border)] px-2 py-1 text-[var(--content-text-muted)]">
                   Max Qty
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1 text-[var(--text-muted)]">
+                <th className="border border-[var(--content-border)] px-2 py-1 text-[var(--content-text-muted)]">
                   Qty
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1 text-[var(--text-muted)]">
+                <th className="border border-[var(--content-border)] px-2 py-1 text-[var(--content-text-muted)]">
                   Action
                 </th>
               </tr>
@@ -237,7 +239,7 @@ export default function GoodsIssueFormPage() {
               {fields.map((field, index) => (
                 <tr key={field.id}>
                   {/* Item */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.item_id`}
                       control={control}
@@ -270,7 +272,7 @@ export default function GoodsIssueFormPage() {
                   </td>
 
                   {/* Source Location */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.source_location_id`}
                       control={control}
@@ -319,7 +321,7 @@ export default function GoodsIssueFormPage() {
                   </td>
 
                   {/* Target Location */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.target_location_id`}
                       control={control}
@@ -342,7 +344,9 @@ export default function GoodsIssueFormPage() {
                                 val?.name || ""
                               );
                             }}
-                            fetchOptions={handleTargetLocation}
+                            fetchOptions={(val) =>
+                              handleSearchLocation(val, index)
+                            }
                           />
                         );
                       }}
@@ -357,13 +361,13 @@ export default function GoodsIssueFormPage() {
                   </td>
 
                   {/* MAX QTY */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <input
                       type="number"
                       disabled
                       placeholder="Max Qty"
                       readOnly
-                      className="w-24 p-2 bg-[var(--background)] rounded"
+                      className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
                       {...register(`items.${index}.max_qty`, {
                         valueAsNumber: true,
                       })}
@@ -378,11 +382,11 @@ export default function GoodsIssueFormPage() {
                   </td>
 
                   {/* Quantity */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <input
                       type="number"
                       placeholder="Qty"
-                      className="w-24 p-2 bg-[var(--background)] rounded"
+                      className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
                       {...register(`items.${index}.quantity`, {
                         valueAsNumber: true,
                       })}
@@ -397,11 +401,11 @@ export default function GoodsIssueFormPage() {
                   </td>
 
                   {/* Action */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--text-primary)] rounded"
+                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--content-text)] rounded"
                     >
                       delete
                     </button>
@@ -422,7 +426,7 @@ export default function GoodsIssueFormPage() {
                         notes: "",
                       })
                     }
-                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--text-primary)] rounded"
+                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--content-text)] rounded"
                   >
                     + Add Item
                   </button>

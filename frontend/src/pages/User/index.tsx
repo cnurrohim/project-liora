@@ -174,7 +174,7 @@ export default function UserListPage() {
               {departments.map((d) => (
                 <span
                   key={d.name}
-                  className="bg-[var(--background)] px-2 py-1 rounded text-xs text-[var(--text-primary)]"
+                  className="bg-[var(--content-surface)] px-2 py-1 rounded text-xs text-[var(--content-text)]"
                 >
                   {d.name}
                 </span>
@@ -196,10 +196,10 @@ export default function UserListPage() {
               {roles.map((r) => (
                 <span
                   key={r.name}
-                  className={`px-2 py-1 rounded text-xs relative bg-[var(--background)] ${
+                  className={`px-2 py-1 rounded text-xs relative bg-[var(--content-surface)] ${
                     r.is_default
-                      ? " text-[var(--text-primary)]"
-                      : " text-[var(--text-primary)]"
+                      ? " text-[var(--content-text)]"
+                      : " text-[var(--content-text)]"
                   }`}
                 >
                   {r.name}
@@ -313,7 +313,7 @@ export default function UserListPage() {
         <>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[var(--background)] text-[var(--text-muted)]">
+              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text-muted)]">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -342,7 +342,10 @@ export default function UserListPage() {
               </thead>
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-[var(--border)]">
+                  <tr
+                    key={row.id}
+                    className="border-b border-[var(--content-border)]"
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="p-2 align-top">
                         {flexRender(
@@ -366,14 +369,14 @@ export default function UserListPage() {
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-[var(--background)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
+                className="px-2 py-1 bg-[var(--content-surface)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
               >
                 Prev
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-[var(--background)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
+                className="px-2 py-1 bg-[var(--content-surface)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
               >
                 Next
               </button>

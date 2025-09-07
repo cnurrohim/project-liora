@@ -26,9 +26,11 @@ export default function UserFormPage({ isEdit, departments }: Props) {
       <h1 className="text-xl font-bold">{isEdit ? "Edit" : "Add"} User</h1>
 
       <div>
-        <label className="block">Full Name</label>
+        <label className="block text-[var(--content-text-muted)]">
+          Full Name
+        </label>
         <input
-          className="w-full p-2 bg-[var(--background)] rounded"
+          className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
           {...register("name")}
         />
         {typeof errors.name?.message === "string" && (
@@ -37,9 +39,11 @@ export default function UserFormPage({ isEdit, departments }: Props) {
       </div>
 
       <div>
-        <label className="block">Username</label>
+        <label className="block text-[var(--content-text-muted)]">
+          Username
+        </label>
         <input
-          className="w-full p-2 bg-[var(--background)] rounded"
+          className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
           {...register("username")}
         />
         {typeof errors.username?.message === "string" && (
@@ -50,9 +54,9 @@ export default function UserFormPage({ isEdit, departments }: Props) {
       </div>
 
       <div>
-        <label className="block">Email</label>
+        <label className="block text-[var(--content-text-muted)]">Email</label>
         <input
-          className="w-full p-2 bg-[var(--background)] rounded"
+          className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
           {...register("email")}
         />
         {typeof errors.email?.message === "string" && (
@@ -62,10 +66,12 @@ export default function UserFormPage({ isEdit, departments }: Props) {
 
       {!isEdit && (
         <div>
-          <label className="block">Password</label>
+          <label className="block text-[var(--content-text-muted)]">
+            Password
+          </label>
           <input
             type="password"
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("password", { required: true })}
           />
           {typeof errors.password?.message === "string" && (
@@ -77,7 +83,9 @@ export default function UserFormPage({ isEdit, departments }: Props) {
       )}
 
       <div>
-        <label className="block">Departments</label>
+        <label className="block text-[var(--content-text-muted)]">
+          Departments
+        </label>
         <Controller
           control={control}
           name="departments"

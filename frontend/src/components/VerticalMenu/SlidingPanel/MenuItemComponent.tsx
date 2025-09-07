@@ -27,8 +27,8 @@ export default function MenuItemComponent({
     <div className="flex flex-row items-center cursor-pointer transition group">
       <div
         key={i}
-        className="flex flex-1 items-center text-[var(--panel-secondary-text-primary)] 
-                          hover:text-[var(--panel-secondary-text-highlight)] 
+        className="flex flex-1 items-center text-[var(--vertical-secondary-text)] 
+                          hover:text-[var(--vertical-secondary-text-hover)] 
                           hover:bg-[var(--accent-primary)]  pl-2 py-2 rounded-md"
         onClick={() => {
           if (item.type === MENU.TYPE.GROUP) {
@@ -65,7 +65,7 @@ export default function MenuItemComponent({
         <button
           type="button"
           title={item.isPinned ? "Unpin menu" : "Pin menu"}
-          className="text-[var(--panel-text-primary)] hover:bg-[var(--accent-primary)] hover:text-[var(--panel-secondary-text-highlight)]  p-2 rounded cursor-pointer"
+          className="text-[var(--vertical-secondary-text)] hover:bg-[var(--accent-primary)] hover:text-[var(--vertical-secondary-text-hover)]  p-2 rounded cursor-pointer"
           onClick={() => onPinClick(item)}
         >
           {iconRenderer?.({

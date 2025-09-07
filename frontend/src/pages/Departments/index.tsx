@@ -112,11 +112,11 @@ export default function DepartmentListPage() {
                 <div>{row.getValue("name")} </div>
                 <div>
                   {row.getIsExpanded() ? (
-                    <div className=" text-[var(--text-primary)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className=" text-[var(--content-text)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowUpWideFill" size={20} />
                     </div>
                   ) : (
-                    <div className="text-[var(--text-primary)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className="text-[var(--content-text)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowDownWideFill" size={20} />
                     </div>
                   )}
@@ -214,7 +214,7 @@ export default function DepartmentListPage() {
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[var(--background)] text-[var(--text-muted)]">
+            <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text-muted)]">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -243,7 +243,10 @@ export default function DepartmentListPage() {
             </thead>
             <tbody>
               {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="border-b border-[var(--border)]">
+                <tr
+                  key={row.id}
+                  className="border-b border-[var(--content-border)]"
+                >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="p-2">
                       {flexRender(

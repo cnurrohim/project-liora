@@ -200,7 +200,7 @@ export default function StockLocationsListPage() {
         <>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[var(--background)] text-[var(--text-muted)]">
+              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text-muted)]">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -229,7 +229,10 @@ export default function StockLocationsListPage() {
               </thead>
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-[var(--border)]">
+                  <tr
+                    key={row.id}
+                    className="border-b border-[var(--content-border)]"
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="p-2 align-top">
                         {flexRender(
@@ -253,14 +256,14 @@ export default function StockLocationsListPage() {
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-gray-700 text-[var(--text-primary)] rounded disabled:opacity-50"
+                className="px-2 py-1 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded disabled:opacity-50"
               >
                 Prev
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-gray-700 text-[var(--text-primary)] rounded disabled:opacity-50"
+                className="px-2 py-1 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded disabled:opacity-50"
               >
                 Next
               </button>

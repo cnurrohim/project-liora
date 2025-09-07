@@ -159,7 +159,7 @@ export default function PurchaseReceiveKiosk() {
               <label>Tanggal Terima</label>
               <input
                 type="date"
-                className="w-full p-2 bg-[var(--background)] rounded"
+                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                 {...methods.register("receive_date")}
               />
 
@@ -171,7 +171,9 @@ export default function PurchaseReceiveKiosk() {
             </div>
 
             <div>
-              <label className="block">Lokasi Save</label>
+              <label className="block text-[var(--content-text-muted)]">
+                Lokasi Save
+              </label>
               {/* Target Location */}
               <SearchSelect
                 value={selectedLocation}
@@ -192,25 +194,25 @@ export default function PurchaseReceiveKiosk() {
             <div>
               <label>Catatan</label>
               <textarea
-                className="w-full p-2 bg-[var(--background)] rounded"
+                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                 {...methods.register("note")}
               />
             </div>
 
             <div>
-              <table className="table-auto border border-[var(--border)] border-collapse w-full">
+              <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
                 <thead>
                   <tr>
-                    <th className="border border-[var(--border)] px-2 py-1">
+                    <th className="border border-[var(--content-border)] px-2 py-1">
                       Item
                     </th>
-                    <th className="border border-[var(--border)] px-2 py-1">
+                    <th className="border border-[var(--content-border)] px-2 py-1">
                       Ordered
                     </th>
-                    <th className="border border-[var(--border)] px-2 py-1">
+                    <th className="border border-[var(--content-border)] px-2 py-1">
                       Remaining
                     </th>
-                    <th className="border border-[var(--border)] px-2 py-1">
+                    <th className="border border-[var(--content-border)] px-2 py-1">
                       Qty Received
                     </th>
                   </tr>
@@ -218,19 +220,19 @@ export default function PurchaseReceiveKiosk() {
                 <tbody>
                   {fields.map((field, index) => (
                     <tr key={field.id}>
-                      <td className="border border-[var(--border)] px-2 py-1">
+                      <td className="border border-[var(--content-border)] px-2 py-1">
                         {field.item_name}
                       </td>
-                      <td className="border border-[var(--border)] px-2 py-1 text-right">
+                      <td className="border border-[var(--content-border)] px-2 py-1 text-right">
                         {field.ordered_qty}
                       </td>
-                      <td className="border border-[var(--border)] px-2 py-1 text-right">
+                      <td className="border border-[var(--content-border)] px-2 py-1 text-right">
                         {field.remaining_qty}
                       </td>
-                      <td className="w-40 border border-[var(--border)] px-2 py-1">
+                      <td className="w-40 border border-[var(--content-border)] px-2 py-1">
                         <input
                           type="number"
-                          className="w-40 p-2 border border-[var(--border)] bg-[var(--background)] rounded text-right"
+                          className="w-40 p-2 border border-[var(--content-border)] bg-[var(--content-surface-hover)] rounded text-right"
                           {...methods.register(`items.${index}.received_qty`, {
                             valueAsNumber: true,
                             validate: (value) => {

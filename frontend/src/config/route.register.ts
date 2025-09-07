@@ -163,14 +163,14 @@ export function registerRoutes() {
   /** INVENTORY USE CASE */
   RouteRegistry.register(
     "/pages/inventory/stock-location",
-    "list stock locations",
+    "list Inventory locations",
     React.createElement(StockLocationsListPage),
     "page"
   );
 
   RouteRegistry.register(
     "/stock-location/create",
-    "create new stock location",
+    "create new inventory location",
     React.createElement(StockLocationsFormPage),
     "page"
   );
@@ -275,56 +275,56 @@ export function registerRoutes() {
 
   RouteRegistry.register(
     "/pages/inventory/stock-adjustments",
-    "list stock adjustments",
+    "list inventory adjustments",
     React.createElement(StockAdjustmentListPage),
     "page"
   );
 
   RouteRegistry.register(
     "/stock-adjustment/create",
-    "stock adjustment form",
+    "Inventory adjustment form",
     React.createElement(StockAdjustmentFormPage),
     "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/stock-opnames",
-    "list stock opnames",
+    "list inventory opnames",
     React.createElement(StockOpnameListPage),
     "page"
   );
 
   RouteRegistry.register(
     "/stock-opname/create",
-    "stock opname form",
+    "Inventory opname form",
     React.createElement(StockOpnameFormPage),
     "page"
   );
 
   RouteRegistry.register(
     "/stock-opname/:id/edit",
-    "stock opname edit form",
+    "Inventory opname edit form",
     React.createElement(StockOpnameFormPage),
     "action"
   );
 
   RouteRegistry.register(
     "/stock-opname/:id/review",
-    "stock opname review form",
+    "Inventory opname review form",
     React.createElement(StockOpnameFormPage),
     "action"
   );
 
   RouteRegistry.register(
     "/pages/inventory/stock-movements",
-    "Stock Movements",
+    "Inventory Movements",
     React.createElement(StockMovementListPage),
     "page"
   );
 
   RouteRegistry.register(
     "/pages/inventory/stock-on-hand",
-    "Stock On Hand",
+    "Inventory On Hand",
     React.createElement(StockOnHandListPage),
     "page"
   );
@@ -338,7 +338,7 @@ export function registerRoutes() {
 
   RouteRegistry.register(
     "/pages/inventory/stock-history-report/",
-    "Stock History",
+    "Inventory History",
     React.createElement(StockHistoryReportPage),
     "page"
   );

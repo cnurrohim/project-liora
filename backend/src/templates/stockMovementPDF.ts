@@ -28,30 +28,30 @@ export function generateStockMovementHTML(
         </style>
       </head>
       <body>
-        <h2 style="text-align:center">Stock Movement Report</h2>
+        <h2 style="text-align:center">Inventory Movement Report</h2>
         <div class="filters">
           <div><strong>SKU:</strong> ${search || "-"}</div>
-          <div><strong>Tipe Pergerakan:</strong> ${movementTypeLabel}</div>
-          <div><strong>Dari Tanggal:</strong> ${date_from || "-"}</div>
-          <div><strong>Sampai Tanggal:</strong> ${date_to || "-"}</div>
+          <div><strong>Movement Type:</strong> ${movementTypeLabel}</div>
+          <div><strong>Date From:</strong> ${date_from || "-"}</div>
+          <div><strong>Date To:</strong> ${date_to || "-"}</div>
         </div>
 
         <table>
           <thead>
             <tr>
               <th>#</th>
-              <th>Tanggal</th>
+              <th>Date</th>
               <th>SKU</th>
-              <th>Nama</th>
-              <th>Tipe</th>
-              <th>Arah</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Direction</th>
               <th>Qty</th>
-              <th>Saldo Setelah</th>
-              <th>Lokasi Asal</th>
-              <th>Lokasi Tujuan</th>
+              <th>Balance After</th>
+              <th>Transfered From</th>
+              <th>Transfered To</th>
               <th>Ref Type</th>
-              <th>Catatan</th>
-              <th>Dibuat Oleh</th>
+              <th>Note</th>
+              <th>Created By</th>
             </tr>
           </thead>
           <tbody>

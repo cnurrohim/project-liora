@@ -21,7 +21,7 @@ export function ButtonLink({
       className={
         className
           ? className
-          : "px-2 py-1 text-[var(--text-primary)] rounded hover:border-[var(--border-highlight)] hover:text-[var(--text-hover)] hover:bg-[var(--background)] text-sm flex items-center gap-1 cursor-pointer"
+          : "px-2 py-1 text-[var(--content-text)] rounded hover:border-[var(--content-border-highlight)] hover:text-[var(--content-text-hover)] hover:bg-[var(--content-surface-hover)] text-sm flex items-center gap-1 cursor-pointer"
       }
     >
       <IconRenderer name={icon} size={15} /> {label}

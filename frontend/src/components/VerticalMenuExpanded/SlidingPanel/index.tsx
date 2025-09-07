@@ -74,7 +74,7 @@ export default function SlidingPanel({
     <aside
       className={`
     fixed top-0 ${state.position === "left" ? "left-14" : "right-14"}
-    h-full w-80 bg-[var(--panel-secondary-background)] text-[var(--text-primary)] shadow-xl
+    h-full w-80 bg-[var(--vertical-secondary-surface)] shadow-xl
     transform transition-transform duration-300 z-30 flex flex-col 
     ${
       visible
@@ -99,8 +99,7 @@ export default function SlidingPanel({
           {appInfo.name}
         </span>
         <button
-          className="cursor-pointer mt-1 bg-[var(--panel-secondary-inset)] 
-                          text-[var(--panel-secondary-text-primary)]  rounded-full"
+          className="cursor-pointer mt-1 bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)]  rounded-full"
           title="Collapse menu"
           onClick={() => SlidingPanelController.close()}
         >
@@ -118,7 +117,7 @@ export default function SlidingPanel({
       {/* Search Input */}
 
       <div className="relative mb-6 px-3">
-        <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--panel-secondary-text-primary)]">
+        <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--vertical-secondary-text)]">
           {iconRenderer?.({
             name: "RiSearchLine",
             size: 18,
@@ -129,7 +128,9 @@ export default function SlidingPanel({
           placeholder="Search menu..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 pl-10 w-full rounded bg-[var(--panel-secondary-inset)] text-[var(--panel-secondary-text-primary)] focus:outline-none"
+          className="p-2 pl-10 w-full rounded 
+          bg-[var(--vertical-secondary-surface-hover)] 
+          text-[var(--vertical-secondary-text)] focus:outline-none"
         />
       </div>
 
@@ -138,7 +139,7 @@ export default function SlidingPanel({
         {/* Menu List */}
         {state.start?.label && (
           <>
-            <div className="font-primary text-sm uppercase text-[var(--panel-secondary-text-primary)] font-bold mb-4">
+            <div className="font-primary text-sm uppercase text-[var(--vertical-secondary-text)] font-bold mb-4">
               {state.start.label}
             </div>
           </>
@@ -168,10 +169,10 @@ export default function SlidingPanel({
                 onClick={() => SlidingPanelController.goBack()}
                 className="cursor-pointer "
               >
-                <span className="ml-auto text-[var(--panel-secondary-text-primary)] group-hover:text-[var(--panel-secondary-text-highlight)] pr-2">
+                <span className="ml-auto text-[var(--vertical-secondary-text)] group-hover:text-[var(--vertical-secondary-text-hover)] pr-2">
                   ⮬
                 </span>
-                <span className="font-medium text-[var(--panel-text-primary)] group-hover:text-[var(--panel-secondary-text-highlight)]">
+                <span className="font-medium text-[var(--vertical-text)] group-hover:text-[var(--vertical-secondary-text-hover)]">
                   Back
                 </span>
               </div>
@@ -197,13 +198,13 @@ export default function SlidingPanel({
               className="w-[52px] h-[52px] rounded-full object-cover border border-gray-600"
             />
             <div className="flex flex-col">
-              <span className="font-semibold text-[var(--panel-secondary-text-primary)] text-sm">
+              <span className="font-semibold text-[var(--vertical-secondary-text)] text-sm">
                 {userProfile.user?.name}
               </span>
-              <span className="text-xs text-[var(--panel-secondary-text-muted)]">
+              <span className="text-xs text-[var(--vertical-secondary-text-muted)]">
                 @{userProfile.user?.username}
               </span>
-              <span className="text-xs text-[var(--panel-secondary-text-muted)]">
+              <span className="text-xs text-[var(--vertical-secondary-text-muted)]">
                 {userProfile.user?.defaultRole?.name}
               </span>
             </div>
@@ -214,10 +215,10 @@ export default function SlidingPanel({
             <div className="relative mt-3">
               <button
                 onClick={() => setShowRoles((prev) => !prev)}
-                className={`cursor-pointer relative w-full text-[var(--panel-secondary-text-primary)] hover:text-[var(--panel-secondary-text-highlight)] hover:bg-[var(--accent-primary)] ${
+                className={`cursor-pointer relative w-full text-[var(--vertical-secondary-text)] hover:text-[var(--vertical-secondary-text-hover)] hover:bg-[var(--accent-primary)] ${
                   showRoles
-                    ? "text-[var(--panel-secondary-text-primary)]"
-                    : "text-[var(--panel-secondary-text-highlight)]"
+                    ? "text-[var(--vertical-secondary-text-muted)]"
+                    : "text-[var(--vertical-secondary-text)]"
                 } text-sm py-1 rounded flex justify-between items-center px-3`}
               >
                 Switch Role
@@ -250,13 +251,14 @@ export default function SlidingPanel({
                           key={role.id}
                           onClick={() => onSwitchRole(role.id)}
                           className="cursor-pointer 
-                                    bg-[var(--panel-secondary-inset)] 
-                                    block w-full 
-                                    text-left 
-                                    px-3 py-2 text-sm 
-                                    text-[var(--panel-secondary-text-primary)] 
-                                    hover:text-[var(--panel-secondary-text-highlight)] 
-                                    hover:bg-[var(--accent-primary)] rounded"
+                          bg-[var(--vertical-secondary-surface-hover)] 
+                          text-[var(--vertical-secondary-text)] 
+                          
+                          block w-full 
+                          text-left 
+                          px-3 py-2 text-sm 
+                          hover:text-[var(--vertical-secondary-text-hover)] 
+                          hover:bg-[var(--accent-primary)] rounded"
                         >
                           {role.name}
                         </button>
@@ -273,10 +275,11 @@ export default function SlidingPanel({
               <button
                 onClick={onViewProfileClick}
                 className="cursor-pointer mt-3 w-full 
-                          bg-[var(--panel-secondary-foreground)] 
-                          text-[var(--panel-secondary-text-primary)] 
-                                    hover:text-[var(--panel-secondary-text-highlight)] 
-                                    hover:bg-[var(--accent-primary)] text-sm py-1 rounded"
+                bg-[var(--vertical-secondary-surface-hover)] 
+                text-[var(--vertical-secondary-text)] 
+                
+                          hover:text-[var(--vertical-secondary-text-hover)] 
+                          hover:bg-[var(--accent-primary)] text-sm py-1 rounded"
               >
                 View Profile
               </button>
@@ -285,10 +288,11 @@ export default function SlidingPanel({
               <button
                 onClick={onLogout}
                 className="cursor-pointer mt-3 px-2 w-fit 
-                          border-[var(--panel-secondary-border)] border-1 
-                          text-[var(--panel-secondary-text-primary)] 
-                                    hover:text-[var(--panel-secondary-text-highlight)] 
-                                    hover:bg-[var(--accent-primary)] text-sm py-1 rounded"
+                border-[var(--vertical-secondary-border)] border-1 
+                text-[var(--vertical-secondary-text)] 
+                
+                          hover:text-[var(--vertical-secondary-text-hover)] 
+                          hover:bg-[var(--accent-primary)] text-sm py-1 rounded"
               >
                 {iconRenderer?.({
                   name: "RiShutDownLine",

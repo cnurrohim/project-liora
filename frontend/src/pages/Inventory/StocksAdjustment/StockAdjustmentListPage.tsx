@@ -155,7 +155,7 @@ export default function StockAdjustmentListPage() {
             {canApprove && row.original.status === "draft" && (
               <ApproveButtonLink
                 onClick={() => handleConfirm(row.original.id)}
-                className={`flex cursor-pointer hover:bg-[var(--info-hover)] px-2 py-1 rounded text-[var(--text-primary)] text-xs font-semibold bg-[var(--info)]`}
+                className={`flex cursor-pointer hover:bg-[var(--info-hover)] px-2 py-1 rounded text-[var(--content-text)] text-xs font-semibold bg-[var(--info)]`}
               />
             )}
           </div>
@@ -180,7 +180,7 @@ export default function StockAdjustmentListPage() {
             {canApprove && row.original.status === "draft" && (
               <CancelButtonLink
                 onClick={() => handleCancel(row.original.id)}
-                className={`flex gap-1 cursor-pointer hover:bg-amber-500 px-2 py-1 rounded text-[var(--text-primary)] text-xs font-semibold bg-amber-600`}
+                className={`flex gap-1 cursor-pointer hover:bg-amber-500 px-2 py-1 rounded text-[var(--content-text)] text-xs font-semibold bg-amber-600`}
               />
             )}
           </div>

@@ -129,7 +129,7 @@ export default function RoleFormPage() {
   };
 
   if (loading)
-    return <div className="text-[var(--text-primary)]">Loading...</div>;
+    return <div className="text-[var(--content-text)]">Loading...</div>;
 
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4 max-w-3/4 mx-auto">
@@ -147,7 +147,7 @@ export default function RoleFormPage() {
           name="name"
           value={form.name}
           onChange={handleChange}
-          className="w-full p-2 bg-[var(--background)] rounded"
+          className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
         />
       </div>
 
@@ -157,7 +157,7 @@ export default function RoleFormPage() {
           name="description"
           value={form.description}
           onChange={handleChange}
-          className="w-full p-2 bg-[var(--background)] rounded"
+          className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
         />
       </div>
 

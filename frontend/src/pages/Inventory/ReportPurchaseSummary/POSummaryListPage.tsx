@@ -139,7 +139,7 @@ export default function POSummaryListPage() {
         accessorKey: "received_percent",
         header: "Progress",
         cell: ({ row }) => (
-          <div className="w-32 bg-[var(--inset)] rounded-full h-3 overflow-hidden">
+          <div className="w-32 bg-[var(--content-surface-hover)] rounded-full h-3 overflow-hidden">
             <div
               className={`h-3 ${
                 row.original.received_percent >= 100
@@ -204,7 +204,7 @@ export default function POSummaryListPage() {
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
-            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
+            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -213,13 +213,13 @@ export default function POSummaryListPage() {
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
+            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
           />
         </div>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
+          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
         >
           <option value="">All Status</option>
           <option value="Open">Open</option>

@@ -114,7 +114,7 @@ export default function DepartmentFormPage() {
         <div>
           <label className="block mb-1">Department Name</label>
           <input
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             value={form.name}
             onChange={(e) => handleChange("name", e.target.value)}
             required
@@ -124,7 +124,7 @@ export default function DepartmentFormPage() {
         <div>
           <label className="block mb-1">Description</label>
           <input
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             value={form.description}
             onChange={(e) => handleChange("description", e.target.value)}
           />
@@ -133,10 +133,10 @@ export default function DepartmentFormPage() {
         <div>
           <label className="block mb-1">
             Parent Department{" "}
-            <span className="text-[var(--text-muted)]">(optional)</span>{" "}
+            <span className="text-[var(--content-text-muted)]">(optional)</span>{" "}
           </label>
           <select
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             value={form.parent_id || ""}
             onChange={(e) => handleChange("parent_id", e.target.value || null)}
           >

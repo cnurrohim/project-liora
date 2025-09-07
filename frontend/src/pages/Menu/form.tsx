@@ -149,7 +149,7 @@ export default function MenuFormPage() {
         <div>
           <label>Label</label>
           <input
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("label")}
           />
           {errors.label && (
@@ -163,7 +163,7 @@ export default function MenuFormPage() {
         <div>
           <label>Description</label>
           <input
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("description")}
           />
         </div>
@@ -192,7 +192,7 @@ export default function MenuFormPage() {
         <div>
           <label>Tipe</label>
           <select
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("type")}
           >
             {typeOptions.map((opt) => (
@@ -227,7 +227,7 @@ export default function MenuFormPage() {
           <div>
             <label>Command</label>
             <select
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("command")}
             >
               <option value="">(pilih command)</option>
@@ -244,7 +244,7 @@ export default function MenuFormPage() {
         <div>
           <label>Parent Menu (opsional)</label>
           <select
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("parent_id")}
           >
             <option value="">(tanpa parent)</option>
@@ -262,7 +262,7 @@ export default function MenuFormPage() {
         <div>
           <label>Alignment</label>
           <select
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("alignment")}
           >
             {alignmentOptions.map((a) => (

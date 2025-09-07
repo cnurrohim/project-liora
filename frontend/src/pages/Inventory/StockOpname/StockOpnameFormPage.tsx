@@ -18,6 +18,7 @@ import {
   updateStockOpname,
   getStockOpnameById,
 } from "./stockOpname.api";
+import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
 export default function StockOpnameFormPage() {
   const { canView, canUpdate, canCreate, canReview } = usePermissions();
@@ -90,7 +91,7 @@ export default function StockOpnameFormPage() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari item");
+      showErrorToast("Failed to fetch item");
       return [];
     }
   };
@@ -136,16 +137,16 @@ export default function StockOpnameFormPage() {
 
       if (isEdit || isReview) {
         await updateStockOpname(id!, cleanedData);
-        const messageEdit = "Stock Opname berhasil diperbarui";
-        const messageReview = "Stock Opname berhasil direview";
+        const messageEdit = "Inventory Opname Updated";
+        const messageReview = "Inventory Opname Reviewed";
         const successMessage = isEdit ? messageEdit : messageReview;
         showSuccessToast(successMessage);
       } else {
         await createStockOpname(cleanedData);
-        showSuccessToast("Stock Opname berhasil dibuat");
+        showSuccessToast("Inventory Opname created");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal Saving Stock Opname");
+      showErrorToast(err.message || "Failed to create inventory ppname");
     } finally {
       setLoading(false);
     }
@@ -154,24 +155,31 @@ export default function StockOpnameFormPage() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full p-4">
+        <BackToListLink
+          route="/pages/inventory/stock-opnames"
+          label="Inventory opnames list"
+        />
+
         <h1 className="text-xl font-bold">
           {isEdit
-            ? "Edit Stock Opname"
+            ? "Edit Inventory Opname"
             : isReview
-            ? "Review Stock Opname"
-            : "Tambah Stock Opname"}
+            ? "Review Inventory Opname"
+            : "Tambah Inventory Opname"}
         </h1>
 
         {/* Opname Date */}
         <div>
-          <label className="block">Tanggal Opname</label>
+          <label className="block text-[var(--content-text-muted)]">
+            Tanggal Opname
+          </label>
           <Controller
             name="opname_date"
             control={control}
             render={({ field }) => (
               <input
                 type="date"
-                className="w-full p-2 bg-[var(--background)] rounded"
+                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                 {...field}
               />
             )}
@@ -183,9 +191,10 @@ export default function StockOpnameFormPage() {
           )}
         </div>
 
-        {/** LOKASI OPNAME */}
         <div>
-          <label className="block">Lokasi Opname</label>
+          <label className="block text-[var(--content-text-muted)]">
+            Inventory Location
+          </label>
           <Controller
             name={`location_id`}
             control={control}
@@ -201,8 +210,6 @@ export default function StockOpnameFormPage() {
                   onChange={(val) => {
                     field.onChange(val?.id || "");
                     methods.setValue(`location_name`, val?.name || "");
-
-                    // Reset semua items kalau lokasi dihapus / diganti
                     methods.setValue("items", []);
                   }}
                   fetchOptions={(val) => handleSearchLocation(val)}
@@ -218,16 +225,15 @@ export default function StockOpnameFormPage() {
           )}
         </div>
 
-        {/* Notes */}
         <div>
-          <label className="block">Catatan</label>
+          <label className="block text-[var(--content-text-muted)]">Note</label>
           <Controller
             name="notes"
             control={control}
             render={({ field }) => (
               <textarea
                 readOnly={isReview}
-                className="w-full p-2 bg-[var(--background)] rounded"
+                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                 {...field}
                 value={field.value ?? ""}
               />
@@ -241,17 +247,18 @@ export default function StockOpnameFormPage() {
           )}
         </div>
 
-        {/* Review Notes */}
         {id && (
           <div>
-            <label className="block">Review Note</label>
+            <label className="block text-[var(--content-text-muted)]">
+              Review Note
+            </label>
             <Controller
               name="review_note"
               control={control}
               render={({ field }) => (
                 <textarea
                   readOnly={isEdit}
-                  className="w-full p-2 bg-[var(--background)] rounded"
+                  className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                   {...field}
                   value={field.value ?? ""}
                 />
@@ -268,19 +275,19 @@ export default function StockOpnameFormPage() {
 
         {/* Items */}
         <div>
-          <table className="table-auto border border-[var(--border)] border-collapse w-full">
+          <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
             <thead>
               <tr>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Item
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Qty System
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Qty Counted
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Action
                 </th>
               </tr>
@@ -289,7 +296,7 @@ export default function StockOpnameFormPage() {
               {fields.map((field, index) => (
                 <tr key={field.id}>
                   {/* Item */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.item_id`}
                       control={control}
@@ -340,7 +347,7 @@ export default function StockOpnameFormPage() {
                   </td>
 
                   {/* Qty System */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_system`}
                       control={control}
@@ -349,7 +356,7 @@ export default function StockOpnameFormPage() {
                           type="number"
                           disabled
                           readOnly
-                          className="w-24 p-2 bg-[var(--background)] rounded"
+                          className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
                           {...field}
                           value={field.value ?? 0}
                         />
@@ -358,7 +365,7 @@ export default function StockOpnameFormPage() {
                   </td>
 
                   {/* Qty Counted */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_counted`}
                       control={control}
@@ -366,7 +373,7 @@ export default function StockOpnameFormPage() {
                         <input
                           type="string"
                           inputMode="numeric"
-                          className="w-24 p-2 bg-[var(--background)] rounded"
+                          className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
                           {...field}
                           value={field.value ?? ""}
                           onChange={(e) =>
@@ -378,13 +385,13 @@ export default function StockOpnameFormPage() {
                   </td>
 
                   {/* Action */}
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="px-2 py-1 bg-red-600 text-[var(--text-primary)] rounded"
+                      className="px-2 py-1 bg-red-600 text-[var(--content-text)] rounded"
                     >
-                      Hapus
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -401,9 +408,9 @@ export default function StockOpnameFormPage() {
                         quantity_counted: 0,
                       })
                     }
-                    className="px-3 py-1 bg-green-600 text-[var(--text-primary)] rounded"
+                    className="px-3 py-1 bg-green-600 text-[var(--content-text)] rounded"
                   >
-                    + Tambah Item
+                    + Add Item
                   </button>
                 </td>
               </tr>

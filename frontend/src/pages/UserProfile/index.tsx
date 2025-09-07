@@ -141,12 +141,12 @@ export default function UserProfilePage() {
                   field.onChange(file);
                   if (file) setPreviewUrl(URL.createObjectURL(file));
                 }}
-                className="block w-full text-sm text-[var(--text-primary)]
+                className="block w-full text-sm text-[var(--content-text)]
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-md file:border-0
                   file:text-sm file:font-semibold
-                  file:bg-[var(--background)] file:text-[var(--text-primary)]
-                  hover:file:bg-[var(--hover)]
+                  file:bg-[var(--content-surface)] file:text-[var(--content-text)]
+                  hover:file:bg-[var(--content-surface-hover)]
                   cursor-pointer"
               />
               {previewUrl && (
@@ -172,7 +172,7 @@ export default function UserProfilePage() {
         <input
           type="text"
           {...register("name")}
-          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
+          className="w-full bg-[var(--content-surface)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--content-border)] p-2"
         />
         {errors.name && (
           <p className="text-[var(--text-danger)] text-sm mt-1">
@@ -186,7 +186,7 @@ export default function UserProfilePage() {
         <input
           type="text"
           {...register("username")}
-          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
+          className="w-full bg-[var(--content-surface)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--content-border)] p-2"
         />
         {errors.username?.message && (
           <p className="text-[var(--text-danger)] text-sm mt-1">
@@ -201,7 +201,7 @@ export default function UserProfilePage() {
           type="password"
           {...register("password")}
           placeholder="Leave it empty, if not changing password"
-          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
+          className="w-full bg-[var(--content-surface)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--content-border)] p-2"
         />
       </div>
 
@@ -213,7 +213,7 @@ export default function UserProfilePage() {
           type="password"
           {...register("confirmPassword")}
           placeholder="confirm new password"
-          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
+          className="w-full bg-[var(--content-surface)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--content-border)] p-2"
         />
         {errors.confirmPassword && (
           <p className="text-[var(--text-danger)] text-sm mt-1">
@@ -227,7 +227,7 @@ export default function UserProfilePage() {
         <input
           type="email"
           {...register("email")}
-          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
+          className="w-full bg-[var(--content-surface)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--content-border)] p-2"
         />
         {errors.email && (
           <p className="text-[var(--text-danger)] text-sm mt-1">
@@ -241,7 +241,7 @@ export default function UserProfilePage() {
         <input
           type="tel"
           {...register("phone_number")}
-          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
+          className="w-full bg-[var(--content-surface)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--content-border)] p-2"
         />
       </div>
 
@@ -249,7 +249,7 @@ export default function UserProfilePage() {
         <label className="block text-sm font-medium mb-1">Address</label>
         <textarea
           {...register("address")}
-          className="w-full bg-[var(--background)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--border)] p-2"
+          className="w-full bg-[var(--content-surface)] rounded-md shadow-sm focus:ring-[var(--border)] focus:border-[var(--content-border)] p-2"
         />
       </div>
 
@@ -257,7 +257,7 @@ export default function UserProfilePage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full flex justify-center text-[var(--text-primary)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
+          className="w-full flex justify-center text-[var(--content-text)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
           {loading ? "Saving..." : "Save"}
         </button>

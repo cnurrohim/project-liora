@@ -27,9 +27,14 @@ export default function MenuBar() {
     <button
       key={entry.key}
       title={entry.label}
-      className={`text-2xl w-8 h-8 rounded flex items-center justify-center hover:text-lime-400 text-[var(--text-primary)] cursor-pointer ${
-        entry.key === MenuBarController.getActive() ? "" : ""
-      }`}
+      className={`text-2xl w-8 h-8 rounded flex items-center justify-center 
+        hover:bg-[var(--accent-primary)] 
+        hover:text-[var(--horizontal-text-hover)] 
+        cursor-pointer ${
+          entry.key === MenuBarController.getActive()
+            ? "text-[var(--horizontal-text-hover)] bg-[var(--accent-primary)]"
+            : "text-[var(--horizontal-text)]"
+        }`}
       onClick={() => handleClick(entry)}
     >
       {entry.icon}
@@ -39,19 +44,17 @@ export default function MenuBar() {
   return (
     <div className="relative w-screen z-80">
       <aside
-        className={`${
-          entries.position === "top" ? "border-b-1" : "border-t-1"
-        } relative w-full h-12 px-4 border-[var(--border)] bg-[var(--foreground)] text-[var(--text-primary)] flex flex-row justify-between py-1 z-100 shadow-md`}
+        className={`relative w-full h-12 px-4 bg-[var(--horizontal-surface)] text-[var(--horizontal-text)] flex flex-row justify-between py-1 z-100 shadow-md`}
       >
-        <div className="flex flex-row items-center">
-          <div className="text-2xl font-bold text-blue-500 mr-5 flex flex-row items-center gap-2">
+        <div className="flex flex-row items-center gap-1">
+          <div className="text-2xl font-bold text-[var(--accent-primary)]  mr-5 flex flex-row items-center gap-2">
             <img
               src={`${API_URL}/uploads/${appInfo.logo}`}
               alt={`${appInfo.name} logo`}
               className="h-8 w-8 rounded-full  "
             />
             <span
-              className="text-[var(--panel-text-highlight)] break-words"
+              className="text-[var(--accent-primary)] break-words"
               style={{
                 fontSize: "clamp(1rem, 2vw, 1rem)",
                 maxWidth: "80%",
@@ -63,7 +66,7 @@ export default function MenuBar() {
           </div>
           {entries.start.map(renderButton)}
         </div>
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center gap-1">
           {entries.end.map(renderButton)}
         </div>
       </aside>

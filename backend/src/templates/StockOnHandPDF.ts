@@ -17,21 +17,21 @@ export function generateStockOnHandHTML(
         </style>
       </head>
       <body>
-        <h2 style="text-align:center">Stock On Hand Report</h2>
+        <h2 style="text-align:center">Inventory On Hand Report</h2>
         <div class="filters">
           <div><strong>SKU:</strong> ${search || "-"}</div>
-          <div><strong>Lokasi:</strong> ${location_name || "-"}</div>
+          <div><strong>Location:</strong> ${location_name || "-"}</div>
         </div>
 
         <table>
           <thead>
             <tr>
               <th>#</th>
-              <th>Kode Barang</th>
-              <th>Nama Barang</th>
-              <th>Lokasi</th>
-              <th>Qty Saat Ini</th>
-              <th>Terakhir Bergerak</th>
+              <th>SKU</th>
+              <th>Item Name</th>
+              <th>Location</th>
+              <th>Current Qty</th>
+              <th>Last Movement</th>
             </tr>
           </thead>
           <tbody>

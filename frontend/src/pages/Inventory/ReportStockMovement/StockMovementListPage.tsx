@@ -65,7 +65,7 @@ export default function StockMovementListPage() {
       });
       setMovements(data);
     } catch (err: any) {
-      setError(err.message || "Failed to fetch Stock Movements");
+      setError(err.message || "Failed to fetch Inventory Movements");
       showErrorToast(err.message || "Failed to fetch");
     } finally {
       setLoading(false);
@@ -156,7 +156,7 @@ export default function StockMovementListPage() {
                 ? "bg-[var(--success)] text-[var(--success-foreground)]"
                 : row.original.movement_type === "outbound"
                 ? "bg-[var(--warning)] text-[var(--warning-foreground)]"
-                : "bg-[var(--inset)] text-[var(--text-primary)]"
+                : "bg-[var(--content-surface-hover)] text-[var(--content-text)]"
             }`}
           >
             {row.original.movement_type}
@@ -234,7 +234,7 @@ export default function StockMovementListPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Stock Movement Ledger</h1>
+      <h1 className="text-xl font-bold mb-4">Inventory Movement Ledger</h1>
 
       {/* 🔹 filter section */}
       <div className="flex flex-wrap gap-4 mb-10 text-sm">
@@ -243,12 +243,12 @@ export default function StockMovementListPage() {
           placeholder="Enter SKU / Item Name..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border border-[var(--border)] p-1 rounded w-60"
+          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded w-60"
         />
         <select
           value={movementType}
           onChange={(e) => setMovementType(e.target.value as MovementType)}
-          className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
+          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
         >
           <option value="">All Type</option>
           <option value="inbound">Inbound</option>
@@ -261,7 +261,7 @@ export default function StockMovementListPage() {
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
+            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -270,7 +270,7 @@ export default function StockMovementListPage() {
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
+            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
           />
         </div>
         <button

@@ -54,7 +54,7 @@ export default function StockOnHandListPage() {
       });
       setData(result);
     } catch (err: any) {
-      setError(err.message || "Failed to fetch Stock On Hand");
+      setError(err.message || "Failed to fetch Inventory On Hand");
       showErrorToast(err.message || "Failed to fetch");
     } finally {
       setLoading(false);
@@ -171,7 +171,7 @@ export default function StockOnHandListPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Stock On Hand</h1>
+      <h1 className="text-xl font-bold mb-4">Inventory On Hand</h1>
 
       {/* 🔹 filter section */}
       <div className="flex flex-wrap gap-4 mb-4 text-sm">
@@ -180,7 +180,7 @@ export default function StockOnHandListPage() {
           placeholder="Enter SKU / Item Name..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border border-[var(--border)] p-1 rounded text-[var(--muted)] w-60"
+          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)] w-60"
         />
 
         <div className="w-48">

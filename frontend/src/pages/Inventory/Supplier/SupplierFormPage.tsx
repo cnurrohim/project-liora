@@ -97,11 +97,11 @@ export default function SupplierFormPage() {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[var(--text-muted)]">
+            <label className="block text-[var(--content-text-muted)]">
               Supplier Name
             </label>
             <input
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("name")}
             />
             {typeof errors.name?.message === "string" && (
@@ -112,9 +112,11 @@ export default function SupplierFormPage() {
           </div>
 
           <div>
-            <label className="block text-[var(--text-muted)]">Contact</label>
+            <label className="block text-[var(--content-text-muted)]">
+              Contact
+            </label>
             <input
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("contact")}
             />
             {typeof errors.contact?.message === "string" && (
@@ -125,9 +127,11 @@ export default function SupplierFormPage() {
           </div>
 
           <div>
-            <label className="block text-[var(--text-muted)]">Address</label>
+            <label className="block text-[var(--content-text-muted)]">
+              Address
+            </label>
             <textarea
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("address")}
             />
             {typeof errors.address?.message === "string" && (

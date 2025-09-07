@@ -90,9 +90,11 @@ export default function ItemFormPage() {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[var(--text-muted)]">SKU</label>
+            <label className="block text-[var(--content-text-muted)]">
+              SKU
+            </label>
             <input
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("sku")}
             />
             {typeof errors.sku?.message === "string" && (
@@ -103,11 +105,11 @@ export default function ItemFormPage() {
           </div>
 
           <div>
-            <label className="block text-[var(--text-muted)]">
+            <label className="block text-[var(--content-text-muted)]">
               Nama Barang
             </label>
             <input
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("name")}
             />
             {typeof errors.name?.message === "string" && (
@@ -118,12 +120,12 @@ export default function ItemFormPage() {
           </div>
 
           <div>
-            <label className="block text-[var(--text-muted)]">
+            <label className="block text-[var(--content-text-muted)]">
               Minimal Stok
             </label>
             <input
               type="number"
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("min_stock", { valueAsNumber: true })}
             />
             {typeof errors.min_stock?.message === "string" && (

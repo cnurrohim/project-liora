@@ -243,7 +243,7 @@ export default function PurchaseOrderListPage() {
               {canApprove && status === "draft" && (
                 <ApproveButtonLink
                   onClick={() => handleApprove(row.original.id)}
-                  className={`flex cursor-pointer bg-[var(--info)] hover:bg-[var(--info-hover)] px-2 py-1 rounded text-[var(--text-primary)] text-xs font-semibold`}
+                  className={`flex cursor-pointer bg-[var(--info)] hover:bg-[var(--info-hover)] px-2 py-1 rounded text-[var(--content-text)] text-xs font-semibold`}
                 />
               )}
             </div>

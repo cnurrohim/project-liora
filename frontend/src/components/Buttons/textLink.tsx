@@ -16,13 +16,13 @@ export function TextLink({ label = "link", onClick, icon, className }: Props) {
       className={
         className
           ? className
-          : "text-[var(--text-muted)] hover:text-[var(--text-hover)] text-sm flex items-center gap-1 cursor-pointer"
+          : "text-[var(--content-text-muted)] hover:text-[var(--content-text-hover)] text-sm flex items-center gap-1 cursor-pointer"
       }
     >
       <IconRenderer
         name={icon}
         size={15}
-        className="text-[var(--text-muted)]"
+        className="text-[var(--content-text-muted)]"
       />{" "}
       {label}
     </button>

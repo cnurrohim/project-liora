@@ -89,7 +89,7 @@ export default function ListLauncher() {
       <div className="p-4 space-y-4">
         <div className="flex justify-center w-full items-">
           <div className="relative my-6 w-2/3 ">
-            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--panel-text-primary)]">
+            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--content-text)]">
               <IconRenderer name={"RiSearchLine"} size={18} color={"#9c9c9c"} />
             </span>
             <input
@@ -97,14 +97,14 @@ export default function ListLauncher() {
               placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-15 px-3 py-2 bg-[var(--background)] text-[var(--text-primary)] rounded-lg border-none outline-none"
+              className="w-full pl-15 px-3 py-2 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded-lg border-none outline-none"
             />
           </div>
         </div>
 
         <div>
           {filtered.length === 0 && (
-            <div className="text-[var(--panel-text-primary)]">No results.</div>
+            <div className="text-[var(--content-text)]">No results.</div>
           )}
           {Object.entries(
             filtered.reduce<Record<string, FlatMenuItem[]>>((acc, item) => {
@@ -121,7 +121,7 @@ export default function ListLauncher() {
                     <button
                       type="button"
                       title={item.isPinned ? "Unpin menu" : "Pin menu"}
-                      className="text-blue-400 cursor-pointer hover:bg-gray-700 p-2"
+                      className="text-[var(--content-text)] hover:text-[var(--accent-hover)] cursor-pointer hover:bg-[var(--content-surface-hover)] p-2"
                       onClick={() => {
                         handlePinClick(item);
                       }}
@@ -131,16 +131,15 @@ export default function ListLauncher() {
                           item.isPinned ? "RiPushpin2Fill" : "RiPushpin2Line"
                         }
                         size={15}
-                        color="#9c9c9c"
                       />
                     </button>
 
                     <div
                       key={i}
                       onClick={() => handleClick(item)}
-                      className="w-full flex items-center gap-2 text-sm text-[var(--panel-text-highlight)] cursor-pointer hover:bg-[var(--background)] px-2 py-1 rounded"
+                      className="w-full flex items-center gap-2 text-sm text-[var(--content-text)] cursor-pointer hover:bg-[var(--content-surface-hover)] px-2 py-1 rounded group"
                     >
-                      <span className="text-blue-300">
+                      <span className="group-hover:text-[var(--accent-hover)] text-[var(--accent-primary)]">
                         {typeof item.icon === "string" && item.icon ? (
                           <IconRenderer
                             name={item.icon}
@@ -156,7 +155,7 @@ export default function ListLauncher() {
                         )}
                       </span>
                       <span>{item.label}</span>
-                      <span className="ml-auto text-[var(--panel-text-primary)] text-xs">
+                      <span className="ml-auto text-[var(--content-text)] text-xs">
                         {item.route || item.command}
                       </span>
                     </div>

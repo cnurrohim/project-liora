@@ -98,11 +98,11 @@ export default function StockLocationsFormPage() {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[var(--text-muted)]">
+            <label className="block text-[var(--content-text-muted)]">
               Inventory location code
             </label>
             <input
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("code")}
             />
             {errors.code?.message && (
@@ -113,11 +113,11 @@ export default function StockLocationsFormPage() {
           </div>
 
           <div>
-            <label className="block text-[var(--text-muted)]">
+            <label className="block text-[var(--content-text-muted)]">
               Inventory location name
             </label>
             <input
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("name")}
             />
             {errors.name?.message && (
@@ -128,11 +128,11 @@ export default function StockLocationsFormPage() {
           </div>
 
           <div>
-            <label className="block text-[var(--text-muted)]">
+            <label className="block text-[var(--content-text-muted)]">
               Inventory location type
             </label>
             <select
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("type")}
             >
               <option value="">Choose ..</option>
@@ -150,11 +150,11 @@ export default function StockLocationsFormPage() {
           </div>
 
           <div>
-            <label className="block text-[var(--text-muted)]">
+            <label className="block text-[var(--content-text-muted)]">
               Descriptions
             </label>
             <textarea
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("description")}
             />
           </div>

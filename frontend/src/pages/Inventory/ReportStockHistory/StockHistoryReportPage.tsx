@@ -183,7 +183,7 @@ export default function StockHistoryReportPage() {
           onChange={(e) =>
             setPeriod(e.target.value as "day" | "week" | "month")
           }
-          className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
+          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
         >
           <option value="day">Daily</option>
           <option value="week">Weekly</option>
@@ -196,7 +196,7 @@ export default function StockHistoryReportPage() {
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
+            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ export default function StockHistoryReportPage() {
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="border border-[var(--border)] p-1 rounded text-[var(--muted)]"
+            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
           />
         </div>
 

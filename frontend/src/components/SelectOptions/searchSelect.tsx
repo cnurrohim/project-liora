@@ -70,7 +70,7 @@ export default function SearchSelect({
           setInput(e.target.value);
           if (value) onChange(null); // reset kalau user edit lagi
         }}
-        className="w-full outline-none bg-[var(--background)] p-2"
+        className="w-full outline-none bg-[var(--content-surface-hover)] p-2"
         placeholder={placeholder}
         disabled={disabled}
         onFocus={() => setIsOpen(true)}
@@ -93,25 +93,21 @@ export default function SearchSelect({
       )}
 
       {isOpen && (
-        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--background)] rounded shadow max-h-60 overflow-auto">
+        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--content-surface-hover)] rounded shadow max-h-60 overflow-auto border-1 border-[var(--content-border)]">
           {loading ? (
-            <li className="px-2 py-1 text-[var(--panel-text-primary)]">
-              Loading...
-            </li>
+            <li className="px-2 py-1 text-[var(--content-text)]">Loading...</li>
           ) : options.length > 0 ? (
             options.map((opt) => (
               <li
                 key={opt.id}
-                className="px-2 py-1 hover:bg-[var(--hover)] cursor-pointer"
+                className="px-2 py-1 hover:bg-[var(--content-surface)] cursor-pointer"
                 onMouseDown={() => selectOption(opt)}
               >
                 {opt.name}
               </li>
             ))
           ) : (
-            <li className="px-2 py-1 text-[var(--panel-text-primary)]">
-              Not found
-            </li>
+            <li className="px-2 py-1 text-[var(--content-text)]">Not found</li>
           )}
         </ul>
       )}

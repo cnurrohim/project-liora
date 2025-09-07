@@ -151,10 +151,10 @@ export default function PreferencesForm() {
     label: string
   ) => (
     <div className="space-y-2 w-full ">
-      <label className="text-sm text-[var(--text-primary)] capitalize flex flex-row gap-2">
+      <label className="text-sm text-[var(--content-text-muted)] capitalize flex flex-row gap-2">
         <IconRenderer
           name={iconName}
-          className="text-[var(--text-primary)]"
+          className="text-[var(--content-text)]"
           size={20}
         />
         {label}
@@ -164,7 +164,7 @@ export default function PreferencesForm() {
         control={control}
         render={({ field }) => (
           <select
-            className="w-full p-2 bg-[var(--background)] text-[var(--text-primary)]  rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded"
             value={field.value ?? "none"}
             onChange={(e) => {
               const nextKey = e.target.value === "none" ? null : e.target.value;
@@ -212,7 +212,7 @@ export default function PreferencesForm() {
         <h1 className="text-2xl font-bold text-[var(--accent-primary)] flex flex-row gap-2">
           Preferences
         </h1>
-        <p className="text-sm text-[var(--text-muted)] leading-relaxed mt-2">
+        <p className="text-sm text-[var(--content-text-muted)] leading-relaxed mt-2">
           This page allows you to customize the application layout and default
           behavior according to your needs. Each{" "}
           <span className="font-medium">pane</span>
@@ -260,10 +260,10 @@ export default function PreferencesForm() {
 
         <div className="ml-10 flex flex-col gap-5 mb-20">
           <div className="flex flex-row items-center">
-            <label className="text-[var(--text-primary)] flex flex-row gap-2 w-58">
+            <label className="text-[var(--content-text-muted)] flex flex-row gap-2 w-58">
               <IconRenderer
                 name="RiPagesLine"
-                className="text-[var(--text-primary)]"
+                className="text-[var(--content-text)]"
                 size={20}
               />
               Default New Tab
@@ -273,7 +273,7 @@ export default function PreferencesForm() {
               control={control}
               render={({ field }) => (
                 <select
-                  className="w-full p-2 bg-[var(--background)] text-[var(--text-primary)] rounded"
+                  className="w-full p-2 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded"
                   value={field.value ?? ""}
                   onChange={(e) => field.onChange(e.target.value || null)}
                 >
@@ -289,10 +289,10 @@ export default function PreferencesForm() {
           </div>
 
           <div className="flex flex-row items-center">
-            <label className="text-[var(--text-primary)] flex flex-row gap-2 w-58">
+            <label className="text-[var(--content-text-muted)] flex flex-row gap-2 w-58">
               <IconRenderer
                 name="RiPagesLine"
-                className="text-[var(--text-primary)]"
+                className="text-[var(--content-text)]"
                 size={20}
               />
               Dashboard
@@ -314,10 +314,10 @@ export default function PreferencesForm() {
           </div>
 
           <div className="flex flex-row items-center">
-            <label className="text-[var(--text-primary)] flex flex-row gap-2 w-58">
+            <label className="text-[var(--content-text-muted)] flex flex-row gap-2 w-58">
               <IconRenderer
                 name="RiPagesLine"
-                className="text-[var(--text-primary)]"
+                className="text-[var(--content-text)]"
                 size={20}
               />
               Theme
@@ -332,7 +332,7 @@ export default function PreferencesForm() {
                     field.onChange(e.target.value);
                     setTheme(e.target.value as any); // ✅ apply langsung ke hook
                   }}
-                  className="w-full p-2 bg-[var(--background)] text-[var(--text-primary)] rounded"
+                  className="w-full p-2 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded"
                 >
                   {themes.map((t) => (
                     <option key={t.id} value={t.id}>

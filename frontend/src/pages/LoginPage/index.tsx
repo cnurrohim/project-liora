@@ -35,10 +35,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--foreground)] text-[var(--text-primary)]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[var(--content-surface)] text-[var(--content-text)]">
       <form
         onSubmit={handleSubmit}
-        className="bg-[var(--background)] p-6 rounded shadow-md w-80 space-y-4"
+        className="bg-[var(--content-surface)] p-6 rounded shadow-md w-80 space-y-4"
       >
         <h2 className="text-2xl font-bold text-blue-400 text-center flex flex-col items-center">
           <IconRenderer
@@ -55,7 +55,7 @@ export default function LoginPage() {
           placeholder="Username or Email"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-[var(--text-primary)] outline-none"
+          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-[var(--content-text)] outline-none"
           required
         />
 
@@ -65,26 +65,26 @@ export default function LoginPage() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-[var(--text-primary)] outline-none pr-10"
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-[var(--content-text)] outline-none pr-10"
             required
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--panel-text-primary)] hover:text-[var(--text-primary)] cursor-pointer"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--content-text)] hover:text-[var(--content-text)] cursor-pointer"
             tabIndex={-1}
           >
             {showPassword ? (
               <IconRenderer
                 name="RiEyeCloseLine"
                 size={20}
-                className="text-[var(--text-primary)]"
+                className="text-[var(--content-text)]"
               />
             ) : (
               <IconRenderer
                 name="RiEyeFill"
                 size={20}
-                className="text-[var(--text-primary)]"
+                className="text-[var(--content-text)]"
               />
             )}
           </button>
@@ -92,7 +92,7 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-[var(--text-primary)] rounded flex flex-row gap-1 text-center items-center justify-center"
+          className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-[var(--content-text)] rounded flex flex-row gap-1 text-center items-center justify-center"
           disabled={loading}
         >
           {loading ? (
@@ -100,7 +100,7 @@ export default function LoginPage() {
               <IconRenderer
                 name="RiKey2Line"
                 size={20}
-                className="text-[var(--text-primary)]"
+                className="text-[var(--content-text)]"
               />
               Loggin in ...
             </>
@@ -109,7 +109,7 @@ export default function LoginPage() {
               <IconRenderer
                 name="RiKeyLine"
                 size={20}
-                className="text-[var(--text-primary)]"
+                className="text-[var(--content-text)]"
               />
               Login
             </>

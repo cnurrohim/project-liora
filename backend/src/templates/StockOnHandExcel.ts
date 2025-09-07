@@ -13,25 +13,25 @@ export async function generateStockOnHandExcel(
   filters: Record<string, string | undefined>
 ): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Stock On Hand");
+  const sheet = workbook.addWorksheet("Inventory On Hand");
 
   const { search, location_name } = filters;
 
   // Tambahkan filter di bagian atas
-  sheet.addRow(["Stock On Hand Report"]).font = { size: 14, bold: true };
+  sheet.addRow(["Inventory On Hand Report"]).font = { size: 14, bold: true };
   sheet.addRow([]); // Empty row
   sheet.addRow(["SKU", search || "-"]);
-  sheet.addRow(["Lokasi", location_name || "-"]);
+  sheet.addRow(["Location", location_name || "-"]);
   sheet.addRow([]); // Empty row
 
   // Header kolom
   sheet.addRow([
     "#",
-    "Kode Barang",
-    "Nama Barang",
-    "Lokasi",
-    "Qty Saat Ini",
-    "Terakhir Bergerak",
+    "SKU",
+    "Item Name",
+    "Location",
+    "Current Quantity",
+    "Last Movement",
   ]);
 
   // Data baris

@@ -58,7 +58,7 @@ export default function StockOpnameListPage() {
       const data = await getStockOpnames();
       setOpnames(data);
     } catch (err: any) {
-      setError(err.message || "Failed to fetch Stock Opname");
+      setError(err.message || "Failed to fetch Inventory Opname");
     } finally {
       setLoading(false);
     }
@@ -75,7 +75,7 @@ export default function StockOpnameListPage() {
       const detail = await getStockOpnameDetail(id);
       StockOpnameDetailPaneController.open(detail);
     } catch (err) {
-      console.error("Failed to fetch Stock Opname Details", err);
+      console.error("Failed to fetch Inventory Opname Details", err);
     }
   };
 

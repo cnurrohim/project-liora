@@ -6,13 +6,12 @@ export function runCommand(item: MenuAction) {
   const command = item.command;
 
   if (!command) {
-    console.warn("Command kosong/tidak valid:", item);
+    console.warn("Empty/Invalid Command:", item);
     return;
   }
 
   const commandsRequiringConfirmation: Record<string, string> = {
-    logout: "Apakah anda yakin ingin logout?",
-    // bisa ditambah: delete-all: "Yakin ingin hapus semua data?"
+    logout: "Are you sure you want to logout?",
   };
 
   if (command in commandsRequiringConfirmation) {

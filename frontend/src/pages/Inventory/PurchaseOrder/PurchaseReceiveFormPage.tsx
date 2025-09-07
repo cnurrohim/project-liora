@@ -75,7 +75,7 @@ export default function PurchaseReceiveFormPage() {
         });
       } catch (err: any) {
         console.log(err);
-        showErrorToast("Gagal load purchase order");
+        showErrorToast("Failed loading purchase order");
       }
     };
     init();
@@ -109,9 +109,9 @@ export default function PurchaseReceiveFormPage() {
           qty: it.received_qty,
         })),
       });
-      showSuccessToast("Barang berhasil diterima");
+      showSuccessToast("Item successfuly received");
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal Saving penerimaan");
+      showErrorToast(err.message || "Failed Saving receive");
     } finally {
       setLoading(false);
     }
@@ -123,16 +123,20 @@ export default function PurchaseReceiveFormPage() {
         <h1 className="text-xl font-bold">Receive Purchase Order</h1>
 
         <div>
-          <label>Tanggal Terima</label>
+          <label className="block text-[var(--content-text-muted)]">
+            Tanggal Terima
+          </label>
           <input
             type="date"
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...methods.register("receive_date")}
           />
         </div>
 
         <div>
-          <label className="block">Lokasi Save</label>
+          <label className="block text-[var(--content-text-muted)]">
+            Lokasi Save
+          </label>
           {/* Target Location */}
 
           <Controller
@@ -152,27 +156,29 @@ export default function PurchaseReceiveFormPage() {
         </div>
 
         <div>
-          <label>Catatan</label>
+          <label className="block text-[var(--content-text-muted)]">
+            Catatan
+          </label>
           <textarea
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...methods.register("note")}
           />
         </div>
 
         <div>
-          <table className="table-auto border border-[var(--border)] border-collapse w-full">
+          <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
             <thead>
               <tr>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Item
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Ordered
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Remaining
                 </th>
-                <th className="border border-[var(--border)] px-2 py-1">
+                <th className="border border-[var(--content-border)] px-2 py-1">
                   Qty Received
                 </th>
               </tr>
@@ -180,7 +186,7 @@ export default function PurchaseReceiveFormPage() {
             <tbody>
               {fields.map((field, index) => (
                 <tr key={field.id}>
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <Controller
                       name={`items.${index}.item_id`}
                       control={control}
@@ -198,16 +204,16 @@ export default function PurchaseReceiveFormPage() {
                       )}
                     />
                   </td>
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     {field.ordered_qty}
                   </td>
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     {field.remaining_qty}
                   </td>
-                  <td className="border border-[var(--border)] px-2 py-1">
+                  <td className="border border-[var(--content-border)] px-2 py-1">
                     <input
                       type="number"
-                      className="w-20 p-2 border border-gray-600 bg-[var(--background)] rounded text-right"
+                      className="w-20 p-2 border border-gray-600 bg-[var(--content-surface)] rounded text-right"
                       {...methods.register(`items.${index}.received_qty`, {
                         valueAsNumber: true,
                         validate: (value) => {

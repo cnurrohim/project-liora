@@ -17,18 +17,21 @@ export async function generateStockLocationExcel(
   const { location_name } = filters;
 
   // 🔹 Header Laporan
-  sheet.addRow(["Laporan Stock per Lokasi"]).font = { size: 14, bold: true };
+  sheet.addRow(["Laporan Inventory per Lokasi"]).font = {
+    size: 14,
+    bold: true,
+  };
   sheet.addRow([]); // Empty row
-  sheet.addRow(["Lokasi", location_name || "-"]);
+  sheet.addRow(["Location", location_name || "-"]);
   sheet.addRow([]); // Empty row
 
   // 🔹 Header Tabel
   sheet.addRow([
     "#",
-    "Lokasi",
-    "Jumlah Jenis Barang",
-    "Total Qty",
-    "Terakhir Update",
+    "Location",
+    "Quantity per Item Type",
+    "Total Quantity",
+    "Last Updated",
   ]).font = { bold: true };
 
   // 🔹 Data Baris

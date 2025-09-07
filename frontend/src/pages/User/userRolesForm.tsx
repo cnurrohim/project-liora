@@ -37,7 +37,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
       <h1 className="text-xl font-bold">{isEdit ? "Edit" : "Tambah"} Roles</h1>
 
       <div>
-        <label className="block">Roles</label>
+        <label className="block text-[var(--content-text-muted)]">Roles</label>
         <Controller
           control={control}
           name="roles"
@@ -61,9 +61,11 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
 
       {selectedRoles.length > 0 && (
         <div>
-          <label className="block">Default Role</label>
+          <label className="block text-[var(--content-text-muted)]">
+            Default Role
+          </label>
           <select
-            className="w-full p-2 bg-[var(--background)] rounded"
+            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("defaultRole")}
           >
             <option value="">Pilih default role</option>
@@ -87,7 +89,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
             Permissions dari Roles
           </label>
           {loading ? (
-            <p className="text-sm text-[var(--panel-text-primary)]">
+            <p className="text-sm text-[var(--content-text)]">
               Loading permissions...
             </p>
           ) : permissions.length === 0 ? (
@@ -95,7 +97,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
               Tidak ada permission.
             </p>
           ) : (
-            <ul className="mt-2 text-sm text-[var(--text-primary)] list-disc list-inside space-y-1">
+            <ul className="mt-2 text-sm text-[var(--content-text)] list-disc list-inside space-y-1">
               {permissions.map((p) => (
                 <li key={p.id}>
                   <strong>{p.label}</strong> — {p.description}

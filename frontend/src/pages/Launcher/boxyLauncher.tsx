@@ -89,7 +89,7 @@ export default function BoxyLauncher() {
       <div className="px-10 space-y-4">
         <div className="flex justify-center w-full items-">
           <div className="relative my-6 w-2/3 ">
-            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--panel-text-primary)]">
+            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--content-text)]">
               <IconRenderer name={"RiSearchLine"} size={18} color={"#9c9c9c"} />
             </span>
             <input
@@ -97,13 +97,13 @@ export default function BoxyLauncher() {
               placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-15 px-3 py-2 bg-[var(--background)] text-[var(--text-primary)] rounded-lg border-none outline-none"
+              className="w-full pl-15 px-3 py-2 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded-lg border-none outline-none"
             />
           </div>
         </div>
 
         {filtered.length === 0 && (
-          <div className="text-[var(--panel-text-primary)]">No results.</div>
+          <div className="text-[var(--content-text)]">No results.</div>
         )}
         {Object.entries(
           filtered.reduce<Record<string, FlatMenuItem[]>>((acc, item) => {
@@ -120,7 +120,7 @@ export default function BoxyLauncher() {
                 <div
                   key={i}
                   onClick={() => handleClick(item)}
-                  className=" relative group gap-2 hover:bg-[var(--background)] cursor-pointer p-4  flex flex-row shadow transition"
+                  className=" relative group gap-2 hover:bg-[var(--content-surface-hover)] cursor-pointer p-4  flex flex-row shadow transition"
                 >
                   {/* Pin button pojok kanan atas */}
                   <button
@@ -130,7 +130,7 @@ export default function BoxyLauncher() {
                       e.stopPropagation();
                       handlePinClick(item);
                     }}
-                    className="cursor-pointer absolute top-2 right-2 text-[var(--panel-text-primary)] hover:text-blue-400"
+                    className="cursor-pointer absolute top-2 right-2 text-[var(--content-text)] hover:text-[var(--accent-primary)]"
                   >
                     <IconRenderer
                       name={item.isPinned ? "RiPushpin2Fill" : "RiPushpin2Line"}
@@ -139,7 +139,7 @@ export default function BoxyLauncher() {
                   </button>
 
                   {/* Icon */}
-                  <div className=" text-[var(--text-primary)] w-10 flex items-center justify-center">
+                  <div className=" text-[var(--content-text)] w-10 flex items-center justify-center">
                     {typeof item.icon === "string" && item.icon ? (
                       <IconRenderer
                         name={item.icon}
@@ -153,7 +153,7 @@ export default function BoxyLauncher() {
 
                   <div className="flex flex-col">
                     {/* Label */}
-                    <div className=" text-[var(--text-primary)] font-medium">
+                    <div className=" text-[var(--content-text)] font-medium">
                       {item.label}
                     </div>
 

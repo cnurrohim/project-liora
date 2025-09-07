@@ -53,7 +53,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
   }, [activeTabKey]);
 
   return (
-    <div className="flex items-center bg-[var(--panel-background)] ">
+    <div className="flex items-center bg-[var(--horizontal-surface)] ">
       {showArrows && (
         <button
           ref={leftBtnRef}
@@ -68,15 +68,15 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
 
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto no-scrollbar flex-1 h-12 items-stretch p-2"
+        className="flex overflow-x-auto no-scrollbar flex-1 h-12 items-stretch p-2 gap-1"
       >
         {tabList.map((tab) => (
           <div
             key={tab.key}
-            className={`tab-wrapper flex items-center group ${
+            className={`tab-wrapper flex items-center group hover:bg-[var(--horizontal-surface-hover)] hover:rounded-3xl ${
               tab.key === activeTabKey
-                ? "bg-[var(--panel-inset)] text-[var(--text-primary)] rounded-3xl"
-                : "bg-[var(--panel-background)] text-[var(--panel-text-primary)] hover:bg-[var(--background)]"
+                ? "bg-[var(--horizontal-surface-hover)] text-[var(--horizontal-text)] rounded-3xl"
+                : "bg-[var(--horizontal-surface)] text-[var(--horizontal-text)] hover:bg-[--horizontal-surface)]"
             }`}
           >
             <button
@@ -87,8 +87,8 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
               <span
                 className={`${
                   tab.key === activeTabKey
-                    ? "text-[var(--panel-text-primary)]"
-                    : "text-[var(--panel-text-muted)]"
+                    ? "text-[var(--horizontal-text)]"
+                    : "text-[var(--horizontal-text-muted)]"
                 }`}
               >
                 {tab.icon ? iconRenderer?.(tab.icon) ?? "🗱" : "🗱"}
@@ -96,8 +96,8 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
               <span
                 className={`${
                   tab.key === activeTabKey
-                    ? "text-[var(--panel-text-primary)]"
-                    : "text-[var(--panel-text-muted)]"
+                    ? "text-[var(--horizontal-text)]"
+                    : "text-[var(--horizontal-text-muted)]"
                 }`}
               >
                 {tab.label}
@@ -108,8 +108,8 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
               onClick={() => TabController.closeTab(tab.key)}
               className={`mr-2 text-lg ${
                 tab.key === activeTabKey
-                  ? "text-[var(--panel-text-primary)]"
-                  : "text-[var(--panel-text-muted)]"
+                  ? "text-[var(--horizontal-text)]"
+                  : "text-[var(--horizontal-text-muted)]"
               }
                  cursor-pointer`}
             >
@@ -143,7 +143,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
         }}
         className=" h-12 w-12 cursor-pointer flex items-center justify-center 
         text-[var(--accent-primary)] 
-        hover:text-[var(--accent-hover)]"
+        hover:text-[var(--accent-highlight)]"
       >
         {iconRenderer?.("RiAddCircleFill", 23)}
       </button>

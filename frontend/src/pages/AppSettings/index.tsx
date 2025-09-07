@@ -55,7 +55,7 @@ export default function AppSettingPage() {
           value={appName}
           onChange={(e) => setAppName(e.target.value)}
           placeholder="Eg: Aterna Somnia"
-          className="w-full bg-[var(--background)] rounded-md shadow-sm  p-2"
+          className="w-full bg-[var(--content-surface)] rounded-md shadow-sm  p-2"
         />
       </div>
 
@@ -70,12 +70,12 @@ export default function AppSettingPage() {
               setLogoFile(file);
               if (file) setPreviewUrl(URL.createObjectURL(file));
             }}
-            className="block w-full text-sm text-[var(--text-primary)]
+            className="block w-full text-sm text-[var(--content-text)]
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-md file:border-0
                   file:text-sm file:font-semibold
-                  file:bg-[var(--background)] file:text-[var(--text-primary)]
-                  hover:file:bg-[var(--hover)]
+                  file:bg-[var(--content-surface)] file:text-[var(--content-text)]
+                  hover:file:bg-[var(--content-surface-hover)]
                   cursor-pointer"
           />
           {previewUrl && (

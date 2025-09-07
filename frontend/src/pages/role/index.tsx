@@ -121,18 +121,25 @@ export default function RoleListPage() {
         <div>There is no role</div>
       ) : (
         <table className="w-full border-collapse ">
-          <thead className="bg-[var(--background)]">
+          <thead className="bg-[var(--content-surface)]">
             <tr>
-              <th className="p-2  text-left text-[var(--text-muted)]">Nama</th>
-              <th className="p-2  text-left text-[var(--text-muted)]">
+              <th className="p-2  text-left text-[var(--content-text-muted)]">
+                Nama
+              </th>
+              <th className="p-2  text-left text-[var(--content-text-muted)]">
                 Deskripsi
               </th>
-              <th className="p-2  text-left text-[var(--text-muted)]">Aksi</th>
+              <th className="p-2  text-left text-[var(--content-text-muted)]">
+                Aksi
+              </th>
             </tr>
           </thead>
           <tbody>
             {roles.map((role) => (
-              <tr key={role.id} className="hover:bg-[var(--background)]">
+              <tr
+                key={role.id}
+                className="hover:bg-[var(--content-surface-hover)]"
+              >
                 <td className="p-2  ">{role.name}</td>
                 <td className="p-2 ">{role.description || "-"}</td>
                 <td className="p-2  flex">

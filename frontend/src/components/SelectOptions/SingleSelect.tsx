@@ -19,7 +19,7 @@ export default function SingleSelect({
   value = null,
   onChange,
   placeholder = "Pilih...",
-  className = "w-full outline-none bg-[var(--background)] p-1",
+  className = "w-full outline-none bg-[var(--content-surface-hover)] p-1",
   disabled = false,
 }: SingleSelectProps) {
   const [input, setInput] = useState("");
@@ -43,14 +43,14 @@ export default function SingleSelect({
   return (
     <div className="relative w-full">
       {value && (
-        <div className="flex items-center gap-1 mb-1 w-full bg-[var(--background)] ">
-          <span className=" text-[var(--text-primary)] px-2 py-1 rounded w-full flex justify-between">
+        <div className="flex items-center gap-1 mb-1 w-full bg-[var(--content-surface-hover)] ">
+          <span className=" text-[var(--content-text)] px-2 py-1 rounded w-full flex justify-between">
             {value.name}
             {!disabled && (
               <button
                 type="button"
                 onClick={clearOption}
-                className="text-[var(--text-primary)] cursor-pointer"
+                className="text-[var(--content-text)] cursor-pointer"
               >
                 ×
               </button>
@@ -70,11 +70,11 @@ export default function SingleSelect({
         />
       )}
       {isOpen && filtered.length > 0 && (
-        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--background)] rounded shadow max-h-60 overflow-auto">
+        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--content-surface)] rounded shadow max-h-60 overflow-auto border-1 border-[var(--content-border)]">
           {filtered.map((opt) => (
             <li
               key={opt.id}
-              className="px-2 py-1 hover:bg-[var(--hover)] cursor-pointer"
+              className="px-2 py-1 hover:bg-[var(--content-surface-hover)] cursor-pointer"
               onMouseDown={() => selectOption(opt)}
             >
               {opt.name}
@@ -83,8 +83,8 @@ export default function SingleSelect({
         </ul>
       )}
       {isOpen && filtered.length === 0 && (
-        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--background)] rounded shadow">
-          <li className="px-2 py-1 text-[var(--panel-text-primary)]">
+        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--content-surface-hover)] rounded shadow">
+          <li className="px-2 py-1 text-[var(--content-text)]">
             Tidak ada opsi
           </li>
         </ul>

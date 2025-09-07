@@ -120,7 +120,7 @@ export default function UserPermissionOverrideForm({
                   />
                   {perm.label || perm.name}
                   {override !== undefined && (
-                    <span className="text-xs text-[var(--panel-text-primary)]">
+                    <span className="text-xs text-[var(--content-text)]">
                       ({override ? "granted" : "revoked"})
                     </span>
                   )}

@@ -18,7 +18,7 @@ export async function generateStockHistoryExcel(
   }
 ): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Stock History");
+  const sheet = workbook.addWorksheet("Inventory History");
 
   const { period, dateFrom, dateTo } = filters;
 

@@ -140,7 +140,9 @@ export default function PurchaseOrderFormPage() {
         <div className="space-y-4">
           {/* Supplier */}
           <div>
-            <label className="block text-[var(--text-muted)]">Supplier</label>
+            <label className="block text-[var(--content-text-muted)]">
+              Supplier
+            </label>
             <Controller
               name="supplier_id"
               control={control}
@@ -164,33 +166,33 @@ export default function PurchaseOrderFormPage() {
 
           {/* Order date */}
           <div>
-            <label className="block text-[var(--text-muted)]">
+            <label className="block text-[var(--content-text-muted)]">
               Tanggal Order
             </label>
             <input
               type="date"
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("order_date")}
             />
           </div>
 
           {/* Expected date */}
           <div>
-            <label className="block text-[var(--text-muted)]">
+            <label className="block text-[var(--content-text-muted)]">
               Tanggal Perkiraan Datang
             </label>
             <input
               type="date"
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("expected_date")}
             />
           </div>
 
           {/* Status */}
           {/* <div>
-            <label className="block text-[var(--text-muted)]">Status</label>
+            <label className="block text-[var(--content-text-muted)]">Status</label>
             <select
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("status")}
             >
               <option value="draft">Draft</option>
@@ -202,9 +204,11 @@ export default function PurchaseOrderFormPage() {
 
           {/* Notes */}
           <div>
-            <label className="block text-[var(--text-muted)]">Catatan</label>
+            <label className="block text-[var(--content-text-muted)]">
+              Catatan
+            </label>
             <textarea
-              className="w-full p-2 bg-[var(--background)] rounded"
+              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("notes")}
             />
           </div>
@@ -212,19 +216,19 @@ export default function PurchaseOrderFormPage() {
           {/* Items */}
 
           <div>
-            <table className="table-auto border border-[var(--border)] border-collapse w-full">
+            <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
               <thead>
                 <tr>
-                  <th className="border border-[var(--border)] px-2 py-1">
+                  <th className="border border-[var(--content-border)] px-2 py-1">
                     Items
                   </th>
-                  <th className="border border-[var(--border)] px-2 py-1">
+                  <th className="border border-[var(--content-border)] px-2 py-1">
                     Qty
                   </th>
-                  <th className="border border-[var(--border)] px-2 py-1">
+                  <th className="border border-[var(--content-border)] px-2 py-1">
                     Price
                   </th>
-                  <th className="border border-[var(--border)] px-2 py-1">
+                  <th className="border border-[var(--content-border)] px-2 py-1">
                     Action
                   </th>
                 </tr>
@@ -232,7 +236,7 @@ export default function PurchaseOrderFormPage() {
               <tbody>
                 {fields.map((field, index) => (
                   <tr key={field.id}>
-                    <td className="border border-[var(--border)] px-2 py-1">
+                    <td className="border border-[var(--content-border)] px-2 py-1">
                       <Controller
                         name={`items.${index}.item_id`}
                         control={control}
@@ -251,31 +255,31 @@ export default function PurchaseOrderFormPage() {
                         )}
                       />
                     </td>
-                    <td className="border border-[var(--border)] px-2 py-1">
+                    <td className="border border-[var(--content-border)] px-2 py-1">
                       <input
                         type="number"
                         placeholder="Qty"
-                        className="w-20 p-2 bg-[var(--background)] rounded"
+                        className="w-20 p-2 bg-[var(--content-surface)] rounded"
                         {...register(`items.${index}.qty`, {
                           valueAsNumber: true,
                         })}
                       />
                     </td>
-                    <td className="border border-[var(--border)] px-2 py-1">
+                    <td className="border border-[var(--content-border)] px-2 py-1">
                       <input
                         type="number"
                         placeholder="Harga"
-                        className="w-32 p-2 bg-[var(--background)] rounded"
+                        className="w-32 p-2 bg-[var(--content-surface)] rounded"
                         {...register(`items.${index}.price`, {
                           valueAsNumber: true,
                         })}
                       />
                     </td>
-                    <td className="border border-[var(--border)] px-2 py-1">
+                    <td className="border border-[var(--content-border)] px-2 py-1">
                       <button
                         type="button"
                         onClick={() => remove(index)}
-                        className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--text-primary)] rounded"
+                        className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--content-text)] rounded"
                       >
                         delete
                       </button>
@@ -287,7 +291,7 @@ export default function PurchaseOrderFormPage() {
                     <button
                       type="button"
                       onClick={() => append({ item_id: "", qty: 1, price: 0 })}
-                      className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--text-primary)] rounded"
+                      className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--content-text)] rounded"
                     >
                       + Add Item
                     </button>

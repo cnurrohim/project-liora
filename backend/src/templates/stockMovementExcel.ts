@@ -20,7 +20,7 @@ export async function generateStockMovementExcel(
   filters: Record<string, string | undefined>
 ): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet("Stock Movements");
+  const sheet = workbook.addWorksheet("Inventory Movements");
 
   const { search, movement_type, date_from, date_to } = filters;
 
@@ -32,29 +32,29 @@ export async function generateStockMovementExcel(
     }[movement_type || ""] || "-";
 
   // Tambahkan filter di bagian atas
-  sheet.addRow(["Stock Movement Report"]).font = { size: 14, bold: true };
+  sheet.addRow(["Inventory Movement Report"]).font = { size: 14, bold: true };
   sheet.addRow([]); // Empty row
   sheet.addRow(["SKU", search || "-"]);
-  sheet.addRow(["Tipe Pergerakan", movementTypeLabel]);
-  sheet.addRow(["Dari Tanggal", date_from || "-"]);
-  sheet.addRow(["Sampai Tanggal", date_to || "-"]);
+  sheet.addRow(["Movement Type", movementTypeLabel]);
+  sheet.addRow(["Date From", date_from || "-"]);
+  sheet.addRow(["Date to", date_to || "-"]);
   sheet.addRow([]); // Empty row
 
   // Header kolom
   sheet.addRow([
     "#",
-    "Tanggal",
+    "Date",
     "SKU",
-    "Nama",
-    "Tipe",
-    "Arah",
+    "Name",
+    "Type",
+    "Direction",
     "Qty",
-    "Saldo Setelah",
-    "Lokasi Asal",
-    "Lokasi Tujuan",
+    "Balance After",
+    "Transfered From",
+    "Transfered To",
     "Ref Type",
-    "Catatan",
-    "Dibuat Oleh",
+    "Note",
+    "Created By",
   ]);
 
   // Data baris
