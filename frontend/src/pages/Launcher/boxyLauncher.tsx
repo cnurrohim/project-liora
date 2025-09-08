@@ -90,7 +90,7 @@ export default function BoxyLauncher() {
         <div className="flex justify-center w-full items-">
           <div className="relative my-6 w-2/3 ">
             <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--content-text)]">
-              <IconRenderer name={"RiSearchLine"} size={18} color={"#9c9c9c"} />
+              <IconRenderer name={"RiSearchLine"} size={18} />
             </span>
             <input
               type="text"
@@ -113,7 +113,9 @@ export default function BoxyLauncher() {
           }, {})
         ).map(([parent, items]) => (
           <div key={parent} className="mb-6">
-            <div className="text-gray-600 font-semibold mb-2">{parent}</div>
+            <div className="text-[var(--accent-primary)] font-semibold mb-2">
+              {parent}
+            </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {items.map((item, i) => (

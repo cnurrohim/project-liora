@@ -90,7 +90,7 @@ export default function ListLauncher() {
         <div className="flex justify-center w-full items-">
           <div className="relative my-6 w-2/3 ">
             <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--content-text)]">
-              <IconRenderer name={"RiSearchLine"} size={18} color={"#9c9c9c"} />
+              <IconRenderer name={"RiSearchLine"} size={18} />
             </span>
             <input
               type="text"
@@ -114,7 +114,9 @@ export default function ListLauncher() {
             }, {})
           ).map(([parent, items]) => (
             <div key={parent} className="mb-4">
-              <div className="text-blue-400 font-semibold">{parent}</div>
+              <div className="text-[var(--accent-primary)] font-semibold">
+                {parent}
+              </div>
               <div className="pl-2 mt-1 space-y-1">
                 {items.map((item, i) => (
                   <div key={i} className="flex flex-row">

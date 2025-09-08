@@ -29,7 +29,7 @@ export default function TabContent() {
   return (
     <div
       key={activeTab?.key}
-      className={`${contentMargin} flex-1 bg-[var(--content-surface)] border-[var(--content-border)] border-1 shadow-md overflow-auto p-5`}
+      className={`${contentMargin} flex-1 bg-[var(--content-surface)] border-[var(--content-border)] shadow-md overflow-auto p-5`}
     >
       {!content ? <PagesNotFound /> : content}
     </div>

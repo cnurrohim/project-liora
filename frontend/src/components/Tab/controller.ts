@@ -199,6 +199,10 @@ export const TabController = {
     hasRight?: boolean;
   }) {
     const margins = [
+      margin.hasTop ? "border-t-1" : "",
+      margin.hasBottom ? "border-b-1" : "",
+      margin.hasLeft ? "border-l-1" : "",
+      margin.hasRight ? "border-r-1" : "",
       margin.hasTop && margin.hasLeft ? "rounded-tl-2xl" : "",
       margin.hasTop && margin.hasRight ? "rounded-tr-2xl" : "",
       margin.hasBottom && margin.hasRight ? "rounded-br-2xl" : "",

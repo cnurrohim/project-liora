@@ -13,60 +13,75 @@
 
 @layer base {
   :root {
-    /* ============ Ratio 60 (Dominant Layer) ============ */
-    --background: #272822; /* dasar halaman */
-    --foreground: #32342c; /* panel utama di atas background */
-    --inset: #3b3c36; /* elemen terbenam */
-    --hover: #3e4037; /* hover state */
-    --border: #46483e;
+    --base: #eaeaeb;
 
-    --text-primary: #f8f8f2; /* teks utama */
-    --text-highlight: #a6e22e; /* teks link/hover (greenish) */
-    --text-muted: #75715e; /* teks sekunder */
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #eaeaeb;
+    --vertical-surface-hover: #d3d3da;
+    --vertical-surface-highlight: #cbd5e1;
+    --vertical-text: #1e293b;
+    --vertical-text-hover: #eef1f7;
+    --vertical-text-muted: #64748b;
+    --vertical-border: #cbd5e1;
 
-    /* ============ Ratio 30 (Panels / Surfaces) ============ */
-    --panel-background: #272822;
-    --panel-foreground: #32342c;
-    --panel-inset: #3e4037;
-    --panel-hover: #46483e;
-    --panel-border: #5a5c50;
+    --vertical-secondary-surface: #ffffff;
+    --vertical-secondary-surface-hover: #e6e7e7;
+    --vertical-secondary-surface-highlight: #d3d3da;
+    --vertical-secondary-text: #1e293b;
+    --vertical-secondary-text-hover: #eef1f7;
+    --vertical-secondary-text-muted: #64748b;
+    --vertical-secondary-border: #cbd5e1;
 
-    --panel-text-primary: #f8f8f2;
-    --panel-text-hover: #e6db74;
-    --panel-text-highlight: #a6e22e;
-    --panel-text-muted: #75715e;
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #eaeaeb;
+    --horizontal-surface-hover: #d3d3da;
+    --horizontal-surface-highlight: #cbd5e1;
+    --horizontal-text: #1e293b;
+    --horizontal-text-hover: #eef1f7;
+    --horizontal-text-muted: #64748b;
+    --horizontal-border: #cbd5e1;
 
-    --panel-secondary-background: #1e1f1c;
-    --panel-secondary-foreground: #2d2e2a;
-    --panel-secondary-inset: #3a3b34;
-    --panel-secondary-hover: #46483e;
-    --panel-secondary-border: #5a5c50;
+    --horizontal-secondary-surface: #ffffff;
+    --horizontal-secondary-surface-hover: #e6e7e7;
+    --horizontal-secondary-surface-highlight: #d3d3da;
+    --horizontal-secondary-text: #1e293b;
+    --horizontal-secondary-text-hover: #eef1f7;
+    --horizontal-secondary-text-muted: #64748b;
+    --horizontal-secondary-border: #cbd5e1;
 
-    --panel-secondary-text-primary: #f8f8f2;
-    --panel-secondary-text-hover: #fd971f;
-    --panel-secondary-text-highlight: #dae5ea;
-    --panel-secondary-text-muted: #75715e;
+    /* Content (main page) */
+    --content-surface: #ffffff;
+    --content-surface-inset: #f8fafc;
+    --content-surface-hover: #e6e7e7;
+    --content-surface-highlight: #e2e8f0;
+    --content-text: #1e293b;
+    --content-text-hover: #1e293b;
+    --content-text-muted: #64748b;
+    --content-border: #cbd5e1;
+    --content-border-highlight: #94a3b8;
 
     /* ============ Ratio 10 (Accents / Borders) ============ */
-    --accent-primary: #f92672; /* pink */
-    --accent-highlight: #fd971f; /* orange */
-    --accent-muted: #75715e; /* muted gray */
+    --accent-primary: #3088e0;
+    --accent-hover: #468fe7;
+    --accent-highlight: #2563eb;
+    --accent-foreground: #ffffff;
+    --accent-muted: #e2e8f0;
 
     /* ============ Semantic Colors ============ */
-    --success: #5fbf00; /* hijau cerah */
-    --success-hover: #72d118; /* versi lebih terang */
+    --success: #16a34a;
+    --success-hover: #22c55e;
     --success-foreground: #ffffff;
 
-    --warning: #ff9e2c; /* oranye terang */
-    --warning-hover: #ffb547; /* versi lebih terang */
+    --warning: #eab308;
+    --warning-hover: #facc15;
     --warning-foreground: #ffffff;
 
-    --danger: #e6406c; /* merah-pink tegas */
-    --danger-hover: #ff5c85; /* versi lebih terang */
+    --danger: #dc2626;
+    --danger-hover: #ef4444;
     --danger-foreground: #ffffff;
 
-    --info: #2db9d9; /* biru-cyan */
-    --info-hover: #4fd0eb; /* versi lebih terang */
+    --info: #3b82f6;
+    --info-hover: #60a5fa;
     --info-foreground: #ffffff;
   }
 
@@ -141,6 +156,152 @@
 
     --info: #3b82f6;
     --info-hover: #60a5fa;
+    --info-foreground: #ffffff;
+  }
+
+  .military {
+    --base: #2f3e46;
+
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #2f3e46;
+    --vertical-surface-hover: #354f52;
+    --vertical-surface-highlight: #52796f;
+    --vertical-text: #cad2c5;
+    --vertical-text-hover: #ffffff;
+    --vertical-text-muted: #84a98c;
+    --vertical-border: #52796f;
+
+    --vertical-secondary-surface: #354f52;
+    --vertical-secondary-surface-hover: #52796f;
+    --vertical-secondary-surface-highlight: #84a98c;
+    --vertical-secondary-text: #e8f0ec;
+    --vertical-secondary-text-hover: #ffffff;
+    --vertical-secondary-text-muted: #cad2c5;
+    --vertical-secondary-border: #84a98c;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #2f3e46;
+    --horizontal-surface-hover: #354f52;
+    --horizontal-surface-highlight: #52796f;
+    --horizontal-text: #cad2c5;
+    --horizontal-text-hover: #ffffff;
+    --horizontal-text-muted: #84a98c;
+    --horizontal-border: #52796f;
+
+    --horizontal-secondary-surface: #354f52;
+    --horizontal-secondary-surface-hover: #52796f;
+    --horizontal-secondary-surface-highlight: #84a98c;
+    --horizontal-secondary-text: #e8f0ec;
+    --horizontal-secondary-text-hover: #ffffff;
+    --horizontal-secondary-text-muted: #cad2c5;
+    --horizontal-secondary-border: #84a98c;
+
+    /* Content (main page, light) */
+    --content-surface: #cad2c5;
+    --content-surface-inset: #e8f0ec;
+    --content-surface-hover: #84a98c;
+    --content-surface-highlight: #52796f;
+    --content-text: #2f3e46;
+    --content-text-hover: #000000;
+    --content-text-muted: #52796f;
+    --content-border: #84a98c;
+    --content-border-highlight: #354f52;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #84a98c;
+    --accent-hover: #52796f;
+    --accent-highlight: #354f52;
+    --accent-foreground: #ffffff;
+    --accent-muted: #cad2c5;
+
+    /* ============ Semantic Colors ============ */
+    --success: #2f855a;
+    --success-hover: #38a169;
+    --success-foreground: #ffffff;
+
+    --warning: #b7791f;
+    --warning-hover: #d69e2e;
+    --warning-foreground: #ffffff;
+
+    --danger: #c53030;
+    --danger-hover: #e53e3e;
+    --danger-foreground: #ffffff;
+
+    --info: #3182ce;
+    --info-hover: #4299e1;
+    --info-foreground: #ffffff;
+  }
+
+  .military-dark {
+    --base: #2f3e46;
+
+    /* Vertical (sidebar, mini bar) */
+    --vertical-surface: #2f3e46;
+    --vertical-surface-hover: #354f52;
+    --vertical-surface-highlight: #52796f;
+    --vertical-text: #cad2c5;
+    --vertical-text-hover: #ffffff;
+    --vertical-text-muted: #84a98c;
+    --vertical-border: #52796f;
+
+    --vertical-secondary-surface: #354f52;
+    --vertical-secondary-surface-hover: #52796f;
+    --vertical-secondary-surface-highlight: #84a98c;
+    --vertical-secondary-text: #e8f0ec;
+    --vertical-secondary-text-hover: #ffffff;
+    --vertical-secondary-text-muted: #cad2c5;
+    --vertical-secondary-border: #84a98c;
+
+    /* Horizontal (topbar, bottombar) */
+    --horizontal-surface: #2f3e46;
+    --horizontal-surface-hover: #354f52;
+    --horizontal-surface-highlight: #52796f;
+    --horizontal-text: #cad2c5;
+    --horizontal-text-hover: #ffffff;
+    --horizontal-text-muted: #84a98c;
+    --horizontal-border: #52796f;
+
+    --horizontal-secondary-surface: #354f52;
+    --horizontal-secondary-surface-hover: #52796f;
+    --horizontal-secondary-surface-highlight: #84a98c;
+    --horizontal-secondary-text: #e8f0ec;
+    --horizontal-secondary-text-hover: #ffffff;
+    --horizontal-secondary-text-muted: #cad2c5;
+    --horizontal-secondary-border: #84a98c;
+
+    /* Content (main page, full dark) */
+    --content-surface: #2f3e46;
+    --content-surface-inset: #354f52;
+    --content-surface-hover: #52796f;
+    --content-surface-highlight: #84a98c;
+    --content-text: #cad2c5;
+    --content-text-hover: #ffffff;
+    --content-text-muted: #84a98c;
+    --content-border: #434b50;
+    --content-border-highlight: #84a98c;
+
+    /* ============ Ratio 10 (Accents / Borders) ============ */
+    --accent-primary: #84a98c;
+    --accent-hover: #52796f;
+    --accent-highlight: #354f52;
+    --accent-foreground: #ffffff;
+    --accent-muted: #cad2c5;
+
+    /* ============ Semantic Colors ============ */
+    --success: #2f855a;
+    --success-hover: #38a169;
+    --success-foreground: #ffffff;
+
+    --warning: #b7791f;
+    --warning-hover: #d69e2e;
+    --warning-foreground: #ffffff;
+
+    --danger: #c53030;
+    --danger-hover: #e53e3e;
+    --danger-foreground: #ffffff;
+
+    --info: #3182ce;
+    --info-hover: #4299e1;
     --info-foreground: #ffffff;
   }
 
@@ -726,152 +887,6 @@
 
     --info: #3b82f6;
     --info-hover: #60a5fa;
-    --info-foreground: #ffffff;
-  }
-
-  .military {
-    --base: #2f3e46;
-
-    /* Vertical (sidebar, mini bar) */
-    --vertical-surface: #2f3e46;
-    --vertical-surface-hover: #354f52;
-    --vertical-surface-highlight: #52796f;
-    --vertical-text: #cad2c5;
-    --vertical-text-hover: #ffffff;
-    --vertical-text-muted: #84a98c;
-    --vertical-border: #52796f;
-
-    --vertical-secondary-surface: #354f52;
-    --vertical-secondary-surface-hover: #52796f;
-    --vertical-secondary-surface-highlight: #84a98c;
-    --vertical-secondary-text: #e8f0ec;
-    --vertical-secondary-text-hover: #ffffff;
-    --vertical-secondary-text-muted: #cad2c5;
-    --vertical-secondary-border: #84a98c;
-
-    /* Horizontal (topbar, bottombar) */
-    --horizontal-surface: #2f3e46;
-    --horizontal-surface-hover: #354f52;
-    --horizontal-surface-highlight: #52796f;
-    --horizontal-text: #cad2c5;
-    --horizontal-text-hover: #ffffff;
-    --horizontal-text-muted: #84a98c;
-    --horizontal-border: #52796f;
-
-    --horizontal-secondary-surface: #354f52;
-    --horizontal-secondary-surface-hover: #52796f;
-    --horizontal-secondary-surface-highlight: #84a98c;
-    --horizontal-secondary-text: #e8f0ec;
-    --horizontal-secondary-text-hover: #ffffff;
-    --horizontal-secondary-text-muted: #cad2c5;
-    --horizontal-secondary-border: #84a98c;
-
-    /* Content (main page, light) */
-    --content-surface: #cad2c5;
-    --content-surface-inset: #e8f0ec;
-    --content-surface-hover: #84a98c;
-    --content-surface-highlight: #52796f;
-    --content-text: #2f3e46;
-    --content-text-hover: #000000;
-    --content-text-muted: #52796f;
-    --content-border: #84a98c;
-    --content-border-highlight: #354f52;
-
-    /* ============ Ratio 10 (Accents / Borders) ============ */
-    --accent-primary: #84a98c;
-    --accent-hover: #52796f;
-    --accent-highlight: #354f52;
-    --accent-foreground: #ffffff;
-    --accent-muted: #cad2c5;
-
-    /* ============ Semantic Colors ============ */
-    --success: #2f855a;
-    --success-hover: #38a169;
-    --success-foreground: #ffffff;
-
-    --warning: #b7791f;
-    --warning-hover: #d69e2e;
-    --warning-foreground: #ffffff;
-
-    --danger: #c53030;
-    --danger-hover: #e53e3e;
-    --danger-foreground: #ffffff;
-
-    --info: #3182ce;
-    --info-hover: #4299e1;
-    --info-foreground: #ffffff;
-  }
-
-  .military-dark {
-    --base: #2f3e46;
-
-    /* Vertical (sidebar, mini bar) */
-    --vertical-surface: #2f3e46;
-    --vertical-surface-hover: #354f52;
-    --vertical-surface-highlight: #52796f;
-    --vertical-text: #cad2c5;
-    --vertical-text-hover: #ffffff;
-    --vertical-text-muted: #84a98c;
-    --vertical-border: #52796f;
-
-    --vertical-secondary-surface: #354f52;
-    --vertical-secondary-surface-hover: #52796f;
-    --vertical-secondary-surface-highlight: #84a98c;
-    --vertical-secondary-text: #e8f0ec;
-    --vertical-secondary-text-hover: #ffffff;
-    --vertical-secondary-text-muted: #cad2c5;
-    --vertical-secondary-border: #84a98c;
-
-    /* Horizontal (topbar, bottombar) */
-    --horizontal-surface: #2f3e46;
-    --horizontal-surface-hover: #354f52;
-    --horizontal-surface-highlight: #52796f;
-    --horizontal-text: #cad2c5;
-    --horizontal-text-hover: #ffffff;
-    --horizontal-text-muted: #84a98c;
-    --horizontal-border: #52796f;
-
-    --horizontal-secondary-surface: #354f52;
-    --horizontal-secondary-surface-hover: #52796f;
-    --horizontal-secondary-surface-highlight: #84a98c;
-    --horizontal-secondary-text: #e8f0ec;
-    --horizontal-secondary-text-hover: #ffffff;
-    --horizontal-secondary-text-muted: #cad2c5;
-    --horizontal-secondary-border: #84a98c;
-
-    /* Content (main page, full dark) */
-    --content-surface: #2f3e46;
-    --content-surface-inset: #354f52;
-    --content-surface-hover: #52796f;
-    --content-surface-highlight: #84a98c;
-    --content-text: #cad2c5;
-    --content-text-hover: #ffffff;
-    --content-text-muted: #84a98c;
-    --content-border: #52796f;
-    --content-border-highlight: #84a98c;
-
-    /* ============ Ratio 10 (Accents / Borders) ============ */
-    --accent-primary: #84a98c;
-    --accent-hover: #52796f;
-    --accent-highlight: #354f52;
-    --accent-foreground: #ffffff;
-    --accent-muted: #cad2c5;
-
-    /* ============ Semantic Colors ============ */
-    --success: #2f855a;
-    --success-hover: #38a169;
-    --success-foreground: #ffffff;
-
-    --warning: #b7791f;
-    --warning-hover: #d69e2e;
-    --warning-foreground: #ffffff;
-
-    --danger: #c53030;
-    --danger-hover: #e53e3e;
-    --danger-foreground: #ffffff;
-
-    --info: #3182ce;
-    --info-hover: #4299e1;
     --info-foreground: #ffffff;
   }
 }
