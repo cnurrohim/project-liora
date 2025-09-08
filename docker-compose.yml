@@ -12,6 +12,15 @@ services:
     ports:
       - "5432:5432"
 
+  services:
+    redis:
+      image: redis:7
+      restart: always
+      ports:
+        - "6379:6379"
+      networks:
+        - internal
+
   backend:
     build: ./backend
     restart: always
@@ -24,6 +33,7 @@ services:
       - .env.backend
     depends_on:
       - db
+      - redis
 
   frontend:
     build: ./frontend
