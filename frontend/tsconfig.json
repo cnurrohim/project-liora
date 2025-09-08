@@ -18,6 +18,8 @@
     "types": ["jest"],
     "strict": false,
     "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],

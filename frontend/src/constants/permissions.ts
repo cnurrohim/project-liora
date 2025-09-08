@@ -96,6 +96,8 @@ export const PERMISSIONS = {
     UPDATE: "goods_issue.update",
     DELETE: "goods_issue.delete",
     CANCEL: "goods_issue.cancel",
+    APPROVE: "goods_issue.approve",
+    RECEIVE: "goods_issue.receive",
   },
 
   STOCK_ADJUSTMENT: {
