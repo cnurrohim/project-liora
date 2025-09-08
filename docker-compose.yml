@@ -10,6 +10,8 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - internal
 
   redis:
     image: redis:7
@@ -22,26 +24,31 @@ services:
   backend:
     build: ./backend
     restart: always
-    environment:
-      - DATABASE_URL=postgresql://myuser:mypass@db:5432/mydb
-      - NODE_ENV=production
-    ports:
-      - "3000:3000"
     env_file:
       - .env.backend
+    ports:
+      - "3000:3000"
     depends_on:
       - db
       - redis
+    networks:
+      - internal
 
   frontend:
     build: ./frontend
     restart: always
-    ports:
-      - "80:80"
     env_file:
       - .env.frontend
+    ports:
+      - "80:80"
     depends_on:
       - backend
+    networks:
+      - internal
 
 volumes:
   db-data:
+
+networks:
+  internal:
+    driver: bridge
