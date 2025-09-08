@@ -16,6 +16,8 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "types": ["jest"],
+    "strict": false,
+    "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
