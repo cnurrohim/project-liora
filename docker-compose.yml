@@ -20,6 +20,8 @@ services:
       - NODE_ENV=production
     ports:
       - "3000:3000"
+    env_file:
+      - .env.backend
     depends_on:
       - db
 
@@ -28,6 +30,8 @@ services:
     restart: always
     ports:
       - "80:80"
+    env_file:
+      - .env.frontend
     depends_on:
       - backend
 
