@@ -23,7 +23,7 @@ app.use("/uploads/*", serveStatic({ root: "./public" }));
 app.use("*", logger());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     allowHeaders: ["Authorization", "Content-Type"],
     credentials: true,
   })
