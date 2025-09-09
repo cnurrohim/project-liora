@@ -1,8 +1,10 @@
 # Node modules
 **/node_modules/
 
-# dotenv
-*.env
+# ENV files
+/backend/.env
+/frontend/.env
+.env*
 
 # Logs
 logs
@@ -18,3 +20,7 @@ Thumbs.db
 **/mysqldata/
 **/mongodata/
 .vscode/
+
+# Build outputs
+/frontend/dist
+/backend/dist
