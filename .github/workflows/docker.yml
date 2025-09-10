@@ -22,7 +22,7 @@ jobs:
 
       - name: Deploy to Server
         run: |
-          ssh -i ~/.ssh/deploy_key rokim@103.127.99.96 << 'EOF'
+          ssh -vvv -i ~/.ssh/deploy_key rokim@103.127.99.96 << 'EOF'
             cd /app
             git pull origin main
             docker compose up -d
