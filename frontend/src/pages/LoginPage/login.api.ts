@@ -8,7 +8,6 @@ export async function login({
   password: string;
 }) {
   const API_URL = import.meta.env.VITE_API_BASE_URL;
-  console.log("import.meta.env", import.meta.env);
 
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
