@@ -11,9 +11,6 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Copy frontend env file
-COPY .env.frontend .env
-
 # Build Vite
 RUN npm run build
 
