@@ -1,9 +1,20 @@
 # Build stage
 FROM node:20-alpine as build
 WORKDIR /app
+
+# Copy package.json & tsconfig
 COPY package*.json tsconfig.json ./
+
+# Install dependencies
 RUN npm install
+
+# Copy source code
 COPY . .
+
+# Copy frontend env file
+COPY .env.frontend .env
+
+# Build Vite
 RUN npm run build
 
 # Serve stage
