@@ -3,18 +3,18 @@ import { resolveItems, SlidingPanelController } from "./controller";
 import { useController } from "../../../hooks/useController";
 import type { MenuItem } from "../../../types/menu";
 import MenuItemComponent from "./MenuItemComponent";
-import { UserProfileController } from "../userProfileController";
-import { API_URL } from "../constant";
+// import { UserProfileController } from "../userProfileController";
+// import { API_URL } from "../constant";
 
 export default function SlidingPanel({
   onItemClick,
-  onViewProfileClick,
+  // onViewProfileClick,
   iconRenderer,
   defaultIcon,
   onPinClick,
-  onLogout,
-  onSwitchRole,
-}: {
+}: // onLogout,
+// onSwitchRole,
+{
   onItemClick: (item: MenuItem) => void;
   onViewProfileClick?: () => void;
   iconRenderer?: (props: {
@@ -29,25 +29,25 @@ export default function SlidingPanel({
 }) {
   const [state, setState] = useState(SlidingPanelController.getState());
 
-  const [userProfile, setUserProfile] = useState(() =>
-    UserProfileController.getState()
-  );
+  // const [userProfile, setUserProfile] = useState(() =>
+  //   UserProfileController.getState()
+  // );
 
-  const [showRoles, setShowRoles] = useState(false);
+  // const [showRoles, setShowRoles] = useState(false);
   const visible = useController(SlidingPanelController, (s) => s.visible);
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const update = () => setState(SlidingPanelController.getState());
-    const updateUserProfile = () =>
-      setUserProfile(UserProfileController.getState());
+    // const updateUserProfile = () =>
+    //   setUserProfile(UserProfileController.getState());
 
     const unsubUpdate = SlidingPanelController.subscribe(update);
-    const unsubUserProfile = UserProfileController.subscribe(updateUserProfile);
+    // const unsubUserProfile = UserProfileController.subscribe(updateUserProfile);
 
     return () => {
       unsubUpdate;
-      unsubUserProfile;
+      // unsubUserProfile;
     };
   }, []);
 

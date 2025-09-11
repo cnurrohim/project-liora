@@ -114,7 +114,7 @@ export function applyAppMetadata(app_name: string, app_logo: string | null) {
       document.head.appendChild(link);
     }
 
-    link.href = `${API_URL}/uploads/${app_logo}`;
+    link.href = `${API_URL}/uploads/app/${app_logo}`;
     link.type = app_logo.endsWith(".svg") ? "image/svg+xml" : "image/png";
   }
 }

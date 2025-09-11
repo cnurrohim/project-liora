@@ -7,7 +7,6 @@ import tabBar from "@/components/Tab/tabBar";
 import type { Wire } from "./setupWiring";
 
 import { createVerticalMenu } from "@/factory/createVerticalMenu";
-import { createHorizontalMenu } from "@/factory/createHorizontalMenu";
 
 export const layoutWires: Wire[] = [
   {

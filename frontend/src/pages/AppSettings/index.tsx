@@ -22,7 +22,7 @@ export default function AppSettingPage() {
     getAppSetting().then((data) => {
       setAppName(data.app_name ?? "");
       if (data.app_logo) {
-        setPreviewUrl(`${API_URL}/uploads/${data.app_logo}`);
+        setPreviewUrl(`${API_URL}/uploads/app/${data.app_logo}`);
       }
     });
   }, []);
@@ -38,7 +38,7 @@ export default function AppSettingPage() {
     });
     setLoading(false);
     if (result.success) {
-      showSuccessToast("Berhasil Save");
+      showSuccessToast("App setting saved");
       AppConfigController.loadConfig();
       applyAppMetadata(result.name, result.filename);
     }

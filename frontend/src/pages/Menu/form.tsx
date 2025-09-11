@@ -22,7 +22,7 @@ import { CommandRegistry } from "@/config/commandRegistry";
 import MultiSelect from "@/components/SelectOptions/MultiSelect";
 import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
-const modeOptions = [MENU.MODE.SLIDING, MENU.MODE.SLIDING];
+// const modeOptions = [MENU.MODE.SLIDING, MENU.MODE.SLIDING];
 const alignmentOptions = [MENU.ALIGNMENT.START, MENU.ALIGNMENT.END];
 const typeOptions = [MENU.TYPE.ROUTE, MENU.TYPE.COMMAND, MENU.TYPE.GROUP];
 

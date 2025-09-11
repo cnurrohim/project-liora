@@ -2,24 +2,16 @@ import { useEffect, useState } from "react";
 import { MenuBarController } from "./controller";
 import type { MenuBarEntry } from "../types";
 import { handleClick } from "./action";
-import { AppInfoController } from "../appInfoController";
-
-const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function MenuBar() {
   const [entries, setEntries] = useState(() => MenuBarController.getState());
-  const [appInfo, setAppInfo] = useState(() => AppInfoController.getState());
 
   useEffect(() => {
     const update = () => setEntries(MenuBarController.getState());
     MenuBarController.subscribe(update);
 
-    const updateAppInfo = () => setAppInfo(AppInfoController.getState());
-    AppInfoController.subscribe(updateAppInfo);
-
     return () => {
       MenuBarController.unsubscribe(update);
-      AppInfoController.unsubscribe(updateAppInfo);
     };
   }, []);
 

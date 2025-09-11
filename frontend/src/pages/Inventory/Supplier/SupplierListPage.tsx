@@ -1,4 +1,3 @@
-// src/pages/suppliers/SupplierListPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
@@ -11,7 +10,6 @@ import {
 import {
   getSuppliers,
   deleteSupplier,
-  getSupplierById,
 } from "@/pages/Inventory/Supplier/supplier.api";
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import { openTabSmart } from "@/utils/handleMenuClick/openTabSmart";
@@ -21,7 +19,7 @@ import { DeleteButtonLink } from "@/components/Buttons/DeleteButtonLink";
 import { ButtonGroupWithDropdown } from "@/components/Buttons/ButtonGroupWithDropdown";
 import { ConfirmationDialogController } from "@/components/ConfirmationDialog/controller";
 import ForbiddenPage from "pages/Misc/403";
-import { usePermissions } from "./permissions"; // sesuaikan modul permissions
+import { usePermissions } from "./permissions";
 import { DataTable } from "@/components/Table/DataTable";
 
 type Supplier = {
@@ -75,15 +73,6 @@ export default function SupplierListPage() {
       },
       { replace: true }
     );
-  };
-
-  const handleView = async (id: string) => {
-    try {
-      const detail = await getSupplierById(id);
-      showSuccessToast(`Supplier: ${detail.name}`);
-    } catch (err) {
-      console.error("Failed to fetch data", err);
-    }
   };
 
   const handleDelete = async (id: string) => {

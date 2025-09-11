@@ -1,4 +1,3 @@
-// src/routes/StockIssueFormPage.tsx
 import {
   Controller,
   FormProvider,
@@ -18,11 +17,7 @@ import ForbiddenPage from "pages/Misc/403";
 import { usePermissions } from "./permissions";
 import { issueSchema, type IssueFormValues } from "./formSchema";
 import SearchSelect from "@/components/SelectOptions/searchSelect";
-import {
-  searchItems,
-  searchLocation,
-  searchLocationWithItem,
-} from "@/api/search.api";
+import { searchItems, searchLocationWithItem } from "@/api/search.api";
 import { BackToListLink } from "@/components/Buttons/BackToListLink";
 
 export default function GoodsIssueFormPage() {
@@ -102,21 +97,6 @@ export default function GoodsIssueFormPage() {
         id: location.id,
         name: `${location.code}-${location.name}, qty:${location.qty}`,
         data: { qty: location.qty },
-      }));
-    } catch (err) {
-      console.error(err);
-      showErrorToast("Failed to fetch inventory location");
-      return [];
-    }
-  };
-
-  const handleTargetLocation = async (keyword: string) => {
-    if (!keyword || keyword.length < 2) return [];
-    try {
-      const results = await searchLocation(keyword);
-      return results.map((location: any) => ({
-        id: location.id,
-        name: `${location.code}-${location.name}, qty:${location.qty}`,
       }));
     } catch (err) {
       console.error(err);

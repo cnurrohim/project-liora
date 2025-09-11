@@ -5,7 +5,6 @@ import { TabController } from "@/components/Tab/controller";
 import { handleMenuClick } from "@/utils/handleMenuClick";
 import { IconRenderer } from "@/components/IconRenderer";
 import { PinnedMenuController } from "@/controller/PinnedMenuController";
-import UserProfileWidget from "./userProfile";
 
 export default function ListLauncher() {
   const [search, setSearch] = useState("");

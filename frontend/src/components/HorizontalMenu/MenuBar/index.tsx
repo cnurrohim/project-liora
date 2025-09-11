@@ -41,6 +41,27 @@ export default function MenuBar() {
     </button>
   );
 
+  function Logo({ src, alt }: { src: string; alt: string }) {
+    const [error, setError] = useState(false);
+
+    if (error) {
+      return (
+        <span className="h-8 w-8 rounded-full my-3 flex items-center justify-center bg-gray-300 text-sm">
+          📦
+        </span>
+      );
+    }
+
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className="h-8 w-8 rounded-full my-3"
+        onError={() => setError(true)}
+      />
+    );
+  }
+
   return (
     <div className="relative w-screen z-80">
       <aside
@@ -48,10 +69,9 @@ export default function MenuBar() {
       >
         <div className="flex flex-row items-center gap-1">
           <div className="text-2xl font-bold text-[var(--accent-primary)]  mr-5 flex flex-row items-center gap-2">
-            <img
-              src={`${API_URL}/uploads/${appInfo.logo}`}
+            <Logo
+              src={`${API_URL}/uploads/app/${appInfo.logo}`}
               alt={`${appInfo.name} logo`}
-              className="h-8 w-8 rounded-full  "
             />
             <span
               className="text-[var(--accent-primary)] break-words"

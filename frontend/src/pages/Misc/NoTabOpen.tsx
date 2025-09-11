@@ -11,7 +11,7 @@ export default function NoTabOpen() {
   useEffect(() => {
     getAppSetting().then((data) => {
       if (data.app_logo) {
-        setPreviewUrl(`${API_URL}/uploads/${data.app_logo}`);
+        setPreviewUrl(`${API_URL}/uploads/app/${data.app_logo}`);
       }
       if (data.app_name) setAppName(data.app_name);
     });
@@ -19,13 +19,9 @@ export default function NoTabOpen() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full text-gray-500">
-      <div className="text-[400px] mb-2 text-gray-900">
+      <div className="text-2xl mb-2 text-gray-900">
         {previewUrl && (
-          <img
-            src={previewUrl}
-            alt="Logo Preview"
-            className="h-100 object-contain"
-          />
+          <img src={previewUrl} alt="Logo" className="h-100 object-contain" />
         )}
 
         {!previewUrl && (

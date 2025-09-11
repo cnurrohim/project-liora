@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { v4 as uuidv4 } from "uuid";
 import * as fs from "fs";
 import { writeFile } from "fs/promises";
 import path from "path";
@@ -7,15 +6,13 @@ import { db } from "../../db.js";
 
 export const appSettingsRoute = new Hono();
 
-// GET current app settings
 appSettingsRoute.get("/", async (c) => {
   const res = await db.query("SELECT * FROM app_settings LIMIT 1");
   return c.json(res.rows[0] || {});
 });
 
-// PUT update settings (nama dan logo)
 appSettingsRoute.put("/", async (c) => {
-  const body = await c.req.parseBody(); // gunakan parseBody
+  const body = await c.req.parseBody();
 
   const name = body.app_name as string;
   const file = body.app_logo as File | undefined;
@@ -23,25 +20,30 @@ appSettingsRoute.put("/", async (c) => {
   let filename: string | undefined;
 
   if (file) {
-    const ext = path.extname(file.name);
+    const ext = path.extname(file.name).toLowerCase();
     const allowed = [".png", ".svg"];
     if (!allowed.includes(ext)) {
       return c.json({ error: "Only PNG or SVG allowed" }, 400);
     }
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    const uploadDir = path.join(process.cwd(), "public", "uploads", "app");
 
-    // Pastikan folder ada
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
 
-    filename = `logo_${uuidv4()}${ext}`;
+    filename = `app_logo${ext}`;
+
+    const otherExts = [".png", ".svg"].filter((e) => e !== ext);
+    for (const oldExt of otherExts) {
+      const oldPath = path.join(uploadDir, `app_logo${oldExt}`);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+
     const buffer = await file.arrayBuffer();
-    await writeFile(`./public/uploads/${filename}`, Buffer.from(buffer));
+    await writeFile(path.join(uploadDir, filename), Buffer.from(buffer));
   }
 
-  // Jika belum ada settings → insert, jika ada → update
   const existing = await db.query("SELECT id FROM app_settings LIMIT 1");
 
   if (existing.rowCount) {

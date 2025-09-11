@@ -1,5 +1,5 @@
 import { IconRenderer } from "@/components/IconRenderer";
-import { AppInfoController } from "@/components/VerticalMenu/appInfoController";
+// import { AppInfoController } from "@/components/VerticalMenu/appInfoController";
 import { UserProfileController } from "@/components/VerticalMenu/userProfileController";
 import { useEffect, useState } from "react";
 import { switchRoleAPI } from "../LoginPage/login.api";
@@ -10,7 +10,7 @@ import { runCommand } from "@/utils/handleMenuClick";
 import { API_URL } from "@/constants/common";
 
 export default function UserProfileWidget() {
-  const [appInfo, setAppInfo] = useState(() => AppInfoController.getState());
+  // const [appInfo, setAppInfo] = useState(() => AppInfoController.getState());
   const [userProfile, setUserProfile] = useState(() =>
     UserProfileController.getState()
   );
@@ -18,15 +18,15 @@ export default function UserProfileWidget() {
   const [showRoles, setShowRoles] = useState(false);
 
   useEffect(() => {
-    const updateAppInfo = () => setAppInfo(AppInfoController.getState());
+    // const updateAppInfo = () => setAppInfo(AppInfoController.getState());
     const updateUserProfile = () =>
       setUserProfile(UserProfileController.getState());
 
-    const unsubAppInfo = AppInfoController.subscribe(updateAppInfo);
+    // const unsubAppInfo = AppInfoController.subscribe(updateAppInfo);
     const unsubUserProfile = UserProfileController.subscribe(updateUserProfile);
 
     return () => {
-      unsubAppInfo;
+      // unsubAppInfo;
       unsubUserProfile;
     };
   }, []);
