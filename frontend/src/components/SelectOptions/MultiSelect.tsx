@@ -47,7 +47,7 @@ export default function MultiSelect({
         {selected.map((opt) => (
           <span
             key={opt.id}
-            className="bg-[var(--background)] text-[var(--text-primary)] px-2 py-1 rounded text-sm"
+            className="bg-[var(--content-surface-hover)] text-[var(--content-text)] px-2 py-1 rounded text-sm"
           >
             {opt.name}
             <button
@@ -63,25 +63,25 @@ export default function MultiSelect({
       <input
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        className="w-full outline-none bg-[var(--background)] p-2"
+        className="w-full outline-none bg-[var(--content-surface-hover)] p-2"
         placeholder={placeholder}
         disabled={disabled}
         onFocus={() => setIsOpen(true)}
         onBlur={() => setIsOpen(false)}
       />
       {isOpen && filtered.length > 0 && (
-        <ul className="absolute left-0 right-0 z-10 mt-1  bg-[var(--background)] rounded shadow max-h-60 overflow-auto">
+        <ul className="absolute left-0 right-0 z-10 mt-1  bg-[var(--content-surface-hover)] rounded shadow max-h-60 overflow-auto border-1 border-[var(--content-border)]">
           {filtered.map((opt) => (
             <li
               key={opt.id}
-              className="px-2 py-1 hover:bg-[var(--hover)] cursor-pointer"
+              className="px-2 py-1 hover:bg-[var(--content-surface)] cursor-pointer"
               onMouseDown={() => addOption(opt)}
             >
               {opt.name}
             </li>
           ))}
           {filtered.length === 0 && (
-            <li className="px-2 py-1 text-[var(--panel-text-primary)]">
+            <li className="px-2 py-1 text-[var(--content-text)]">
               Tidak ada opsi
             </li>
           )}

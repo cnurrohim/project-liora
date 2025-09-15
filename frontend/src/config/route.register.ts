@@ -37,6 +37,7 @@ import StockOnHandListPage from "@/pages/Inventory/ReportStockOnHand/StockOnHand
 import POSummaryListPage from "@/pages/Inventory/ReportPurchaseSummary/POSummaryListPage";
 import StockHistoryReportPage from "@/pages/Inventory/ReportStockHistory/StockHistoryReportPage";
 import StockLocationReportPage from "@/pages/Inventory/ReportStockLocation/StockLocationReportPage";
+import UserPreferenceForm from "@/pages/Preferences/userPreference";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -72,6 +73,13 @@ export function registerRoutes() {
     "preferences",
     React.createElement(Preferences),
     "page"
+  );
+
+  RouteRegistry.register(
+    "/user/:id/preference",
+    "user preference",
+    React.createElement(UserPreferenceForm),
+    "action"
   );
 
   RouteRegistry.register(

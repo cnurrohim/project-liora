@@ -17,6 +17,7 @@ export type LayoutComponentDefinition = {
   label: string;
   create: (position: LayoutPosition) => React.ReactNode;
   allowedPositions: LayoutPosition[];
+  group: string;
   singleton?: boolean;
 };
 
@@ -26,6 +27,7 @@ export const layoutComponentRegistry: LayoutComponentDefinition[] = [
     label: "Horizontal Menu",
     create: (position) => React.createElement(createHorizontalMenu(position)),
     allowedPositions: ["topPane", "bottomPane"],
+    group: "menu-horizontal",
     singleton: true,
   },
   {
@@ -33,6 +35,7 @@ export const layoutComponentRegistry: LayoutComponentDefinition[] = [
     label: "Vertical Menu",
     create: (position) => React.createElement(createVerticalMenu(position)),
     allowedPositions: ["leftPane", "rightPane"],
+    group: "menu-vertical",
     singleton: true,
   },
   {
@@ -41,6 +44,7 @@ export const layoutComponentRegistry: LayoutComponentDefinition[] = [
     create: (position) =>
       React.createElement(createVerticalExpandedMenu(position)),
     allowedPositions: ["leftPane", "rightPane"],
+    group: "menu-vertical",
     singleton: true,
   },
   {
@@ -53,6 +57,7 @@ export const layoutComponentRegistry: LayoutComponentDefinition[] = [
             React.createElement(IconRenderer, { name: name, size: size }),
         })
       ),
+    group: "tabbar",
     allowedPositions: ["topPane", "bottomPane"],
   },
 ];

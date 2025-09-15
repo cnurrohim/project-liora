@@ -174,17 +174,24 @@ export default function PreferencesForm() {
               const content = def?.create(pos) ?? null;
               LayoutController.updatePaneWithKey(pos, nextKey, content);
 
-              if (def?.singleton && nextKey) {
+              if (def?.singleton && def.group && nextKey) {
                 const positions: LayoutPosition[] = [
                   "topPane",
                   "bottomPane",
                   "leftPane",
                   "rightPane",
                 ];
+
                 for (const other of positions) {
-                  if (other !== pos && watch(other) === nextKey) {
-                    LayoutController.updatePaneWithKey(other, null, null);
-                    setValue(other, null);
+                  if (other !== pos) {
+                    const currentId = watch(other);
+                    const currentDef = layoutComponentRegistry.find(
+                      (c) => c.id === currentId
+                    );
+                    if (currentDef?.group === def.group) {
+                      LayoutController.updatePaneWithKey(other, null, null);
+                      setValue(other, null);
+                    }
                   }
                 }
               }

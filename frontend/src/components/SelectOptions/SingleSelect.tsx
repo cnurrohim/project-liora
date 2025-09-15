@@ -84,9 +84,7 @@ export default function SingleSelect({
       )}
       {isOpen && filtered.length === 0 && (
         <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--content-surface-hover)] rounded shadow">
-          <li className="px-2 py-1 text-[var(--content-text)]">
-            Tidak ada opsi
-          </li>
+          <li className="px-2 py-1 text-[var(--content-text)]">No Option</li>
         </ul>
       )}
     </div>

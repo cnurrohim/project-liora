@@ -14,15 +14,25 @@ userLayoutRoute.get("/:userId/:roleId", async (c) => {
 
   try {
     const result = await db.query(
-      `SELECT layout FROM user_layout_preferences WHERE user_id = $1 AND role_id = $2`,
+      `SELECT layout,default_page, default_new_tab, theme FROM user_layout_preferences WHERE user_id = $1 AND role_id = $2`,
       [user_id, role_id]
     );
 
     if (result.rows.length === 0) {
-      return c.json({ layout: null });
+      return c.json({
+        layout: null,
+        default_page: null,
+        default_new_tab: null,
+        theme: null,
+      });
     }
 
-    return c.json({ layout: result.rows[0].layout });
+    return c.json({
+      layout: result.rows[0].layout,
+      default_page: result.rows[0].default_page,
+      default_new_tab: result.rows[0].default_new_tab,
+      theme: result.rows[0].theme,
+    });
   } catch (err) {
     console.error("Failed to get layout:", err);
     return c.json({ error: "Failed to fetch layout" }, 500);

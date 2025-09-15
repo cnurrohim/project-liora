@@ -26,6 +26,7 @@ import { ButtonLink } from "@/components/Buttons/ButtonLink";
 import { UserDetailPane, UserDetailPaneController } from "./UserDetailPane";
 import { usePermissions } from "./permissions";
 import ForbiddenPage from "pages/Misc/403";
+import { getActiveUser } from "@/services/authServices";
 
 type User = {
   id: string;
@@ -53,6 +54,7 @@ export default function UserListPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const activeUser = getActiveUser();
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -71,6 +73,24 @@ export default function UserListPage() {
   }, []);
 
   const data = useMemo(() => users, [users]);
+
+  const handleUserPreferences = (user: User) => {
+    if (!canUpdate) {
+      showErrorToast("We're sorry, you don't have access for this feature!");
+      return;
+    }
+
+    openTabSmart(
+      {
+        id: `/user/${user.id}/preference`,
+        route: `/user/${user.id}/preference`,
+        label: `Edit Preferences: ${user.name}`,
+        type: "route",
+        icon: "RiLayout5Fill",
+      },
+      { replace: true }
+    );
+  };
 
   const handleEdit = (user: User) => {
     if (!canUpdate) {
@@ -221,6 +241,15 @@ export default function UserListPage() {
         cell: ({ row }) => (
           <div className="flex gap-1">
             <ViewButtonLink onClick={() => handleView(row.original.id)} />
+
+            {activeUser?.id !== row.original.id && (
+              <ButtonLink
+                label="Preferences"
+                onClick={() => handleUserPreferences(row.original)}
+                icon="RiLayout5Fill"
+              />
+            )}
+
             {canUpdate && (
               <EditButtonLink onClick={() => handleEdit(row.original)} />
             )}

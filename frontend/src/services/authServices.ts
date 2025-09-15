@@ -2,7 +2,7 @@ export type ActiveUser = {
   id: string;
   username: string;
   role_id: string;
-  [key: string]: any; // jika ada info lain
+  [key: string]: any;
 };
 
 export function getActiveUser(): ActiveUser | null {
