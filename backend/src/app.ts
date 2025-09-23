@@ -15,6 +15,8 @@ import { departmentRoute } from "./routes/core/departments.js";
 import { pinnedMenusRoute } from "./routes/core/pinnedMenus.js";
 import { profileRoute } from "./routes/core/profile.js";
 import { inventoryRoute } from "./routes/inventory/index.js";
+import { userDashboardRoute } from "./routes/core/userDashboardRoute.js";
+import { widgetRoute } from "./routes/inventory/widget.route.js";
 
 export const app = new Hono<{ Variables: Variables }>();
 
@@ -35,12 +37,14 @@ app.route("/auth", authRoute);
 app.route("/users", userRoute);
 app.route("/menu", menuRoute);
 app.route("/user-layout", userLayoutRoute);
+app.route("/user-dashboard", userDashboardRoute);
 
 app.route("/roles", roleRoute);
 app.route("/profile", profileRoute);
 app.route("/permissions", permissionRoute);
 app.route("/departments", departmentRoute);
 app.route("/pinned-menus", pinnedMenusRoute);
+app.route("/widgets", widgetRoute);
 
 // INVENTORY USE CASE
 app.route("/inventory", inventoryRoute);

@@ -38,6 +38,8 @@ import POSummaryListPage from "@/pages/Inventory/ReportPurchaseSummary/POSummary
 import StockHistoryReportPage from "@/pages/Inventory/ReportStockHistory/StockHistoryReportPage";
 import StockLocationReportPage from "@/pages/Inventory/ReportStockLocation/StockLocationReportPage";
 import UserPreferenceForm from "@/pages/Preferences/userPreference";
+import DashboardEditorPage from "@/pages/Dashboard/DashboardEditorPage";
+import DashboardPage from "@/pages/Dashboard/DashboardPage";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -355,6 +357,20 @@ export function registerRoutes() {
     "/pages/inventory/stock-location-report",
     "Inventory Per Location",
     React.createElement(StockLocationReportPage),
+    "page"
+  );
+
+  RouteRegistry.register(
+    "/pages/dashboard",
+    "Dashboard",
+    React.createElement(DashboardPage),
+    "page"
+  );
+
+  RouteRegistry.register(
+    "/pages/dashboardEditor",
+    "Edit Dashboard",
+    React.createElement(DashboardEditorPage),
     "page"
   );
 }

@@ -10,6 +10,7 @@ import { registerRoutes } from "./route.register";
 import { ProfileController } from "@/controller/ProfileController";
 import { initFromStorage, TabController } from "@/components/Tab/controller";
 import { UserPreferencesController } from "@/controller/UserPreferencesController";
+import { DashboardController } from "@/controller/DashboardController";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -28,6 +29,7 @@ export async function initializeApp(): Promise<() => void> {
     await hydrateUserTab(user);
     initFromStorage();
     hydrateContentMargin();
+    DashboardController.init();
   }
 
   await AppConfigController.loadConfig();

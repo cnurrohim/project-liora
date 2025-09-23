@@ -442,4 +442,30 @@ export const permissionRegistry = [
     label: "cancel stock opname",
     description: "Bisa cancel stock opname",
   },
+
+  /** DASHBOARD */
+  {
+    domain: "dashboard",
+    name: "view",
+    label: "buka halaman dashboard management",
+    description: "Bisa membuka halaman management dashboard",
+  },
+  {
+    domain: "dashboard",
+    name: "delete",
+    label: "hapus dashboard",
+    description: "Bisa menghapus dashboard",
+  },
+  {
+    domain: "dashboard",
+    name: "update",
+    label: "mengubah dashboard",
+    description: "Bisa mengubah dashboard",
+  },
+  {
+    domain: "dashboard",
+    name: "create",
+    label: "menambahkan dashboard baru",
+    description: "Bisa menambahkan dashboard baru",
+  },
 ];

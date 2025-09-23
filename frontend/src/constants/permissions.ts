@@ -118,4 +118,11 @@ export const PERMISSIONS = {
     REVIEW: "stock_opname.review",
     CANCEL: "stock_opname.cancel",
   },
+
+  DASHBOARD: {
+    VIEW: "dashboard.view",
+    CREATE: "dashboard.create",
+    UPDATE: "dashboard.update",
+    DELETE: "dashboard.delete",
+  },
 } as const;

@@ -2,13 +2,13 @@ import { apiFetch } from "@/utils/apiFetch";
 
 export async function getLayout(userId: string, roleId: string) {
   const res = await apiFetch(`/user-layout/${userId}/${roleId}`);
-  if (!res.ok) throw new Error("Gagal mengambil layout user");
+  if (!res.ok) throw new Error("Failed to fetch user's layout");
   return (await res.json()).layout;
 }
 
 export async function getUserPreferences(userId: string, roleId: string) {
   const res = await apiFetch(`/user-layout/${userId}/${roleId}`);
-  if (!res.ok) throw new Error("Gagal mengambil layout user");
+  if (!res.ok) throw new Error("Failed to fetch user's layout");
   return await res.json();
 }
 
@@ -25,6 +25,6 @@ export async function saveLayout(
     },
     body: JSON.stringify({ user_id: userId, role_id: roleId, layout, config }),
   });
-  if (!res.ok) throw new Error("Gagal Saving layout user");
+  if (!res.ok) throw new Error("Failed to save user's layout");
   return (await res.json()).data;
 }
