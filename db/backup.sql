@@ -1,0 +1,2367 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict 3bEQkKpBDFeKbfiVHpgOI8auq0Gy0InwMDUye6C4FTf167WgoWoBQNFKhZEShrD
+
+-- Dumped from database version 17.6 (Ubuntu 17.6-1build1)
+-- Dumped by pg_dump version 17.6 (Ubuntu 17.6-1build1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: inventory; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA inventory;
+
+
+--
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
+-- Name: reference_type_enum; Type: TYPE; Schema: inventory; Owner: -
+--
+
+CREATE TYPE inventory.reference_type_enum AS ENUM (
+    'purchase_order',
+    'stock_adjustment',
+    'purchase_receive',
+    'goods_receipt',
+    'goods_issue',
+    'transfer',
+    'stock_opname'
+);
+
+
+--
+-- Name: status_enum; Type: TYPE; Schema: inventory; Owner: -
+--
+
+CREATE TYPE inventory.status_enum AS ENUM (
+    'draft',
+    'confirmed',
+    'received',
+    'cancelled'
+);
+
+
+--
+-- Name: generate_adjustment_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.generate_adjustment_number() RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_year   INT := EXTRACT(YEAR FROM CURRENT_DATE);
+    v_month  INT := EXTRACT(MONTH FROM CURRENT_DATE);
+    v_counter INT;
+BEGIN
+    -- Insert kalau belum ada, kalau ada langsung naikkan counter
+    INSERT INTO inventory.adjustment_number_counters(year, month, counter)
+    VALUES (v_year, v_month, 1)
+    ON CONFLICT (year, month)
+    DO UPDATE SET counter = inventory.adjustment_number_counters.counter + 1
+    RETURNING counter INTO v_counter;
+
+    -- Format: ADJ-YYYY-MM-XXXX
+    RETURN 'ADJ-'
+        || v_year::text || '-'
+        || lpad(v_month::text, 2, '0') || '-'
+        || lpad(v_counter::text, 4, '0');
+END;
+$$;
+
+
+--
+-- Name: generate_issue_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.generate_issue_number() RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_year   INT := EXTRACT(YEAR FROM CURRENT_DATE);
+    v_month  INT := EXTRACT(MONTH FROM CURRENT_DATE);
+    v_counter INT;
+BEGIN
+    -- Insert kalau belum ada, kalau ada langsung naikkan counter
+    INSERT INTO inventory.issue_number_counters(year, month, counter)
+    VALUES (v_year, v_month, 1)
+    ON CONFLICT (year, month)
+    DO UPDATE SET counter = inventory.issue_number_counters.counter + 1
+    RETURNING counter INTO v_counter;
+
+    -- Format: GI-YYYY-MM-XXXX
+    RETURN 'GI-'
+        || v_year::text || '-'
+        || lpad(v_month::text, 2, '0') || '-'
+        || lpad(v_counter::text, 4, '0');
+END;
+$$;
+
+
+--
+-- Name: generate_opname_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.generate_opname_number() RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_year   INT := EXTRACT(YEAR FROM CURRENT_DATE);
+    v_counter INT;
+BEGIN
+    -- Insert kalau belum ada, kalau ada langsung naikkan counter
+    INSERT INTO inventory.opname_number_counters(year, counter)
+    VALUES (v_year, 1)
+    ON CONFLICT (year)
+    DO UPDATE SET counter = inventory.opname_number_counters.counter + 1
+    RETURNING counter INTO v_counter;
+
+    -- Format: OPN-YYYY-XXXX
+    RETURN 'OPN-'
+        || v_year::text || '-'
+        || lpad(v_counter::text, 4, '0');
+END;
+$$;
+
+
+--
+-- Name: generate_order_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.generate_order_number() RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_year   INT := EXTRACT(YEAR FROM CURRENT_DATE);
+    v_month  INT := EXTRACT(MONTH FROM CURRENT_DATE);
+    v_counter INT;
+BEGIN
+    -- Insert kalau belum ada, kalau ada langsung naikkan counter
+    INSERT INTO inventory.order_number_counters(year, month, counter)
+    VALUES (v_year, v_month, 1)
+    ON CONFLICT (year, month)
+    DO UPDATE SET counter = inventory.order_number_counters.counter + 1
+    RETURNING counter INTO v_counter;
+
+    -- Format jadi PO-YYYY-MM-XXXX
+    RETURN 'PO-'
+        || v_year::text || '-'
+        || lpad(v_month::text, 2, '0') || '-'
+        || lpad(v_counter::text, 4, '0');
+END;
+$$;
+
+
+--
+-- Name: generate_receipt_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.generate_receipt_number() RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_year   INT := EXTRACT(YEAR FROM CURRENT_DATE);
+    v_month  INT := EXTRACT(MONTH FROM CURRENT_DATE);
+    v_counter INT;
+BEGIN
+    -- Insert kalau belum ada, kalau ada langsung naikkan counter
+    INSERT INTO inventory.receipt_number_counters(year, month, counter)
+    VALUES (v_year, v_month, 1)
+    ON CONFLICT (year, month)
+    DO UPDATE SET counter = inventory.receipt_number_counters.counter + 1
+    RETURNING counter INTO v_counter;
+
+    -- Format: GR-YYYY-MM-XXXX
+    RETURN 'GR-'
+        || v_year::text || '-'
+        || lpad(v_month::text, 2, '0') || '-'
+        || lpad(v_counter::text, 4, '0');
+END;
+$$;
+
+
+--
+-- Name: set_adjustment_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.set_adjustment_number() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF NEW.adjustment_number IS NULL THEN
+        NEW.adjustment_number := inventory.generate_adjustment_number();
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+
+--
+-- Name: set_issue_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.set_issue_number() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF NEW.issue_number IS NULL THEN
+        NEW.issue_number := inventory.generate_issue_number();
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+
+--
+-- Name: set_opname_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.set_opname_number() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF NEW.opname_number IS NULL THEN
+        NEW.opname_number := inventory.generate_opname_number();
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+
+--
+-- Name: set_order_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.set_order_number() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF NEW.order_number IS NULL THEN
+        NEW.order_number := inventory.generate_order_number();
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+
+--
+-- Name: set_receipt_number(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.set_receipt_number() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF NEW.receipt_number IS NULL THEN
+        NEW.receipt_number := inventory.generate_receipt_number();
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+
+--
+-- Name: set_updated_at(); Type: FUNCTION; Schema: inventory; Owner: -
+--
+
+CREATE FUNCTION inventory.set_updated_at() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$;
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: adjustment_number_counters; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.adjustment_number_counters (
+    year integer NOT NULL,
+    month integer NOT NULL,
+    counter integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: goods_issue_items; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.goods_issue_items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    goods_issue_id uuid NOT NULL,
+    item_id uuid NOT NULL,
+    source_location_id uuid NOT NULL,
+    target_location_id uuid,
+    quantity numeric NOT NULL,
+    notes text,
+    CONSTRAINT goods_issue_items_quantity_check CHECK ((quantity > (0)::numeric))
+);
+
+
+--
+-- Name: goods_issues; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.goods_issues (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    issue_number text NOT NULL,
+    issue_date date DEFAULT CURRENT_DATE NOT NULL,
+    notes text,
+    created_at timestamp with time zone DEFAULT now(),
+    created_by uuid
+);
+
+
+--
+-- Name: goods_receipt_items; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.goods_receipt_items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    goods_receipt_id uuid NOT NULL,
+    item_id uuid NOT NULL,
+    quantity numeric NOT NULL,
+    notes text,
+    CONSTRAINT goods_receipt_items_quantity_check CHECK ((quantity > (0)::numeric))
+);
+
+
+--
+-- Name: goods_receipts; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.goods_receipts (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    receipt_number text NOT NULL,
+    supplier_id uuid,
+    receipt_date date DEFAULT CURRENT_DATE NOT NULL,
+    notes text,
+    created_at timestamp with time zone DEFAULT now(),
+    created_by uuid,
+    location_id uuid NOT NULL,
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: issue_number_counters; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.issue_number_counters (
+    year integer NOT NULL,
+    month integer NOT NULL,
+    counter integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: items; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    sku text NOT NULL,
+    name text NOT NULL,
+    min_stock integer DEFAULT 0 NOT NULL,
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: TABLE items; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON TABLE inventory.items IS 'Tabel menyimpan informasi barang di gudang';
+
+
+--
+-- Name: COLUMN items.sku; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.items.sku IS 'Kode unik barang (SKU)';
+
+
+--
+-- Name: COLUMN items.name; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.items.name IS 'Nama barang';
+
+
+--
+-- Name: COLUMN items.min_stock; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.items.min_stock IS 'Minimal stok untuk trigger reorder';
+
+
+--
+-- Name: opname_number_counters; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.opname_number_counters (
+    year integer NOT NULL,
+    counter integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: order_number_counters; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.order_number_counters (
+    year integer NOT NULL,
+    month integer NOT NULL,
+    counter integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: purchase_order_items; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.purchase_order_items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    purchase_order_id uuid NOT NULL,
+    item_id uuid NOT NULL,
+    qty integer NOT NULL,
+    price numeric(18,2),
+    received_qty integer DEFAULT 0
+);
+
+
+--
+-- Name: TABLE purchase_order_items; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON TABLE inventory.purchase_order_items IS 'Daftar item di setiap PO';
+
+
+--
+-- Name: COLUMN purchase_order_items.qty; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.purchase_order_items.qty IS 'Jumlah barang dipesan';
+
+
+--
+-- Name: COLUMN purchase_order_items.received_qty; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.purchase_order_items.received_qty IS 'Jumlah barang yang sudah diterima';
+
+
+--
+-- Name: purchase_orders; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.purchase_orders (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    order_number text NOT NULL,
+    supplier_id uuid NOT NULL,
+    order_date date DEFAULT CURRENT_DATE NOT NULL,
+    status inventory.status_enum NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    created_by uuid,
+    expected_date date DEFAULT (CURRENT_DATE + '1 day'::interval) NOT NULL,
+    approved_by uuid,
+    approved_at timestamp with time zone,
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: TABLE purchase_orders; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON TABLE inventory.purchase_orders IS 'Tabel purchase order barang masuk dari supplier';
+
+
+--
+-- Name: COLUMN purchase_orders.order_number; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.purchase_orders.order_number IS 'Nomor unik PO';
+
+
+--
+-- Name: COLUMN purchase_orders.supplier_id; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.purchase_orders.supplier_id IS 'Supplier terkait';
+
+
+--
+-- Name: COLUMN purchase_orders.status; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.purchase_orders.status IS 'Status PO: draft, confirmed, received, cancelled';
+
+
+--
+-- Name: COLUMN purchase_orders.created_by; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.purchase_orders.created_by IS 'User yang membuat PO';
+
+
+--
+-- Name: purchase_receive_items; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.purchase_receive_items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    purchase_receive_id uuid NOT NULL,
+    item_id uuid NOT NULL,
+    qty numeric(18,2) NOT NULL,
+    CONSTRAINT purchase_receive_items_qty_check CHECK ((qty > (0)::numeric))
+);
+
+
+--
+-- Name: purchase_receives; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.purchase_receives (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    purchase_order_id uuid NOT NULL,
+    receive_date date DEFAULT CURRENT_DATE NOT NULL,
+    received_by uuid NOT NULL,
+    note text,
+    created_at timestamp without time zone DEFAULT now(),
+    location_id uuid NOT NULL
+);
+
+
+--
+-- Name: receipt_number_counters; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.receipt_number_counters (
+    year integer NOT NULL,
+    month integer NOT NULL,
+    counter integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: stock_adjustment_items; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.stock_adjustment_items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    adjustment_id uuid NOT NULL,
+    item_id uuid NOT NULL,
+    location_id uuid NOT NULL,
+    quantity_diff numeric(14,2) NOT NULL,
+    notes text,
+    quantity_before numeric(14,2)
+);
+
+
+--
+-- Name: stock_adjustments; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.stock_adjustments (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    adjustment_number character varying(50) NOT NULL,
+    adjustment_date date DEFAULT CURRENT_DATE NOT NULL,
+    reason text,
+    status character varying(20) DEFAULT 'draft'::character varying NOT NULL,
+    created_by uuid,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now(),
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: stock_balances; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.stock_balances (
+    item_id uuid NOT NULL,
+    location_id uuid NOT NULL,
+    qty integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: stock_locations; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.stock_locations (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    code text NOT NULL,
+    name text NOT NULL,
+    type text NOT NULL,
+    description text,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: stock_movements; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.stock_movements (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    item_id uuid NOT NULL,
+    movement_type text NOT NULL,
+    adjustment_direction text NOT NULL,
+    qty integer NOT NULL,
+    balance_after integer NOT NULL,
+    reference_id uuid,
+    reference_type inventory.reference_type_enum NOT NULL,
+    note text,
+    created_at timestamp without time zone DEFAULT now(),
+    created_by uuid,
+    source_location_id uuid,
+    target_location_id uuid,
+    CONSTRAINT movement_direction_consistency CHECK ((((movement_type = 'inbound'::text) AND (adjustment_direction = 'increase'::text)) OR ((movement_type = 'outbound'::text) AND (adjustment_direction = 'decrease'::text)) OR ((movement_type = 'adjustment'::text) AND (adjustment_direction = ANY (ARRAY['increase'::text, 'decrease'::text]))))),
+    CONSTRAINT stock_movements_adjustment_direction_check CHECK ((adjustment_direction = ANY (ARRAY['increase'::text, 'decrease'::text]))),
+    CONSTRAINT stock_movements_movement_type_check CHECK ((movement_type = ANY (ARRAY['inbound'::text, 'outbound'::text, 'adjustment'::text]))),
+    CONSTRAINT stock_movements_qty_check CHECK ((qty > 0))
+);
+
+
+--
+-- Name: TABLE stock_movements; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON TABLE inventory.stock_movements IS 'Ledger stok: semua pergerakan barang masuk, keluar, dan penyesuaian';
+
+
+--
+-- Name: COLUMN stock_movements.movement_type; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.stock_movements.movement_type IS 'Tipe pergerakan: inbound, outbound, atau adjustment';
+
+
+--
+-- Name: COLUMN stock_movements.adjustment_direction; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.stock_movements.adjustment_direction IS 'Arah penyesuaian: increase atau decrease';
+
+
+--
+-- Name: COLUMN stock_movements.qty; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.stock_movements.qty IS 'Jumlah barang, selalu positif';
+
+
+--
+-- Name: COLUMN stock_movements.balance_after; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.stock_movements.balance_after IS 'Saldo stok setelah transaksi';
+
+
+--
+-- Name: COLUMN stock_movements.reference_id; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.stock_movements.reference_id IS 'Referensi ke tabel terkait (PO, SO, stock_opname, dsb)';
+
+
+--
+-- Name: COLUMN stock_movements.reference_type; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.stock_movements.reference_type IS 'Tipe referensi, menentukan tabel asal';
+
+
+--
+-- Name: COLUMN stock_movements.note; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.stock_movements.note IS 'Catatan tambahan';
+
+
+--
+-- Name: COLUMN stock_movements.created_by; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.stock_movements.created_by IS 'User yang membuat transaksi';
+
+
+--
+-- Name: stock_opname_items; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.stock_opname_items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    opname_id uuid NOT NULL,
+    item_id uuid NOT NULL,
+    quantity_counted numeric(14,2) NOT NULL,
+    quantity_system numeric(14,2) NOT NULL
+);
+
+
+--
+-- Name: stock_opnames; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.stock_opnames (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    location_id uuid NOT NULL,
+    opname_date date NOT NULL,
+    status text DEFAULT 'draft'::text NOT NULL,
+    notes text,
+    created_by uuid,
+    approved_by uuid,
+    opname_number text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone,
+    updated_by uuid,
+    reviewed_at timestamp with time zone,
+    reviewed_by uuid,
+    review_note text,
+    canceled_at timestamp with time zone,
+    canceled_by uuid,
+    finalized_at timestamp with time zone,
+    finalized_by uuid
+);
+
+
+--
+-- Name: suppliers; Type: TABLE; Schema: inventory; Owner: -
+--
+
+CREATE TABLE inventory.suppliers (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name text NOT NULL,
+    contact text,
+    address text,
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: TABLE suppliers; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON TABLE inventory.suppliers IS 'Tabel menyimpan informasi supplier';
+
+
+--
+-- Name: COLUMN suppliers.name; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.suppliers.name IS 'Nama supplier';
+
+
+--
+-- Name: COLUMN suppliers.contact; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.suppliers.contact IS 'Kontak supplier';
+
+
+--
+-- Name: COLUMN suppliers.address; Type: COMMENT; Schema: inventory; Owner: -
+--
+
+COMMENT ON COLUMN inventory.suppliers.address IS 'Alamat supplier';
+
+
+--
+-- Name: app_settings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.app_settings (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    app_name text NOT NULL,
+    app_logo text,
+    updated_at timestamp without time zone DEFAULT now()
+);
+
+
+--
+-- Name: departments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.departments (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name text NOT NULL,
+    parent_id uuid,
+    path text,
+    created_at timestamp with time zone DEFAULT now(),
+    updated_at timestamp with time zone DEFAULT now(),
+    description text,
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: menu_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.menu_items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    parent_id uuid,
+    menu_key character varying(50),
+    type character varying(20) NOT NULL,
+    label character varying(100) NOT NULL,
+    icon character varying(100),
+    route character varying(255),
+    command character varying(100),
+    mode character varying(20),
+    alignment character varying(20),
+    "position" integer DEFAULT 0,
+    ordinal integer DEFAULT 0,
+    description character varying(255),
+    icon_color character varying(7),
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: COLUMN menu_items.menu_key; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.menu_items.menu_key IS 'contoh: main, settings, preferences dll';
+
+
+--
+-- Name: COLUMN menu_items.type; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.menu_items.type IS 'GROUP, ROUTE, COMMAND';
+
+
+--
+-- Name: COLUMN menu_items.route; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.menu_items.route IS 'jika menu mengakses halaman tertentu: contoh: /pages/preferences';
+
+
+--
+-- Name: COLUMN menu_items.command; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.menu_items.command IS 'jika menu menjalan suatu fungsi contoh: logout';
+
+
+--
+-- Name: COLUMN menu_items.mode; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.menu_items.mode IS 'sliding atau context (context belum ada implementasinya)';
+
+
+--
+-- Name: COLUMN menu_items.alignment; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.menu_items.alignment IS 'posisi menu, start atau end';
+
+
+--
+-- Name: COLUMN menu_items.ordinal; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.menu_items.ordinal IS 'urutan menu';
+
+
+--
+-- Name: COLUMN menu_items.description; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.menu_items.description IS 'deskripsi menu (opsional)';
+
+
+--
+-- Name: COLUMN menu_items.icon_color; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.menu_items.icon_color IS 'warna icon pakai format hex';
+
+
+--
+-- Name: menu_permissions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.menu_permissions (
+    menu_id uuid NOT NULL,
+    permission_id uuid NOT NULL
+);
+
+
+--
+-- Name: permissions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.permissions (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name character varying(50) NOT NULL,
+    label character varying(100) NOT NULL,
+    domain character varying(50) NOT NULL,
+    description text,
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: role_permissions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.role_permissions (
+    role_id uuid NOT NULL,
+    permission_id uuid NOT NULL
+);
+
+
+--
+-- Name: roles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.roles (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name character varying(50) NOT NULL,
+    description text,
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Name: user_dashboard_preferences; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_dashboard_preferences (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id uuid NOT NULL,
+    role_id uuid NOT NULL,
+    layout jsonb NOT NULL,
+    updated_at timestamp without time zone DEFAULT now(),
+    created_at timestamp without time zone DEFAULT now()
+);
+
+
+--
+-- Name: user_departments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_departments (
+    user_id uuid NOT NULL,
+    department_id uuid NOT NULL
+);
+
+
+--
+-- Name: user_layout_preferences; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_layout_preferences (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id uuid NOT NULL,
+    role_id uuid NOT NULL,
+    layout jsonb NOT NULL,
+    updated_at timestamp without time zone DEFAULT now(),
+    created_at timestamp without time zone DEFAULT now(),
+    default_page character varying(255),
+    default_new_tab character varying(255),
+    theme character varying(50) DEFAULT 'light'::character varying NOT NULL
+);
+
+
+--
+-- Name: user_permissions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_permissions (
+    user_id uuid NOT NULL,
+    permission_id uuid NOT NULL,
+    granted boolean DEFAULT true NOT NULL
+);
+
+
+--
+-- Name: user_pinned_menus; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_pinned_menus (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    user_id uuid NOT NULL,
+    role_id uuid NOT NULL,
+    menu_id uuid NOT NULL,
+    pinned_at timestamp without time zone DEFAULT now()
+);
+
+
+--
+-- Name: user_roles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_roles (
+    user_id uuid NOT NULL,
+    role_id uuid NOT NULL,
+    is_default boolean DEFAULT false
+);
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.users (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name character varying(100) NOT NULL,
+    username character varying(50),
+    email character varying(100) NOT NULL,
+    password text NOT NULL,
+    is_active boolean DEFAULT true,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    active_role_id uuid,
+    profile_photo text,
+    phone_number character varying(20),
+    address text,
+    deleted_at timestamp with time zone
+);
+
+
+--
+-- Data for Name: adjustment_number_counters; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.adjustment_number_counters (year, month, counter) FROM stdin;
+\.
+
+
+--
+-- Data for Name: goods_issue_items; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.goods_issue_items (id, goods_issue_id, item_id, source_location_id, target_location_id, quantity, notes) FROM stdin;
+\.
+
+
+--
+-- Data for Name: goods_issues; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.goods_issues (id, issue_number, issue_date, notes, created_at, created_by) FROM stdin;
+\.
+
+
+--
+-- Data for Name: goods_receipt_items; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.goods_receipt_items (id, goods_receipt_id, item_id, quantity, notes) FROM stdin;
+\.
+
+
+--
+-- Data for Name: goods_receipts; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.goods_receipts (id, receipt_number, supplier_id, receipt_date, notes, created_at, created_by, location_id, deleted_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: issue_number_counters; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.issue_number_counters (year, month, counter) FROM stdin;
+\.
+
+
+--
+-- Data for Name: items; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.items (id, sku, name, min_stock, deleted_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: opname_number_counters; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.opname_number_counters (year, counter) FROM stdin;
+\.
+
+
+--
+-- Data for Name: order_number_counters; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.order_number_counters (year, month, counter) FROM stdin;
+\.
+
+
+--
+-- Data for Name: purchase_order_items; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.purchase_order_items (id, purchase_order_id, item_id, qty, price, received_qty) FROM stdin;
+\.
+
+
+--
+-- Data for Name: purchase_orders; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.purchase_orders (id, order_number, supplier_id, order_date, status, created_at, created_by, expected_date, approved_by, approved_at, deleted_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: purchase_receive_items; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.purchase_receive_items (id, purchase_receive_id, item_id, qty) FROM stdin;
+\.
+
+
+--
+-- Data for Name: purchase_receives; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.purchase_receives (id, purchase_order_id, receive_date, received_by, note, created_at, location_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: receipt_number_counters; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.receipt_number_counters (year, month, counter) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stock_adjustment_items; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.stock_adjustment_items (id, adjustment_id, item_id, location_id, quantity_diff, notes, quantity_before) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stock_adjustments; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.stock_adjustments (id, adjustment_number, adjustment_date, reason, status, created_by, created_at, updated_at, deleted_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stock_balances; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.stock_balances (item_id, location_id, qty) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stock_locations; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.stock_locations (id, code, name, type, description, created_at, updated_at, deleted_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stock_movements; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.stock_movements (id, item_id, movement_type, adjustment_direction, qty, balance_after, reference_id, reference_type, note, created_at, created_by, source_location_id, target_location_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stock_opname_items; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.stock_opname_items (id, opname_id, item_id, quantity_counted, quantity_system) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stock_opnames; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.stock_opnames (id, location_id, opname_date, status, notes, created_by, approved_by, opname_number, created_at, updated_at, updated_by, reviewed_at, reviewed_by, review_note, canceled_at, canceled_by, finalized_at, finalized_by) FROM stdin;
+\.
+
+
+--
+-- Data for Name: suppliers; Type: TABLE DATA; Schema: inventory; Owner: -
+--
+
+COPY inventory.suppliers (id, name, contact, address, deleted_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: app_settings; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.app_settings (id, app_name, app_logo, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: departments; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.departments (id, name, parent_id, path, created_at, updated_at, description, deleted_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: menu_items; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.menu_items (id, parent_id, menu_key, type, label, icon, route, command, mode, alignment, "position", ordinal, description, icon_color, deleted_at) FROM stdin;
+224c4a85-ba30-4999-941d-29f51714744e	8160376e-3a90-487a-83cf-0365644ed207	\N	route	Stock per Location	RiRoadMapFill	/pages/inventory/stock-location-report	\N	sliding	start	0	4	Stock per Location	\N	\N
+a3d39552-d9e6-427f-b9ac-a0b6b34d46bb	1a7d88ad-519a-4075-aecb-6d3b3966d791	\N	route	User Profile	RiUser5Fill	/profile	\N	sliding	start	0	2	user profile	\N	\N
+d6e1a3b4-06d5-4323-a912-cd170334e4b2	f963974e-9b54-4d09-9cff-63762eecb0eb	\N	route	Create / Manage PO	RiShoppingCartFill	/pages/inventory/purchase-order	\N	sliding	start	0	1	Create / Manage PO	\N	\N
+54a63b1d-2866-4e34-b345-7d7759847b60	f97c7ea5-e2e2-495a-bbe0-ca2a9075b459	\N	route	App Settings	RiSettings4Fill	/pages/app-settings	\N	sliding	start	0	1	setting nama aplikasi dan logo	\N	\N
+de1bfba4-635d-40e3-a525-4b7f4419f13f	f97c7ea5-e2e2-495a-bbe0-ca2a9075b459	\N	route	Manage Roles	RiUser2Fill	/pages/roles	\N	sliding	start	0	5	management user roles	\N	\N
+48e5f14d-807f-4962-be7a-d70a80cdf124	f97c7ea5-e2e2-495a-bbe0-ca2a9075b459	\N	route	Navigation Menu	RiCompass3Fill	/pages/menu	\N	sliding	start	0	4	management users	\N	\N
+c1e55d2b-4ecb-4a8a-91b6-8a58f72d7614	0a6b6741-5262-48dc-a00b-e97bb6b9da3c	\N	route	Stock Locations	RiDashboardFill	/pages/inventory/stock-location	\N	sliding	start	0	1	Manage Items Stored Location	\N	\N
+e3f69c2d-545f-4711-92bb-34e9af02a6f6	f97c7ea5-e2e2-495a-bbe0-ca2a9075b459	\N	route	Manage Users	RiUserFollowFill	/pages/users	\N	sliding	start	0	3	management users	\N	\N
+96753e62-04d8-4a88-bfe6-e7e851a41a31	f97c7ea5-e2e2-495a-bbe0-ca2a9075b459	\N	command	Logout	RiShutDownFill	\N	logout	sliding	end	0	6	logout from current user	\N	\N
+b8b9f6ae-276e-4a9a-8870-b9217f18ec0b	f963974e-9b54-4d09-9cff-63762eecb0eb	\N	route	PO Receipts (KIOSK)	RiShoppingBasket2Fill	/purchase-order/:id/kiosk	\N	sliding	start	0	2	PO Receipts (KIOSK)	\N	\N
+8f7523d3-c103-4325-b2de-908b16217db1	1a7d88ad-519a-4075-aecb-6d3b3966d791	\N	route	User Preferences	RiUserSettingsFill	/pages/preferences	\N	sliding	start	0	1	User Preferences	\N	\N
+b002c9dd-9b08-4a0e-a004-909fb1dcc6ea	ecbbbe7f-4fa6-4085-b1ef-6bfa441647c9	\N	route	GR Entry	RiAnticlockwise2Fill	/pages/inventory/goods-receipts	\N	sliding	start	0	3	GR Entry	\N	\N
+2387c449-e261-48c9-a0cc-026caeb9bd5a	0a6b6741-5262-48dc-a00b-e97bb6b9da3c	\N	route	Items	RiBox2Fill	/pages/inventory/item	\N	sliding	start	0	2	Manage Logitics Item	\N	\N
+de76ea18-ece1-48a8-a9f1-2371c5a21277	0a6b6741-5262-48dc-a00b-e97bb6b9da3c	\N	route	Supplier	RiUserCommunityFill	/pages/inventory/supplier	\N	sliding	start	0	3	Manage Suppliers	\N	\N
+3410b1bc-a222-4955-b4cc-342138b94483	ecbbbe7f-4fa6-4085-b1ef-6bfa441647c9	\N	route	GR Form	RiFileList3Fill	/goods-receipts/create	\N	sliding	start	0	4	GR Form	\N	\N
+2c8166ae-0ce5-4227-8b55-471f227f569d	3adfe1af-0c8b-4a52-882f-ba3722b787a3	\N	route	Goods Issues	RiStore3Fill	/pages/inventory/goods-issues	\N	sliding	start	0	5	Goods Inbound and Outbound	\N	\N
+d932c843-51bf-4220-a247-27884bf7cc3b	e2ec2934-c806-4bd7-9162-5697c5e93a38	\N	group	Reports	RiBarChartBoxFill	\N	\N	sliding	start	0	7	Reports	\N	\N
+ca0b7f07-175b-48a3-8dd4-8ff6b5139400	8160376e-3a90-487a-83cf-0365644ed207	\N	route	Stock Movements	RiFileCopy2Fill	/pages/inventory/stock-movements	\N	sliding	start	0	1	Stock Movements	\N	\N
+c3b2e81e-c149-4eef-9c14-b67090492d6e	3adfe1af-0c8b-4a52-882f-ba3722b787a3	\N	route	Stock Adjustments	RiListSettingsFill	/pages/inventory/stock-adjustments	\N	sliding	start	0	6	Stock Adjustment	\N	\N
+0ff78308-3d32-4329-bf89-8d30939cc6af	3adfe1af-0c8b-4a52-882f-ba3722b787a3	\N	route	Stock Opname	RiRefreshFill	/pages/inventory/stock-opnames	\N	sliding	start	0	7	Stock Opname	\N	\N
+8160376e-3a90-487a-83cf-0365644ed207	e2ec2934-c806-4bd7-9162-5697c5e93a38	\N	group	Inventory Monitoring	RiBarcodeBoxLine	\N	\N	sliding	start	0	6	Inventory Monitoring	\N	\N
+e2ec2934-c806-4bd7-9162-5697c5e93a38	\N	\N	group	Monitoring	RiTvFill	\N	\N	sliding	start	0	4	List menu untuk keperluat monitoring inventory	\N	\N
+1a7d88ad-519a-4075-aecb-6d3b3966d791	\N	\N	group	preferences	RiUserSettingsFill	\N	\N	sliding	end	0	5	user preferences	\N	\N
+5f9c3aec-69b7-49aa-9f20-380f8d3642b7	d932c843-51bf-4220-a247-27884bf7cc3b	\N	route	Stock History	RiTimeZoneFill	/pages/inventory/stock-history-report/	\N	sliding	start	0	3	Stock History	\N	\N
+2d17740b-7a54-4916-a393-f27c9cfbf9ca	8160376e-3a90-487a-83cf-0365644ed207	\N	route	Stock On Hand	RiHandCoinFill	/pages/inventory/stock-on-hand	\N	sliding	start	0	2	Stock On Hand	\N	\N
+0a6b6741-5262-48dc-a00b-e97bb6b9da3c	\N	\N	group	Master Data	RiDatabase2Fill	\N	\N	sliding	start	0	1	Manage Master Data	\N	\N
+d32186e2-53e1-498b-a0cb-acb8d81c7ed6	\N	\N	group	Purchasing	RiShoppingBag3Fill	\N	\N	sliding	start	0	2	Purchasing	\N	\N
+f963974e-9b54-4d09-9cff-63762eecb0eb	d32186e2-53e1-498b-a0cb-acb8d81c7ed6	\N	group	Purchase Orders	RiShoppingCart2Fill	\N	\N	sliding	start	0	8	Purchase Orders	\N	\N
+ecbbbe7f-4fa6-4085-b1ef-6bfa441647c9	d32186e2-53e1-498b-a0cb-acb8d81c7ed6	\N	group	Goods Receipts	RiShoppingBasket2Fill	\N	\N	sliding	start	0	9	Goods Receipts	\N	\N
+3adfe1af-0c8b-4a52-882f-ba3722b787a3	\N	\N	group	Inventory Operations	RiBookShelfFill	\N	\N	sliding	start	0	3	Inventory Operations	\N	\N
+00c76254-964c-4c47-942c-7e3e4d8dfa4d	f97c7ea5-e2e2-495a-bbe0-ca2a9075b459	\N	route	Departments	RiGroup2Fill	/pages/departments	\N	sliding	start	0	2	Master Departments	\N	\N
+f97c7ea5-e2e2-495a-bbe0-ca2a9075b459	\N	\N	group	app setting	RiSettings3Fill	\N	\N	sliding	end	0	9	setting aplikasi	\N	\N
+5faabccf-4806-456d-879d-77bddffd23fa	d932c843-51bf-4220-a247-27884bf7cc3b	\N	route	PO Summary	RiTimelineView	/pages/inventory/po-summary	\N	sliding	start	0	5	Purchase Order Summary	\N	\N
+\.
+
+
+--
+-- Data for Name: menu_permissions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.menu_permissions (menu_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: permissions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.permissions (id, name, label, domain, description, deleted_at) FROM stdin;
+34d13778-69d1-4f1b-8fab-6b533af8ac42	delete	hapus department	department	Bisa menghapus department	\N
+5a37e6fd-73a0-42b8-9c72-78910fa4fd12	update	mengubah department	department	Bisa mengubah department	\N
+24e364fa-f169-4d4e-aa1f-515ebbc3d937	create	menambahkan department baru	department	Bisa menambahkan department baru	\N
+810bc639-65bc-41c8-bec5-8e0c5ec9a2c1	view	buka halaman preferences management	preferences	Bisa membuka halaman management preferences	\N
+3f58d759-bb58-4844-bfe9-d77a36c1dbb5	delete	hapus preferences	preferences	Bisa menghapus preferences	\N
+a129920d-7dfb-4376-bf10-4ee3e3de6b5a	update	mengubah preferences	preferences	Bisa mengubah preferences	\N
+66ef1954-bbf5-4c2a-94dd-66e0828bce5f	create	menambahkan preferences baru	preferences	Bisa menambahkan preferences baru	\N
+a661dbce-2e35-48cc-9059-748cedfd3e8c	view	buka halaman menu management	menu	Bisa membuka halaman management menu	\N
+8e0f1640-3811-4664-b8b0-7ce72f9d66a2	delete	hapus menu	menu	Bisa menghapus menu	\N
+957f872a-ec05-45e7-b344-fdb840eb95e5	update	mengubah menu	menu	Bisa mengubah menu	\N
+0fb947b7-5225-41a4-b619-b8d1a3505ad1	create	menambahkan menu baru	menu	Bisa menambahkan menu baru	\N
+1e5f56dc-feb6-422d-85bd-6cd7f8761942	view	buka halaman app setting management	app_setting	Bisa membuka halaman management app setting	\N
+d6c30375-e05c-4e59-b68c-6d1b2d41e0a1	delete	hapus app setting	app_setting	Bisa menghapus app setting	\N
+cb1adeb6-1bd9-43a9-8c15-8d6dc5ab3a76	update	mengubah app setting	app_setting	Bisa mengubah app setting	\N
+5350b355-1b37-45b1-ad3e-ad0e25cbc74b	create	menambahkan app setting baru	app_setting	Bisa menambahkan app setting baru	\N
+d63815df-fe49-4e94-bd32-b04bb642c009	view	buka halaman form user profile	user_profile	Bisa membuka halaman user profile	\N
+9e67720c-97e0-430e-884b-89377a3519eb	delete	hapus user profile	user_profile	Bisa menghapus user profile	\N
+9a706a95-0f22-4e4c-93cd-566567a172b1	update	mengubah user profile	user_profile	Bisa mengubah user profile	\N
+e319dc81-cebc-4351-99fc-8f73f87fbe90	view	buka halaman form stock location	stock_location	Bisa membuka halaman stock location	\N
+50437139-5a51-446e-96bc-6c374bb41a25	delete	hapus stock location	stock_location	Bisa menghapus stock location	\N
+8589d05f-c72b-4c69-9562-3e9470744b13	update	mengubah stock location	stock_location	Bisa mengubah stock location	\N
+ab0a2f70-ecee-430e-932c-7aa5bbd78636	create	menambahkan stock location baru	stock_location	Bisa menambahkan stock location baru	\N
+e391fcf7-0df9-473e-a11a-fb0c672e5223	view	buka halaman form item	item	Bisa membuka halaman item	\N
+d06f0d95-7820-4cfc-8a6f-967d9b13b088	delete	hapus item	item	Bisa menghapus item	\N
+687f3fbe-a1f4-44de-8e79-1e811d0ee34f	update	mengubah item	item	Bisa mengubah item	\N
+bdb4c201-a8f8-47fb-800f-078eae49648a	create	menambahkan item baru	item	Bisa menambahkan item baru	\N
+a6d41266-ae96-4120-b3bf-cbd02b7f6b4f	view	buka halaman form supplier	supplier	Bisa membuka halaman supplier	\N
+21eaaf06-e089-4ceb-9852-c53f15fdcc3a	delete	hapus supplier	supplier	Bisa menghapus supplier	\N
+0bd7f55a-79e2-46f9-9e3f-0986f376574d	update	mengubah supplier	supplier	Bisa mengubah supplier	\N
+e8c9679f-0c8a-4aed-a044-0078a694133f	create	menambahkan supplier baru	supplier	Bisa menambahkan supplier baru	\N
+82250154-6820-4eb1-9f4f-6d2b4b1b42b1	view	buka halaman form purchase order	purchase_order	Bisa membuka halaman purchase order	\N
+cc4a16b0-9a50-446e-af0f-b8ce413fd4dc	delete	hapus purchase order	purchase_order	Bisa menghapus purchase order	\N
+691aa7c8-6b92-4c62-ab37-01e1a0b1618f	update	mengubah purchase order	purchase_order	Bisa mengubah purchase order	\N
+23256f23-90c7-4d0a-91fc-af3b4ed30599	create	menambahkan purchase order baru	purchase_order	Bisa menambahkan purchase order baru	\N
+0a85c5d1-be0f-4343-b49c-9d862ec90e4a	approve	approve purchase order	purchase_order	Bisa approve purchase order baru	\N
+abf78059-df84-48eb-8d04-e37c80106500	receive	receive purchase order items	purchase_order	Bisa receive purchase order items	\N
+32b45501-36e2-4338-bb0f-7e60c43a6406	cancel	cancel purchase order items	purchase_order	Bisa cancel purchase order items	\N
+d0ec6eba-0a8f-4f99-b91f-a087c7cd20c5	view	buka halaman form goods receipts	goods_receipts	Bisa membuka halaman goods receipts	\N
+2971d49e-2718-4a4b-9076-272990fab5d4	delete	hapus goods receipts	goods_receipts	Bisa menghapus goods receipts	\N
+9d68bd7e-7a7a-4e43-9e07-d232b2842213	update	mengubah goods receipts	goods_receipts	Bisa mengubah goods receipts	\N
+ab746370-1ef7-4d8e-9826-22e0edc27161	create	menambahkan goods receipts baru	goods_receipts	Bisa menambahkan goods receipts baru	\N
+7703ad68-1e1b-4ebb-bcb4-5cb0188ecf63	approve	approve goods receipts	goods_receipts	Bisa approve goods receipts baru	\N
+dd36d8e8-420e-4b49-b8bc-37c188e6ba34	receive	receive goods receipts	goods_receipts	Bisa receive goods receipts	\N
+6b7c91f5-3fb9-449c-9849-ea69c728d851	cancel	cancel goods receipts	goods_receipts	Bisa cancel goods receipts	\N
+3e13d415-1289-45db-b8bd-f43e80dd5502	view	buka halaman form stock adjustment	stock_adjustment	Bisa membuka halaman stock adjustment	\N
+079eff7b-ae7f-46e2-becf-bbbb0d3b6fdf	delete	hapus stock adjustment	stock_adjustment	Bisa menghapus stock adjustment	\N
+b91686e9-4179-4259-8bbb-067e20255c00	update	mengubah stock adjustment	stock_adjustment	Bisa mengubah stock adjustment	\N
+cc680d3f-e9f9-47e5-97f9-906166c4e513	approve	approve stock adjustment	stock_adjustment	Bisa approve stock adjustment baru	\N
+9ea35b84-37bd-4e9e-a966-f54aff5d910e	cancel	cancel stock adjustment	stock_adjustment	Bisa cancel stock adjustment	\N
+c1812f45-822c-43c1-928e-09de0a44547e	view	buka halaman form stock opname	stock_opname	Bisa membuka halaman stock opname	\N
+d0c585e6-490b-4595-ba1e-2fd97483a368	delete	hapus stock opname	stock_opname	Bisa menghapus stock opname	\N
+20333790-1d21-49c3-b1af-7121c6da971b	update	mengubah stock opname	stock_opname	Bisa mengubah stock opname	\N
+012def0f-7403-4416-ba6e-c191bf4fe4ff	create	menambahkan stock opname baru	stock_opname	Bisa menambahkan stock opname baru	\N
+dfcbc06f-5235-449a-b564-64564f4f181f	approve	approve stock opname	stock_opname	Bisa approve stock opname baru	\N
+c829f768-a6c4-4089-b90a-bdd48350d26f	review	review stock opname	stock_opname	Bisa review stock opname	\N
+5721224c-88bc-48c7-9387-e1def9df4aa0	all_access	Administrator	superadmin	Bisa akses semua	\N
+dd63ce0c-de60-4914-90ef-e573e3959b99	delete	hapus user	user	Bisa menghapus user	\N
+21344f03-5daf-4233-bb4b-ac983e3eead2	update	mengubah user	user	Bisa mengubah user	\N
+72aeb7cd-d9ca-4473-9520-5e7dcc5e1808	create	menambahkan user baru	user	Bisa menambahkan user baru	\N
+6658da8c-5460-4be8-ad7b-f3ebef7194fe	view	buka halaman role management	role	Bisa membuka halaman management role	\N
+3e761f25-84d1-4956-8c97-050b450cd570	delete	hapus roles	role	Bisa menghapus role	\N
+e6ba7dc8-b1d8-4b1f-ac56-5dc939b58934	update	mengubah roles	role	Bisa mengubah role	\N
+64e3359e-db44-40e0-8a1d-8bed9dec9e7d	create	menambahkan roles baru	role	Bisa menambahkan roles baru	\N
+41e4b577-30ac-44f5-86b2-87e34171c5b0	view	buka halaman department management	department	Bisa membuka halaman management department	\N
+e9405977-f46d-4580-9a91-4f8533f71503	all_access	DEV/IT	dev	Bisa akses semua	\N
+b7777865-d2b5-4a3e-9b3f-c09e951551ab	view	buka halaman users management	user	Bisa membuka halaman management users	\N
+a7146a9e-af21-479c-bac8-44714c8d45d9	create	menambahkan user profile baru	user_profile	Bisa menambahkan user profile baru	\N
+c73fbabf-eaf4-4f0a-bb0d-544b576e4e1d	create	menambahkan stock adjustment baru	stock_adjustment	Bisa menambahkan stock adjustment baru	\N
+81b194d4-22d0-468e-bb8d-5acbe207d082	cancel	cancel stock opname	stock_opname	Bisa cancel stock opname	\N
+277cfa70-b0a0-4345-ac26-eee0027e324e	view	buka halaman dashboard management	dashboard	Bisa membuka halaman management dashboard	\N
+1b2204b5-d007-48c2-8a34-7e6e35ddac15	delete	hapus dashboard	dashboard	Bisa menghapus dashboard	\N
+99229c94-2593-4229-8b08-a0157296de6e	update	mengubah dashboard	dashboard	Bisa mengubah dashboard	\N
+881ba0b6-f40c-4edd-b9ea-000ba5887bdc	create	menambahkan dashboard baru	dashboard	Bisa menambahkan dashboard baru	\N
+\.
+
+
+--
+-- Data for Name: role_permissions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.role_permissions (role_id, permission_id) FROM stdin;
+493c6e74-d309-4a85-8de5-862f9dbe82a7	e9405977-f46d-4580-9a91-4f8533f71503
+\.
+
+
+--
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.roles (id, name, description, deleted_at) FROM stdin;
+493c6e74-d309-4a85-8de5-862f9dbe82a7	dev	Developer role with full access	\N
+\.
+
+
+--
+-- Data for Name: user_dashboard_preferences; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.user_dashboard_preferences (id, user_id, role_id, layout, updated_at, created_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_departments; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.user_departments (user_id, department_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_layout_preferences; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.user_layout_preferences (id, user_id, role_id, layout, updated_at, created_at, default_page, default_new_tab, theme) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_permissions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.user_permissions (user_id, permission_id, granted) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_pinned_menus; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.user_pinned_menus (id, user_id, role_id, menu_id, pinned_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_roles; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.user_roles (user_id, role_id, is_default) FROM stdin;
+c5a0bc35-3cfb-4540-be70-6f6aa3cda0e4	493c6e74-d309-4a85-8de5-862f9dbe82a7	t
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.users (id, name, username, email, password, is_active, created_at, updated_at, active_role_id, profile_photo, phone_number, address, deleted_at) FROM stdin;
+c5a0bc35-3cfb-4540-be70-6f6aa3cda0e4	Developer	dev	dev@example.com	$2b$10$He8FMIrsadtF1CfDxYel..NxiKhYgXbJiHxKf3DloRfN/2Q5HtJfy	t	2025-10-07 10:30:48.411389	2025-10-07 10:30:48.411389	493c6e74-d309-4a85-8de5-862f9dbe82a7	\N	\N	\N	\N
+\.
+
+
+--
+-- Name: adjustment_number_counters adjustment_number_counters_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.adjustment_number_counters
+    ADD CONSTRAINT adjustment_number_counters_pkey PRIMARY KEY (year, month);
+
+
+--
+-- Name: goods_issue_items goods_issue_items_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_issue_items
+    ADD CONSTRAINT goods_issue_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: goods_issues goods_issues_issue_number_key; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_issues
+    ADD CONSTRAINT goods_issues_issue_number_key UNIQUE (issue_number);
+
+
+--
+-- Name: goods_issues goods_issues_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_issues
+    ADD CONSTRAINT goods_issues_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: goods_receipt_items goods_receipt_items_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_receipt_items
+    ADD CONSTRAINT goods_receipt_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: goods_receipts goods_receipts_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_receipts
+    ADD CONSTRAINT goods_receipts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: goods_receipts goods_receipts_receipt_number_key; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_receipts
+    ADD CONSTRAINT goods_receipts_receipt_number_key UNIQUE (receipt_number);
+
+
+--
+-- Name: issue_number_counters issue_number_counters_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.issue_number_counters
+    ADD CONSTRAINT issue_number_counters_pkey PRIMARY KEY (year, month);
+
+
+--
+-- Name: items items_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.items
+    ADD CONSTRAINT items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: items items_sku_key; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.items
+    ADD CONSTRAINT items_sku_key UNIQUE (sku);
+
+
+--
+-- Name: opname_number_counters opname_number_counters_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.opname_number_counters
+    ADD CONSTRAINT opname_number_counters_pkey PRIMARY KEY (year);
+
+
+--
+-- Name: order_number_counters order_number_counters_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.order_number_counters
+    ADD CONSTRAINT order_number_counters_pkey PRIMARY KEY (year, month);
+
+
+--
+-- Name: purchase_order_items purchase_order_items_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_order_items
+    ADD CONSTRAINT purchase_order_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: purchase_orders purchase_orders_order_number_key; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_orders
+    ADD CONSTRAINT purchase_orders_order_number_key UNIQUE (order_number);
+
+
+--
+-- Name: purchase_orders purchase_orders_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_orders
+    ADD CONSTRAINT purchase_orders_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: purchase_receive_items purchase_receive_items_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_receive_items
+    ADD CONSTRAINT purchase_receive_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: purchase_receives purchase_receives_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_receives
+    ADD CONSTRAINT purchase_receives_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: receipt_number_counters receipt_number_counters_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.receipt_number_counters
+    ADD CONSTRAINT receipt_number_counters_pkey PRIMARY KEY (year, month);
+
+
+--
+-- Name: stock_adjustment_items stock_adjustment_items_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_adjustment_items
+    ADD CONSTRAINT stock_adjustment_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stock_adjustments stock_adjustments_adjustment_number_key; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_adjustments
+    ADD CONSTRAINT stock_adjustments_adjustment_number_key UNIQUE (adjustment_number);
+
+
+--
+-- Name: stock_adjustments stock_adjustments_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_adjustments
+    ADD CONSTRAINT stock_adjustments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stock_balances stock_balances_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_balances
+    ADD CONSTRAINT stock_balances_pkey PRIMARY KEY (item_id, location_id);
+
+
+--
+-- Name: stock_locations stock_locations_code_key; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_locations
+    ADD CONSTRAINT stock_locations_code_key UNIQUE (code);
+
+
+--
+-- Name: stock_locations stock_locations_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_locations
+    ADD CONSTRAINT stock_locations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stock_movements stock_movements_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_movements
+    ADD CONSTRAINT stock_movements_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stock_opname_items stock_opname_items_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_opname_items
+    ADD CONSTRAINT stock_opname_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stock_opnames stock_opnames_opname_number_key; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_opnames
+    ADD CONSTRAINT stock_opnames_opname_number_key UNIQUE (opname_number);
+
+
+--
+-- Name: stock_opnames stock_opnames_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_opnames
+    ADD CONSTRAINT stock_opnames_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: suppliers suppliers_pkey; Type: CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.suppliers
+    ADD CONSTRAINT suppliers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: app_settings app_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.app_settings
+    ADD CONSTRAINT app_settings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: departments departments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.departments
+    ADD CONSTRAINT departments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: menu_items menu_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.menu_items
+    ADD CONSTRAINT menu_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: menu_permissions menu_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.menu_permissions
+    ADD CONSTRAINT menu_permissions_pkey PRIMARY KEY (menu_id, permission_id);
+
+
+--
+-- Name: permissions permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.permissions
+    ADD CONSTRAINT permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: role_permissions role_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.role_permissions
+    ADD CONSTRAINT role_permissions_pkey PRIMARY KEY (role_id, permission_id);
+
+
+--
+-- Name: roles roles_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_name_key UNIQUE (name);
+
+
+--
+-- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: permissions unique_domain_name; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.permissions
+    ADD CONSTRAINT unique_domain_name UNIQUE (domain, name);
+
+
+--
+-- Name: user_dashboard_preferences user_dashboard_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_dashboard_preferences
+    ADD CONSTRAINT user_dashboard_preferences_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_dashboard_preferences user_dashboard_preferences_user_role_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_dashboard_preferences
+    ADD CONSTRAINT user_dashboard_preferences_user_role_unique UNIQUE (user_id, role_id);
+
+
+--
+-- Name: user_departments user_departments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_departments
+    ADD CONSTRAINT user_departments_pkey PRIMARY KEY (user_id, department_id);
+
+
+--
+-- Name: user_layout_preferences user_layout_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_layout_preferences
+    ADD CONSTRAINT user_layout_preferences_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_layout_preferences user_layout_preferences_user_id_role_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_layout_preferences
+    ADD CONSTRAINT user_layout_preferences_user_id_role_id_key UNIQUE (user_id, role_id);
+
+
+--
+-- Name: user_permissions user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_permissions
+    ADD CONSTRAINT user_permissions_pkey PRIMARY KEY (user_id, permission_id);
+
+
+--
+-- Name: user_pinned_menus user_pinned_menus_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_pinned_menus
+    ADD CONSTRAINT user_pinned_menus_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_pinned_menus user_pinned_menus_user_id_role_id_menu_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_pinned_menus
+    ADD CONSTRAINT user_pinned_menus_user_id_role_id_menu_id_key UNIQUE (user_id, role_id, menu_id);
+
+
+--
+-- Name: user_roles user_roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_roles
+    ADD CONSTRAINT user_roles_pkey PRIMARY KEY (user_id, role_id);
+
+
+--
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_username_key UNIQUE (username);
+
+
+--
+-- Name: idx_goods_receipts_deleted_at_null; Type: INDEX; Schema: inventory; Owner: -
+--
+
+CREATE INDEX idx_goods_receipts_deleted_at_null ON inventory.goods_receipts USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_items_deleted_at_null; Type: INDEX; Schema: inventory; Owner: -
+--
+
+CREATE INDEX idx_items_deleted_at_null ON inventory.items USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_purchase_orders_deleted_at_null; Type: INDEX; Schema: inventory; Owner: -
+--
+
+CREATE INDEX idx_purchase_orders_deleted_at_null ON inventory.purchase_orders USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_stock_adjustments_deleted_at_null; Type: INDEX; Schema: inventory; Owner: -
+--
+
+CREATE INDEX idx_stock_adjustments_deleted_at_null ON inventory.stock_adjustments USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_stock_locations_code; Type: INDEX; Schema: inventory; Owner: -
+--
+
+CREATE INDEX idx_stock_locations_code ON inventory.stock_locations USING btree (code);
+
+
+--
+-- Name: idx_stock_locations_deleted_at_null; Type: INDEX; Schema: inventory; Owner: -
+--
+
+CREATE INDEX idx_stock_locations_deleted_at_null ON inventory.stock_locations USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_stock_locations_type; Type: INDEX; Schema: inventory; Owner: -
+--
+
+CREATE INDEX idx_stock_locations_type ON inventory.stock_locations USING btree (type);
+
+
+--
+-- Name: idx_suppliers_deleted_at_null; Type: INDEX; Schema: inventory; Owner: -
+--
+
+CREATE INDEX idx_suppliers_deleted_at_null ON inventory.suppliers USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_departments_deleted_at_null; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_departments_deleted_at_null ON public.departments USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_menu_items_deleted_at_null; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_menu_items_deleted_at_null ON public.menu_items USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_permissions_deleted_at_null; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_permissions_deleted_at_null ON public.permissions USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_roles_deleted_at_null; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_roles_deleted_at_null ON public.roles USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: idx_users_deleted_at_null; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_users_deleted_at_null ON public.users USING btree (id) WHERE (deleted_at IS NULL);
+
+
+--
+-- Name: stock_adjustments trg_set_adjustment_number; Type: TRIGGER; Schema: inventory; Owner: -
+--
+
+CREATE TRIGGER trg_set_adjustment_number BEFORE INSERT ON inventory.stock_adjustments FOR EACH ROW EXECUTE FUNCTION inventory.set_adjustment_number();
+
+
+--
+-- Name: goods_issues trg_set_issue_number; Type: TRIGGER; Schema: inventory; Owner: -
+--
+
+CREATE TRIGGER trg_set_issue_number BEFORE INSERT ON inventory.goods_issues FOR EACH ROW EXECUTE FUNCTION inventory.set_issue_number();
+
+
+--
+-- Name: stock_opnames trg_set_opname_number; Type: TRIGGER; Schema: inventory; Owner: -
+--
+
+CREATE TRIGGER trg_set_opname_number BEFORE INSERT ON inventory.stock_opnames FOR EACH ROW EXECUTE FUNCTION inventory.set_opname_number();
+
+
+--
+-- Name: purchase_orders trg_set_order_number; Type: TRIGGER; Schema: inventory; Owner: -
+--
+
+CREATE TRIGGER trg_set_order_number BEFORE INSERT ON inventory.purchase_orders FOR EACH ROW EXECUTE FUNCTION inventory.set_order_number();
+
+
+--
+-- Name: goods_receipts trg_set_receipt_number; Type: TRIGGER; Schema: inventory; Owner: -
+--
+
+CREATE TRIGGER trg_set_receipt_number BEFORE INSERT ON inventory.goods_receipts FOR EACH ROW EXECUTE FUNCTION inventory.set_receipt_number();
+
+
+--
+-- Name: stock_locations trg_stock_locations_updated; Type: TRIGGER; Schema: inventory; Owner: -
+--
+
+CREATE TRIGGER trg_stock_locations_updated BEFORE UPDATE ON inventory.stock_locations FOR EACH ROW EXECUTE FUNCTION inventory.set_updated_at();
+
+
+--
+-- Name: goods_issue_items goods_issue_items_goods_issue_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_issue_items
+    ADD CONSTRAINT goods_issue_items_goods_issue_id_fkey FOREIGN KEY (goods_issue_id) REFERENCES inventory.goods_issues(id) ON DELETE CASCADE;
+
+
+--
+-- Name: goods_issue_items goods_issue_items_item_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_issue_items
+    ADD CONSTRAINT goods_issue_items_item_id_fkey FOREIGN KEY (item_id) REFERENCES inventory.items(id);
+
+
+--
+-- Name: goods_issues goods_issues_created_by_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_issues
+    ADD CONSTRAINT goods_issues_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.users(id);
+
+
+--
+-- Name: goods_receipt_items goods_receipt_items_goods_receipt_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_receipt_items
+    ADD CONSTRAINT goods_receipt_items_goods_receipt_id_fkey FOREIGN KEY (goods_receipt_id) REFERENCES inventory.goods_receipts(id) ON DELETE CASCADE;
+
+
+--
+-- Name: goods_receipt_items goods_receipt_items_item_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_receipt_items
+    ADD CONSTRAINT goods_receipt_items_item_id_fkey FOREIGN KEY (item_id) REFERENCES inventory.items(id);
+
+
+--
+-- Name: goods_receipts goods_receipts_created_by_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_receipts
+    ADD CONSTRAINT goods_receipts_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.users(id);
+
+
+--
+-- Name: goods_receipts goods_receipts_location_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_receipts
+    ADD CONSTRAINT goods_receipts_location_id_fkey FOREIGN KEY (location_id) REFERENCES inventory.stock_locations(id);
+
+
+--
+-- Name: goods_receipts goods_receipts_supplier_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.goods_receipts
+    ADD CONSTRAINT goods_receipts_supplier_id_fkey FOREIGN KEY (supplier_id) REFERENCES inventory.suppliers(id);
+
+
+--
+-- Name: purchase_order_items purchase_order_items_item_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_order_items
+    ADD CONSTRAINT purchase_order_items_item_id_fkey FOREIGN KEY (item_id) REFERENCES inventory.items(id);
+
+
+--
+-- Name: purchase_order_items purchase_order_items_purchase_order_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_order_items
+    ADD CONSTRAINT purchase_order_items_purchase_order_id_fkey FOREIGN KEY (purchase_order_id) REFERENCES inventory.purchase_orders(id) ON DELETE CASCADE;
+
+
+--
+-- Name: purchase_orders purchase_orders_approved_by_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_orders
+    ADD CONSTRAINT purchase_orders_approved_by_fkey FOREIGN KEY (approved_by) REFERENCES public.users(id);
+
+
+--
+-- Name: purchase_orders purchase_orders_created_by_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_orders
+    ADD CONSTRAINT purchase_orders_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.users(id);
+
+
+--
+-- Name: purchase_orders purchase_orders_supplier_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_orders
+    ADD CONSTRAINT purchase_orders_supplier_id_fkey FOREIGN KEY (supplier_id) REFERENCES inventory.suppliers(id);
+
+
+--
+-- Name: purchase_receive_items purchase_receive_items_item_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_receive_items
+    ADD CONSTRAINT purchase_receive_items_item_id_fkey FOREIGN KEY (item_id) REFERENCES inventory.items(id);
+
+
+--
+-- Name: purchase_receive_items purchase_receive_items_purchase_receive_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_receive_items
+    ADD CONSTRAINT purchase_receive_items_purchase_receive_id_fkey FOREIGN KEY (purchase_receive_id) REFERENCES inventory.purchase_receives(id) ON DELETE CASCADE;
+
+
+--
+-- Name: purchase_receives purchase_receives_purchase_order_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_receives
+    ADD CONSTRAINT purchase_receives_purchase_order_id_fkey FOREIGN KEY (purchase_order_id) REFERENCES inventory.purchase_orders(id) ON DELETE CASCADE;
+
+
+--
+-- Name: purchase_receives purchase_receives_received_by_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.purchase_receives
+    ADD CONSTRAINT purchase_receives_received_by_fkey FOREIGN KEY (received_by) REFERENCES public.users(id);
+
+
+--
+-- Name: stock_adjustment_items stock_adjustment_items_adjustment_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_adjustment_items
+    ADD CONSTRAINT stock_adjustment_items_adjustment_id_fkey FOREIGN KEY (adjustment_id) REFERENCES inventory.stock_adjustments(id) ON DELETE CASCADE;
+
+
+--
+-- Name: stock_adjustment_items stock_adjustment_items_item_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_adjustment_items
+    ADD CONSTRAINT stock_adjustment_items_item_id_fkey FOREIGN KEY (item_id) REFERENCES inventory.items(id);
+
+
+--
+-- Name: stock_adjustment_items stock_adjustment_items_location_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_adjustment_items
+    ADD CONSTRAINT stock_adjustment_items_location_id_fkey FOREIGN KEY (location_id) REFERENCES inventory.stock_locations(id);
+
+
+--
+-- Name: stock_adjustments stock_adjustments_created_by_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_adjustments
+    ADD CONSTRAINT stock_adjustments_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.users(id);
+
+
+--
+-- Name: stock_balances stock_balances_item_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_balances
+    ADD CONSTRAINT stock_balances_item_id_fkey FOREIGN KEY (item_id) REFERENCES inventory.items(id);
+
+
+--
+-- Name: stock_movements stock_movements_created_by_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_movements
+    ADD CONSTRAINT stock_movements_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.users(id);
+
+
+--
+-- Name: stock_movements stock_movements_item_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_movements
+    ADD CONSTRAINT stock_movements_item_id_fkey FOREIGN KEY (item_id) REFERENCES inventory.items(id);
+
+
+--
+-- Name: stock_opname_items stock_opname_items_item_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_opname_items
+    ADD CONSTRAINT stock_opname_items_item_id_fkey FOREIGN KEY (item_id) REFERENCES inventory.items(id);
+
+
+--
+-- Name: stock_opname_items stock_opname_items_opname_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_opname_items
+    ADD CONSTRAINT stock_opname_items_opname_id_fkey FOREIGN KEY (opname_id) REFERENCES inventory.stock_opnames(id) ON DELETE CASCADE;
+
+
+--
+-- Name: stock_opnames stock_opnames_location_id_fkey; Type: FK CONSTRAINT; Schema: inventory; Owner: -
+--
+
+ALTER TABLE ONLY inventory.stock_opnames
+    ADD CONSTRAINT stock_opnames_location_id_fkey FOREIGN KEY (location_id) REFERENCES inventory.stock_locations(id);
+
+
+--
+-- Name: departments departments_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.departments
+    ADD CONSTRAINT departments_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.departments(id) ON DELETE SET NULL;
+
+
+--
+-- Name: menu_items menu_items_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.menu_items
+    ADD CONSTRAINT menu_items_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES public.menu_items(id) ON DELETE CASCADE;
+
+
+--
+-- Name: menu_permissions menu_permissions_menu_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.menu_permissions
+    ADD CONSTRAINT menu_permissions_menu_id_fkey FOREIGN KEY (menu_id) REFERENCES public.menu_items(id) ON DELETE CASCADE;
+
+
+--
+-- Name: menu_permissions menu_permissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.menu_permissions
+    ADD CONSTRAINT menu_permissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES public.permissions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: role_permissions role_permissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.role_permissions
+    ADD CONSTRAINT role_permissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES public.permissions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: role_permissions role_permissions_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.role_permissions
+    ADD CONSTRAINT role_permissions_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_dashboard_preferences user_dashboard_preferences_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_dashboard_preferences
+    ADD CONSTRAINT user_dashboard_preferences_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_dashboard_preferences user_dashboard_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_dashboard_preferences
+    ADD CONSTRAINT user_dashboard_preferences_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_departments user_departments_department_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_departments
+    ADD CONSTRAINT user_departments_department_id_fkey FOREIGN KEY (department_id) REFERENCES public.departments(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_departments user_departments_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_departments
+    ADD CONSTRAINT user_departments_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_layout_preferences user_layout_preferences_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_layout_preferences
+    ADD CONSTRAINT user_layout_preferences_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_layout_preferences user_layout_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_layout_preferences
+    ADD CONSTRAINT user_layout_preferences_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_permissions user_permissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_permissions
+    ADD CONSTRAINT user_permissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES public.permissions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_permissions user_permissions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_permissions
+    ADD CONSTRAINT user_permissions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_pinned_menus user_pinned_menus_menu_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_pinned_menus
+    ADD CONSTRAINT user_pinned_menus_menu_id_fkey FOREIGN KEY (menu_id) REFERENCES public.menu_items(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_pinned_menus user_pinned_menus_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_pinned_menus
+    ADD CONSTRAINT user_pinned_menus_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_pinned_menus user_pinned_menus_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_pinned_menus
+    ADD CONSTRAINT user_pinned_menus_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_roles user_roles_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_roles
+    ADD CONSTRAINT user_roles_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id);
+
+
+--
+-- Name: user_roles user_roles_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_roles
+    ADD CONSTRAINT user_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict 3bEQkKpBDFeKbfiVHpgOI8auq0Gy0InwMDUye6C4FTf167WgoWoBQNFKhZEShrD
+

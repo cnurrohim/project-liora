@@ -112,7 +112,7 @@ goodsIssueRoute.post("/", async (c) => {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Create GI error:", err);
-    return c.json({ error: "Gagal membuat goods issue" }, 400);
+    return c.json({ error: "Failed to create goods issue" }, 400);
   } finally {
     client.release();
   }

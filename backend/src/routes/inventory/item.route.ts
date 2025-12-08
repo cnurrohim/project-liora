@@ -1,4 +1,3 @@
-// src/routes/item.route.ts
 import { Hono } from "hono";
 import { db } from "../../db.js";
 import { z } from "zod";
@@ -7,9 +6,13 @@ export const itemRoute = new Hono();
 
 // Schema Zod untuk validasi
 const itemSchema = z.object({
-  sku: z.string().min(1, "SKU wajib diisi"),
-  name: z.string().min(1, "Nama barang wajib diisi"),
-  min_stock: z.number().int().min(0, "Minimal stok harus >= 0").optional(),
+  sku: z.string().min(1, "SKU is mandatory"),
+  name: z.string().min(1, "Inventory item name is mandatory"),
+  min_stock: z
+    .number()
+    .int()
+    .min(0, "Inventory item minimum stock >= 0")
+    .optional(),
   location_id: z.uuid().optional(),
   supplier_id: z.uuid().optional(),
 });
@@ -19,6 +22,7 @@ itemRoute.get("/", async (c) => {
   const result = await db.query(
     `SELECT i.*
      FROM inventory.items i
+     WHERE i.deleted_at IS NULL
      ORDER BY i.sku ASC`
   );
   return c.json({ data: result.rows });
@@ -30,7 +34,7 @@ itemRoute.get("/:id", async (c) => {
   const result = await db.query(
     `SELECT i.*
      FROM inventory.items i
-     WHERE i.id = $1`,
+     WHERE i.id = $1 AND i.deleted_at IS NULL`,
     [id]
   );
   const data = result.rows[0];
@@ -38,6 +42,7 @@ itemRoute.get("/:id", async (c) => {
   return c.json({ data });
 });
 
+// Search item di lokasi tertentu
 itemRoute.get("/:term/search/:location_id", async (c) => {
   const term = c.req.param("term");
   const location_id = c.req.param("location_id");
@@ -49,8 +54,9 @@ itemRoute.get("/:term/search/:location_id", async (c) => {
       COALESCE(sb.qty, 0) AS qty
     FROM inventory.items i
     LEFT JOIN inventory.stock_balances sb 
-      ON i.id = sb.item_id
-    WHERE (i.name ILIKE $1 OR i.sku ILIKE $1) AND sb.location_id = $2
+      ON i.id = sb.item_id AND sb.location_id = $2
+    WHERE (i.name ILIKE $1 OR i.sku ILIKE $1)
+      AND i.deleted_at IS NULL
     ORDER BY i.sku DESC
     LIMIT 20`,
     [`%${term}%`, location_id]
@@ -58,12 +64,14 @@ itemRoute.get("/:term/search/:location_id", async (c) => {
   return c.json({ data: rows });
 });
 
+// Search item global
 itemRoute.get("/:term/search", async (c) => {
   const term = c.req.param("term");
   const { rows } = await db.query(
     `SELECT i.id, i.sku, i.name
      FROM inventory.items i
-     WHERE i.name ILIKE $1 or i.sku ILIKE $1
+     WHERE (i.name ILIKE $1 OR i.sku ILIKE $1)
+       AND i.deleted_at IS NULL
      ORDER BY i.sku DESC
      LIMIT 20`,
     [`%${term}%`]
@@ -89,7 +97,7 @@ itemRoute.post("/", async (c) => {
     if (err instanceof z.ZodError) {
       return c.json({ error: err.flatten }, 400);
     }
-    return c.json({ error: "Gagal menambahkan barang" }, 400);
+    return c.json({ error: "Failed to add new inventory item" }, 400);
   }
 });
 
@@ -103,7 +111,7 @@ itemRoute.put("/:id", async (c) => {
     const result = await db.query(
       `UPDATE inventory.items
        SET sku = $1, name = $2, min_stock = $3, updated_at = NOW()
-       WHERE id = $6
+       WHERE id = $4 AND deleted_at IS NULL
        RETURNING *`,
       [parsed.sku, parsed.name, parsed.min_stock ?? 0, id]
     );
@@ -114,22 +122,26 @@ itemRoute.put("/:id", async (c) => {
     if (err instanceof z.ZodError) {
       return c.json({ error: err.flatten }, 400);
     }
-    return c.json({ error: "Gagal mengubah barang" }, 400);
+    return c.json({ error: "Failed to change inventory item" }, 400);
   }
 });
 
-// DELETE /items/:id - hapus barang
+// DELETE /items/:id - soft delete
 itemRoute.delete("/:id", async (c) => {
   const id = c.req.param("id");
   try {
     const result = await db.query(
-      "DELETE FROM inventory.items WHERE id = $1 RETURNING *",
+      `UPDATE inventory.items
+       SET deleted_at = NOW()
+       WHERE id = $1 AND deleted_at IS NULL
+       RETURNING *`,
       [id]
     );
-    if (!result.rows.length) return c.json({ error: "Item not found" }, 404);
+    if (!result.rows.length)
+      return c.json({ error: "Inventory Item not found" }, 404);
     return c.json({ data: result.rows[0] });
   } catch (err) {
     console.error("Delete item error:", err);
-    return c.json({ error: "Gagal menghapus barang" }, 400);
+    return c.json({ error: "Failed to delete inventory item" }, 400);
   }
 });

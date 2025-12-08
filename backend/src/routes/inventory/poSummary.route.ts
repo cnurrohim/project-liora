@@ -59,6 +59,7 @@ async function getFilteredPOSummary(filters: StockOnHand = {}) {
         2
       ) AS received_percent,
       CASE
+        WHEN po.status = 'cancelled' then 'Cancelled'
         WHEN SUM(poi.received_qty) = 0 THEN 'Open'
         WHEN SUM(poi.received_qty) < SUM(poi.qty) THEN 'Partial'
         WHEN SUM(poi.received_qty) = SUM(poi.qty) THEN 'Received'

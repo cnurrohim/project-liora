@@ -12,7 +12,7 @@ export function toast(toast: Omit<ToastProps, "id">) {
       description={toast.description}
       button={{
         label: toast.button.label,
-        onClick: () => console.log("Button clicked"),
+        onClick: () => {},
       }}
     />
   ));

@@ -1,4 +1,3 @@
-// src/schema/supplier.schema.ts
 import { z } from "zod";
 
 export const supplierSchema = z.object({

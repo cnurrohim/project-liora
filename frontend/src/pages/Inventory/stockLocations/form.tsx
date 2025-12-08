@@ -20,7 +20,7 @@ export default function StockLocationsFormPage() {
   const { canView, canUpdate, canCreate } = usePermissions();
   if (!canView) return <ForbiddenPage />;
 
-  const { id } = useRouteParamsFromTab("/locations/:id/edit");
+  const { id } = useRouteParamsFromTab("/stock-location/:id/edit");
   const isEdit = !!id;
   const [loading, setLoading] = useState(false);
 
@@ -29,7 +29,6 @@ export default function StockLocationsFormPage() {
     defaultValues: {
       code: "",
       name: "",
-      type: "",
       description: "",
     },
   });
@@ -47,7 +46,6 @@ export default function StockLocationsFormPage() {
         reset({
           code: loc.code,
           name: loc.name,
-          type: loc.type,
           description: loc.description,
         });
       });
@@ -123,28 +121,6 @@ export default function StockLocationsFormPage() {
             {errors.name?.message && (
               <p className="text-[var(--danger)] text-sm">
                 {errors.name.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-[var(--content-text-muted)]">
-              Inventory location type
-            </label>
-            <select
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
-              {...register("type")}
-            >
-              <option value="">Choose ..</option>
-              <option value="warehouse">Warehouse</option>
-              <option value="store_display">Store Display</option>
-              <option value="front_desk">Front Desk</option>
-              <option value="cold_storage">Cold Storage</option>
-              <option value="shipping_container">Shipping Container</option>
-            </select>
-            {errors.type?.message && (
-              <p className="text-[var(--danger)] text-sm">
-                {errors.type.message}
               </p>
             )}
           </div>

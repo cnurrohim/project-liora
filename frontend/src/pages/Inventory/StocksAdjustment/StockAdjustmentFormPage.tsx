@@ -1,4 +1,3 @@
-// src/routes/StockAdjustmentFormPage.tsx
 import {
   Controller,
   FormProvider,
@@ -133,6 +132,8 @@ export default function StockAdjustmentFormPage() {
         await createStockAdjustment(cleanedData);
         showSuccessToast("Inventory Adjustment created");
       }
+
+      reset(methods.formState.defaultValues);
     } catch (err: any) {
       showErrorToast(err.message || "Saving Inventory Adjustment Failed");
     } finally {
@@ -208,7 +209,7 @@ export default function StockAdjustmentFormPage() {
                   Item
                 </th>
                 <th className="border border-[var(--content-border)] px-2 py-1">
-                  Lokasi
+                  Stored Location
                 </th>
                 <th className="border border-[var(--content-border)] px-2 py-1">
                   Qty
@@ -385,7 +386,7 @@ export default function StockAdjustmentFormPage() {
                       render={({ field }) => (
                         <input
                           type="text"
-                          placeholder="Catatan"
+                          placeholder="Note"
                           className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                           {...field}
                           value={field.value ?? ""} // <-- pastikan bukan null
@@ -399,7 +400,7 @@ export default function StockAdjustmentFormPage() {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--content-text)] rounded"
+                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--success-foreground)] rounded"
                     >
                       delete
                     </button>
@@ -420,7 +421,7 @@ export default function StockAdjustmentFormPage() {
                         notes: "",
                       })
                     }
-                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--content-text)] rounded"
+                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--success-foreground)] rounded"
                   >
                     + Add Item
                   </button>

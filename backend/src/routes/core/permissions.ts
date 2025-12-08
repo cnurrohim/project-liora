@@ -6,11 +6,11 @@ export const permissionRoute = new Hono();
 
 permissionRoute.use(authMiddleware);
 
-// Get all permissions
+// Get all permissions (not deleted)
 permissionRoute.get("/", async (c) => {
   try {
     const result = await db.query(
-      "SELECT id, name, label, description, domain FROM permissions ORDER BY name ASC"
+      "SELECT id, name, label, description, domain FROM permissions WHERE deleted_at IS NULL ORDER BY name ASC"
     );
     return c.json({ permissions: result.rows });
   } catch (err) {
@@ -22,11 +22,11 @@ permissionRoute.get("/", async (c) => {
 permissionRoute.get("/view-only", async (c) => {
   try {
     const result = await db.query(
-      "SELECT id, name, label, description, domain FROM permissions WHERE name = 'view' ORDER BY name ASC"
+      "SELECT id, name, label, description, domain FROM permissions WHERE deleted_at IS NULL AND name = 'view' ORDER BY name ASC"
     );
     return c.json({ permissions: result.rows });
   } catch (err) {
-    console.error("GET /permissions error", err);
+    console.error("GET /permissions/view-only error", err);
     return c.json({ error: "Failed to fetch permissions" }, 500);
   }
 });
@@ -51,8 +51,9 @@ permissionRoute.get("/by-roles", async (c) => {
       FROM permissions p
       JOIN role_permissions rp ON rp.permission_id = p.id
       WHERE rp.role_id = ANY($1::uuid[])
+        AND p.deleted_at IS NULL
       ORDER BY p.name ASC
-    `,
+      `,
       [roleIds]
     );
 
@@ -63,16 +64,17 @@ permissionRoute.get("/by-roles", async (c) => {
   }
 });
 
+// Get user permission overrides (this table might not need soft delete)
 permissionRoute.get("/:id", async (c) => {
   try {
     const id = c.req.param("id");
     const result = await db.query(
-      `SELECT permission_id, granted FROM user_permissions where user_id = $1`,
+      `SELECT permission_id, granted FROM user_permissions WHERE user_id = $1`,
       [id]
     );
     return c.json({ permissions: result.rows });
   } catch (err) {
-    console.error("GET /permissions error", err);
+    console.error("GET /permissions/:id error", err);
     return c.json({ error: "Failed to fetch permissions" }, 500);
   }
 });
@@ -80,15 +82,15 @@ permissionRoute.get("/:id", async (c) => {
 // Create new permission
 permissionRoute.post("/", async (c) => {
   try {
-    const { name, label, description } = await c.req.json();
+    const { name, label, description, domain } = await c.req.json();
 
     if (!name) {
       return c.json({ error: "Permission name is required" }, 400);
     }
 
     const result = await db.query(
-      "INSERT INTO permissions (name,  label, description, domain) VALUES ($1, $2, $3, $4) RETURNING *",
-      [name, label, description ?? null]
+      "INSERT INTO permissions (name, label, description, domain) VALUES ($1, $2, $3, $4) RETURNING *",
+      [name, label, description ?? null, domain ?? null]
     );
 
     return c.json({ permission: result.rows[0] });
@@ -105,8 +107,8 @@ permissionRoute.put("/:id", async (c) => {
     const { name, description, domain, label } = await c.req.json();
 
     const result = await db.query(
-      "UPDATE permissions SET name = $1, description = $2, domain = $3, label = $4 WHERE id = $4 RETURNING *",
-      [name, description ?? null, domain, id]
+      "UPDATE permissions SET name = $1, description = $2, domain = $3, label = $4 WHERE id = $5 AND deleted_at IS NULL RETURNING *",
+      [name, description ?? null, domain ?? null, label ?? null, id]
     );
 
     if (result.rowCount === 0) {
@@ -120,17 +122,18 @@ permissionRoute.put("/:id", async (c) => {
   }
 });
 
-// Delete permission
+// Soft delete permission
 permissionRoute.delete("/:id", async (c) => {
   try {
     const id = c.req.param("id");
 
-    const result = await db.query("DELETE FROM permissions WHERE id = $1", [
-      id,
-    ]);
+    const result = await db.query(
+      "UPDATE permissions SET deleted_at = now() WHERE id = $1 AND deleted_at IS NULL RETURNING id",
+      [id]
+    );
 
     if (result.rowCount === 0) {
-      return c.json({ error: "Permission not found" }, 404);
+      return c.json({ error: "Permission not found or already deleted" }, 404);
     }
 
     return c.json({ success: true });

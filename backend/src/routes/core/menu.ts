@@ -68,11 +68,10 @@ menuRoute.get("/", async (c) => {
 
     // filter by permission
     const filteredMenus = filterMenusByPermissions(menus, userPermissions);
-
     // build tree
     const tree = buildMenuTree(filteredMenus);
 
-    // mark pinned (and collect them)
+    // mark pinned
     const pinnedAcc: MenuTreeNode[] = [];
     const markPinned = (nodes: MenuTreeNode[]) => {
       for (const node of nodes) {
@@ -85,20 +84,14 @@ menuRoute.get("/", async (c) => {
     };
     markPinned(tree);
 
-    // optional: preserve pinned order as pinnedIds
     const pinnedMenusOrdered = pinnedIds
       .map((id) => pinnedAcc.find((n) => n.id === id))
       .filter(Boolean) as MenuTreeNode[];
 
-    // remove empty groups but keep pinned nodes
-    // const cleanedTree = removeEmptyGroups(tree);
-
-    // pinned group
     const pinnedTree = makePinnedTree(pinnedMenusOrdered);
     const finalMenuTree = [...(pinnedTree ? [pinnedTree] : []), ...tree];
 
     const routeMenuMap: Record<string, RouteMenuMeta> = {};
-
     for (const menu of menus) {
       if (menu.type === "route" && menu.route) {
         routeMenuMap[menu.route] = {
@@ -110,10 +103,8 @@ menuRoute.get("/", async (c) => {
       }
     }
 
-    // final response
     const response = { data: finalMenuTree, routeMenuMap };
 
-    // cache (store the full response object)
     await redis.set(cacheKey, JSON.stringify(response), { EX: 300 });
 
     return c.json(response);
@@ -125,7 +116,10 @@ menuRoute.get("/", async (c) => {
 
 menuRoute.get("/parent-menu", async (c) => {
   const result = await db.query(
-    `SELECT id, label, parent_id FROM menu_items WHERE type = 'group' ORDER BY label ASC`
+    `SELECT id, label, parent_id 
+     FROM menu_items 
+     WHERE type = 'group' AND deleted_at IS NULL 
+     ORDER BY label ASC`
   );
   return c.json({ data: result.rows });
 });
@@ -136,23 +130,24 @@ menuRoute.get("/:id", async (c) => {
 
     const res = await db.query(
       `SELECT mi.*,
-      (
-        SELECT json_agg(json_build_object(
-          'id', r.id,
-          'name', r.name,
-          'label', r.label,
-          'domain', r.domain
-        ))
-        FROM menu_permissions mp
-        JOIN permissions r ON r.id = mp.permission_id
-        WHERE mp.menu_id = mi.id
-      ) AS permissions
-        FROM menu_items mi WHERE mi.id = $1 LIMIT 1`,
+        (
+          SELECT json_agg(json_build_object(
+            'id', r.id,
+            'name', r.name,
+            'label', r.label,
+            'domain', r.domain
+          ))
+          FROM menu_permissions mp
+          JOIN permissions r ON r.id = mp.permission_id
+          WHERE mp.menu_id = mi.id
+        ) AS permissions
+       FROM menu_items mi 
+       WHERE mi.id = $1 AND mi.deleted_at IS NULL
+       LIMIT 1`,
       [id]
     );
 
     const data = res.rows[0];
-
     if (!data) return c.json({ error: "Menu not found" }, 404);
 
     return c.json({ data });
@@ -162,7 +157,7 @@ menuRoute.get("/:id", async (c) => {
   }
 });
 
-// POST /menus
+// POST /menus (tidak perlu where karena insert baru)
 menuRoute.post("/", async (c) => {
   const client = await db.connect();
   const body = await c.req.json();
@@ -172,7 +167,7 @@ menuRoute.post("/", async (c) => {
   try {
     await client.query("BEGIN");
     const { rows } = await client.query(
-      "SELECT MAX(ordinal) AS max FROM menu_items WHERE parent_id IS NOT DISTINCT FROM $1",
+      "SELECT MAX(ordinal) AS max FROM menu_items WHERE parent_id IS NOT DISTINCT FROM $1 AND deleted_at IS NULL",
       [parent_id]
     );
     const newOrdinal = (rows[0].max || 0) + 1;
@@ -180,9 +175,9 @@ menuRoute.post("/", async (c) => {
     const result = await client.query(
       `INSERT INTO menu_items 
         (id, parent_id, type, 
-        label, description, icon, 
-        icon_color, route, command, 
-        mode, alignment, position, ordinal)
+         label, description, icon, 
+         icon_color, route, command, 
+         mode, alignment, position, ordinal)
        VALUES 
         (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
        RETURNING *`,
@@ -203,13 +198,11 @@ menuRoute.post("/", async (c) => {
     );
 
     const menuId = result.rows[0].id;
-
     if (body.permissions?.length) {
       insertMenuPermissions(client, menuId, body.permissions);
     }
 
     await client.query("COMMIT");
-
     await clearRedisCache();
 
     return c.json({ data: result.rows[0] });
@@ -222,7 +215,7 @@ menuRoute.post("/", async (c) => {
   }
 });
 
-// PUT /menus/:id
+// PUT /menus/:id (update biasa)
 menuRoute.put("/:id", async (c) => {
   const client = await db.connect();
   const id = c.req.param("id");
@@ -243,7 +236,7 @@ menuRoute.put("/:id", async (c) => {
         position = $9,
         description = $10,
         icon_color = $11
-       WHERE id = $12`,
+       WHERE id = $12 AND deleted_at IS NULL`,
       [
         body.parent_id ?? null,
         body.type,
@@ -266,7 +259,6 @@ menuRoute.put("/:id", async (c) => {
     }
 
     await client.query("COMMIT");
-
     await clearRedisCache();
 
     return c.json({ success: true });
@@ -279,47 +271,48 @@ menuRoute.put("/:id", async (c) => {
   }
 });
 
-// DELETE /menus/:id
+// DELETE /menus/:id (soft delete)
 menuRoute.delete("/:id", async (c) => {
   const id = c.req.param("id");
   const client = await db.connect();
 
   try {
     await client.query("BEGIN");
-    // Step 1: Ambil data item sebelum dihapus
     const { rows } = await client.query(
-      "SELECT ordinal, parent_id FROM menu_items WHERE id = $1",
+      "SELECT ordinal, parent_id FROM menu_items WHERE id = $1 AND deleted_at IS NULL",
       [id]
     );
 
     if (rows.length === 0) {
-      return c.json({ error: "Item tidak ditemukan" }, 404);
+      return c.json({ error: "Item not found" }, 404);
     }
 
     const { ordinal, parent_id } = rows[0];
 
-    // Step 2: Hapus item
-    await client.query("DELETE FROM menu_items WHERE id = $1", [id]);
+    // soft delete
+    await client.query(
+      "UPDATE menu_items SET deleted_at = now() WHERE id = $1",
+      [id]
+    );
     await client.query(`DELETE FROM menu_permissions WHERE menu_id = $1`, [id]);
 
-    // Step 3: Kurangi ordinal semua item di bawahnya
     await client.query(
       `UPDATE menu_items 
        SET ordinal = ordinal - 1 
        WHERE ordinal > $1 
-         AND parent_id IS NOT DISTINCT FROM $2`,
+         AND parent_id IS NOT DISTINCT FROM $2
+         AND deleted_at IS NULL`,
       [ordinal, parent_id]
     );
 
     await client.query("COMMIT");
-
     await clearRedisCache();
 
     return c.json({ success: true });
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Error delete menu:", err);
-    return c.json({ error: "Gagal menghapus menu" }, 400);
+    return c.json({ error: "Failed to delete menu" }, 400);
   } finally {
     client.release();
   }
@@ -331,7 +324,7 @@ menuRoute.post("/reorder", async (c) => {
   const {
     rows: [current],
   } = await db.query(
-    "SELECT id, ordinal, parent_id FROM menu_items WHERE id = $1",
+    "SELECT id, ordinal, parent_id FROM menu_items WHERE id = $1 AND deleted_at IS NULL",
     [id]
   );
   if (!current) return c.json({ error: "Item not found" }, 404);
@@ -339,14 +332,15 @@ menuRoute.post("/reorder", async (c) => {
   const neighbor = await db.query(
     `SELECT id, ordinal FROM menu_items 
      WHERE parent_id IS NOT DISTINCT FROM $1 
-     AND ordinal ${isMoveMenuUp === true ? "<" : ">"} $2
+       AND ordinal ${isMoveMenuUp === true ? "<" : ">"} $2
+       AND deleted_at IS NULL
      ORDER BY ordinal ${isMoveMenuUp === true ? "DESC" : "ASC"}
      LIMIT 1`,
     [current.parent_id, current.ordinal]
   );
 
   if (neighbor.rowCount === 0) {
-    return c.json({ error: "Tidak bisa digeser lagi" }, 400);
+    return c.json({ error: "Item cannot be shift anymore" }, 400);
   }
 
   const { id: neighborId, ordinal: neighborOrdinal } = neighbor.rows[0];
@@ -363,7 +357,6 @@ menuRoute.post("/reorder", async (c) => {
   ]);
 
   await clearRedisCache();
-
   return c.json({ success: true });
 });
 
@@ -372,7 +365,8 @@ menuRoute.post("/normalize-ordinal", async (c) => {
 
   const { rows } = await db.query(
     `SELECT id FROM menu_items 
-     WHERE parent_id IS NOT DISTINCT FROM $1
+     WHERE parent_id IS NOT DISTINCT FROM $1 
+       AND deleted_at IS NULL
      ORDER BY ordinal ASC`,
     [parent_id]
   );
@@ -385,7 +379,6 @@ menuRoute.post("/normalize-ordinal", async (c) => {
   }
 
   await clearRedisCache();
-
   return c.json({ success: true });
 });
 
@@ -413,36 +406,7 @@ async function insertMenuPermissions(
   );
 }
 
-function removeEmptyGroups(nodes: MenuTreeNode[]): MenuTreeNode[] {
-  return nodes
-    .map((n) => ({ ...n, items: removeEmptyGroups(n.items || []) }))
-    .filter((n) => {
-      // keep groups that either have children or are explicitly pinned
-      if (n.type === "group") {
-        return Boolean(n.isPinned) || (n.items && n.items.length > 0);
-      }
-      // non-group (route/command) always kept (unless you want extra filtering)
-      return true;
-    });
-}
-
-// === helper DB functions with explicit return types ===
-async function getUserPermissionIds(userId: string): Promise<string[]> {
-  const res = await db.query(
-    `
-    SELECT DISTINCT p.id,p.domain,p.name
-    FROM permissions p
-    LEFT JOIN role_permissions rp ON rp.permission_id = p.id
-    LEFT JOIN user_roles ur ON ur.role_id = rp.role_id
-    LEFT JOIN user_permissions up ON up.permission_id = p.id
-    WHERE ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true)
-    `,
-    [userId]
-  );
-  const rows = res.rows as { id: string; domain: string; name: string }[];
-  return rows.map((r) => r.id);
-}
-
+// === helper DB functions ===
 async function getUserPermissions(userId: string): Promise<Permission[]> {
   const res = await db.query(
     `
@@ -451,7 +415,7 @@ async function getUserPermissions(userId: string): Promise<Permission[]> {
     LEFT JOIN role_permissions rp ON rp.permission_id = p.id
     LEFT JOIN user_roles ur ON ur.role_id = rp.role_id
     LEFT JOIN user_permissions up ON up.permission_id = p.id
-    WHERE ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true)
+    WHERE (ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true))
     `,
     [userId]
   );
@@ -465,6 +429,7 @@ async function getMenus(): Promise<MenuRow[]> {
            ARRAY_REMOVE(ARRAY_AGG(mp.permission_id), NULL) AS permission_ids
     FROM menu_items mi
     LEFT JOIN menu_permissions mp ON mp.menu_id = mi.id
+    WHERE mi.deleted_at IS NULL
     GROUP BY mi.id
     ORDER BY mi.ordinal ASC
     `
@@ -481,29 +446,25 @@ async function getPinnedMenuIds(
     SELECT menu_id
     FROM user_pinned_menus
     WHERE user_id = $1 AND role_id = $2
-    ORDER BY pinned_at ASC
     `,
     [userId, roleId]
   );
   return (res.rows as { menu_id: string }[]).map((r) => r.menu_id);
 }
 
+// filter menu by permission (unchanged)
 function filterMenusByPermissions(
   menus: MenuRow[],
   userPermissions: Permission[]
 ): MenuRow[] {
-  // cek apakah user punya permission super admin
   const hasAllAccess = userPermissions.some((p) => p.name === "all_access");
-
-  // kalau iya, langsung return semua menus tanpa filter
-  if (hasAllAccess) {
-    return menus;
-  }
+  if (hasAllAccess) return menus;
 
   const userPermissionIds = userPermissions.map((p) => p.id);
 
   return menus.filter((menu) => {
     const perms = menu.permission_ids ?? [];
+
     if (menu.type === MENU.TYPE.GROUP) return true;
     return perms.some((permId) => userPermissionIds.includes(permId));
   });
@@ -511,11 +472,13 @@ function filterMenusByPermissions(
 
 function buildMenuTree(filteredMenus: MenuRow[]): MenuTreeNode[] {
   const map = new Map<string, MenuTreeNode>();
-  // init nodes
+
+  // add child placeholder
   filteredMenus.forEach((row) => {
     map.set(row.id, { ...row, items: [] });
   });
 
+  // add child sub menu
   const tree: MenuTreeNode[] = [];
   filteredMenus.forEach((row) => {
     const node = map.get(row.id)!;
@@ -527,13 +490,26 @@ function buildMenuTree(filteredMenus: MenuRow[]): MenuTreeNode[] {
     }
   });
 
-  return tree;
+  const cleanedTree = prune(tree);
+  return cleanedTree;
+}
+
+function prune(nodes: MenuTreeNode[]): MenuTreeNode[] {
+  return nodes
+    .map((node) => ({
+      ...node,
+      items: prune(node.items),
+    }))
+    .filter((node) => {
+      if (node.type === "group" && node.items.length === 0) {
+        return false;
+      }
+      return true;
+    });
 }
 
 function makePinnedTree(pinnedMenus: MenuTreeNode[]): MenuTreeNode | null {
-  if (pinnedMenus.length === 0) {
-    return null; // tidak ada pin, tidak tampilkan group
-  }
+  if (pinnedMenus.length === 0) return null;
 
   return {
     id: "pinned-menus",

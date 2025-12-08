@@ -1,4 +1,3 @@
-// src/routes/PurchaseOrderFormPage.tsx
 import {
   Controller,
   FormProvider,
@@ -22,8 +21,9 @@ import {
 } from "./formSchema";
 import SingleSelect from "@/components/SelectOptions/SingleSelect";
 import { getSuppliers } from "../Supplier/supplier.api";
-import { getItems } from "../Item/item.api";
 import { BackToListLink } from "@/components/Buttons/BackToListLink";
+import SearchSelect from "@/components/SelectOptions/searchSelect";
+import { searchItems } from "@/api/search.api";
 
 type Option = {
   id: string;
@@ -34,12 +34,11 @@ export default function PurchaseOrderFormPage() {
   const { canView, canUpdate, canCreate } = usePermissions();
   if (!canView) return <ForbiddenPage />;
 
-  const { id } = useRouteParamsFromTab("/purchase-orders/:id/edit");
+  const { id } = useRouteParamsFromTab("/purchase-order/:id/edit");
   const isEdit = !!id;
   const [loading, setLoading] = useState(false);
 
   const [allSuppliers, setAllSuppliers] = useState<Option[]>([]);
-  const [allItems, setAllItems] = useState<Option[]>([]);
 
   const today = new Date();
   const tomorrow = new Date(today);
@@ -53,7 +52,7 @@ export default function PurchaseOrderFormPage() {
       expected_date: tomorrow.toISOString().substring(0, 10), // besok
       status: "draft",
       notes: "",
-      items: [], // <--- penting
+      items: [],
     },
   });
 
@@ -75,17 +74,14 @@ export default function PurchaseOrderFormPage() {
       const suppliers = await getSuppliers();
       setAllSuppliers(suppliers.map((p: any) => ({ id: p.id, name: p.name })));
 
-      const items = await getItems();
-      setAllItems(
-        items.map((i: any) => ({ id: i.id, name: `${i.sku} - ${i.name}` }))
-      );
-
       if (isEdit && id) {
         const po = await getPurchaseOrderById(id);
         reset({
           supplier_id: po.supplier_id,
-          order_date: po.order_date,
-          expected_date: po.expected_date ?? null,
+          order_date: po.order_date?.substring(0, 10),
+          expected_date: po.expected_date
+            ? po.expected_date?.substring(0, 10)
+            : null,
           status: po.status,
           notes: po.notes ?? "",
           items: po.items ?? [],
@@ -95,6 +91,21 @@ export default function PurchaseOrderFormPage() {
 
     init();
   }, [isEdit, id, reset]);
+
+  const handleSearchItem = async (keyword: string) => {
+    if (!keyword || keyword.length < 2) return [];
+    try {
+      const results = await searchItems(keyword); // array hasil
+      return results.map((item: any) => ({
+        id: item.id,
+        name: `${item.sku} - ${item.name}`,
+      }));
+    } catch (err) {
+      console.error(err);
+      showErrorToast("Searching inventory item failed");
+      return [];
+    }
+  };
 
   const onSubmit = async (data: PurchaseOrderFormValues) => {
     if (isEdit && !canUpdate) {
@@ -115,6 +126,8 @@ export default function PurchaseOrderFormPage() {
         await createPurchaseOrder(data);
         showSuccessToast("Purchase Order created");
       }
+
+      reset(methods.formState.defaultValues);
     } catch (err: any) {
       showErrorToast(err.message || "Saving purchase order failed");
     } finally {
@@ -167,7 +180,7 @@ export default function PurchaseOrderFormPage() {
           {/* Order date */}
           <div>
             <label className="block text-[var(--content-text-muted)]">
-              Tanggal Order
+              Order Date
             </label>
             <input
               type="date"
@@ -179,7 +192,7 @@ export default function PurchaseOrderFormPage() {
           {/* Expected date */}
           <div>
             <label className="block text-[var(--content-text-muted)]">
-              Tanggal Perkiraan Datang
+              Estimated Arrival Date
             </label>
             <input
               type="date"
@@ -225,9 +238,9 @@ export default function PurchaseOrderFormPage() {
                   <th className="border border-[var(--content-border)] px-2 py-1">
                     Qty
                   </th>
-                  <th className="border border-[var(--content-border)] px-2 py-1">
+                  {/* <th className="border border-[var(--content-border)] px-2 py-1">
                     Price
-                  </th>
+                  </th> */}
                   <th className="border border-[var(--content-border)] px-2 py-1">
                     Action
                   </th>
@@ -240,19 +253,29 @@ export default function PurchaseOrderFormPage() {
                       <Controller
                         name={`items.${index}.item_id`}
                         control={control}
-                        render={({ field }) => (
-                          <SingleSelect
-                            options={allItems}
-                            value={
-                              allItems.find((opt) => opt.id === field.value) ??
-                              null
-                            }
-                            onChange={(val) =>
-                              field.onChange(val ? val.id : null)
-                            }
-                            placeholder="Pilih Item"
-                          />
-                        )}
+                        render={({ field }) => {
+                          const currentName = methods.watch(
+                            `items.${index}.item_name`
+                          );
+
+                          return (
+                            <SearchSelect
+                              value={
+                                field.value
+                                  ? { id: field.value, name: currentName || "" }
+                                  : null
+                              }
+                              onChange={(val) => {
+                                field.onChange(val?.id || "");
+                                methods.setValue(
+                                  `items.${index}.item_name`,
+                                  val?.name || ""
+                                );
+                              }}
+                              fetchOptions={handleSearchItem}
+                            />
+                          );
+                        }}
                       />
                     </td>
                     <td className="border border-[var(--content-border)] px-2 py-1">
@@ -265,7 +288,7 @@ export default function PurchaseOrderFormPage() {
                         })}
                       />
                     </td>
-                    <td className="border border-[var(--content-border)] px-2 py-1">
+                    {/* <td className="border border-[var(--content-border)] px-2 py-1">
                       <input
                         type="number"
                         placeholder="Harga"
@@ -274,12 +297,12 @@ export default function PurchaseOrderFormPage() {
                           valueAsNumber: true,
                         })}
                       />
-                    </td>
+                    </td> */}
                     <td className="border border-[var(--content-border)] px-2 py-1">
                       <button
                         type="button"
                         onClick={() => remove(index)}
-                        className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--content-text)] rounded"
+                        className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--success-foreground)] rounded"
                       >
                         delete
                       </button>
@@ -291,7 +314,7 @@ export default function PurchaseOrderFormPage() {
                     <button
                       type="button"
                       onClick={() => append({ item_id: "", qty: 1, price: 0 })}
-                      className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--content-text)] rounded"
+                      className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--success-foreground)] rounded"
                     >
                       + Add Item
                     </button>

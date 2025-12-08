@@ -1,5 +1,3 @@
-// src/pages/roles/RoleDetailPane.tsx
-
 import { Controller } from "@/components/DetailPane/Controller";
 import { DetailPane } from "@/components/DetailPane/DetailPane";
 
@@ -33,7 +31,7 @@ export function RoleDetailPane() {
       onClose={RoleDetailPaneController.close}
     >
       <div>
-        <p className="text-sm text-[var(--content-text)]">Deskripsi</p>
+        <p className="text-sm text-[var(--content-text)]">Description</p>
         <p className="text-[var(--content-text)]">{description || "-"}</p>
       </div>
 

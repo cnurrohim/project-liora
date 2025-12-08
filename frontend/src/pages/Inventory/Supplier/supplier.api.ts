@@ -1,16 +1,15 @@
-// src/routes/supplier.api.ts
 import { apiFetch } from "@/utils/apiFetch";
 
 export async function getSuppliers() {
   const res = await apiFetch("/inventory/suppliers");
-  if (!res.ok) throw new Error("Gagal mengambil data supplier");
+  if (!res.ok) throw new Error("Failed fetching suppliers");
   const data = await res.json();
   return data.data; // backend return { data: [...] }
 }
 
 export async function getSupplierById(id: string) {
   const res = await apiFetch(`/inventory/suppliers/${id}`);
-  if (!res.ok) throw new Error("Gagal mengambil detail supplier");
+  if (!res.ok) throw new Error("Failed fetching supplier list");
   const data = await res.json();
   return data.data; // backend return { data: {...} }
 }
@@ -24,7 +23,7 @@ export async function createSupplier(input: {
     method: "POST",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal membuat supplier");
+  if (!res.ok) throw new Error("Failed to create supplier");
   return (await res.json()).data;
 }
 
@@ -40,7 +39,7 @@ export async function updateSupplier(
     method: "PUT",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal mengupdate supplier");
+  if (!res.ok) throw new Error("Failed updating supplier");
   return (await res.json()).data;
 }
 
@@ -48,6 +47,6 @@ export async function deleteSupplier(id: string) {
   const res = await apiFetch(`/inventory/suppliers/${id}`, {
     method: "DELETE",
   });
-  if (!res.ok) throw new Error("Gagal menghapus supplier");
+  if (!res.ok) throw new Error("Failed deleting supplier");
   return (await res.json()).data;
 }

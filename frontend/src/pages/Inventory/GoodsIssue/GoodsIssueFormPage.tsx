@@ -77,7 +77,7 @@ export default function GoodsIssueFormPage() {
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Gagal mencari item");
+      showErrorToast("Searching inventory item failed");
       return [];
     }
   };
@@ -137,6 +137,8 @@ export default function GoodsIssueFormPage() {
         await createGoodsIssue(cleanedData);
         showSuccessToast("Inventory issue created");
       }
+
+      reset(methods.formState.defaultValues);
     } catch (err: any) {
       showErrorToast(err.message || "Failed to create inventory issue");
     } finally {
@@ -385,7 +387,7 @@ export default function GoodsIssueFormPage() {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--content-text)] rounded"
+                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--success-foreground)] rounded"
                     >
                       delete
                     </button>
@@ -406,7 +408,7 @@ export default function GoodsIssueFormPage() {
                         notes: "",
                       })
                     }
-                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--content-text)] rounded"
+                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--success-foreground)] rounded"
                   >
                     + Add Item
                   </button>

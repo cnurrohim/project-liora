@@ -1,5 +1,3 @@
-// src/components/Sidebar/types.ts
-
 import type { ReactNode } from "react";
 import type { MenuMode, MenuAlignment } from "@/types/menu";
 

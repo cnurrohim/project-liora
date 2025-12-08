@@ -1,4 +1,3 @@
-// src/routes/goodsReceipt.api.ts
 import { apiFetch } from "@/utils/apiFetch";
 
 // ambil semua goods receipts
@@ -41,7 +40,7 @@ export async function createGoodsReceipt(input: {
     method: "POST",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal membuat goods receipt");
+  if (!res.ok) throw new Error("Failed to create goods receipt");
   return (await res.json()).data;
 }
 
@@ -64,7 +63,7 @@ export async function updateGoodsReceipt(
     method: "PUT",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal mengupdate goods receipt");
+  if (!res.ok) throw new Error("Failed updating goods receipt");
   return (await res.json()).data;
 }
 
@@ -73,6 +72,6 @@ export async function deleteGoodsReceipt(id: string) {
   const res = await apiFetch(`/inventory/goods-receipts/${id}`, {
     method: "DELETE",
   });
-  if (!res.ok) throw new Error("Gagal menghapus goods receipt");
+  if (!res.ok) throw new Error("Failed deleting goods receipt");
   return (await res.json()).data;
 }

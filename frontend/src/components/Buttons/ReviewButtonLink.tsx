@@ -10,7 +10,7 @@ type Props = {
 export function PreviewButtonLink({
   label = "Review",
   onClick,
-  className = "flex cursor-pointer hover:bg-blue-500 px-2 py-1 rounded text-[var(--text-primary)] text-xs font-semibold bg-blue-400",
+  className = "flex cursor-pointer hover:bg-[var(--info-hover)] bg-[var(--info)] px-2 py-1 rounded text-[var(--info-foreground)] text-xs font-semibold",
 }: Props) {
   return (
     <ButtonLink

@@ -55,7 +55,7 @@ export default function RoleListPage() {
       {
         id: "/roles/create",
         route: "/roles/create",
-        label: "Tambah Role",
+        label: "Add new role",
         type: "route",
       },
       { replace: !newTab, remember: true }
@@ -124,13 +124,13 @@ export default function RoleListPage() {
           <thead className="bg-[var(--content-surface)]">
             <tr>
               <th className="p-2  text-left text-[var(--content-text-muted)]">
-                Nama
+                Name
               </th>
               <th className="p-2  text-left text-[var(--content-text-muted)]">
-                Deskripsi
+                Descriptions
               </th>
               <th className="p-2  text-left text-[var(--content-text-muted)]">
-                Aksi
+                Action
               </th>
             </tr>
           </thead>

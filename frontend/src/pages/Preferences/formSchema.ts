@@ -1,4 +1,3 @@
-// src/pages/preferences/formSchema.ts
 import { z } from "zod";
 
 export const layoutSchema = z.object({

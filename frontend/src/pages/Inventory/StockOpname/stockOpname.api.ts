@@ -32,7 +32,7 @@ export async function createStockOpname(input: {
     method: "POST",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal membuat stock opname");
+  if (!res.ok) throw new Error("Failed to create stock opname");
   return (await res.json()).data;
 }
 

@@ -12,7 +12,7 @@ export default function PagesNotFound() {
       </div>
       <div className="text-center text-sm">
         <h1 className="font-logo text-xl text-amber-300">
-          404 - Halaman Tidak Ditemukan
+          404 - Page Not Found
         </h1>
       </div>
     </div>

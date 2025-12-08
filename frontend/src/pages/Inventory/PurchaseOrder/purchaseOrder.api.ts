@@ -1,4 +1,3 @@
-// src/routes/purchaseOrder.api.ts
 import { apiFetch } from "@/utils/apiFetch";
 
 export async function getPurchaseOrders() {
@@ -47,7 +46,7 @@ export async function createPurchaseOrder(input: {
     method: "POST",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal membuat purchase order");
+  if (!res.ok) throw new Error("Failed to create purchase order");
   return (await res.json()).data;
 }
 
@@ -70,7 +69,7 @@ export async function createPurchaseReceive(
       body: JSON.stringify(input),
     }
   );
-  if (!res.ok) throw new Error("Gagal membuat purchase receive");
+  if (!res.ok) throw new Error("Failed to create purchase receive");
   return (await res.json()).data;
 }
 
@@ -91,7 +90,7 @@ export async function updatePurchaseOrder(
     method: "PUT",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal mengupdate purchase order");
+  if (!res.ok) throw new Error("Failed updating purchase order");
   return (await res.json()).data;
 }
 
@@ -99,7 +98,7 @@ export async function deletePurchaseOrder(id: string) {
   const res = await apiFetch(`/inventory/purchase-orders/${id}`, {
     method: "DELETE",
   });
-  if (!res.ok) throw new Error("Gagal menghapus purchase order");
+  if (!res.ok) throw new Error("Failed deleting purchase order");
   return (await res.json()).data;
 }
 
@@ -107,7 +106,7 @@ export async function approvePurchaseOrder(id: string) {
   const res = await apiFetch(`/inventory/purchase-orders/${id}/approve`, {
     method: "PUT",
   });
-  if (!res.ok) throw new Error("Gagal menyetujui purchase order");
+  if (!res.ok) throw new Error("Failed approving purchase order");
   return (await res.json()).data;
 }
 
@@ -115,6 +114,6 @@ export async function cancelPurchaseOrder(id: string) {
   const res = await apiFetch(`/inventory/purchase-orders/${id}/cancel`, {
     method: "PUT",
   });
-  if (!res.ok) throw new Error("Gagal membatalkan purchase order");
+  if (!res.ok) throw new Error("Failed canceling purchase order");
   return (await res.json()).data;
 }

@@ -17,7 +17,7 @@ export async function generateStockLocationExcel(
   const { location_name } = filters;
 
   // 🔹 Header Laporan
-  sheet.addRow(["Laporan Inventory per Lokasi"]).font = {
+  sheet.addRow(["Inventory Report per Location"]).font = {
     size: 14,
     bold: true,
   };

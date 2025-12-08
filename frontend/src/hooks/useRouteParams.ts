@@ -1,4 +1,3 @@
-// src/hooks/useRouteParamsFromTab.ts
 import { useMemo } from "react";
 import { TabController } from "../components/Tab/controller";
 
@@ -25,7 +24,6 @@ export function useRouteParamsFromTab(pathTemplate: string) {
     for (let i = 0; i < templateParts.length; i++) {
       const tpl = templateParts[i];
       const actual = routeParts[i];
-
       if (tpl.startsWith(":")) {
         const key = tpl.slice(1);
         params[key] = actual;

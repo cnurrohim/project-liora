@@ -5,7 +5,7 @@ export function DetailPane({
   title,
   onClose,
   children,
-  widthClass = "w-[28rem]",
+  widthClass = "w-full sm:w-[60rem] md:w-[40rem] lg:w-[50rem]",
 }: {
   visible: boolean;
   title?: ReactNode;

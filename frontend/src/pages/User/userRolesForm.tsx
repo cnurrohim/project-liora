@@ -34,7 +34,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
 
   return (
     <div className="space-y-4 py-4">
-      <h1 className="text-xl font-bold">{isEdit ? "Edit" : "Tambah"} Roles</h1>
+      <h1 className="text-xl font-bold">{isEdit ? "Edit" : "Set"} Roles</h1>
 
       <div>
         <label className="block text-[var(--content-text-muted)]">Roles</label>

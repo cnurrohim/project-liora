@@ -1,4 +1,3 @@
-// src/routes/SupplierFormPage.tsx
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -22,7 +21,7 @@ export default function SupplierFormPage() {
 
   if (!canView) return <ForbiddenPage />;
 
-  const { id } = useRouteParamsFromTab("/suppliers/:id/edit");
+  const { id } = useRouteParamsFromTab("/supplier/:id/edit");
   const isEdit = !!id;
   const [loading, setLoading] = useState(false);
 
@@ -69,13 +68,13 @@ export default function SupplierFormPage() {
       setLoading(true);
       if (isEdit) {
         await updateSupplier(id!, data);
-        showSuccessToast("Supplier berhasil diperbarui");
+        showSuccessToast("Supplier Updated");
       } else {
         await createSupplier(data);
-        showSuccessToast("Supplier berhasil dibuat");
+        showSuccessToast("Supplier Created");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal Saving supplier");
+      showErrorToast(err.message || "Failed to add new supplier");
     } finally {
       setLoading(false);
     }

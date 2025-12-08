@@ -99,8 +99,7 @@ export default function StockLocationsListPage() {
         id: "number",
         header: () => <div className="text-left">#</div>,
         cell: ({ row }) => {
-          const { pageIndex, pageSize } = table.getState().pagination;
-          return <div>{pageIndex * pageSize + row.index + 1}</div>;
+          return <div>{row.index + 1}</div>;
         },
         size: 50,
       },
@@ -112,13 +111,13 @@ export default function StockLocationsListPage() {
         accessorKey: "name",
         header: "Location name",
       },
-      {
-        accessorKey: "type",
-        header: "Type",
-      },
+      // {
+      //   accessorKey: "type",
+      //   header: "Type",
+      // },
       {
         accessorKey: "description",
-        header: "Deskripsi",
+        header: "Description",
         cell: ({ row }) => row.original.description || "-",
       },
       {

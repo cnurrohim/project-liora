@@ -1,4 +1,3 @@
-// src/pages/roles/RoleFormPage.tsx
 import { useEffect, useState } from "react";
 
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
@@ -141,7 +140,7 @@ export default function RoleFormPage() {
       {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
 
       <div className="mb-4">
-        <label className="block mb-1">Nama Role</label>
+        <label className="block mb-1">Role Name</label>
         <input
           type="text"
           name="name"
@@ -152,7 +151,7 @@ export default function RoleFormPage() {
       </div>
 
       <div className="mb-4">
-        <label className="block mb-1">Deskripsi</label>
+        <label className="block mb-1">Descriptions</label>
         <textarea
           name="description"
           value={form.description}

@@ -1,5 +1,3 @@
-// src/core/wiring/menu.wires.ts
-
 import type { Wire } from "./setupWiring";
 import { ProfileController } from "@/controller/ProfileController";
 import { UserProfileController as VUserProfileController } from "@/components/VerticalMenu/userProfileController";

@@ -1,4 +1,3 @@
-// src/utils/menuHelpers.ts
 import type { MenuItem, MenuRoute, MenuCommand } from "../types/menu";
 
 export function flattenItems(items: MenuItem[]): (MenuRoute | MenuCommand)[] {

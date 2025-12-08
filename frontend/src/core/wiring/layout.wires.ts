@@ -1,4 +1,3 @@
-// src/core/wiring/layout.wires.ts
 import { LayoutController } from "@/controller/layoutController";
 import { MenuProviderController } from "@/controller/menuProviderController";
 

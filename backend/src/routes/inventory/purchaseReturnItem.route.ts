@@ -1,25 +1,27 @@
-// src/routes/purchaseReturnItem.route.ts
 import { Hono } from "hono";
 import { db } from "../../db.js";
 import { z } from "zod";
 
 export const purchaseReturnItemRoute = new Hono();
 
-// Schema Zod
+// Zod Schema
 const purchaseReturnItemSchema = z.object({
   purchase_return_id: z.uuid(),
   item_id: z.uuid(),
   qty: z.number().int().min(1),
 });
 
-// GET /purchase-return-items - semua item
+// GET /purchase-return-items - all items
 purchaseReturnItemRoute.get("/", async (c) => {
   const result = await db.query(
     `SELECT pri.*, i.sku AS item_sku, i.name AS item_name,
             pr.return_number AS return_number
      FROM inventory.purchase_return_items pri
-     JOIN inventory.items i ON pri.item_id = i.id
-     JOIN inventory.purchase_returns pr ON pri.purchase_return_id = pr.id
+     JOIN inventory.items i 
+       ON pri.item_id = i.id AND i.deleted_at IS NULL
+     JOIN inventory.purchase_returns pr 
+       ON pri.purchase_return_id = pr.id AND pr.deleted_at IS NULL
+     WHERE pri.deleted_at IS NULL
      ORDER BY pr.return_date DESC`
   );
   return c.json({ data: result.rows });
@@ -32,9 +34,11 @@ purchaseReturnItemRoute.get("/:id", async (c) => {
     `SELECT pri.*, i.sku AS item_sku, i.name AS item_name,
             pr.return_number AS return_number
      FROM inventory.purchase_return_items pri
-     JOIN inventory.items i ON pri.item_id = i.id
-     JOIN inventory.purchase_returns pr ON pri.purchase_return_id = pr.id
-     WHERE pri.id = $1`,
+     JOIN inventory.items i 
+       ON pri.item_id = i.id AND i.deleted_at IS NULL
+     JOIN inventory.purchase_returns pr 
+       ON pri.purchase_return_id = pr.id AND pr.deleted_at IS NULL
+     WHERE pri.id = $1 AND pri.deleted_at IS NULL`,
     [id]
   );
   const data = result.rows[0];
@@ -42,7 +46,7 @@ purchaseReturnItemRoute.get("/:id", async (c) => {
   return c.json({ data });
 });
 
-// POST /purchase-return-items - tambah item
+// POST /purchase-return-items - add item
 purchaseReturnItemRoute.post("/", async (c) => {
   try {
     const body = await c.req.json();
@@ -60,7 +64,7 @@ purchaseReturnItemRoute.post("/", async (c) => {
   } catch (err: any) {
     console.error("Insert purchase return item error:", err);
     if (err instanceof z.ZodError) return c.json({ error: err.flatten }, 400);
-    return c.json({ error: "Gagal menambahkan purchase return item" }, 400);
+    return c.json({ error: "Failed to add purchase return item" }, 400);
   }
 });
 
@@ -74,7 +78,7 @@ purchaseReturnItemRoute.put("/:id", async (c) => {
     const result = await db.query(
       `UPDATE inventory.purchase_return_items
        SET purchase_return_id=$1, item_id=$2, qty=$3, updated_at=NOW()
-       WHERE id=$4
+       WHERE id=$4 AND deleted_at IS NULL
        RETURNING *`,
       [parsed.purchase_return_id, parsed.item_id, parsed.qty, id]
     );
@@ -85,23 +89,26 @@ purchaseReturnItemRoute.put("/:id", async (c) => {
   } catch (err: any) {
     console.error("Update purchase return item error:", err);
     if (err instanceof z.ZodError) return c.json({ error: err.flatten }, 400);
-    return c.json({ error: "Gagal mengubah purchase return item" }, 400);
+    return c.json({ error: "Failed to update purchase return item" }, 400);
   }
 });
 
-// DELETE /purchase-return-items/:id - hapus item
+// DELETE /purchase-return-items/:id - soft delete
 purchaseReturnItemRoute.delete("/:id", async (c) => {
   const id = c.req.param("id");
   try {
     const result = await db.query(
-      "DELETE FROM inventory.purchase_return_items WHERE id=$1 RETURNING *",
+      `UPDATE inventory.purchase_return_items
+       SET deleted_at = NOW()
+       WHERE id=$1 AND deleted_at IS NULL
+       RETURNING *`,
       [id]
     );
     if (!result.rows.length)
       return c.json({ error: "Purchase return item not found" }, 404);
     return c.json({ data: result.rows[0] });
   } catch (err) {
-    console.error("Delete purchase return item error:", err);
-    return c.json({ error: "Gagal menghapus purchase return item" }, 400);
+    console.error("Soft delete purchase return item error:", err);
+    return c.json({ error: "Failed to delete purchase return item" }, 400);
   }
 });

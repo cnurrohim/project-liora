@@ -21,9 +21,9 @@ export function generateStockHistoryHTML(
   };
 
   const formatPeriod = (p?: string) => {
-    if (p === "day") return "Harian";
-    if (p === "week") return "Mingguan";
-    return "Bulanan";
+    if (p === "day") return "daily";
+    if (p === "week") return "Weekly";
+    return "Monthly";
   };
 
   return `
@@ -81,21 +81,21 @@ export function generateStockHistoryHTML(
         <h2>Laporan Riwayat Masuk / Keluar</h2>
 
         <div class="filters">
-          <div><strong>Periode:</strong> ${formatPeriod(period)}</div>
-          <div><strong>Dari:</strong> ${formatDate(dateFrom)}</div>
-          <div><strong>Sampai:</strong> ${formatDate(dateTo)}</div>
+          <div><strong>Period:</strong> ${formatPeriod(period)}</div>
+          <div><strong>From:</strong> ${formatDate(dateFrom)}</div>
+          <div><strong>To:</strong> ${formatDate(dateTo)}</div>
         </div>
 
         <table>
           <thead>
             <tr>
               <th>#</th>
-              <th>Periode</th>
-              <th>Kode Barang</th>
-              <th>Nama Barang</th>
-              <th>Masuk</th>
-              <th>Keluar</th>
-              <th>Saldo Akhir</th>
+              <th>Period</th>
+              <th>Item Code</th>
+              <th>Item Name</th>
+              <th>Inbound</th>
+              <th>Outbound</th>
+              <th>Balance After</th>
             </tr>
           </thead>
           <tbody>

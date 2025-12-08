@@ -1,5 +1,3 @@
-// src/components/DetailPane/createDetailPaneController.ts
-
 import { useSyncExternalStore } from "react";
 
 export type DetailPaneState<T> = {

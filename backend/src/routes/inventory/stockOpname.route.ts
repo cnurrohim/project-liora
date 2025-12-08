@@ -1,4 +1,3 @@
-// src/routes/stockOpname.route.ts
 import { Hono } from "hono";
 import { db } from "../../db.js";
 import { z } from "zod";
@@ -70,7 +69,7 @@ stockOpnameRoute.post("/", async (c) => {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Create Stock Opname error:", err);
-    return c.json({ error: "Gagal membuat stock opname" }, 400);
+    return c.json({ error: "Failed to create stock opname" }, 400);
   } finally {
     client.release();
   }
@@ -103,17 +102,16 @@ stockOpnameRoute.get("/:id", async (c) => {
       [id]
     );
 
-    so.items = itemsRes.rows; // attach items ke object PO
-
+    so.items = itemsRes.rows;
     return c.json({ data: so });
   } catch (err) {
-    console.error("Get purchase order detail error:", err);
-    return c.json({ error: "Gagal mengambil detail purchase order" }, 400);
+    console.error("Get stock opname detail error:", err);
+    return c.json({ error: "Failed to get stock opname detail" }, 400);
   }
 });
 
 /**
- * GET /stock-opnames - list semua Opname
+ * GET /stock-opnames - list all opnames
  */
 stockOpnameRoute.get("/", async (c) => {
   const { rows } = await db.query(
@@ -152,7 +150,6 @@ stockOpnameRoute.get("/:id/detail", async (c) => {
         ur.name AS reviewed_by,
         sl.code || ' ' || sl.name AS location,
 
-        -- items
         COALESCE(
           json_agg(
             json_build_object(
@@ -167,7 +164,6 @@ stockOpnameRoute.get("/:id/detail", async (c) => {
           '[]'
         ) AS items,
 
-        -- stock movements (jika sudah ada koreksi saat posting opname)
         COALESCE(
           (
             SELECT json_agg(
@@ -213,16 +209,15 @@ stockOpnameRoute.get("/:id/detail", async (c) => {
     );
 
     if (!rows.length) return c.json({ error: "Stock opname not found" }, 404);
-
     return c.json({ data: rows[0] });
   } catch (err) {
     console.error("Get stock opname detail error:", err);
-    return c.json({ error: "Gagal mengambil detail stock opname" }, 400);
+    return c.json({ error: "Failed to get stock opname detail" }, 400);
   }
 });
 
 /**
- * PATCH /stock-opnames/:id/post - posting opname → create stock adjustment movements
+ * PATCH /stock-opnames/:id/finalize - finalize opname → create stock adjustment movements
  */
 stockOpnameRoute.patch("/:id/finalize", async (c) => {
   const id = c.req.param("id");
@@ -232,27 +227,26 @@ stockOpnameRoute.patch("/:id/finalize", async (c) => {
   try {
     await client.query("BEGIN");
 
-    // ambil opname
     const { rows: opnameRows } = await client.query(
-      `SELECT * FROM inventory.stock_opnames WHERE id = $1 AND status IN ('reviewed')`,
+      `SELECT * FROM inventory.stock_opnames
+       WHERE id = $1 AND status IN ('reviewed')`,
       [id]
     );
     if (opnameRows.length === 0) {
       await client.query("ROLLBACK");
       return c.json(
-        { error: "Stock opname tidak ditemukan atau sudah terfinalisasi" },
+        { error: "Stock opname not found or already finalized" },
         400
       );
     }
     const opname = opnameRows[0];
 
-    // ambil items
     const { rows: items } = await client.query(
-      `SELECT * FROM inventory.stock_opname_items WHERE opname_id = $1`,
+      `SELECT * FROM inventory.stock_opname_items
+       WHERE opname_id = $1`,
       [id]
     );
 
-    // buat stock movements berdasarkan selisih
     for (const item of items) {
       const diff = item.quantity_counted - item.quantity_system;
       if (diff === 0) continue;
@@ -274,11 +268,11 @@ stockOpnameRoute.patch("/:id/finalize", async (c) => {
       );
     }
 
-    // update status → posted
     const { rows: updated } = await client.query(
       `UPDATE inventory.stock_opnames
        SET status = 'finalized', finalized_by = $2, finalized_at = now()
-       WHERE id = $1 RETURNING *`,
+       WHERE id = $1
+       RETURNING *`,
       [id, user.id]
     );
 
@@ -286,15 +280,15 @@ stockOpnameRoute.patch("/:id/finalize", async (c) => {
     return c.json({ data: { ...updated[0], items } });
   } catch (err) {
     await client.query("ROLLBACK");
-    console.error("Post stock opname error:", err);
-    return c.json({ error: "Gagal posting stock opname" }, 400);
+    console.error("Finalize stock opname error:", err);
+    return c.json({ error: "Failed to finalize stock opname" }, 400);
   } finally {
     client.release();
   }
 });
 
 /**
- * PATCH /stock-opnames/:id/post - posting opname → create stock adjustment movements
+ * PATCH /stock-opnames/:id/cancel - cancel opname
  */
 stockOpnameRoute.patch("/:id/cancel", async (c) => {
   const id = c.req.param("id");
@@ -304,24 +298,24 @@ stockOpnameRoute.patch("/:id/cancel", async (c) => {
   try {
     await client.query("BEGIN");
 
-    // ambil opname
     const { rows: opnameRows } = await client.query(
-      `SELECT * FROM inventory.stock_opnames WHERE id = $1 AND status IN ('draft','reviewed')`,
+      `SELECT * FROM inventory.stock_opnames
+       WHERE id = $1 AND status IN ('draft','reviewed')`,
       [id]
     );
     if (opnameRows.length === 0) {
       await client.query("ROLLBACK");
       return c.json(
-        { error: "Stock opname tidak ditemukan atau sudah terfinalisasi" },
+        { error: "Stock opname not found or already finalized" },
         400
       );
     }
 
-    // update status → posted
     const { rows: updated } = await client.query(
       `UPDATE inventory.stock_opnames
        SET status = 'canceled', canceled_by = $2, canceled_at = now()
-       WHERE id = $1 RETURNING *`,
+       WHERE id = $1
+       RETURNING *`,
       [id, user.id]
     );
 
@@ -329,8 +323,8 @@ stockOpnameRoute.patch("/:id/cancel", async (c) => {
     return c.json({ data: { ...updated[0] } });
   } catch (err) {
     await client.query("ROLLBACK");
-    console.error("Post stock opname error:", err);
-    return c.json({ error: "Gagal posting stock opname" }, 400);
+    console.error("Cancel stock opname error:", err);
+    return c.json({ error: "Failed to cancel stock opname" }, 400);
   } finally {
     client.release();
   }
@@ -349,24 +343,21 @@ stockOpnameRoute.patch("/:id", async (c) => {
   try {
     await client.query("BEGIN");
 
-    // Ambil dulu status sekarang
     const statusRes = await client.query(
-      `SELECT status FROM inventory.stock_opnames WHERE id=$1`,
+      `SELECT status FROM inventory.stock_opnames
+       WHERE id=$1`,
       [id]
     );
     if (statusRes.rowCount === 0) {
-      throw new Error("Opname tidak ditemukan");
+      throw new Error("Stock opname not found");
     }
 
     const currentStatus = statusRes.rows[0].status;
-
     if (!["draft", "reviewed"].includes(currentStatus)) {
-      throw new Error("Opname sudah tidak bisa diedit");
+      throw new Error("Stock opname can no longer be edited");
     }
 
     let opnameRes;
-
-    // === Branch aksi review ===
     if (parsed.status === "reviewed") {
       opnameRes = await client.query(
         `UPDATE inventory.stock_opnames
@@ -379,7 +370,6 @@ stockOpnameRoute.patch("/:id", async (c) => {
         [parsed.review_note ?? null, user.id, id]
       );
     } else {
-      // === Branch edit draft/reviewed ===
       opnameRes = await client.query(
         `UPDATE inventory.stock_opnames
          SET location_id = $1,
@@ -415,7 +405,7 @@ stockOpnameRoute.patch("/:id", async (c) => {
     }
 
     if (opnameRes.rowCount === 0) {
-      throw new Error("Opname gagal diperbarui");
+      throw new Error("Failed to update stock opname");
     }
 
     await client.query("COMMIT");
@@ -425,8 +415,30 @@ stockOpnameRoute.patch("/:id", async (c) => {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Update Stock Opname error:", err);
-    return c.json({ error: "Gagal update stock opname" }, 400);
+    return c.json({ error: "Failed to update stock opname" }, 400);
   } finally {
     client.release();
+  }
+});
+
+/**
+ * DELETE /stock-opnames/:id - soft delete
+ */
+stockOpnameRoute.delete("/:id", async (c) => {
+  const id = c.req.param("id");
+  try {
+    const result = await db.query(
+      `UPDATE inventory.stock_opnames
+       SET deleted_at = now()
+       WHERE id = $1 AND deleted_at IS NULL
+       RETURNING *`,
+      [id]
+    );
+    if (!result.rows.length)
+      return c.json({ error: "Stock opname not found" }, 404);
+    return c.json({ data: result.rows[0] });
+  } catch (err) {
+    console.error("Soft delete stock opname error:", err);
+    return c.json({ error: "Failed to delete stock opname" }, 400);
   }
 });

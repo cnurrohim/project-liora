@@ -1,4 +1,3 @@
-// src/routes/stockMovement.route.ts
 import { Hono } from "hono";
 import { db } from "../../db.js";
 import { z } from "zod";
@@ -8,7 +7,7 @@ import { generateStockMovementExcel } from "../../templates/stockMovementExcel.j
 
 export const stockMovementRoute = new Hono();
 
-// Schema Zod
+// Zod Schema
 const stockMovementSchema = z.object({
   item_id: z.uuid(),
   movement_type: z.enum(["inbound", "outbound", "adjustment"]),
@@ -87,7 +86,7 @@ async function getFilteredStockMovements(filters: StockMovementQuery = {}) {
   return result.rows;
 }
 
-// GET /stock-movements?search=...&movement_type=...&date_from=...&date_to=...
+// GET /stock-movements
 stockMovementRoute.get("/", async (c) => {
   const data = await getFilteredStockMovements({
     search: c.req.query("search"),
@@ -100,6 +99,7 @@ stockMovementRoute.get("/", async (c) => {
   return c.json({ data });
 });
 
+// PDF export
 stockMovementRoute.get("/pdf", async (c) => {
   const filters = {
     search: c.req.query("search"),
@@ -115,7 +115,6 @@ stockMovementRoute.get("/pdf", async (c) => {
 
   const html = generateStockMovementHTML(data, filters);
 
-  // render pakai Puppeteer
   const browser = await puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -131,6 +130,7 @@ stockMovementRoute.get("/pdf", async (c) => {
   return c.body(pdfBuffer);
 });
 
+// Excel export
 stockMovementRoute.get("/excel", async (c) => {
   const filters = {
     search: c.req.query("search"),
@@ -154,7 +154,7 @@ stockMovementRoute.get("/excel", async (c) => {
   return c.body(excelBuffer);
 });
 
-// GET /stock-movements/:id - detail
+// GET /stock-movements/:id
 stockMovementRoute.get("/:id", async (c) => {
   const id = c.req.param("id");
   const result = await db.query(
@@ -169,13 +169,13 @@ stockMovementRoute.get("/:id", async (c) => {
   return c.json({ data: result.rows[0] });
 });
 
-// POST /stock-movements - tambah ledger otomatis balance_after
+// POST /stock-movements
 stockMovementRoute.post("/", async (c) => {
   try {
     const body = await c.req.json();
     const parsed = stockMovementSchema.parse(body);
 
-    // Validasi movement_type & adjustment_direction
+    // Validate movement_type & adjustment_direction
     if (
       (parsed.movement_type === "inbound" &&
         parsed.adjustment_direction !== "increase") ||
@@ -183,7 +183,10 @@ stockMovementRoute.post("/", async (c) => {
         parsed.adjustment_direction !== "decrease")
     ) {
       return c.json(
-        { error: "Kombinasi movement_type & adjustment_direction tidak valid" },
+        {
+          error:
+            "Invalid combination of movement_type and adjustment_direction",
+        },
         400
       );
     }
@@ -192,21 +195,23 @@ stockMovementRoute.post("/", async (c) => {
     try {
       await client.query("BEGIN");
 
-      // Ambil saldo terakhir
+      // Get last balance
       const lastResult = await client.query(
-        `SELECT balance_after FROM inventory.stock_movements
-         WHERE item_id=$1 ORDER BY created_at DESC LIMIT 1`,
+        `SELECT balance_after 
+         FROM inventory.stock_movements
+         WHERE item_id=$1 AND deleted_at IS NULL
+         ORDER BY created_at DESC LIMIT 1`,
         [parsed.item_id]
       );
       const lastBalance = lastResult.rows[0]?.balance_after ?? 0;
 
-      // Hitung balance_after otomatis
+      // Calculate balance_after
       const balance_after =
         parsed.adjustment_direction === "increase"
           ? lastBalance + parsed.qty
           : lastBalance - parsed.qty;
 
-      // Insert stock movement baru
+      // Insert new stock movement
       const result = await client.query(
         `INSERT INTO inventory.stock_movements
          (id, item_id, movement_type, adjustment_direction, qty, balance_after,
@@ -237,23 +242,29 @@ stockMovementRoute.post("/", async (c) => {
   } catch (err: any) {
     console.error("Insert stock movement error:", err);
     if (err instanceof z.ZodError) return c.json({ error: err.flatten() }, 400);
-    return c.json({ error: "Gagal menambahkan stock movement" }, 400);
+    return c.json({ error: "Failed to add stock movement" }, 400);
   }
 });
 
-// DELETE /stock-movements/:id
+// DELETE /stock-movements/:id (soft delete)
 stockMovementRoute.delete("/:id", async (c) => {
   const id = c.req.param("id");
   try {
     const result = await db.query(
-      "DELETE FROM inventory.stock_movements WHERE id=$1 RETURNING *",
+      `UPDATE inventory.stock_movements
+       SET deleted_at = NOW()
+       WHERE id=$1 AND deleted_at IS NULL
+       RETURNING *`,
       [id]
     );
     if (!result.rows.length)
       return c.json({ error: "Stock movement not found" }, 404);
-    return c.json({ data: result.rows[0] });
+    return c.json({
+      data: result.rows[0],
+      message: "Stock movement deleted (soft)",
+    });
   } catch (err) {
     console.error("Delete stock movement error:", err);
-    return c.json({ error: "Gagal menghapus stock movement" }, 400);
+    return c.json({ error: "Failed to delete stock movement" }, 400);
   }
 });

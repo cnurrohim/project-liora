@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { useForm, FormProvider, useFieldArray } from "react-hook-form";
+import {
+  useForm,
+  FormProvider,
+  useFieldArray,
+  Controller,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -9,7 +14,8 @@ import {
 } from "./purchaseOrder.api";
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import SearchSelect from "@/components/SelectOptions/searchSelect";
-import { searchLocation } from "@/api/search.api";
+import { getStockLocations } from "../stockLocations/stockLocations.api";
+import SingleSelect from "@/components/SelectOptions/SingleSelect";
 
 const receiveItemSchema = z.object({
   item_id: z.string(),
@@ -27,12 +33,17 @@ const receiveSchema = z.object({
   items: z.array(receiveItemSchema).min(1),
 });
 
+type Option = {
+  id: string;
+  name: string;
+};
+
 type ReceiveFormValues = z.infer<typeof receiveSchema>;
 
 export default function PurchaseReceiveKiosk() {
   const [loading, setLoading] = useState(false);
   const [selectedPO, setSelectedPO] = useState<any>(null);
-  const [selectedLocation, setSelectedLocation] = useState<any>(null);
+  const [allLocations, setAllLocation] = useState<Option[]>([]);
 
   const methods = useForm<ReceiveFormValues>({
     resolver: zodResolver(receiveSchema),
@@ -77,6 +88,9 @@ export default function PurchaseReceiveKiosk() {
       return;
     }
     try {
+      const locations = await getStockLocations();
+      setAllLocation(locations.map((s: any) => ({ id: s.id, name: s.name })));
+
       const detail = await getPurchaseOrderById(po.id);
       reset({
         purchase_order_id: detail.id,
@@ -97,21 +111,6 @@ export default function PurchaseReceiveKiosk() {
     }
   };
 
-  const handleTargetLocation = async (keyword: string) => {
-    if (!keyword || keyword.length < 2) return [];
-    try {
-      const results = await searchLocation(keyword);
-      return results.map((location: any) => ({
-        id: location.id,
-        name: `${location.code}-${location.name}`,
-      }));
-    } catch (err) {
-      console.error(err);
-      showErrorToast("failed to fetch inventory location");
-      return [];
-    }
-  };
-
   const onSubmit = async (data: ReceiveFormValues) => {
     try {
       setLoading(true);
@@ -126,7 +125,7 @@ export default function PurchaseReceiveKiosk() {
       });
       showSuccessToast("Item received successfuly");
       setSelectedPO(null);
-      setSelectedLocation(null);
+      // setSelectedLocation(null);
     } catch (err: any) {
       showErrorToast(err.message || "Failed to received item");
     } finally {
@@ -156,11 +155,17 @@ export default function PurchaseReceiveKiosk() {
         {selectedPO && (
           <>
             <div>
-              <label>Tanggal Terima</label>
-              <input
-                type="date"
-                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
-                {...methods.register("receive_date")}
+              <label>Receive Date</label>
+              <Controller
+                name="receive_date"
+                control={control}
+                render={({ field }) => (
+                  <input
+                    type="date"
+                    {...field}
+                    className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+                  />
+                )}
               />
 
               {methods.formState.errors.receive_date && (
@@ -172,18 +177,23 @@ export default function PurchaseReceiveKiosk() {
 
             <div>
               <label className="block text-[var(--content-text-muted)]">
-                Lokasi Save
+                Stored Location
               </label>
               {/* Target Location */}
-              <SearchSelect
-                value={selectedLocation}
-                onChange={(val) => {
-                  setSelectedLocation(val);
-                  methods.setValue("location_id", val?.id || ""); // inject ke form
-                }}
-                fetchOptions={handleTargetLocation}
+              <Controller
+                name="location_id"
+                control={control}
+                render={({ field }) => (
+                  <SingleSelect
+                    options={allLocations}
+                    value={
+                      allLocations.find((x) => x.id === field.value) ?? null
+                    }
+                    onChange={(val) => field.onChange(val?.id ?? "")}
+                    placeholder="Choose Stored Location"
+                  />
+                )}
               />
-
               {methods.formState.errors.location_id && (
                 <p className="text-[var(--danger)] text-xs mt-1">
                   {methods.formState.errors.location_id.message}
@@ -192,10 +202,16 @@ export default function PurchaseReceiveKiosk() {
             </div>
 
             <div>
-              <label>Catatan</label>
-              <textarea
-                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
-                {...methods.register("note")}
+              <label>Notes</label>
+              <Controller
+                name="note"
+                control={control}
+                render={({ field }) => (
+                  <textarea
+                    {...field}
+                    className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+                  />
+                )}
               />
             </div>
 

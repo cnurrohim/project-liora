@@ -1,4 +1,3 @@
-// src/routes/stockLocationReport.route.ts
 import { Hono } from "hono";
 import { db } from "../../db.js";
 import puppeteer from "puppeteer";

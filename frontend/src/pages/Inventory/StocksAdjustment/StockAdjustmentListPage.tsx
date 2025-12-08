@@ -1,4 +1,3 @@
-// src/pages/Inventory/StockAdjustmentListPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
@@ -122,8 +121,7 @@ export default function StockAdjustmentListPage() {
         id: "number",
         header: () => <div className="text-left">#</div>,
         cell: ({ row }) => {
-          const { pageIndex, pageSize } = table.getState().pagination;
-          return <div>{pageIndex * pageSize + row.index + 1}</div>;
+          return <div>{row.index + 1}</div>;
         },
         size: 50,
       },
@@ -155,7 +153,6 @@ export default function StockAdjustmentListPage() {
             {canApprove && row.original.status === "draft" && (
               <ApproveButtonLink
                 onClick={() => handleConfirm(row.original.id)}
-                className={`flex cursor-pointer hover:bg-[var(--info-hover)] px-2 py-1 rounded text-[var(--content-text)] text-xs font-semibold bg-[var(--info)]`}
               />
             )}
           </div>
@@ -180,7 +177,7 @@ export default function StockAdjustmentListPage() {
             {canApprove && row.original.status === "draft" && (
               <CancelButtonLink
                 onClick={() => handleCancel(row.original.id)}
-                className={`flex gap-1 cursor-pointer hover:bg-amber-500 px-2 py-1 rounded text-[var(--content-text)] text-xs font-semibold bg-amber-600`}
+                className={`flex items-center gap-1 cursor-pointer text-[var(--warning-foreground)] px-2 py-1 rounded text-xs font-semibold hover:bg-amber-500 bg-amber-600`}
               />
             )}
           </div>
@@ -213,7 +210,7 @@ export default function StockAdjustmentListPage() {
       {
         id: "/stock-adjustment/create",
         route: "/stock-adjustment/create",
-        label: "Tambah Adjustment",
+        label: "Add New Adjustment",
         type: "route",
         icon: "RiArrowRightUpBoxLine",
       },

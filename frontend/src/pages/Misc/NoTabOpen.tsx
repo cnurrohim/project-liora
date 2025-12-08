@@ -26,9 +26,9 @@ export default function NoTabOpen() {
 
         {!previewUrl && (
           <IconRenderer
-            name="RiGhostSmileLine"
-            className="text-gray-900"
-            size={300}
+            name="RiBox2Line"
+            className="text-gray-200"
+            size={200}
           />
         )}
       </div>

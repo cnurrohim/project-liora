@@ -19,7 +19,7 @@ export async function createRole(data: {
   });
 
   if (!res.ok) {
-    throw new Error("Gagal membuat role");
+    throw new Error("Failed to create role");
   }
 }
 
@@ -37,7 +37,7 @@ export async function updateRole(
   });
 
   if (!res.ok) {
-    throw new Error("Gagal memperbarui role");
+    throw new Error("Failde to update role");
   }
 }
 
@@ -46,13 +46,13 @@ export async function deleteRole(id: string) {
     method: "DELETE",
   });
 
-  toastConfirmSuccess("role berhasil dihapus!");
+  toastConfirmSuccess("role deleted!");
 }
 
 export async function getRoleById(id: string) {
   const res = await apiFetch(`/roles/${id}`);
   if (!res.ok) {
-    throw new Error("Gagal mengambil data role");
+    throw new Error("Failed to fetch role");
   }
   const data = await res.json();
   return data;
@@ -61,7 +61,7 @@ export async function getRoleById(id: string) {
 export async function getAllPermissions() {
   const res = await apiFetch("/permissions");
   if (!res.ok) {
-    throw new Error("Gagal mengambil daftar permissions");
+    throw new Error("Failed to fetch permissions");
   }
 
   const data = await res.json();
@@ -72,7 +72,7 @@ export async function getPermissionsByRoleIds(roleIds: string[]) {
   const query = roleIds.join(",");
   const res = await apiFetch(`/permissions/by-roles?roleIds=${query}`);
   if (!res.ok) {
-    throw new Error("Gagal mengambil daftar permissions");
+    throw new Error("Failed to fetch permissions");
   }
 
   return (await res.json()).permissions;
@@ -82,7 +82,7 @@ export async function getRoleDetail(id: string) {
   const res = await apiFetch(`/roles/detail/${id}`);
 
   if (!res.ok) {
-    throw new Error("Gagal mengambil informasi detail role ");
+    throw new Error("Failed to fetch role details ");
   }
 
   const data = await res.json();

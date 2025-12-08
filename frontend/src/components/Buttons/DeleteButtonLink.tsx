@@ -6,6 +6,6 @@ type Props = {
   onClick: () => void;
 };
 
-export function DeleteButtonLink({ label = "Hapus", onClick }: Props) {
+export function DeleteButtonLink({ label = "Delete", onClick }: Props) {
   return <ButtonLink icon="RiDeleteBin2Fill" label={label} onClick={onClick} />;
 }

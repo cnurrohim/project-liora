@@ -83,6 +83,10 @@
     --info: #3b82f6;
     --info-hover: #60a5fa;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   /* ================= LIGHT THEME ================= */
@@ -157,6 +161,10 @@
     --info: #3b82f6;
     --info-hover: #60a5fa;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   .military {
@@ -230,6 +238,10 @@
     --info: #3182ce;
     --info-hover: #4299e1;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   .military-dark {
@@ -303,6 +315,10 @@
     --info: #3182ce;
     --info-hover: #4299e1;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   .chrome-dark {
@@ -376,6 +392,10 @@
     --info: #3b82f6;
     --info-hover: #60a5fa;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   /* ================= Dark Theme ================= */
@@ -450,6 +470,10 @@
     --info: #3b82f6;
     --info-hover: #5294ff;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   .monokai-dark {
@@ -523,6 +547,10 @@
     --info: #66d9ef;
     --info-hover: #80e1f2;
     --info-foreground: #1e1f1c;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   .solarized-dark {
@@ -596,6 +624,10 @@
     --info: #268bd2;
     --info-hover: #3aa6e9;
     --info-foreground: #fdf6e3;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   .ocean-blue-serenity {
@@ -669,6 +701,10 @@
     --info: #0096c7;
     --info-hover: #00b4d8;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   .ocean-blue-serenity-light {
@@ -742,6 +778,10 @@
     --info: #0096c7;
     --info-hover: #00b4d8;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   .vivid-night-light {
@@ -815,6 +855,10 @@
     --info: #3b82f6;
     --info-hover: #60a5fa;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 
   .vivid-night {
@@ -888,6 +932,10 @@
     --info: #3b82f6;
     --info-hover: #60a5fa;
     --info-foreground: #ffffff;
+
+    --mute: #303436;
+    --mute-hover: #42474a;
+    --mute-foreground: #ffffff;
   }
 }
 

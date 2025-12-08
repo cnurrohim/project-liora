@@ -14,7 +14,7 @@ export default function ItemFormPage() {
 
   if (!canView) return <ForbiddenPage />;
 
-  const { id } = useRouteParamsFromTab("/items/:id/edit");
+  const { id } = useRouteParamsFromTab("/item/:id/edit");
   const isEdit = !!id;
   const [loading, setLoading] = useState(false);
 
@@ -65,13 +65,13 @@ export default function ItemFormPage() {
       setLoading(true);
       if (isEdit) {
         await updateItem(id!, data);
-        showSuccessToast("Barang berhasil diperbarui");
+        showSuccessToast("Item Updated");
       } else {
         await createItem(data);
-        showSuccessToast("Barang berhasil dibuat");
+        showSuccessToast("New Item Created");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal Saving barang");
+      showErrorToast(err.message || "Failed to add new item");
     } finally {
       setLoading(false);
     }

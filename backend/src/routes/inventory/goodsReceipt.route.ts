@@ -1,4 +1,3 @@
-// src/routes/goodsReceipt.route.ts
 import { Hono } from "hono";
 import { db } from "../../db.js";
 import { z } from "zod";
@@ -40,7 +39,7 @@ goodsReceiptRoute.post("/", async (c) => {
 
     const grRes = await client.query(
       `INSERT INTO inventory.goods_receipts
-       (supplier_id,location_id, receipt_date, notes, created_by)
+       (supplier_id, location_id, receipt_date, notes, created_by)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
       [
@@ -88,7 +87,7 @@ goodsReceiptRoute.post("/", async (c) => {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Create GR error:", err);
-    return c.json({ error: "Gagal membuat goods receipt" }, 400);
+    return c.json({ error: "Failed to create goods receipt" }, 400);
   } finally {
     client.release();
   }
@@ -102,6 +101,7 @@ goodsReceiptRoute.get("/", async (c) => {
     `SELECT gr.*, s.name AS supplier_name
      FROM inventory.goods_receipts gr
      JOIN inventory.suppliers s ON gr.supplier_id = s.id
+     WHERE gr.deleted_at IS NULL
      ORDER BY gr.receipt_date DESC, gr.created_at DESC`
   );
   return c.json({ data: rows });
@@ -175,7 +175,7 @@ goodsReceiptRoute.get("/:id/detail", async (c) => {
       JOIN public.users u ON u.id = gr.created_by
       LEFT JOIN inventory.goods_receipt_items gri ON gri.goods_receipt_id = gr.id
       LEFT JOIN inventory.items i ON i.id = gri.item_id
-      WHERE gr.id = $1
+      WHERE gr.id = $1 AND gr.deleted_at IS NULL
       GROUP BY gr.id, s.name, u.name, sl.code, sl.name
       `,
       [id]
@@ -202,7 +202,7 @@ goodsReceiptRoute.get("/:id", async (c) => {
     `SELECT gr.*, s.name AS supplier_name
      FROM inventory.goods_receipts gr
      JOIN inventory.suppliers s ON gr.supplier_id = s.id
-     WHERE gr.id = $1`,
+     WHERE gr.id = $1 AND gr.deleted_at IS NULL`,
     [id]
   );
   if (!grRes.rows.length)
@@ -230,6 +230,7 @@ goodsReceiptRoute.get("/:term/search", async (c) => {
      FROM inventory.goods_receipts gr
      JOIN inventory.suppliers s ON gr.supplier_id = s.id
      WHERE gr.receipt_number ILIKE $1
+       AND gr.deleted_at IS NULL
      ORDER BY gr.created_at DESC
      LIMIT 20`,
     [`%${term}%`]
@@ -251,8 +252,8 @@ goodsReceiptRoute.put("/:id", async (c) => {
 
     await client.query(
       `UPDATE inventory.goods_receipts
-       SET supplier_id=$1,location_id=$2 receipt_date=$3, notes=$4
-       WHERE id=$5`,
+       SET supplier_id=$1, location_id=$2, receipt_date=$3, notes=$4
+       WHERE id=$5 AND deleted_at IS NULL`,
       [
         parsed.supplier_id,
         parsed.location_id,
@@ -288,12 +289,15 @@ goodsReceiptRoute.put("/:id", async (c) => {
 });
 
 /**
- * DELETE /goods-receipts/:id
+ * DELETE /goods-receipts/:id - soft delete
  */
 goodsReceiptRoute.delete("/:id", async (c) => {
   const id = c.req.param("id");
   const { rows } = await db.query(
-    `DELETE FROM inventory.goods_receipts WHERE id=$1 RETURNING *`,
+    `UPDATE inventory.goods_receipts
+     SET deleted_at = now()
+     WHERE id = $1 AND deleted_at IS NULL
+     RETURNING *`,
     [id]
   );
   if (!rows.length) return c.json({ error: "Goods receipt not found" }, 404);

@@ -1,4 +1,3 @@
-// src/controllers/menuProviderController.ts
 import type { MenuSection, MenuMode, MenuAlignment } from "../types/menu";
 import { apiFetch } from "../utils/apiFetch";
 
@@ -26,7 +25,6 @@ export const MenuProviderController = {
     try {
       const res = await apiFetch("/menu");
       const { data, routeMenuMap } = await res.json();
-
       state.sections = data;
       state.routeMenuMap = routeMenuMap ?? {};
 

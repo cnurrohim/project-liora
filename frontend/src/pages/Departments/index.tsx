@@ -41,7 +41,7 @@ export default function DepartmentListPage() {
       const res = await getDepartments();
       setDepartments(res);
     } catch (err: any) {
-      setError(err.message || "Gagal memuat department");
+      setError(err.message || "Failed to load department");
     } finally {
       setLoading(false);
     }
@@ -49,11 +49,11 @@ export default function DepartmentListPage() {
 
   const handleDelete = async (id: string) => {
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin menghapus department ini?",
+      "Proceed to delete this department?",
       async () => {
         try {
           await deleteDepartment(id);
-          showSuccessToast("Department berhasil dihapus");
+          showSuccessToast("Department deleted!");
           fetchDepartments();
         } catch (err: any) {
           showErrorToast(err.message);
@@ -130,7 +130,7 @@ export default function DepartmentListPage() {
 
       {
         accessorKey: "description",
-        header: "Deskripsi",
+        header: "Description",
         cell: ({ row }) => (
           <div
             style={{ paddingLeft: `${row.depth * 20}px` }}

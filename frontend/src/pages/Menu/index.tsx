@@ -279,7 +279,7 @@ export default function MenuListPage() {
       {
         id: "/menu/create",
         route: "/menu/create",
-        label: "Tambah Menu",
+        label: "Add New Menu",
         type: "route",
         icon: "RiApps2AddLine",
         // icon: <IconRenderer name="RiApps2AddLine" size={15} />,
@@ -297,7 +297,7 @@ export default function MenuListPage() {
             mainLabel={
               <>
                 <IconRenderer name="RiApps2AddLine" size={15} />
-                Tambah Menu
+                Add New Menu
               </>
             }
             onClick={() => openInNewTab(false)}

@@ -113,7 +113,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
               }
                  cursor-pointer`}
             >
-              {iconRenderer?.("RiCloseFill")}
+              {iconRenderer?.("RiCloseFill") ?? "✖"}
             </button>
           </div>
         ))}

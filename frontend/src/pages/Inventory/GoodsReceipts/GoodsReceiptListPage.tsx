@@ -1,4 +1,3 @@
-// src/pages/goods-receipts/GoodsReceiptListPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
@@ -72,8 +71,7 @@ export default function GoodsReceiptListPage() {
         id: "number",
         header: () => <div className="text-left">#</div>,
         cell: ({ row }) => {
-          const { pageIndex, pageSize } = table.getState().pagination;
-          return <div>{pageIndex * pageSize + row.index + 1}</div>;
+          return <div>{row.index + 1}</div>;
         },
         size: 50,
       },

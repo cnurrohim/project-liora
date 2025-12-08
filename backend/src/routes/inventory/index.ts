@@ -1,4 +1,3 @@
-// src/routes/inventory/index.ts
 import { Hono } from "hono";
 import { itemRoute } from "./item.route.js";
 
@@ -16,12 +15,14 @@ import { stockOnHandRoute } from "./stockOnHand.route.js";
 import { poSummaryRoute } from "./poSummary.route.js";
 import { stockHistoryReportRoute } from "./stockHistoryReport.route.js";
 import { stockLocationReportRoute } from "./stockLocationReport.route.js";
+import { itemDetailsRoute } from "./itemDetails.route.js";
 
 export const inventoryRoute = new Hono();
 
 inventoryRoute.route("/stock-locations", stockLocationsRoute);
 inventoryRoute.route("/suppliers", supplierRoute);
 inventoryRoute.route("/items", itemRoute);
+inventoryRoute.route("/item-details", itemDetailsRoute);
 inventoryRoute.route("/stock-movements", stockMovementRoute);
 inventoryRoute.route("/stock-opname", stockOpnameRoute);
 inventoryRoute.route("/purchase-orders", purchaseOrderRoute);

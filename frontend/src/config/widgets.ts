@@ -1,4 +1,3 @@
-// src/config/widgets.ts
 export type WidgetType = "card" | "table" | "piechart" | "barchart";
 
 export type TableHeader =

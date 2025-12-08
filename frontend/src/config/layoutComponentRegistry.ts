@@ -1,4 +1,3 @@
-// src/registry/layoutComponentRegistry.ts
 import React from "react";
 import { createVerticalMenu } from "../factory/createVerticalMenu";
 import { createHorizontalMenu } from "../factory/createHorizontalMenu";

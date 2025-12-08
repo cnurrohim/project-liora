@@ -1,11 +1,10 @@
-// src/routes/purchaseReturn.route.ts
 import { Hono } from "hono";
 import { db } from "../../db.js";
 import { z } from "zod";
 
 export const purchaseReturnRoute = new Hono();
 
-// Schema Zod
+// Zod Schema
 const purchaseReturnSchema = z.object({
   return_number: z.string().min(1),
   purchase_order_id: z.uuid().optional(),
@@ -14,12 +13,14 @@ const purchaseReturnSchema = z.object({
   created_by: z.uuid(),
 });
 
-// GET /purchase-returns - semua purchase return
+// GET /purchase-returns - all purchase returns
 purchaseReturnRoute.get("/", async (c) => {
   const result = await db.query(
     `SELECT pr.*, po.order_number AS po_number
      FROM inventory.purchase_returns pr
-     LEFT JOIN inventory.purchase_orders po ON pr.purchase_order_id = po.id
+     LEFT JOIN inventory.purchase_orders po 
+       ON pr.purchase_order_id = po.id AND po.deleted_at IS NULL
+     WHERE pr.deleted_at IS NULL
      ORDER BY pr.return_date DESC, pr.created_at DESC`
   );
   return c.json({ data: result.rows });
@@ -31,8 +32,9 @@ purchaseReturnRoute.get("/:id", async (c) => {
   const result = await db.query(
     `SELECT pr.*, po.order_number AS po_number
      FROM inventory.purchase_returns pr
-     LEFT JOIN inventory.purchase_orders po ON pr.purchase_order_id = po.id
-     WHERE pr.id=$1`,
+     LEFT JOIN inventory.purchase_orders po 
+       ON pr.purchase_order_id = po.id AND po.deleted_at IS NULL
+     WHERE pr.id=$1 AND pr.deleted_at IS NULL`,
     [id]
   );
   const data = result.rows[0];
@@ -40,7 +42,7 @@ purchaseReturnRoute.get("/:id", async (c) => {
   return c.json({ data });
 });
 
-// POST /purchase-returns - tambah
+// POST /purchase-returns - add
 purchaseReturnRoute.post("/", async (c) => {
   try {
     const body = await c.req.json();
@@ -64,7 +66,7 @@ purchaseReturnRoute.post("/", async (c) => {
   } catch (err: any) {
     console.error("Insert purchase return error:", err);
     if (err instanceof z.ZodError) return c.json({ error: err.flatten }, 400);
-    return c.json({ error: "Gagal menambahkan purchase return" }, 400);
+    return c.json({ error: "Failed to add purchase return" }, 400);
   }
 });
 
@@ -78,7 +80,7 @@ purchaseReturnRoute.put("/:id", async (c) => {
     const result = await db.query(
       `UPDATE inventory.purchase_returns
        SET return_number=$1, purchase_order_id=$2, return_date=$3, reason=$4, updated_at=NOW()
-       WHERE id=$5
+       WHERE id=$5 AND deleted_at IS NULL
        RETURNING *`,
       [
         parsed.return_number,
@@ -95,23 +97,26 @@ purchaseReturnRoute.put("/:id", async (c) => {
   } catch (err: any) {
     console.error("Update purchase return error:", err);
     if (err instanceof z.ZodError) return c.json({ error: err.flatten }, 400);
-    return c.json({ error: "Gagal mengubah purchase return" }, 400);
+    return c.json({ error: "Failed to update purchase return" }, 400);
   }
 });
 
-// DELETE /purchase-returns/:id - hapus
+// DELETE /purchase-returns/:id - soft delete
 purchaseReturnRoute.delete("/:id", async (c) => {
   const id = c.req.param("id");
   try {
     const result = await db.query(
-      "DELETE FROM inventory.purchase_returns WHERE id=$1 RETURNING *",
+      `UPDATE inventory.purchase_returns
+       SET deleted_at = NOW()
+       WHERE id=$1 AND deleted_at IS NULL
+       RETURNING *`,
       [id]
     );
     if (!result.rows.length)
       return c.json({ error: "Purchase return not found" }, 404);
     return c.json({ data: result.rows[0] });
   } catch (err) {
-    console.error("Delete purchase return error:", err);
-    return c.json({ error: "Gagal menghapus purchase return" }, 400);
+    console.error("Soft delete purchase return error:", err);
+    return c.json({ error: "Failed to delete purchase return" }, 400);
   }
 });

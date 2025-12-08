@@ -2,19 +2,19 @@ import { apiFetch } from "@/utils/apiFetch";
 
 export async function getMenus() {
   const res = await apiFetch("/menu");
-  if (!res.ok) throw new Error("Gagal mengambil daftar menu");
+  if (!res.ok) throw new Error("Failed to fetch menus");
   return (await res.json()).data;
 }
 
 export async function getParentMenus() {
   const res = await apiFetch("/menu/parent-menu");
-  if (!res.ok) throw new Error("Gagal mengambil daftar parent menu");
+  if (!res.ok) throw new Error("Failed to fetch parent menu");
   return (await res.json()).data;
 }
 
 export async function getMenuById(id: string) {
   const res = await apiFetch(`/menu/${id}`);
-  if (!res.ok) throw new Error("Gagal mengambil detail menu");
+  if (!res.ok) throw new Error("Failed to fetch detail menu");
   return (await res.json()).data;
 }
 
@@ -23,7 +23,7 @@ export async function createMenu(data: any) {
     method: "POST",
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Gagal membuat menu");
+  if (!res.ok) throw new Error("Failed to create menu");
   return await res.json();
 }
 
@@ -32,7 +32,7 @@ export async function updateMenu(id: string, data: any) {
     method: "PUT",
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Gagal memperbarui menu");
+  if (!res.ok) throw new Error("Failed to update menu");
   return await res.json();
 }
 
@@ -40,7 +40,7 @@ export async function deleteMenu(id: string) {
   const res = await apiFetch(`/menu/${id}`, {
     method: "DELETE",
   });
-  if (!res.ok) throw new Error("Gagal menghapus menu");
+  if (!res.ok) throw new Error("Failed to delete menu");
   return await res.json();
 }
 
@@ -51,16 +51,16 @@ export async function handleReorder(id: string, isMoveMenuUp: boolean) {
       body: JSON.stringify({ id, isMoveMenuUp }),
     });
 
-    if (!res.ok) throw new Error("Gagal reorder");
+    if (!res.ok) throw new Error("Failed to reorder");
   } catch (err) {
-    console.error("Gagal reorder", err);
+    console.error("Failed to reorder", err);
   }
 }
 
 export async function getAllViewOnlyPermissions() {
   const res = await apiFetch("/permissions/view-only");
   if (!res.ok) {
-    throw new Error("Gagal mengambil daftar permissions");
+    throw new Error("Failed to fetch permissions");
   }
 
   const data = await res.json();

@@ -1,4 +1,3 @@
-// src/routes/stockAdjustment.route.ts
 import { Hono } from "hono";
 import { db } from "../../db.js";
 import { z } from "zod";
@@ -78,7 +77,7 @@ stockAdjustmentRoute.post("/", async (c) => {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Create Adjustment error:", err);
-    return c.json({ error: "Gagal membuat stock adjustment" }, 400);
+    return c.json({ error: "Failed to create stock adjustment" }, 400);
   } finally {
     client.release();
   }
@@ -207,7 +206,7 @@ stockAdjustmentRoute.get("/:id/detail", async (c) => {
     return c.json({ data: sa });
   } catch (err) {
     console.error("Get stock adjustment detail error:", err);
-    return c.json({ error: "Gagal mengambil detail stock adjustment" }, 400);
+    return c.json({ error: "Failed to fetch stock adjustment detail" }, 400);
   }
 });
 
@@ -231,8 +230,7 @@ stockAdjustmentRoute.patch("/:id/confirm", async (c) => {
       await client.query("ROLLBACK");
       return c.json(
         {
-          error:
-            "Stock adjustment tidak ditemukan atau sudah confirmed/cancelled",
+          error: "Stock adjustment not found or already confirmed/cancelled",
         },
         400
       );
@@ -279,7 +277,7 @@ stockAdjustmentRoute.patch("/:id/confirm", async (c) => {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Confirm stock adjustment error:", err);
-    return c.json({ error: "Gagal konfirmasi stock adjustment" }, 400);
+    return c.json({ error: "Failed to confirm stock adjustment" }, 400);
   } finally {
     client.release();
   }
@@ -303,7 +301,7 @@ stockAdjustmentRoute.patch("/:id/cancel", async (c) => {
     if (rows.length === 0) {
       return c.json(
         {
-          error: "Stock adjustment tidak ditemukan atau tidak bisa dibatalkan",
+          error: "Stock adjustment not found or already canceled",
         },
         400
       );
@@ -312,6 +310,6 @@ stockAdjustmentRoute.patch("/:id/cancel", async (c) => {
     return c.json({ data: rows[0] });
   } catch (err) {
     console.error("Cancel stock adjustment error:", err);
-    return c.json({ error: "Gagal membatalkan stock adjustment" }, 400);
+    return c.json({ error: "Failed to cancel stock adjustment" }, 400);
   }
 });

@@ -28,31 +28,29 @@ export async function generateStockHistoryExcel(
   };
 
   const formatPeriod = (p?: string) => {
-    if (p === "day") return "Harian";
-    if (p === "week") return "Mingguan";
-    return "Bulanan";
+    if (p === "day") return "Daily";
+    if (p === "week") return "Weekly";
+    return "Monthly";
   };
 
-  // 🔹 Tambahkan judul dan filter
-  sheet.addRow(["Laporan Riwayat Masuk / Keluar"]).font = {
+  sheet.addRow(["Entry/Exit History Report"]).font = {
     size: 14,
     bold: true,
   };
-  sheet.addRow([]); // Empty row
-  sheet.addRow(["Periode", formatPeriod(period)]);
-  sheet.addRow(["Dari", formatDate(dateFrom)]);
-  sheet.addRow(["Sampai", formatDate(dateTo)]);
-  sheet.addRow([]); // Empty row
+  sheet.addRow([]);
+  sheet.addRow(["Period", formatPeriod(period)]);
+  sheet.addRow(["From", formatDate(dateFrom)]);
+  sheet.addRow(["to", formatDate(dateTo)]);
+  sheet.addRow([]);
 
-  // 🔹 Header kolom
   sheet.addRow([
     "#",
-    "Periode",
-    "Kode Barang",
-    "Nama Barang",
-    "Masuk",
-    "Keluar",
-    "Saldo Akhir",
+    "Period",
+    "Item Code",
+    "Item Name",
+    "Inbound",
+    "Outbound",
+    "Balance After",
   ]).font = { bold: true };
 
   // 🔹 Data baris

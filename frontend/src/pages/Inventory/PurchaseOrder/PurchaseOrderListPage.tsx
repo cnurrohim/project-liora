@@ -1,4 +1,3 @@
-// src/pages/purchase-orders/PurchaseOrderListPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
@@ -192,8 +191,7 @@ export default function PurchaseOrderListPage() {
         id: "number",
         header: () => <div className="text-left">#</div>,
         cell: ({ row }) => {
-          const { pageIndex, pageSize } = table.getState().pagination;
-          return <div>{pageIndex * pageSize + row.index + 1}</div>;
+          return <div>{row.index + 1}</div>;
         },
         size: 50,
       },
@@ -229,10 +227,10 @@ export default function PurchaseOrderListPage() {
             status === "draft"
               ? "bg-[var(--warning)] text-[var(--warning-foreground)]"
               : status === "confirmed"
-              ? "bg-[var(--info)] text-[var(--info-foreground)]"
-              : status === "received"
               ? "bg-[var(--success)] text-[var(--success-foreground)]"
-              : "bg-[var(--danger)] text-[var(--danger-foreground)]";
+              : status === "received"
+              ? "bg-[var(--info)] text-[var(--info-foreground)]"
+              : "bg-[var(--mute)] text-[var(--mute-foreground)]";
           return (
             <div className="flex gap-2">
               <span
@@ -243,7 +241,6 @@ export default function PurchaseOrderListPage() {
               {canApprove && status === "draft" && (
                 <ApproveButtonLink
                   onClick={() => handleApprove(row.original.id)}
-                  className={`flex cursor-pointer bg-[var(--info)] hover:bg-[var(--info-hover)] px-2 py-1 rounded text-[var(--content-text)] text-xs font-semibold`}
                 />
               )}
             </div>
@@ -257,12 +254,7 @@ export default function PurchaseOrderListPage() {
           const status = row.original.status;
 
           return (
-            <div className="flex gap-1">
-              {(status === "confirmed" ||
-                status === "cancelled" ||
-                status === "received") && (
-                <ViewButtonLink onClick={() => handleView(row.original.id)} />
-              )}
+            <div className="flex">
               {canReceive && status === "confirmed" && (
                 <ReceiveButtonLink
                   onClick={() => handleReceive(row.original)}
@@ -288,6 +280,9 @@ export default function PurchaseOrderListPage() {
                   onClick={() => handleCancel(row.original.id)}
                 />
               )}
+              <div className="flex gap-1">
+                <ViewButtonLink onClick={() => handleView(row.original.id)} />
+              </div>
             </div>
           );
         },

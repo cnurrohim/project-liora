@@ -50,11 +50,11 @@ export default function DepartmentFormPage() {
 
     if (!canSubmit) return;
     if (isEdit && !canUpdate) {
-      showSuccessToast("Anda tidak punya akses untuk mengedit");
+      showSuccessToast("You don't have access for this features");
       return;
     }
     if (!isEdit && !canCreate) {
-      showSuccessToast("Anda tidak punya akses untuk membuat department baru");
+      showSuccessToast("You don't have access for this features");
       return;
     }
 
@@ -62,13 +62,13 @@ export default function DepartmentFormPage() {
     try {
       if (isEdit) {
         await updateDepartment(id!, form);
-        showSuccessToast("Departemen berhasil diperbarui");
+        showSuccessToast("Departement updated");
       } else {
         await createDepartment(form);
-        showSuccessToast("Departemen berhasil dibuat");
+        showSuccessToast("Departement created");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal Saving departemen");
+      showErrorToast(err.message || "Failed to create new departemen");
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,3 @@
-// src/api/inventory/stockLocationReport.ts
 import { apiFetch } from "@/utils/apiFetch";
 
 export interface StockLocationFilters {

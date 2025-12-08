@@ -72,17 +72,19 @@ export default function MenuFormPage() {
     try {
       setLoading(true);
       if (isEdit) {
-        if (!canUpdate) return showErrorToast("Tidak punya akses update!");
+        if (!canUpdate)
+          return showErrorToast("You don't have access to update!");
         await updateMenu(id!, data);
-        showSuccessToast("Menu berhasil diperbarui");
+        showSuccessToast("Menu Updated");
       } else {
-        if (!canCreate) return showErrorToast("Tidak punya akses create!");
+        if (!canCreate)
+          return showErrorToast("You don't have access to create!");
         await createMenu(data);
-        showSuccessToast("Menu berhasil dibuat");
+        showSuccessToast("Menu Created");
       }
       MenuProviderController.load();
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal Saving menu");
+      showErrorToast(err.message || "Failed to create new menu");
     } finally {
       setLoading(false);
     }
@@ -142,7 +144,7 @@ export default function MenuFormPage() {
         <BackToListLink route="/pages/menu" label="list menus" />
 
         <h1 className="text-xl font-bold">
-          {isEdit ? "Edit Menu" : "Tambah Menu"}
+          {isEdit ? "Edit Menu" : "Add New Menu"}
         </h1>
 
         {/* Label */}

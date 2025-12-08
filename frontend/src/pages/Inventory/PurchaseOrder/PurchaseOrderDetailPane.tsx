@@ -83,7 +83,6 @@ export function PurchaseOrderDetailPane() {
       visible={state.visible}
       title={`PO #${order_number}`}
       onClose={PurchaseOrderDetailPaneController.close}
-      widthClass="w-3/4"
     >
       <section className="space-y-6 mb-52">
         {/* Header */}
@@ -128,7 +127,7 @@ export function PurchaseOrderDetailPane() {
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
                   <th className="px-2 py-1 text-right">Qty</th>
-                  <th className="px-2 py-1 text-right">Price</th>
+                  {/* <th className="px-2 py-1 text-right">Price</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -140,7 +139,7 @@ export function PurchaseOrderDetailPane() {
                     <td className="px-2 py-1">{it.sku}</td>
                     <td className="px-2 py-1">{it.item_name}</td>
                     <td className="px-2 py-1 text-right">{it.qty}</td>
-                    <td className="px-2 py-1 text-right">{it.price}</td>
+                    {/* <td className="px-2 py-1 text-right">{it.price}</td> */}
                   </tr>
                 ))}
               </tbody>

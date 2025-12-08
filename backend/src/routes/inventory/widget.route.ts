@@ -51,7 +51,7 @@ widgetRoute.get("/recent-gr", async (c) => {
 // Recent Goods Issues
 widgetRoute.get("/recent-gi", async (c) => {
   const result = await db.query(`
-    SELECT iss.id, iss.issue_number, iss.issue_date, i.name, d.quantity, sl.code || '-' || sl."name" as source, sl.code || '-' || sl."name" as destination
+    SELECT iss.id, iss.issue_number, iss.issue_date, i.name, d.quantity, sl.code || '-' || sl."name" as source, slt.code || '-' || slt."name" as destination
     FROM inventory.goods_issue_items d
     JOIN inventory.goods_issues iss on iss.id = d.goods_issue_id
     JOIN inventory.items i on i.id = d.item_id

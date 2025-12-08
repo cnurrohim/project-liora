@@ -1,4 +1,3 @@
-// src/pages/Inventory/StockLocationReportPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
@@ -18,6 +17,8 @@ import { searchLocation } from "@/api/search.api";
 import SearchSelect from "@/components/SelectOptions/searchSelect";
 import { IconRenderer } from "@/components/IconRenderer";
 import { DataTable } from "@/components/Table/DataTable";
+import { usePermissions } from "./permissions";
+import ForbiddenPage from "@/pages/Misc/403";
 
 type StockLocationReport = {
   location_id: string;
@@ -28,6 +29,10 @@ type StockLocationReport = {
 };
 
 export default function StockLocationReportPage() {
+  const { canView } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const [data, setData] = useState<StockLocationReport[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [loading, setLoading] = useState(false);
@@ -117,8 +122,7 @@ export default function StockLocationReportPage() {
         id: "number",
         header: "#",
         cell: ({ row }) => {
-          const { pageIndex, pageSize } = table.getState().pagination;
-          return <div>{pageIndex * pageSize + row.index + 1}</div>;
+          return <div>{row.index + 1}</div>;
         },
         size: 40,
       },

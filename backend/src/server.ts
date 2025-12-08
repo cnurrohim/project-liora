@@ -1,4 +1,3 @@
-// src/server.ts
 import { serve } from "@hono/node-server";
 import { app } from "./app.js";
 import "dotenv/config"; // kalau pakai dotenv

@@ -1,6 +1,6 @@
 export function formatDate(iso?: string) {
   if (!iso) return "-";
-  return new Date(iso).toLocaleString("id-ID", {
+  return new Date(iso).toLocaleString("en-US", {
     day: "2-digit",
     month: "long",
     year: "numeric",
@@ -9,7 +9,7 @@ export function formatDate(iso?: string) {
 
 export function formatDateTime(iso?: string) {
   if (!iso) return "-";
-  return new Date(iso).toLocaleString("id-ID", {
+  return new Date(iso).toLocaleString("en-US", {
     day: "2-digit",
     month: "long",
     year: "numeric",

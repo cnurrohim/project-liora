@@ -1,14 +1,11 @@
-// src/schema/purchaseOrder.schema.ts
 import { z } from "zod";
 
 export const purchaseOrderSchema = z.object({
-  supplier_id: z.uuid("ID supplier tidak valid"),
-  order_date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal order tidak valid"),
+  supplier_id: z.uuid("supplier invalid"),
+  order_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "order date invalid"),
   expected_date: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal perkiraan tidak valid")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "expected date invalid")
     .optional()
     .nullable(),
   status: z.enum(["draft", "confirmed", "received", "cancelled"]),
@@ -16,12 +13,13 @@ export const purchaseOrderSchema = z.object({
   items: z
     .array(
       z.object({
-        item_id: z.uuid("ID item tidak valid"),
-        qty: z.number().int().min(1, "Qty minimal 1"),
-        price: z.number().min(0, "Harga tidak boleh negatif"),
+        item_id: z.uuid("item invalid"),
+        item_name: z.string().optional(),
+        qty: z.number().int().min(1, "required at least 1"),
+        price: z.number().min(0, "price can not be less then 0"),
       })
     )
-    .min(1, "Minimal 1 item"),
+    .min(1, "required at least 1 item"),
 });
 
 export type PurchaseOrderFormValues = z.infer<typeof purchaseOrderSchema>;

@@ -40,6 +40,7 @@ import StockLocationReportPage from "@/pages/Inventory/ReportStockLocation/Stock
 import UserPreferenceForm from "@/pages/Preferences/userPreference";
 import DashboardEditorPage from "@/pages/Dashboard/DashboardEditorPage";
 import DashboardPage from "@/pages/Dashboard/DashboardPage";
+import ItemDetailsListPage from "@/pages/Inventory/InventoryDetails/ItemDetailsListPage";
 
 export function registerRoutes() {
   RouteRegistry.register(
@@ -186,9 +187,23 @@ export function registerRoutes() {
   );
 
   RouteRegistry.register(
+    "/stock-location/:id/edit",
+    "edit inventory location",
+    React.createElement(StockLocationsFormPage),
+    "action"
+  );
+
+  RouteRegistry.register(
     "/pages/inventory/item",
     "list available item",
     React.createElement(ItemListPage),
+    "page"
+  );
+
+  RouteRegistry.register(
+    "/pages/inventory/item-details",
+    "list item per location",
+    React.createElement(ItemDetailsListPage),
     "page"
   );
 
@@ -216,6 +231,13 @@ export function registerRoutes() {
   RouteRegistry.register(
     "/supplier/create",
     "create new supplier",
+    React.createElement(SupplierFormPage),
+    "page"
+  );
+
+  RouteRegistry.register(
+    "/supplier/:id/edit",
+    "edit supplier",
     React.createElement(SupplierFormPage),
     "page"
   );

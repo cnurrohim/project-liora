@@ -11,7 +11,7 @@ import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import ForbiddenPage from "pages/Misc/403";
 import { usePermissions } from "./permissions";
 import { stockOpnameSchema, type StockOpnameFormValues } from "./formSchema"; // <- bikin schema sendiri
-import { searchItemsByLocationId, searchLocation } from "@/api/search.api";
+import { searchItemsByLocationId } from "@/api/search.api";
 import SearchSelect from "@/components/SelectOptions/searchSelect";
 import {
   createStockOpname,
@@ -19,6 +19,13 @@ import {
   getStockOpnameById,
 } from "./stockOpname.api";
 import { BackToListLink } from "@/components/Buttons/BackToListLink";
+import SingleSelect from "@/components/SelectOptions/SingleSelect";
+import { getStockLocations } from "../stockLocations/stockLocations.api";
+
+type Option = {
+  id: string;
+  name: string;
+};
 
 export default function StockOpnameFormPage() {
   const { canView, canUpdate, canCreate, canReview } = usePermissions();
@@ -26,7 +33,7 @@ export default function StockOpnameFormPage() {
 
   const { id: editId } = useRouteParamsFromTab("/stock-opname/:id/edit");
   const { id: reviewId } = useRouteParamsFromTab("/stock-opname/:id/review");
-  const submitLabelReview = reviewId && "Review";
+  const submitLabelReview = reviewId && "Save";
   const submitLabelEdit = editId && "Update";
   const submitLabel = submitLabelEdit || submitLabelReview || "Save";
 
@@ -35,6 +42,7 @@ export default function StockOpnameFormPage() {
   const isReview = !!reviewId;
 
   const [loading, setLoading] = useState(false);
+  const [allLocations, setAllLocation] = useState<Option[]>([]);
 
   const today = new Date();
 
@@ -63,6 +71,11 @@ export default function StockOpnameFormPage() {
 
   useEffect(() => {
     const init = async () => {
+      const locations = await getStockLocations();
+      setAllLocation(
+        locations.map((s: any) => ({ id: s.id, name: `${s.code} - ${s.name}` }))
+      );
+
       if (isEdit || (isReview && id)) {
         const so = await getStockOpnameById(id);
 
@@ -92,22 +105,6 @@ export default function StockOpnameFormPage() {
     } catch (err) {
       console.error(err);
       showErrorToast("Failed to fetch item");
-      return [];
-    }
-  };
-
-  const handleSearchLocation = async (keyword: string) => {
-    if (!keyword || keyword.length < 2) return [];
-
-    try {
-      const results = await searchLocation(keyword);
-      return results.map((location: any) => ({
-        id: location.id,
-        name: `${location.code}-${location.name}`,
-      }));
-    } catch (err) {
-      console.error(err);
-      showErrorToast("Failed to fetch inventory location");
       return [];
     }
   };
@@ -145,6 +142,8 @@ export default function StockOpnameFormPage() {
         await createStockOpname(cleanedData);
         showSuccessToast("Inventory Opname created");
       }
+
+      reset(methods.formState.defaultValues);
     } catch (err: any) {
       showErrorToast(err.message || "Failed to create inventory ppname");
     } finally {
@@ -165,13 +164,13 @@ export default function StockOpnameFormPage() {
             ? "Edit Inventory Opname"
             : isReview
             ? "Review Inventory Opname"
-            : "Tambah Inventory Opname"}
+            : "New Inventory Opname"}
         </h1>
 
         {/* Opname Date */}
         <div>
           <label className="block text-[var(--content-text-muted)]">
-            Tanggal Opname
+            Opname Date
           </label>
           <Controller
             name="opname_date"
@@ -195,27 +194,24 @@ export default function StockOpnameFormPage() {
           <label className="block text-[var(--content-text-muted)]">
             Inventory Location
           </label>
+
           <Controller
-            name={`location_id`}
+            name="location_id"
             control={control}
-            render={({ field }) => {
-              const currentName = methods.watch(`location_name`);
-              return (
-                <SearchSelect
-                  value={
-                    field.value
-                      ? { id: field.value, name: currentName || "" }
-                      : null
-                  }
-                  onChange={(val) => {
-                    field.onChange(val?.id || "");
-                    methods.setValue(`location_name`, val?.name || "");
-                    methods.setValue("items", []);
-                  }}
-                  fetchOptions={(val) => handleSearchLocation(val)}
-                />
-              );
-            }}
+            render={({ field }) => (
+              <SingleSelect
+                options={allLocations}
+                value={
+                  allLocations.find((opt) => opt.id === field.value) ?? null
+                }
+                onChange={(val) => {
+                  field.onChange(val ? val.id : null);
+                  methods.setValue(`location_name`, val?.name || "");
+                  methods.setValue("items", []);
+                }}
+                placeholder="Choose Inventory Location"
+              />
+            )}
           />
 
           {typeof errors.location_id?.message === "string" && (
@@ -328,7 +324,7 @@ export default function StockOpnameFormPage() {
                               const location_id = methods.watch(`location_id`);
                               if (!location_id) {
                                 showErrorToast(
-                                  "Pilih lokasi terlebih dahulu .."
+                                  "Please choose inventory location first"
                                 );
                                 return Promise.resolve([]);
                               }
@@ -389,7 +385,7 @@ export default function StockOpnameFormPage() {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="px-2 py-1 bg-red-600 text-[var(--content-text)] rounded"
+                      className="px-2 py-1 bg-[var(--danger)] text-[var(--danger-foreground)] rounded"
                     >
                       Delete
                     </button>
@@ -408,7 +404,7 @@ export default function StockOpnameFormPage() {
                         quantity_counted: 0,
                       })
                     }
-                    className="px-3 py-1 bg-green-600 text-[var(--content-text)] rounded"
+                    className="px-3 py-1 bg-[var(--success)] text-[var(--success-foreground)] rounded"
                   >
                     + Add Item
                   </button>

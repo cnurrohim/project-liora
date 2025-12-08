@@ -1,4 +1,3 @@
-// src/pages/user-profile/userProfile.api.ts
 import { apiFetch } from "@/utils/apiFetch";
 
 export type UserProfile = {

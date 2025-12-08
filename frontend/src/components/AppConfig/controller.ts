@@ -1,6 +1,5 @@
 import { apiFetch } from "@/utils/apiFetch";
 
-// src/components/AppConfig/controller.ts
 let state = {
   app_name: "",
   app_logo: "",

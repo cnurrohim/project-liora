@@ -25,7 +25,7 @@ export default function ConfirmationDialog() {
               ConfirmationDialogController.closeConfirmation();
               state.onConfirm();
             }}
-            className="px-4 py-2 text-[var(--text-primary)] bg-[var(--info)] hover:bg-[var(--info-hover)] rounded cursor-pointer"
+            className="px-4 py-2 text-[var(--info-foreground)] bg-[var(--info)] hover:bg-[var(--info-hover)] rounded cursor-pointer"
           >
             Yes
           </button>

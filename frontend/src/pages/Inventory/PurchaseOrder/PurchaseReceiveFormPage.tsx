@@ -12,8 +12,7 @@ import { createPurchaseReceive } from "./purchaseOrder.api";
 import { useRouteParamsFromTab } from "@/hooks/useRouteParams";
 import { showErrorToast, showSuccessToast } from "@/utils/toast";
 import SingleSelect from "@/components/SelectOptions/SingleSelect";
-import { searchLocation } from "@/api/search.api";
-import SearchSelect from "@/components/SelectOptions/searchSelect";
+import { getStockLocations } from "../stockLocations/stockLocations.api";
 
 const receiveItemSchema = z.object({
   item_id: z.string(),
@@ -25,8 +24,20 @@ const receiveItemSchema = z.object({
 
 const receiveSchema = z.object({
   purchase_order_id: z.string(),
-  location_id: z.string(),
-  receive_date: z.string(),
+  location_id: z
+    .string({
+      error: (issue) =>
+        issue.input === undefined
+          ? "Stored Location is required"
+          : "Invalid location",
+    })
+    .min(1, "Please choose stored location"),
+  receive_date: z
+    .string({
+      error: (issue) =>
+        issue.input === undefined ? "Received date is required" : "Not a date",
+    })
+    .min(1, "Please choose receive date"),
   note: z.string().optional(),
   items: z.array(receiveItemSchema).min(1),
 });
@@ -40,7 +51,8 @@ type ReceiveFormValues = z.infer<typeof receiveSchema>;
 
 export default function PurchaseReceiveFormPage() {
   const { id } = useRouteParamsFromTab("/purchase-order/:id/receive");
-  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const methods = useForm<ReceiveFormValues>({
     resolver: zodResolver(receiveSchema),
@@ -52,13 +64,16 @@ export default function PurchaseReceiveFormPage() {
     },
   });
 
-  const [selectedLocation, setSelectedLocation] = useState<Option | null>(null);
+  const [allLocations, setAllLocation] = useState<Option[]>([]);
   const { control, handleSubmit, reset } = methods;
   const { fields } = useFieldArray({ control, name: "items" });
 
   useEffect(() => {
     const init = async () => {
       try {
+        const locations = await getStockLocations();
+        setAllLocation(locations.map((s: any) => ({ id: s.id, name: s.name })));
+
         const po = await getPurchaseOrderById(id!);
         reset({
           purchase_order_id: po.id,
@@ -74,31 +89,15 @@ export default function PurchaseReceiveFormPage() {
           })),
         });
       } catch (err: any) {
-        console.log(err);
-        showErrorToast("Failed loading purchase order");
+        showErrorToast("Failed fetching purchase order");
       }
     };
     init();
   }, [id, reset]);
 
-  const handleTargetLocation = async (keyword: string) => {
-    if (!keyword || keyword.length < 2) return [];
-    try {
-      const results = await searchLocation(keyword);
-      return results.map((location: any) => ({
-        id: location.id,
-        name: `${location.code}-${location.name}`,
-      }));
-    } catch (err) {
-      console.error(err);
-      showErrorToast("Failed to fetch inventory location");
-      return [];
-    }
-  };
-
   const onSubmit = async (data: ReceiveFormValues) => {
     try {
-      setLoading(true);
+      setSaving(true);
 
       await createPurchaseReceive(id!, {
         receive_date: data.receive_date,
@@ -110,10 +109,11 @@ export default function PurchaseReceiveFormPage() {
         })),
       });
       showSuccessToast("Item successfuly received");
+      setSubmitted(true);
     } catch (err: any) {
       showErrorToast(err.message || "Failed Saving receive");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -124,7 +124,7 @@ export default function PurchaseReceiveFormPage() {
 
         <div>
           <label className="block text-[var(--content-text-muted)]">
-            Tanggal Terima
+            Received Date
           </label>
           <input
             type="date"
@@ -135,7 +135,7 @@ export default function PurchaseReceiveFormPage() {
 
         <div>
           <label className="block text-[var(--content-text-muted)]">
-            Lokasi Save
+            Stored Location
           </label>
           {/* Target Location */}
 
@@ -143,21 +143,27 @@ export default function PurchaseReceiveFormPage() {
             name="location_id"
             control={control}
             render={({ field }) => (
-              <SearchSelect
-                value={selectedLocation}
-                onChange={(val) => {
-                  setSelectedLocation(val);
-                  field.onChange(val ? val.id : "");
-                }}
-                fetchOptions={handleTargetLocation}
+              <SingleSelect
+                options={allLocations}
+                value={
+                  allLocations.find((opt) => opt.id === field.value) ?? null
+                }
+                onChange={(val) => field.onChange(val ? val.id : null)}
+                placeholder="Choose Stored Location"
               />
             )}
           />
+
+          {methods.formState.errors.location_id && (
+            <p className="text-[var(--danger)] text-xs mt-1">
+              {methods.formState.errors.location_id.message}
+            </p>
+          )}
         </div>
 
         <div>
           <label className="block text-[var(--content-text-muted)]">
-            Catatan
+            Notes
           </label>
           <textarea
             className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
@@ -249,10 +255,10 @@ export default function PurchaseReceiveFormPage() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={saving || submitted}
           className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
         >
-          {loading ? "Saving..." : "Save"}
+          {saving ? "Saving..." : submitted ? "Saved" : "Save"}
         </button>
       </form>
     </FormProvider>

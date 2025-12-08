@@ -1,4 +1,3 @@
-// src/routes/purchaseOrder.route.ts
 import { Hono } from "hono";
 import { db } from "../../db.js";
 import { z } from "zod";
@@ -23,6 +22,7 @@ const purchaseOrderSchema = z.object({
   order_date: z.string().optional(),
   status: z.enum(["draft", "confirmed", "received", "cancelled"]),
   items: z.array(poItemSchema).min(1),
+  notes: z.string().optional(),
 });
 
 // POST /purchase-orders - create PO + items
@@ -38,14 +38,15 @@ purchaseOrderRoute.post("/", async (c) => {
 
       const poResult = await client.query(
         `INSERT INTO inventory.purchase_orders
-         (id, supplier_id, order_date, status, created_by)
-         VALUES (gen_random_uuid(), $1, $2, $3, $4)
+         (id, supplier_id, order_date, status, created_by, notes)
+         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)
          RETURNING *`,
         [
           parsed.supplier_id,
           parsed.order_date ?? new Date().toISOString().split("T")[0],
           parsed.status ?? "draft",
           user.id,
+          parsed.notes,
         ]
       );
 
@@ -72,7 +73,7 @@ purchaseOrderRoute.post("/", async (c) => {
   } catch (err: any) {
     console.error("Create PO error:", err);
     if (err instanceof z.ZodError) return c.json({ error: err.flatten }, 400);
-    return c.json({ error: "Gagal membuat purchase order" }, 400);
+    return c.json({ error: "Failed to create new purchase order" }, 400);
   }
 });
 
@@ -82,13 +83,13 @@ purchaseOrderRoute.get("/", async (c) => {
     `SELECT po.*, s.name AS supplier_name
      FROM inventory.purchase_orders po
      JOIN inventory.suppliers s ON po.supplier_id = s.id
+     WHERE po.deleted_at IS NULL
      ORDER BY po.order_date DESC, po.created_at DESC`
   );
   return c.json({ data: result.rows });
 });
 
 // GET /purchase-orders/:id - detail PO
-// GET /purchase-orders/:id - detail PO + items
 purchaseOrderRoute.get("/:id", async (c) => {
   const id = c.req.param("id");
 
@@ -98,7 +99,7 @@ purchaseOrderRoute.get("/:id", async (c) => {
       `SELECT po.*, s.name AS supplier_name
        FROM inventory.purchase_orders po
        JOIN inventory.suppliers s ON po.supplier_id = s.id
-       WHERE po.id = $1`,
+       WHERE po.id = $1 AND po.deleted_at IS NULL`,
       [id]
     );
 
@@ -110,7 +111,8 @@ purchaseOrderRoute.get("/:id", async (c) => {
       `SELECT poi.*, i.sku, i.name AS item_name
        FROM inventory.purchase_order_items poi
        JOIN inventory.items i ON poi.item_id = i.id
-       WHERE poi.purchase_order_id = $1 and (poi.qty - poi.received_qty) > 0`,
+       WHERE poi.purchase_order_id = $1 
+         AND (poi.qty - poi.received_qty) > 0`,
       [id]
     );
 
@@ -119,12 +121,11 @@ purchaseOrderRoute.get("/:id", async (c) => {
     return c.json({ data: po });
   } catch (err) {
     console.error("Get purchase order detail error:", err);
-    return c.json({ error: "Gagal mengambil detail purchase order" }, 400);
+    return c.json({ error: "Failed to fetch purchase order detail" }, 400);
   }
 });
 
 // GET /purchase-orders/:term/search - cari PO berdasarkan order_number
-// backend
 purchaseOrderRoute.get("/:term/search", async (c) => {
   const term = c.req.param("term");
 
@@ -133,7 +134,9 @@ purchaseOrderRoute.get("/:term/search", async (c) => {
       `SELECT po.id, po.order_number, s.name AS supplier_name
        FROM inventory.purchase_orders po
        JOIN inventory.suppliers s ON po.supplier_id = s.id
-       WHERE po.order_number ILIKE $1 and po.status = 'confirmed'
+       WHERE po.order_number ILIKE $1 
+         AND po.status = 'confirmed'
+         AND po.deleted_at IS NULL
        ORDER BY po.created_at DESC
        LIMIT 20`,
       [`%${term}%`]
@@ -142,7 +145,7 @@ purchaseOrderRoute.get("/:term/search", async (c) => {
     return c.json({ data: rows });
   } catch (err) {
     console.error("Search purchase order error:", err);
-    return c.json({ error: "Gagal mencari purchase order" }, 400);
+    return c.json({ error: "Failed to fetch purchase order" }, 400);
   }
 });
 
@@ -150,7 +153,6 @@ purchaseOrderRoute.get("/:id/detail", async (c) => {
   const id = c.req.param("id");
 
   try {
-    // Ambil header + supplier
     const poRes = await db.query(
       `
       SELECT 
@@ -160,6 +162,7 @@ purchaseOrderRoute.get("/:id/detail", async (c) => {
         po.expected_date,
         po.status,
         po.supplier_id,
+        po.notes,
         s.name AS supplier_name,
 
         -- items
@@ -239,7 +242,8 @@ purchaseOrderRoute.get("/:id/detail", async (c) => {
             JOIN inventory.stock_locations sl on sl.id = sm.target_location_id
             WHERE sm.reference_type = 'purchase_receive'
               AND sm.reference_id IN (
-                SELECT id FROM inventory.purchase_receives WHERE purchase_order_id = po.id
+                SELECT id FROM inventory.purchase_receives pr2
+                WHERE pr2.purchase_order_id = po.id
               )
           ),
           '[]'
@@ -249,7 +253,7 @@ purchaseOrderRoute.get("/:id/detail", async (c) => {
       JOIN inventory.suppliers s ON s.id = po.supplier_id
       LEFT JOIN inventory.purchase_order_items poi ON poi.purchase_order_id = po.id
       LEFT JOIN inventory.items i ON i.id = poi.item_id
-      WHERE po.id = $1
+      WHERE po.id = $1 AND po.deleted_at IS NULL
       GROUP BY po.id, s.name
       `,
       [id]
@@ -261,7 +265,7 @@ purchaseOrderRoute.get("/:id/detail", async (c) => {
     return c.json({ data: po });
   } catch (err) {
     console.error("Get purchase order detail error:", err);
-    return c.json({ error: "Gagal mengambil detail purchase order" }, 400);
+    return c.json({ error: "Feiled to fetch purchase order detail" }, 400);
   }
 });
 
@@ -270,7 +274,7 @@ purchaseOrderRoute.put("/:id/approve", async (c) => {
   const user = c.get("user");
   try {
     const result = await db.query(
-      "UPDATE inventory.purchase_orders SET status = 'confirmed', approved_by=$1, approved_at=$2 WHERE id=$3 AND status = 'draft' RETURNING *",
+      "UPDATE inventory.purchase_orders SET status = 'confirmed', approved_by=$1, approved_at=$2 WHERE id=$3 AND status = 'draft' AND deleted_at IS NULL RETURNING *",
       [user.id, new Date().toISOString(), id]
     );
     if (!result.rows.length)
@@ -281,16 +285,15 @@ purchaseOrderRoute.put("/:id/approve", async (c) => {
     return c.json({ data: result.rows[0] });
   } catch (err) {
     console.error("approve purchase order error:", err);
-    return c.json({ error: "Gagal menyetujui purchase order" }, 400);
+    return c.json({ error: "Failed to approve purchase order" }, 400);
   }
 });
 
 purchaseOrderRoute.put("/:id/cancel", async (c) => {
   const id = c.req.param("id");
-  const user = c.get("user");
   try {
     const result = await db.query(
-      "UPDATE inventory.purchase_orders SET status = 'cancelled' WHERE id=$1 AND status = 'confirmed' RETURNING *",
+      "UPDATE inventory.purchase_orders SET status = 'cancelled' WHERE id=$1 AND status = 'confirmed' AND deleted_at IS NULL RETURNING *",
       [id]
     );
     if (!result.rows.length)
@@ -301,16 +304,16 @@ purchaseOrderRoute.put("/:id/cancel", async (c) => {
     return c.json({ data: result.rows[0] });
   } catch (err) {
     console.error("cancel purchase order error:", err);
-    return c.json({ error: "Gagal membatalkan purchase order" }, 400);
+    return c.json({ error: "Failed to change purchase order" }, 400);
   }
 });
 
-// DELETE /purchase-orders/:id - hapus PO
+// DELETE /purchase-orders/:id - soft delete
 purchaseOrderRoute.delete("/:id", async (c) => {
   const id = c.req.param("id");
   try {
     const result = await db.query(
-      "DELETE FROM inventory.purchase_orders WHERE id=$1 RETURNING *",
+      "UPDATE inventory.purchase_orders SET deleted_at = NOW() WHERE id=$1 AND deleted_at IS NULL RETURNING *",
       [id]
     );
     if (!result.rows.length)
@@ -318,7 +321,7 @@ purchaseOrderRoute.delete("/:id", async (c) => {
     return c.json({ data: result.rows[0] });
   } catch (err) {
     console.error("Delete purchase order error:", err);
-    return c.json({ error: "Gagal menghapus purchase order" }, 400);
+    return c.json({ error: "Failed to purchase order" }, 400);
   }
 });
 
@@ -426,8 +429,80 @@ purchaseOrderRoute.post("/:id/receive", async (c) => {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Receive PO error:", err);
-    return c.json({ error: "Gagal membuat purchase receive" }, 400);
+    return c.json({ error: "Failed to create purchase receive" }, 400);
   } finally {
     client.release();
+  }
+});
+
+// PUT /purchase-orders/:id - update PO
+purchaseOrderRoute.put("/:id", async (c) => {
+  const id = c.req.param("id");
+
+  try {
+    const body = await c.req.json();
+    const parsed = purchaseOrderSchema.parse(body);
+
+    const client = await db.connect();
+
+    try {
+      await client.query("BEGIN");
+
+      // Update header PO
+      const poRes = await client.query(
+        `UPDATE inventory.purchase_orders
+         SET supplier_id = $1,
+             order_date = $2,
+             status = $3,
+             notes = $4,
+             updated_at = NOW()
+         WHERE id = $5 AND deleted_at IS NULL
+         RETURNING *`,
+        [
+          parsed.supplier_id,
+          parsed.order_date ?? new Date().toISOString().split("T")[0],
+          parsed.status,
+          parsed.notes,
+          id,
+        ]
+      );
+
+      if (!poRes.rows.length) {
+        await client.query("ROLLBACK");
+        return c.json({ error: "Purchase order not found" }, 404);
+      }
+
+      // Hapus semua item lama
+      await client.query(
+        `DELETE FROM inventory.purchase_order_items
+         WHERE purchase_order_id = $1`,
+        [id]
+      );
+
+      // Insert ulang item-item
+      for (const item of parsed.items) {
+        await client.query(
+          `INSERT INTO inventory.purchase_order_items
+            (id, purchase_order_id, item_id, qty, price)
+           VALUES (gen_random_uuid(), $1, $2, $3, $4)`,
+          [id, item.item_id, item.qty, item.price]
+        );
+      }
+
+      await client.query("COMMIT");
+
+      return c.json({
+        data: { ...poRes.rows[0], items: parsed.items },
+      });
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
+  } catch (err: any) {
+    console.error("Update PO error:", err);
+    if (err instanceof z.ZodError) return c.json({ error: err.flatten }, 400);
+    return c.json({ error: "Failed to update purchase order" }, 400);
   }
 });

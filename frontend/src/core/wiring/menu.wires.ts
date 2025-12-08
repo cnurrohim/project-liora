@@ -1,4 +1,3 @@
-// src/core/wiring/menu.wires.ts
 import { MenuProviderController } from "@/controller/menuProviderController";
 import { MenuBarController as VMenuBarController } from "@/components/VerticalMenu/MenuBar/controller";
 import { MenuBarController as HMenuBarController } from "@/components/HorizontalMenu/MenuBar/controller";

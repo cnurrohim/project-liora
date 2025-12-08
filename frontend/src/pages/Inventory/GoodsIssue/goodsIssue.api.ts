@@ -1,4 +1,3 @@
-// src/routes/goodsIssue.api.ts
 import { apiFetch } from "@/utils/apiFetch";
 
 // ambil semua goods issues
@@ -48,7 +47,7 @@ export async function createGoodsIssue(input: {
     method: "POST",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal membuat goods issue");
+  if (!res.ok) throw new Error("Failed to create goods issue");
   return (await res.json()).data;
 }
 
@@ -71,7 +70,7 @@ export async function updateGoodsIssue(
     method: "PUT",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal mengupdate goods issue");
+  if (!res.ok) throw new Error("Failed updating goods issue");
   return (await res.json()).data;
 }
 
@@ -80,6 +79,6 @@ export async function deleteGoodsIssue(id: string) {
   const res = await apiFetch(`/inventory/goods-issues/${id}`, {
     method: "DELETE",
   });
-  if (!res.ok) throw new Error("Gagal menghapus goods issue");
+  if (!res.ok) throw new Error("Failed deleting goods issue");
   return (await res.json()).data;
 }

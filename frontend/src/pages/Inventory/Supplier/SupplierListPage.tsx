@@ -65,8 +65,8 @@ export default function SupplierListPage() {
 
     openTabSmart(
       {
-        id: `/suppliers/${supplier.id}/edit`,
-        route: `/suppliers/${supplier.id}/edit`,
+        id: `/supplier/${supplier.id}/edit`,
+        route: `/supplier/${supplier.id}/edit`,
         label: `Edit: ${supplier.name}`,
         type: "route",
         icon: "RiPencilFill",
@@ -101,8 +101,7 @@ export default function SupplierListPage() {
         id: "number",
         header: () => <div className="text-left">#</div>,
         cell: ({ row }) => {
-          const { pageIndex, pageSize } = table.getState().pagination;
-          return <div>{pageIndex * pageSize + row.index + 1}</div>;
+          return <div>{row.index + 1}</div>;
         },
         size: 50,
       },

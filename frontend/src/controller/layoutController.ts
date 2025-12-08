@@ -1,4 +1,3 @@
-// src/controller/layoutController.ts
 import type { ReactNode } from "react";
 
 export type LayoutState = {

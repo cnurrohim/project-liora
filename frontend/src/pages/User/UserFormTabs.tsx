@@ -123,13 +123,13 @@ export default function UserFormTabs() {
       if (isEdit) {
         await updateUser(id!, payload);
         await ProfileController.load();
-        showSuccessToast("User berhasil diperbarui");
+        showSuccessToast("User Updated");
       } else {
         await createUser(payload);
-        showSuccessToast("User berhasil dibuat");
+        showSuccessToast("User Created");
       }
     } catch (err: any) {
-      showErrorToast(err.message || "Gagal Saving data user");
+      showErrorToast(err.message || "Failed to create new user");
     } finally {
       setLoading(false);
     }
@@ -199,7 +199,7 @@ export default function UserFormTabs() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-28 flex justify-center text-[var(--content-text)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer "
+                className="w-28 flex justify-center text-[var(--info-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer "
               >
                 {loading ? "Saving..." : "Save"}
               </button>

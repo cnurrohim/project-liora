@@ -1,4 +1,3 @@
-// src/routes/GoodsReceiptFormPage.tsx
 import {
   Controller,
   FormProvider,
@@ -19,10 +18,10 @@ import { usePermissions } from "./permissions";
 import { goodsReceiptSchema, type GoodsReceiptFormValues } from "./formSchema";
 import SingleSelect from "@/components/SelectOptions/SingleSelect";
 import { getSuppliers } from "../Supplier/supplier.api";
-import { getItems } from "../Item/item.api";
-import SearchSelect from "@/components/SelectOptions/searchSelect";
-import { searchLocation } from "@/api/search.api";
 import { BackToListLink } from "@/components/Buttons/BackToListLink";
+import { getStockLocations } from "../stockLocations/stockLocations.api";
+import SearchSelect from "@/components/SelectOptions/searchSelect";
+import { searchItems } from "@/api/search.api";
 
 type Option = {
   id: string;
@@ -38,8 +37,7 @@ export default function GoodsReceiptFormPage() {
   const [loading, setLoading] = useState(false);
 
   const [allSuppliers, setAllSuppliers] = useState<Option[]>([]);
-  const [allItems, setAllItems] = useState<Option[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<Option | null>(null);
+  const [allLocations, setAllLocation] = useState<Option[]>([]);
 
   const today = new Date();
 
@@ -72,9 +70,9 @@ export default function GoodsReceiptFormPage() {
       const suppliers = await getSuppliers();
       setAllSuppliers(suppliers.map((s: any) => ({ id: s.id, name: s.name })));
 
-      const items = await getItems();
-      setAllItems(
-        items.map((i: any) => ({ id: i.id, name: `${i.sku} - ${i.name}` }))
+      const locations = await getStockLocations();
+      setAllLocation(
+        locations.map((s: any) => ({ id: s.id, name: `${s.code} - ${s.name}` }))
       );
 
       if (isEdit && id) {
@@ -92,17 +90,17 @@ export default function GoodsReceiptFormPage() {
     init();
   }, [isEdit, id, reset]);
 
-  const handleTargetLocation = async (keyword: string) => {
+  const handleSearchItem = async (keyword: string) => {
     if (!keyword || keyword.length < 2) return [];
     try {
-      const results = await searchLocation(keyword);
-      return results.map((location: any) => ({
-        id: location.id,
-        name: `${location.code}-${location.name}`,
+      const results = await searchItems(keyword); // array hasil
+      return results.map((item: any) => ({
+        id: item.id,
+        name: `${item.sku} - ${item.name}`,
       }));
     } catch (err) {
       console.error(err);
-      showErrorToast("Failed to fetch inventory location");
+      showErrorToast("Searching inventory item failed");
       return [];
     }
   };
@@ -126,6 +124,8 @@ export default function GoodsReceiptFormPage() {
         await createGoodsReceipt(data);
         showSuccessToast("Goods Receipt created");
       }
+
+      reset(methods.formState.defaultValues);
     } catch (err: any) {
       showErrorToast(err.message || "Saving goods receipt failed");
     } finally {
@@ -164,7 +164,7 @@ export default function GoodsReceiptFormPage() {
                     allSuppliers.find((opt) => opt.id === field.value) ?? null
                   }
                   onChange={(val) => field.onChange(val ? val.id : null)}
-                  placeholder="Pilih Supplier (jika ada)"
+                  placeholder="Pick Supplier"
                 />
               )}
             />
@@ -185,16 +185,22 @@ export default function GoodsReceiptFormPage() {
               name="location_id"
               control={control}
               render={({ field }) => (
-                <SearchSelect
-                  value={selectedLocation}
-                  onChange={(val) => {
-                    setSelectedLocation(val);
-                    field.onChange(val ? val.id : "");
-                  }}
-                  fetchOptions={handleTargetLocation}
+                <SingleSelect
+                  options={allLocations}
+                  value={
+                    allLocations.find((opt) => opt.id === field.value) ?? null
+                  }
+                  onChange={(val) => field.onChange(val ? val.id : null)}
+                  placeholder="Choose Stored Location"
                 />
               )}
             />
+
+            {methods.formState.errors.location_id && (
+              <p className="text-[var(--danger)] text-xs mt-1">
+                {methods.formState.errors.location_id.message}
+              </p>
+            )}
           </div>
 
           {/* Receipt date */}
@@ -243,19 +249,29 @@ export default function GoodsReceiptFormPage() {
                       <Controller
                         name={`items.${index}.item_id`}
                         control={control}
-                        render={({ field }) => (
-                          <SingleSelect
-                            options={allItems}
-                            value={
-                              allItems.find((opt) => opt.id === field.value) ??
-                              null
-                            }
-                            onChange={(val) =>
-                              field.onChange(val ? val.id : null)
-                            }
-                            placeholder="Pilih Item"
-                          />
-                        )}
+                        render={({ field }) => {
+                          const currentName = methods.watch(
+                            `items.${index}.item_name`
+                          );
+
+                          return (
+                            <SearchSelect
+                              value={
+                                field.value
+                                  ? { id: field.value, name: currentName || "" }
+                                  : null
+                              }
+                              onChange={(val) => {
+                                field.onChange(val?.id || "");
+                                methods.setValue(
+                                  `items.${index}.item_name`,
+                                  val?.name || ""
+                                );
+                              }}
+                              fetchOptions={handleSearchItem}
+                            />
+                          );
+                        }}
                       />
                     </td>
                     <td className="border border-[var(--content-border)] px-2 py-1 w-24">
@@ -272,7 +288,7 @@ export default function GoodsReceiptFormPage() {
                       <button
                         type="button"
                         onClick={() => remove(index)}
-                        className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--content-text)] rounded"
+                        className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--success-foreground)] rounded"
                       >
                         delete
                       </button>
@@ -286,7 +302,7 @@ export default function GoodsReceiptFormPage() {
                       onClick={() =>
                         append({ item_id: "", quantity: 1, notes: "" })
                       }
-                      className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--content-text)] rounded"
+                      className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--success-foreground)] rounded"
                     >
                       + Add Item
                     </button>

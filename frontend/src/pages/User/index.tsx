@@ -126,7 +126,7 @@ export default function UserListPage() {
     }
 
     ConfirmationDialogController.askConfirmation(
-      "Yakin ingin menghapus user ini?",
+      "Proceed to delete this user?",
       async () => {
         try {
           await deleteUser(id);
@@ -168,8 +168,7 @@ export default function UserListPage() {
         id: "number",
         header: () => <div className="text-left">#</div>,
         cell: ({ row }) => {
-          const { pageIndex, pageSize } = table.getState().pagination;
-          return <div>{pageIndex * pageSize + row.index + 1}</div>;
+          return <div>{row.index + 1}</div>;
         },
         size: 50,
       },
@@ -299,7 +298,7 @@ export default function UserListPage() {
       {
         id: "/user/create",
         route: "/user/create",
-        label: "Tambah User",
+        label: "Add New User",
         type: "route",
         icon: "RiUserAddLine",
       },
@@ -316,7 +315,7 @@ export default function UserListPage() {
             mainLabel={
               <>
                 <IconRenderer name="RiUserAddLine" size={15} />
-                Tambah User
+                Add New User
               </>
             }
             onClick={() => openInNewTab(false)}

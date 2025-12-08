@@ -1,5 +1,3 @@
-// src/components/Sidebar/MenuBar/controller.ts
-
 import type { MenuBarEntry } from "../types";
 
 type MenuBarState = {

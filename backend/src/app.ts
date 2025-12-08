@@ -1,4 +1,3 @@
-// src/app.ts
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
@@ -27,7 +26,7 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     allowHeaders: ["Authorization", "Content-Type"],
-    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     credentials: true,
   })
 );

@@ -1,4 +1,3 @@
-// src/pages/Inventory/POSummaryListPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
@@ -16,6 +15,8 @@ import {
 import { showErrorToast } from "@/utils/toast";
 import { IconRenderer } from "@/components/IconRenderer";
 import { DataTable } from "@/components/Table/DataTable";
+import { usePermissions } from "./permissions";
+import ForbiddenPage from "@/pages/Misc/403";
 
 type POSummary = {
   po_no: string;
@@ -24,10 +25,14 @@ type POSummary = {
   expected_date: string;
   total_items: number;
   received_percent: number;
-  status: "Open" | "Partial" | "Received";
+  status: "Open" | "Partial" | "Received" | "Cancelled";
 };
 
 export default function POSummaryListPage() {
+  const { canView } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const [poSummary, setPOSummary] = useState<POSummary[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [loading, setLoading] = useState(false);
@@ -106,8 +111,7 @@ export default function POSummaryListPage() {
         id: "number",
         header: "#",
         cell: ({ row }) => {
-          const { pageIndex, pageSize } = table.getState().pagination;
-          return <div>{pageIndex * pageSize + row.index + 1}</div>;
+          return <div>{row.index + 1}</div>;
         },
         size: 40,
       },
@@ -142,13 +146,21 @@ export default function POSummaryListPage() {
           <div className="w-32 bg-[var(--content-surface-hover)] rounded-full h-3 overflow-hidden">
             <div
               className={`h-3 ${
-                row.original.received_percent >= 100
-                  ? "bg-[var(--success)]"
+                row.original.status === "Cancelled"
+                  ? "bg-[var(--mute)]"
+                  : row.original.received_percent >= 100
+                  ? "bg-[var(--info)]"
                   : row.original.received_percent > 0
-                  ? "bg-[var(--warning)]"
-                  : "bg-[var(--danger)]"
+                  ? "bg-[var(--success)]"
+                  : "bg-[var(--warning)]"
               }`}
-              style={{ width: `${row.original.received_percent}%` }}
+              style={{
+                width: `${
+                  row.original.status === "Cancelled"
+                    ? 100
+                    : row.original.received_percent
+                }%`,
+              }}
             />
           </div>
         ),
@@ -158,12 +170,14 @@ export default function POSummaryListPage() {
         header: "Status",
         cell: ({ row }) => (
           <div
-            className={`px-2 py-0.5 rounded text-xs w-full text-center ${
+            className={`px-2 py-0.5 rounded text-xs font-medium w-full text-center ${
               row.original.status === "Open"
-                ? "bg-[var(--danger)] text-[var(--danger-foreground)]"
-                : row.original.status === "Partial"
                 ? "bg-[var(--warning)] text-[var(--warning-foreground)]"
-                : "bg-[var(--success)] text-[var(--success-foreground)]"
+                : row.original.status === "Partial"
+                ? "bg-[var(--success)] text-[var(--success-foreground)]"
+                : row.original.status === "Cancelled"
+                ? "bg-[var(--mute)] text-[var(--mute-foreground)]"
+                : "bg-[var(--info)] text-[var(--info-foreground)]"
             }`}
           >
             {row.original.status}

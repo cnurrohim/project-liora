@@ -1,4 +1,3 @@
-// src/api/inventory/stockOnHand.ts
 import { apiFetch } from "@/utils/apiFetch";
 
 export interface StockOnHandFilters {

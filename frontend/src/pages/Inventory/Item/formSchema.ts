@@ -1,4 +1,3 @@
-// src/schema/item.schema.ts
 import { z } from "zod";
 
 export const itemSchema = z.object({

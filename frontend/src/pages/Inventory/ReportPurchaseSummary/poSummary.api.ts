@@ -1,4 +1,3 @@
-// src/api/inventory/poSummary.ts
 import { apiFetch } from "@/utils/apiFetch";
 
 export interface POSummaryFilters {

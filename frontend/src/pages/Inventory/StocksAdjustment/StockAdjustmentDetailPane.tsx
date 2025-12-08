@@ -1,4 +1,3 @@
-// src/routes/StockAdjustmentDetailPane.tsx
 import { Controller } from "@/components/DetailPane/Controller";
 import { DetailPane } from "@/components/DetailPane/DetailPane";
 import { formatDate } from "@/utils/date";

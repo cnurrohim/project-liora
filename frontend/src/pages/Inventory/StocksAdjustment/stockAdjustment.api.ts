@@ -33,7 +33,7 @@ export async function createStockAdjustment(input: {
     method: "POST",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal membuat stock adjustment");
+  if (!res.ok) throw new Error("Failed to create stock adjustment");
   return (await res.json()).data;
 }
 
@@ -55,7 +55,7 @@ export async function updateStockAdjustment(
     method: "PUT",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("Gagal membuat stock adjustment");
+  if (!res.ok) throw new Error("Failed to create stock adjustment");
   return (await res.json()).data;
 }
 
@@ -63,7 +63,7 @@ export async function confirmStockAdjustment(id: string) {
   const res = await apiFetch(`/inventory/stock-adjustments/${id}/confirm`, {
     method: "PATCH",
   });
-  if (!res.ok) throw new Error("Gagal konfirmasi stock adjustment");
+  if (!res.ok) throw new Error("Failed approving stock adjustment");
   return (await res.json()).data;
 }
 
@@ -71,7 +71,7 @@ export async function revertStockAdjustment(id: string) {
   const res = await apiFetch(`/inventory/stock-adjustments/${id}/revert`, {
     method: "PATCH",
   });
-  if (!res.ok) throw new Error("Gagal revert stock adjustment");
+  if (!res.ok) throw new Error("Failed reverting stock adjustment");
   return (await res.json()).data;
 }
 
@@ -79,6 +79,6 @@ export async function cancelStockAdjustment(id: string) {
   const res = await apiFetch(`/inventory/stock-adjustments/${id}/cancel`, {
     method: "PATCH",
   });
-  if (!res.ok) throw new Error("Gagal membatalkan stock adjustment");
+  if (!res.ok) throw new Error("Failed Cenceling stock adjustment");
   return (await res.json()).data;
 }

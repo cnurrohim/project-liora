@@ -39,11 +39,11 @@ export function generatePOSummaryHTML(
           <thead>
             <tr>
               <th>#</th>
-              <th>PO No</th>
+              <th>PO No.</th>
               <th>Supplier</th>
-              <th>Tanggal Order</th>
-              <th>Estimasi</th>
-              <th>Total Item</th>
+              <th>Order Date</th>
+              <th>Estimation</th>
+              <th>Item Total</th>
               <th>Progress (%)</th>
               <th>Status</th>
             </tr>
@@ -71,7 +71,7 @@ export function generatePOSummaryHTML(
               `
                     )
                     .join("")
-                : `<tr><td colspan="8" style="text-align:center;">Tidak ada data</td></tr>`
+                : `<tr><td colspan="8" style="text-align:center;">Data Unavailable</td></tr>`
             }
           </tbody>
         </table>

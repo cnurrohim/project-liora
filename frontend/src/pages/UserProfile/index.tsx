@@ -98,7 +98,7 @@ export default function UserProfilePage() {
     try {
       userProfileSchema.parse(formValues);
     } catch (err: any) {
-      alert(err.errors?.[0]?.message || "Validasi gagal");
+      alert(err.errors?.[0]?.message || "Error Validation");
       setLoading(false);
       return;
     }
@@ -107,14 +107,14 @@ export default function UserProfilePage() {
       const result = await updateUserProfile(formValues);
 
       if (result.success) {
-        showSuccessToast("Profil berhasil diperbarui");
+        showSuccessToast("Profil Updated");
         await ProfileController.load();
       }
     } catch (err: any) {
       if (err.response?.status === 409) {
         setError("username", {
           type: "manual",
-          message: err.response.data?.message || "Username sudah digunakan",
+          message: err.response.data?.message || "Username already in use",
         });
       } else {
         console.error(err);

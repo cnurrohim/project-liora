@@ -1,4 +1,3 @@
-// src/core/wiring/commandRegistry.ts
 type Command = {
   name: string;
   label: string;

@@ -22,19 +22,19 @@ export async function generatePOSummaryExcel(
   // 🔹 Judul dan Filter di bagian atas
   sheet.addRow(["Purchase Order Summary"]).font = { size: 14, bold: true };
   sheet.addRow([]); // Empty row
-  sheet.addRow(["Dari", from || "-"]);
-  sheet.addRow(["Sampai", to || "-"]);
-  sheet.addRow(["Status", status || "Semua"]);
+  sheet.addRow(["From", from || "-"]);
+  sheet.addRow(["To", to || "-"]);
+  sheet.addRow(["Status", status || "All"]);
   sheet.addRow([]); // Empty row
 
   // 🔹 Header kolom
   sheet.addRow([
     "#",
-    "PO No",
+    "PO No.",
     "Supplier",
-    "Tanggal Order",
-    "Tanggal Estimasi",
-    "Total Item",
+    "Order Date",
+    "Estimation Date",
+    "Item Total",
     "Progress (%)",
     "Status",
   ]);

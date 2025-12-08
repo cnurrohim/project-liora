@@ -48,7 +48,7 @@ export const PinnedMenuController = {
     try {
       await unpinMenu(menuId);
     } catch (err) {
-      console.error("Gagal menghapus pinned menu:", err);
+      console.error("Failed to delete pinned menu:", err);
       // rollback
       pinnedMenus = oldMenus;
       notify();

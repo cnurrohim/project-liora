@@ -1,4 +1,3 @@
-// src/api/pinnedMenu.api.ts
 import { apiFetch } from "@/utils/apiFetch";
 
 export async function getPinnedMenus() {

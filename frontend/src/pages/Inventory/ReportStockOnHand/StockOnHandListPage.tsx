@@ -1,4 +1,3 @@
-// src/pages/Inventory/StockOnHandListPage.tsx
 import { useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
@@ -18,6 +17,8 @@ import SearchSelect from "@/components/SelectOptions/searchSelect";
 import { searchLocation } from "@/api/search.api";
 import { IconRenderer } from "@/components/IconRenderer";
 import { DataTable } from "@/components/Table/DataTable";
+import { usePermissions } from "./permissions";
+import ForbiddenPage from "@/pages/Misc/403";
 
 type StockOnHand = {
   item_code: string;
@@ -28,6 +29,10 @@ type StockOnHand = {
 };
 
 export default function StockOnHandListPage() {
+  const { canView } = usePermissions();
+
+  if (!canView) return <ForbiddenPage />;
+
   const [data, setData] = useState<StockOnHand[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [loading, setLoading] = useState(false);
@@ -127,8 +132,7 @@ export default function StockOnHandListPage() {
         id: "number",
         header: "#",
         cell: ({ row }) => {
-          const { pageIndex, pageSize } = table.getState().pagination;
-          return <div>{pageIndex * pageSize + row.index + 1}</div>;
+          return <div>{row.index + 1}</div>;
         },
         size: 40,
       },

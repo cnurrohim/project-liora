@@ -46,10 +46,10 @@ export function generateStockLocationHTML(
           <thead>
             <tr>
               <th>#</th>
-              <th>Lokasi</th>
-              <th>Jumlah Jenis Barang</th>
+              <th>Location</th>
+              <th>Item Type Count</th>
               <th>Total Qty</th>
-              <th>Terakhir Update</th>
+              <th>Last Updated</th>
             </tr>
           </thead>
           <tbody>

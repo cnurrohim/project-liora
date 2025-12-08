@@ -50,10 +50,10 @@ export const PERMISSIONS = {
 
   /* INVENTORY USE CASE */
   LOCATION: {
-    VIEW: "location.view",
-    CREATE: "location.create",
-    UPDATE: "location.update",
-    DELETE: "location.delete",
+    VIEW: "stock_location.view",
+    CREATE: "stock_location.create",
+    UPDATE: "stock_location.update",
+    DELETE: "stock_location.delete",
   },
 
   ITEM: {
@@ -61,6 +61,10 @@ export const PERMISSIONS = {
     CREATE: "item.create",
     UPDATE: "item.update",
     DELETE: "item.delete",
+  },
+
+  ITEM_DETAIL: {
+    VIEW: "item_detail.view",
   },
 
   SUPPLIER: {
@@ -125,4 +129,10 @@ export const PERMISSIONS = {
     UPDATE: "dashboard.update",
     DELETE: "dashboard.delete",
   },
+
+  MONITORING_STOCK_MOVEMENT: { VIEW: "monitoring_stock_movements.view" },
+  MONITORING_STOCK_ON_HAND: { VIEW: "monitoring_stock_on_hands.view" },
+  MONITORING_STOCK_LOCATION: { VIEW: "monitoring_stock_location.view" },
+  REPORT_STOCK_HISTORY: { VIEW: "report_stock_history.view" },
+  REPORT_PO_SUMMARY: { VIEW: "report_po_summary.view" },
 } as const;
