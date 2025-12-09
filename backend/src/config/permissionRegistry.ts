@@ -195,27 +195,27 @@ export const permissionRegistry = [
   },
 
   /** INVENTORY USE CASE */
-  /** STOCK-LOCATION */
+  /** INVENTORY-LOCATION */
   {
-    domain: "stock_location",
+    domain: "inventory_location",
     name: "view",
     label: "Open Inventory Location Page",
     description: "Can open the inventory location page",
   },
   {
-    domain: "stock_location",
+    domain: "inventory_location",
     name: "delete",
     label: "Delete Inventory Location",
     description: "Able to delete inventory location",
   },
   {
-    domain: "stock_location",
+    domain: "inventory_location",
     name: "update",
     label: "Update Inventory Location",
     description: "Can update inventory location",
   },
   {
-    domain: "stock_location",
+    domain: "inventory_location",
     name: "create",
     label: "Create New Inventory Location",
     description: "Can create a new inventory location",
@@ -415,37 +415,37 @@ export const permissionRegistry = [
 
   /** INVENTORY ADJUSTMENT */
   {
-    domain: "stock_adjustment",
+    domain: "inventory_adjustment",
     name: "view",
     label: "Open Inventory Adjustment Page",
     description: "Can open the inventory adjustment page",
   },
   {
-    domain: "stock_adjustment",
+    domain: "inventory_adjustment",
     name: "delete",
     label: "Delete Inventory Adjustment",
     description: "Able to delete inventory adjustment",
   },
   {
-    domain: "stock_adjustment",
+    domain: "inventory_adjustment",
     name: "update",
     label: "Update Inventory Adjustment",
     description: "Can update inventory adjustment",
   },
   {
-    domain: "stock_adjustment",
+    domain: "inventory_adjustment",
     name: "create",
     label: "Create New Inventory Adjustment",
     description: "Can create a new inventory adjustment",
   },
   {
-    domain: "stock_adjustment",
+    domain: "inventory_adjustment",
     name: "approve",
     label: "Approve Inventory Adjustment",
     description: "Can approve new inventory adjustment",
   },
   {
-    domain: "stock_adjustment",
+    domain: "inventory_adjustment",
     name: "cancel",
     label: "Cancel Inventory Adjustment",
     description: "Can cancel inventory adjustment",
@@ -453,43 +453,43 @@ export const permissionRegistry = [
 
   /** INVENTORY OPNAME */
   {
-    domain: "stock_opname",
+    domain: "inventory_opname",
     name: "view",
     label: "Open Inventory Opname Page",
     description: "Can open the inventory opname page",
   },
   {
-    domain: "stock_opname",
+    domain: "inventory_opname",
     name: "delete",
     label: "Delete Inventory Opname",
     description: "Able to delete inventory opname",
   },
   {
-    domain: "stock_opname",
+    domain: "inventory_opname",
     name: "update",
     label: "Update Inventory Opname",
     description: "Can update inventory opname",
   },
   {
-    domain: "stock_opname",
+    domain: "inventory_opname",
     name: "create",
     label: "Create New Inventory Opname",
     description: "Can create a new inventory opname",
   },
   {
-    domain: "stock_opname",
+    domain: "inventory_opname",
     name: "approve",
     label: "Approve Inventory Opname",
     description: "Can approve new inventory opname",
   },
   {
-    domain: "stock_opname",
+    domain: "inventory_opname",
     name: "review",
     label: "Review Inventory Opname",
     description: "Can review inventory opname",
   },
   {
-    domain: "stock_opname",
+    domain: "inventory_opname",
     name: "cancel",
     label: "Cancel Inventory Opname",
     description: "Can cancel inventory opname",
@@ -497,25 +497,25 @@ export const permissionRegistry = [
 
   /** REPORT */
   {
-    domain: "monitoring_stock_movements",
+    domain: "monitoring_inventory_movements",
     name: "view",
     label: "View Inventory Movements Ledger",
     description: "View inventory movements ledger",
   },
   {
-    domain: "monitoring_stock_on_hand",
+    domain: "monitoring_inventory_on_hand",
     name: "view",
     label: "View Inventory On Hand",
     description: "View inventory on hand",
   },
   {
-    domain: "monitoring_stock_location",
+    domain: "monitoring_inventory_location",
     name: "view",
     label: "View Inventory Location",
     description: "View inventory location",
   },
   {
-    domain: "report_stock_history",
+    domain: "report_inventory_history",
     name: "view",
     label: "View Inventory History",
     description: "View inventory history",

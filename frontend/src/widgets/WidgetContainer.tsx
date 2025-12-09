@@ -26,7 +26,7 @@ export function WidgetContainer({
         color: config.textColor,
       }}
     >
-      <h3 className="font-bold flex items-center gap-2 mb-4">
+      <h3 className="font-bold flex items-center gap-2 mb-4 text-[var(--content-text-muted)]">
         <IconRenderer name={config.icon} className="w-4 h-4" /> {config.label}
       </h3>
       {children}

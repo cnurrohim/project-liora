@@ -50,10 +50,10 @@ export const PERMISSIONS = {
 
   /* INVENTORY USE CASE */
   LOCATION: {
-    VIEW: "stock_location.view",
-    CREATE: "stock_location.create",
-    UPDATE: "stock_location.update",
-    DELETE: "stock_location.delete",
+    VIEW: "inventory_location.view",
+    CREATE: "inventory_location.create",
+    UPDATE: "inventory_location.update",
+    DELETE: "inventory_location.delete",
   },
 
   ITEM: {
@@ -104,23 +104,23 @@ export const PERMISSIONS = {
     RECEIVE: "goods_issue.receive",
   },
 
-  STOCK_ADJUSTMENT: {
-    VIEW: "stock_adjustment.view",
-    CREATE: "stock_adjustment.create",
-    UPDATE: "stock_adjustment.update",
-    DELETE: "stock_adjustment.delete",
-    APPROVE: "stock_adjustment.approve",
-    CANCEL: "stock_adjustment.cancel",
+  INVENTORY_ADJUSTMENT: {
+    VIEW: "inventory_adjustment.view",
+    CREATE: "inventory_adjustment.create",
+    UPDATE: "inventory_adjustment.update",
+    DELETE: "inventory_adjustment.delete",
+    APPROVE: "inventory_adjustment.approve",
+    CANCEL: "inventory_adjustment.cancel",
   },
 
-  STOCK_OPNAME: {
-    VIEW: "stock_opname.view",
-    CREATE: "stock_opname.create",
-    UPDATE: "stock_opname.update",
-    DELETE: "stock_opname.delete",
-    APPROVE: "stock_opname.approve",
-    REVIEW: "stock_opname.review",
-    CANCEL: "stock_opname.cancel",
+  INVENTORY_OPNAME: {
+    VIEW: "inventory_opname.view",
+    CREATE: "inventory_opname.create",
+    UPDATE: "inventory_opname.update",
+    DELETE: "inventory_opname.delete",
+    APPROVE: "inventory_opname.approve",
+    REVIEW: "inventory_opname.review",
+    CANCEL: "inventory_opname.cancel",
   },
 
   DASHBOARD: {
@@ -130,9 +130,11 @@ export const PERMISSIONS = {
     DELETE: "dashboard.delete",
   },
 
-  MONITORING_STOCK_MOVEMENT: { VIEW: "monitoring_stock_movements.view" },
-  MONITORING_STOCK_ON_HAND: { VIEW: "monitoring_stock_on_hands.view" },
-  MONITORING_STOCK_LOCATION: { VIEW: "monitoring_stock_location.view" },
-  REPORT_STOCK_HISTORY: { VIEW: "report_stock_history.view" },
+  MONITORING_INVENTORY_MOVEMENT: {
+    VIEW: "monitoring_inventory_movements.view",
+  },
+  MONITORING_INVENTORY_ON_HAND: { VIEW: "monitoring_inventory_on_hands.view" },
+  MONITORING_INVENTORY_LOCATION: { VIEW: "monitoring_inventory_location.view" },
+  REPORT_INVENTORY_HISTORY: { VIEW: "report_inventory_history.view" },
   REPORT_PO_SUMMARY: { VIEW: "report_po_summary.view" },
 } as const;

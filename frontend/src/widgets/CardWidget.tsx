@@ -26,7 +26,7 @@ export function CardWidget({
     >
       <div className=" flex flex-row gap-2 items-center">
         <div
-          className="p-0 text-[var(--content-text)] w-15 h-15 rounded-xl flex items-center justify-center"
+          className="p-0 text-[var(--content-text-muted)] w-15 h-15 rounded-xl flex items-center justify-center"
           style={{
             backgroundColor: config.bgColor,
             color: config.textColor,
@@ -35,12 +35,7 @@ export function CardWidget({
           <IconRenderer name={config.icon} className="w-8 h-8" />
         </div>
         <div className="flex flex-col">
-          <p
-            className="font-bold text-4xl font-mono text-[var(--content-text)]"
-            style={{
-              color: config.textColor,
-            }}
-          >
+          <p className="font-bold text-4xl font-mono text-[var(--content-text)]">
             {data?.total ?? "0"}
           </p>
           <h3 className="text-xs text-[var(--content-text-muted)]">

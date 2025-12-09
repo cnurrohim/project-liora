@@ -45,7 +45,7 @@ export const widgets: WidgetConfig[] = [
     datasource: "/widgets/total-items",
     defaultWidth: 4,
     bgColor: "#c5e38e",
-    textColor: "#666565",
+    textColor: "#4c8624",
   },
   {
     key: "lowStock",
@@ -55,7 +55,7 @@ export const widgets: WidgetConfig[] = [
     datasource: "/widgets/low-stock",
     defaultWidth: 4,
     bgColor: "#ffdd8c",
-    textColor: "#666565",
+    textColor: "#c84c27",
   },
   {
     key: "openPO",
@@ -65,7 +65,7 @@ export const widgets: WidgetConfig[] = [
     datasource: "/widgets/open-po",
     defaultWidth: 4,
     bgColor: "#a8dddf",
-    textColor: "#666565",
+    textColor: "#0b2984",
   },
 
   // === TABLE WIDGETS ===

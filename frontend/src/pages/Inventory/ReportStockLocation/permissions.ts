@@ -5,7 +5,7 @@ export function usePermissions() {
   const canView = useHasPermission([
     PERMISSIONS.SUPERADMIN.ALL_ACCESS,
     PERMISSIONS.DEV.ALL_ACCESS,
-    PERMISSIONS.MONITORING_STOCK_LOCATION.VIEW,
+    PERMISSIONS.MONITORING_INVENTORY_LOCATION.VIEW,
   ]);
 
   return {
