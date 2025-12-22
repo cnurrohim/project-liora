@@ -6,6 +6,10 @@
 /frontend/.env
 .env*
 
+!.env.example
+!.env.backend.example
+!frontend/.env.example
+
 # Logs
 logs
 *.log
