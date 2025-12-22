@@ -21,9 +21,11 @@ import ForbiddenPage from "@/pages/Misc/403";
 type StockHistory = {
   item_code: string;
   item_name: string;
-  period: string; // yyyy-mm-dd hasil DATE_TRUNC
+  period: string;
   total_in: number;
   total_out: number;
+  adjustment_in: number;
+  adjustment_out: number;
   closing_balance: number;
 };
 
@@ -77,7 +79,7 @@ export default function StockHistoryReportPage() {
         date_to: dateTo || undefined,
       });
 
-      downloadBlob(blob, "stock-history.pdf");
+      downloadBlob(blob, "inventory-history.pdf");
     } catch (err: any) {
       showErrorToast(err.message || "Export to PDF failed");
     } finally {
@@ -94,7 +96,7 @@ export default function StockHistoryReportPage() {
         date_to: dateTo || undefined,
       });
 
-      downloadBlob(blob, "stock-history.xlsx");
+      downloadBlob(blob, "inventory-history.xlsx");
     } catch (err: any) {
       showErrorToast(err.message || "Export to excel failed");
     } finally {
@@ -132,7 +134,7 @@ export default function StockHistoryReportPage() {
       },
       {
         accessorKey: "total_in",
-        header: "Total Inbound",
+        header: "Inbound",
         cell: ({ row }) => (
           <span className="text-green-600 font-semibold">
             {row.original.total_in}
@@ -141,10 +143,28 @@ export default function StockHistoryReportPage() {
       },
       {
         accessorKey: "total_out",
-        header: "Total Outbond",
+        header: "Outbond",
         cell: ({ row }) => (
           <span className="text-red-600 font-semibold">
             {row.original.total_out}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "adjustment_in",
+        header: "Adjustment In",
+        cell: ({ row }) => (
+          <span className="text-green-600 font-semibold">
+            {row.original.adjustment_in}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "adjustment_out",
+        header: "Adjustment Out",
+        cell: ({ row }) => (
+          <span className="text-red-600 font-semibold">
+            {row.original.adjustment_out}
           </span>
         ),
       },

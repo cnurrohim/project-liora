@@ -4,6 +4,7 @@ import { z } from "zod";
 import { authMiddleware } from "../../middleware/auth.js";
 import type { Variables } from "../../types/context.js";
 import { createStockMovement } from "../../helpers/stockMovement.helper.js";
+import { buildWhereQuery } from "../../utils/queryHelper.js";
 
 export const purchaseOrderRoute = new Hono<{ Variables: Variables }>();
 
@@ -13,7 +14,6 @@ purchaseOrderRoute.use(authMiddleware);
 const poItemSchema = z.object({
   item_id: z.uuid(),
   qty: z.number().int().min(1),
-  price: z.number().min(0),
 });
 
 // Schema PO
@@ -55,9 +55,9 @@ purchaseOrderRoute.post("/", async (c) => {
       for (const item of parsed.items) {
         await client.query(
           `INSERT INTO inventory.purchase_order_items
-           (id, purchase_order_id, item_id, qty, price)
-           VALUES (gen_random_uuid(), $1, $2, $3, $4)`,
-          [poId, item.item_id, item.qty, item.price]
+           (id, purchase_order_id, item_id, qty)
+           VALUES (gen_random_uuid(), $1, $2, $3)`,
+          [poId, item.item_id, item.qty]
         );
       }
 
@@ -79,13 +79,22 @@ purchaseOrderRoute.post("/", async (c) => {
 
 // GET /purchase-orders - semua PO
 purchaseOrderRoute.get("/", async (c) => {
-  const result = await db.query(
-    `SELECT po.*, s.name AS supplier_name
+  const order_number = c.req.query("order_number");
+
+  const { whereSQL, params } = buildWhereQuery({ order_number }, "po");
+
+  const finalWhere =
+    whereSQL === ""
+      ? "WHERE po.deleted_at IS NULL"
+      : whereSQL.replace("WHERE", "WHERE po.deleted_at IS NULL AND");
+
+  const sql = `SELECT po.*, s.name AS supplier_name
      FROM inventory.purchase_orders po
      JOIN inventory.suppliers s ON po.supplier_id = s.id
-     WHERE po.deleted_at IS NULL
-     ORDER BY po.order_date DESC, po.created_at DESC`
-  );
+     ${finalWhere}
+     ORDER BY po.order_date DESC, po.created_at DESC,  po.order_number DESC`;
+
+  const result = await db.query(sql, params);
   return c.json({ data: result.rows });
 });
 
@@ -173,8 +182,7 @@ purchaseOrderRoute.get("/:id/detail", async (c) => {
               'item_id', poi.item_id,
               'sku', i.sku,
               'item_name', i.name,
-              'qty', poi.qty,
-              'price', poi.price
+              'qty', poi.qty
             )
           ) FILTER (WHERE poi.id IS NOT NULL),
           '[]'
@@ -339,7 +347,7 @@ purchaseOrderRoute.post("/:id/receive", async (c) => {
       .array(
         z.object({
           item_id: z.uuid(),
-          qty: z.number().min(1),
+          qty: z.number().min(0),
         })
       )
       .min(1),
@@ -373,8 +381,10 @@ purchaseOrderRoute.post("/:id/receive", async (c) => {
     );
     const receiveId = receiveRes.rows[0].id;
 
+    const receivedItems = parsed.items.filter((it) => it.qty > 0);
+
     // 2. Insert detail items
-    for (const item of parsed.items) {
+    for (const item of receivedItems) {
       await client.query(
         `INSERT INTO inventory.purchase_receive_items
          (purchase_receive_id, item_id, qty)
@@ -483,9 +493,9 @@ purchaseOrderRoute.put("/:id", async (c) => {
       for (const item of parsed.items) {
         await client.query(
           `INSERT INTO inventory.purchase_order_items
-            (id, purchase_order_id, item_id, qty, price)
-           VALUES (gen_random_uuid(), $1, $2, $3, $4)`,
-          [id, item.item_id, item.qty, item.price]
+            (id, purchase_order_id, item_id, qty)
+           VALUES (gen_random_uuid(), $1, $2, $3)`,
+          [id, item.item_id, item.qty]
         );
       }
 

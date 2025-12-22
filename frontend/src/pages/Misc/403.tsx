@@ -12,7 +12,7 @@ export default function ForbiddenPage() {
       </div>
       <div className="text-center text-sm">
         <h1 className="font-logo text-xl text-[var(--danger)]">
-          403 - Tidak Diizinkan
+          403 - Unauthorized access
         </h1>
       </div>
     </div>

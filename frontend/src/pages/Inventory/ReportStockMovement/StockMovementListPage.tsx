@@ -96,7 +96,7 @@ export default function StockMovementListPage() {
         date_to: dateTo || undefined,
       });
 
-      downloadBlob(blob, "stock-movement.pdf");
+      downloadBlob(blob, "inventory-movement.pdf");
     } catch (err: any) {
       showErrorToast(err.message || "Export to PDF failed");
     } finally {
@@ -114,7 +114,7 @@ export default function StockMovementListPage() {
         date_to: dateTo || undefined,
       });
 
-      downloadBlob(blob, "stock-movement.xlsx");
+      downloadBlob(blob, "inventory-movement.xlsx");
     } catch (err: any) {
       showErrorToast(err.message || "Export to excel failed");
     } finally {

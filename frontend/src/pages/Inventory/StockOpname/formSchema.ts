@@ -14,9 +14,11 @@ export const stockOpnameSchema = z.object({
         item_name: z.string().optional(),
         quantity_system: z.coerce
           .number<number>()
+          .int()
           .nonnegative("qty can not less then 0"),
         quantity_counted: z.coerce
           .number<number>()
+          .int()
           .nonnegative("qty can not less then 0"),
       })
     )

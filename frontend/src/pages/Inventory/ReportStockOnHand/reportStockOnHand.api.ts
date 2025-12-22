@@ -6,7 +6,7 @@ export interface StockOnHandFilters {
   location_name?: string;
 }
 
-function buildStockOnHandQueryParams(filters: StockOnHandFilters = {}) {
+function buildQueryParams(filters: StockOnHandFilters = {}) {
   const params = new URLSearchParams();
 
   if (filters.search) params.append("search", filters.search);
@@ -14,32 +14,27 @@ function buildStockOnHandQueryParams(filters: StockOnHandFilters = {}) {
   if (filters.location_name)
     params.append("location_name", filters.location_name);
 
-  return params.toString();
+  if (params.size == 0) return "";
+  return `?${params.toString()}`;
 }
 
 export async function getStockOnHands(filters: StockOnHandFilters = {}) {
-  const query = buildStockOnHandQueryParams(filters);
-  const res = await apiFetch(
-    `/inventory/stock-on-hand?${query ? `?${query}` : ""}`
-  );
+  const query = buildQueryParams(filters);
+  const res = await apiFetch(`/inventory/stock-on-hand${query}`);
   if (!res.ok) throw new Error("Gagal mengambil data stock on hand");
   return (await res.json()).data;
 }
 
 export async function printStockOnHandsPDF(filters: StockOnHandFilters = {}) {
-  const query = buildStockOnHandQueryParams(filters);
-  const res = await apiFetch(
-    `/inventory/stock-on-hand/pdf?${query ? `?${query}` : ""}`
-  );
+  const query = buildQueryParams(filters);
+  const res = await apiFetch(`/inventory/stock-on-hand/pdf${query}`);
   if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }
 
 export async function printStockOnHandsExcel(filters: StockOnHandFilters = {}) {
-  const query = buildStockOnHandQueryParams(filters);
-  const res = await apiFetch(
-    `/inventory/stock-on-hand/excel?${query ? `?${query}` : ""}`
-  );
+  const query = buildQueryParams(filters);
+  const res = await apiFetch(`/inventory/stock-on-hand/excel${query}`);
   if (!res.ok) throw new Error("Excel report export failed");
   return await res.blob();
 }

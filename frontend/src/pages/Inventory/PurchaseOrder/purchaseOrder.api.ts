@@ -1,7 +1,15 @@
 import { apiFetch } from "@/utils/apiFetch";
 
-export async function getPurchaseOrders() {
-  const res = await apiFetch("/inventory/purchase-orders");
+function buildQueryParams(order_number: string) {
+  const params = new URLSearchParams();
+  if (order_number) params.append("order_number", order_number);
+  if (params.size == 0) return "";
+  return `?${params.toString()}`;
+}
+
+export async function getPurchaseOrders(order_number: string) {
+  const query = buildQueryParams(order_number);
+  const res = await apiFetch(`/inventory/purchase-orders${query}`);
   if (!res.ok) throw new Error("Gagal mengambil data purchase order");
   const data = await res.json();
   return data.data;
@@ -39,7 +47,6 @@ export async function createPurchaseOrder(input: {
   items?: {
     item_id: string;
     qty: number;
-    price: number;
   }[];
 }) {
   const res = await apiFetch("/inventory/purchase-orders", {
@@ -82,7 +89,6 @@ export async function updatePurchaseOrder(
     items?: {
       item_id: string;
       qty: number;
-      price: number;
     }[];
   }
 ) {

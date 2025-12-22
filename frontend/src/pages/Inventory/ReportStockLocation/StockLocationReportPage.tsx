@@ -74,7 +74,7 @@ export default function StockLocationReportPage() {
         location_id: locationId || undefined,
         location_name: locationName || undefined,
       });
-      downloadBlob(blob, "stock-location-report.pdf");
+      downloadBlob(blob, "inventory-location-report.pdf");
     } catch (err: any) {
       showErrorToast(err.message || "Export to PDF failed");
     } finally {
@@ -89,7 +89,7 @@ export default function StockLocationReportPage() {
         location_id: locationId || undefined,
         location_name: locationName || undefined,
       });
-      downloadBlob(blob, "stock-location-report.xlsx");
+      downloadBlob(blob, "inventory-location-report.xlsx");
     } catch (err: any) {
       showErrorToast(err.message || "Export to excel failed");
     } finally {

@@ -13,7 +13,7 @@ import { IconRenderer } from "@/components/IconRenderer";
 import { ViewButtonLink } from "@/components/Buttons/ViewButtonLink";
 import { ButtonGroupWithDropdown } from "@/components/Buttons/ButtonGroupWithDropdown";
 import ForbiddenPage from "pages/Misc/403";
-import { usePermissions } from "./permissions"; // sesuaikan path
+import { usePermissions } from "./permissions";
 import {
   GoodsReceiptDetailPane,
   GoodsReceiptDetailPaneController,
@@ -38,10 +38,18 @@ export default function GoodsReceiptListPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setSearch(searchInput), 500);
+    return () => clearTimeout(timeout);
+  }, [searchInput]);
+
   const fetchGoodsReceipts = async () => {
     setLoading(true);
     try {
-      const data = await getGoodsReceipts();
+      const data = await getGoodsReceipts(search);
       setGoodsReceipts(data);
     } catch (err: any) {
       setError(err.message || "Failed to fetch Goods Receipt data");
@@ -52,7 +60,7 @@ export default function GoodsReceiptListPage() {
 
   useEffect(() => {
     fetchGoodsReceipts();
-  }, []);
+  }, [search]);
 
   const data = useMemo(() => goodsReceipts, [goodsReceipts]);
 
@@ -149,6 +157,18 @@ export default function GoodsReceiptListPage() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Goods Receipts</h1>
+      </div>
+
+      {/* 🔹 filter section */}
+      <div className="flex justify-between items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search PO Number"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded w-90"
+        />
+
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={

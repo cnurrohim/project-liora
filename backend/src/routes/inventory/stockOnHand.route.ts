@@ -3,6 +3,7 @@ import { db } from "../../db.js";
 import puppeteer from "puppeteer";
 import { generateStockOnHandHTML } from "../../templates/StockOnHandPDF.js";
 import { generateStockOnHandExcel } from "../../templates/StockOnHandExcel.js";
+import { createExcel, createPDF } from "../../utils/reportCreator.js";
 
 export const stockOnHandRoute = new Hono();
 
@@ -73,54 +74,30 @@ stockOnHandRoute.get("/", async (c) => {
   return c.json({ data });
 });
 
-stockOnHandRoute.get("/pdf", async (c) => {
-  const filters = {
-    search: c.req.query("search"),
-    location_id: c.req.query("location_id"),
-    location_name: c.req.query("location_name"),
-  };
+stockOnHandRoute.get(
+  "/pdf",
+  createPDF({
+    filename: "inventory-on-hand",
+    getFilters: (c) => ({
+      search: c.req.query("search") || "",
+      location_id: c.req.query("location_id") || "",
+      location_name: c.req.query("location_name") || "",
+    }),
+    getData: (filters) => getFilteredStockOnHand({ ...filters, limit: 1000 }),
+    buildHTML: generateStockOnHandHTML,
+  })
+);
 
-  const data = await getFilteredStockOnHand({
-    ...filters,
-    limit: 1000,
-  });
-
-  const html = generateStockOnHandHTML(data, filters);
-
-  // render pakai Puppeteer
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-
-  const page = await browser.newPage();
-  await page.setContent(html, { waitUntil: "networkidle0" });
-  const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
-  await browser.close();
-
-  c.header("Content-Type", "application/pdf");
-  c.header("Content-Disposition", "attachment; filename=stock-movement.pdf");
-  return c.body(pdfBuffer);
-});
-
-stockOnHandRoute.get("/excel", async (c) => {
-  const filters = {
-    search: c.req.query("search"),
-    location_id: c.req.query("location_id"),
-    location_name: c.req.query("location_name"),
-  };
-
-  const data = await getFilteredStockOnHand({
-    ...filters,
-    limit: 1000,
-  });
-
-  const excelBuffer = await generateStockOnHandExcel(data, filters);
-
-  c.header(
-    "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  );
-  c.header("Content-Disposition", "attachment; filename=stock-movement.xlsx");
-  return c.body(excelBuffer);
-});
+stockOnHandRoute.get(
+  "/excel",
+  createExcel({
+    filename: "inventory-on-hand",
+    getFilters: (c) => ({
+      search: c.req.query("search") || "",
+      location_id: c.req.query("location_id") || "",
+      location_name: c.req.query("location_name") || "",
+    }),
+    getData: (filters) => getFilteredStockOnHand({ ...filters, limit: 1000 }),
+    buildExcel: generateStockOnHandExcel,
+  })
+);

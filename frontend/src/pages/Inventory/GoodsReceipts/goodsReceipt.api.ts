@@ -1,8 +1,17 @@
 import { apiFetch } from "@/utils/apiFetch";
 
+function buildQueryParams(receipt_number: string) {
+  const params = new URLSearchParams();
+  if (receipt_number) params.append("receipt_number", receipt_number);
+  if (params.size == 0) return "";
+  return `?${params.toString()}`;
+}
+
 // ambil semua goods receipts
-export async function getGoodsReceipts() {
-  const res = await apiFetch("/inventory/goods-receipts");
+export async function getGoodsReceipts(receipt_number: string) {
+  const query = buildQueryParams(receipt_number);
+  const res = await apiFetch(`/inventory/goods-receipts${query}`);
+
   if (!res.ok) throw new Error("Gagal mengambil data goods receipt");
   const data = await res.json();
   return data.data;

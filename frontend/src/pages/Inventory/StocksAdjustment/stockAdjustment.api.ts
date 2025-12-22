@@ -1,7 +1,16 @@
 import { apiFetch } from "@/utils/apiFetch";
 
-export async function getStockAdjustments() {
-  const res = await apiFetch("/inventory/stock-adjustments");
+function buildQueryParams(adjustment_number: string) {
+  const params = new URLSearchParams();
+  if (adjustment_number) params.append("adjustment_number", adjustment_number);
+  if (params.size == 0) return "";
+  return `?${params.toString()}`;
+}
+
+export async function getStockAdjustments(adjustment_number: string) {
+  const query = buildQueryParams(adjustment_number);
+  const res = await apiFetch(`/inventory/stock-adjustments${query}`);
+
   if (!res.ok) throw new Error("Gagal mengambil data stock adjustment");
   return (await res.json()).data;
 }

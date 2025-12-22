@@ -3,6 +3,7 @@ import { db } from "../../db.js";
 import { generateStockHistoryHTML } from "../../templates/StockHistoryPDF.js";
 import puppeteer from "puppeteer";
 import { generateStockHistoryExcel } from "../../templates/StockHistoryExcel.js";
+import { createExcel, createPDF } from "../../utils/reportCreator.js";
 
 export const stockHistoryReportRoute = new Hono();
 
@@ -28,27 +29,54 @@ async function getFilteredStockHistory(filters: StockHistory = {}) {
     whereClauses.push(`sm.created_at <= $${params.length}`);
   }
 
-  whereClauses.push(`sm.movement_type IN ('inbound', 'outbound')`);
+  whereClauses.push(
+    `sm.movement_type IN ('inbound', 'outbound', 'adjustment')`
+  );
 
   const whereSQL = whereClauses.length
     ? "WHERE " + whereClauses.join(" AND ")
     : "";
 
-  const sql = `
-    SELECT 
-      i.sku AS item_code,
-      i.name AS item_name,
-      DATE_TRUNC('${period}', sm.created_at)::date AS period,
-      SUM(CASE WHEN sm.movement_type = 'inbound' THEN sm.qty ELSE 0 END) AS total_in,
-      SUM(CASE WHEN sm.movement_type = 'outbound' THEN sm.qty ELSE 0 END) AS total_out,
-      MAX(sm.balance_after) AS closing_balance
-    FROM inventory.stock_movements sm
-    JOIN inventory.items i ON sm.item_id = i.id
-    ${whereSQL}
-    GROUP BY i.sku, i.name, DATE_TRUNC('${period}', sm.created_at)
-    ORDER BY i.sku, period DESC
-    LIMIT ${limit}
-  `;
+  const sql = `WITH final_tx AS (
+  SELECT DISTINCT ON (i.sku, DATE_TRUNC('${period}', sm.created_at))
+    i.sku,
+    i.name,
+    DATE_TRUNC('${period}', sm.created_at)::date AS period,
+    sm.balance_after
+  FROM inventory.stock_movements sm
+  JOIN inventory.items i ON sm.item_id = i.id
+  ${whereSQL}
+  ORDER BY i.sku, DATE_TRUNC('${period}', sm.created_at), sm.created_at DESC, sm.id DESC
+)
+SELECT
+  i.sku AS item_code,
+  i.name AS item_name,
+  ft.period,
+  SUM(CASE WHEN sm.movement_type='inbound' THEN sm.qty ELSE 0 END) AS total_in,
+  SUM(CASE WHEN sm.movement_type='outbound' THEN sm.qty ELSE 0 END) AS total_out,
+  SUM(
+    CASE
+      WHEN sm.movement_type = 'adjustment'
+       AND sm.adjustment_direction = 'increase'
+      THEN sm.qty ELSE 0
+    END
+  ) AS adjustment_in,
+
+  SUM(
+    CASE
+      WHEN sm.movement_type = 'adjustment'
+       AND sm.adjustment_direction = 'decrease'
+      THEN sm.qty ELSE 0
+    END
+  ) AS adjustment_out,
+  ft.balance_after AS closing_balance
+FROM inventory.stock_movements sm
+JOIN inventory.items i ON sm.item_id = i.id
+JOIN final_tx ft ON ft.sku = i.sku AND ft.period = DATE_TRUNC('${period}', sm.created_at)::date 
+${whereSQL}
+GROUP BY i.sku, i.name, period, ft.balance_after
+ORDER BY period DESC
+`;
 
   const result = await db.query(sql, params);
   return result.rows;
@@ -69,54 +97,30 @@ stockHistoryReportRoute.get("/", async (c) => {
   return c.json({ data });
 });
 
-stockHistoryReportRoute.get("/pdf", async (c) => {
-  const filters = {
-    period: c.req.query("period") || "month",
-    dateFrom: c.req.query("date_from"),
-    dateTo: c.req.query("date_to"),
-  };
+stockHistoryReportRoute.get(
+  "/pdf",
+  createPDF({
+    filename: "inventory-history",
+    getFilters: (c) => ({
+      period: c.req.query("period") || "month",
+      dateFrom: c.req.query("date_from"),
+      dateTo: c.req.query("date_to"),
+    }),
+    getData: (filters) => getFilteredStockHistory({ ...filters, limit: 1000 }),
+    buildHTML: generateStockHistoryHTML,
+  })
+);
 
-  const data = await getFilteredStockHistory({
-    ...filters,
-    limit: 1000,
-  });
-
-  const html = generateStockHistoryHTML(data, filters);
-
-  // render pakai Puppeteer
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-
-  const page = await browser.newPage();
-  await page.setContent(html, { waitUntil: "networkidle0" });
-  const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
-  await browser.close();
-
-  c.header("Content-Type", "application/pdf");
-  c.header("Content-Disposition", "attachment; filename=stock-movement.pdf");
-  return c.body(pdfBuffer);
-});
-
-stockHistoryReportRoute.get("/excel", async (c) => {
-  const filters = {
-    period: c.req.query("period") || "month",
-    dateFrom: c.req.query("date_from"),
-    dateTo: c.req.query("date_to"),
-  };
-
-  const data = await getFilteredStockHistory({
-    ...filters,
-    limit: 1000,
-  });
-
-  const excelBuffer = await generateStockHistoryExcel(data, filters);
-
-  c.header(
-    "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  );
-  c.header("Content-Disposition", "attachment; filename=stock-movement.xlsx");
-  return c.body(excelBuffer);
-});
+stockHistoryReportRoute.get(
+  "/excel",
+  createExcel({
+    filename: "inventory-history",
+    getFilters: (c) => ({
+      period: c.req.query("period") || "month",
+      dateFrom: c.req.query("date_from"),
+      dateTo: c.req.query("date_to"),
+    }),
+    getData: (filters) => getFilteredStockHistory({ ...filters, limit: 1000 }),
+    buildExcel: generateStockHistoryExcel,
+  })
+);

@@ -16,7 +16,6 @@ export const purchaseOrderSchema = z.object({
         item_id: z.uuid("item invalid"),
         item_name: z.string().optional(),
         qty: z.number().int().min(1, "required at least 1"),
-        price: z.number().min(0, "price can not be less then 0"),
       })
     )
     .min(1, "required at least 1 item"),

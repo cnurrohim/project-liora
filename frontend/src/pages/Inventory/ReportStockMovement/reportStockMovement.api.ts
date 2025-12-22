@@ -7,7 +7,7 @@ export interface StockMovementFilters {
   date_to?: string;
 }
 
-function buildStockMovementQueryParams(filters: StockMovementFilters = {}) {
+function buildQueryParams(filters: StockMovementFilters = {}) {
   const params = new URLSearchParams();
 
   if (filters.search) params.append("search", filters.search);
@@ -16,12 +16,13 @@ function buildStockMovementQueryParams(filters: StockMovementFilters = {}) {
   if (filters.date_from) params.append("date_from", filters.date_from);
   if (filters.date_to) params.append("date_to", filters.date_to);
 
-  return params.toString();
+  if (params.size == 0) return "";
+  return `?${params.toString()}`;
 }
 
 export async function getStockMovements(filters: StockMovementFilters = {}) {
-  const query = buildStockMovementQueryParams(filters);
-  const res = await apiFetch(`/inventory/stock-movements?${query}`);
+  const query = buildQueryParams(filters);
+  const res = await apiFetch(`/inventory/stock-movements${query}`);
   if (!res.ok) throw new Error("Gagal mengambil data stock movements");
   return (await res.json()).data;
 }
@@ -29,8 +30,8 @@ export async function getStockMovements(filters: StockMovementFilters = {}) {
 export async function printStockMovementsPDF(
   filters: StockMovementFilters = {}
 ) {
-  const query = buildStockMovementQueryParams(filters);
-  const res = await apiFetch(`/inventory/stock-movements/pdf?${query}`);
+  const query = buildQueryParams(filters);
+  const res = await apiFetch(`/inventory/stock-movements/pdf${query}`);
   if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }
@@ -38,8 +39,8 @@ export async function printStockMovementsPDF(
 export async function printStockMovementsExcel(
   filters: StockMovementFilters = {}
 ) {
-  const query = buildStockMovementQueryParams(filters);
-  const res = await apiFetch(`/inventory/stock-movements/excel?${query}`);
+  const query = buildQueryParams(filters);
+  const res = await apiFetch(`/inventory/stock-movements/excel${query}`);
   if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }

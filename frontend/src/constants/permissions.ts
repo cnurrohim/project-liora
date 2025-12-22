@@ -133,7 +133,7 @@ export const PERMISSIONS = {
   MONITORING_INVENTORY_MOVEMENT: {
     VIEW: "monitoring_inventory_movements.view",
   },
-  MONITORING_INVENTORY_ON_HAND: { VIEW: "monitoring_inventory_on_hands.view" },
+  MONITORING_INVENTORY_ON_HAND: { VIEW: "monitoring_inventory_on_hand.view" },
   MONITORING_INVENTORY_LOCATION: { VIEW: "monitoring_inventory_location.view" },
   REPORT_INVENTORY_HISTORY: { VIEW: "report_inventory_history.view" },
   REPORT_PO_SUMMARY: { VIEW: "report_po_summary.view" },

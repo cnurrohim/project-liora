@@ -39,9 +39,10 @@ export default function StockOpnameFormPage() {
 
   const id = editId || reviewId;
   const isEdit = !!editId;
-  const isReview = !!reviewId;
+  const isReviewing = !!reviewId;
 
   const [loading, setLoading] = useState(false);
+  const [isReviewed, setIsReviewed] = useState(false);
   const [allLocations, setAllLocation] = useState<Option[]>([]);
 
   const today = new Date();
@@ -76,14 +77,16 @@ export default function StockOpnameFormPage() {
         locations.map((s: any) => ({ id: s.id, name: `${s.code} - ${s.name}` }))
       );
 
-      if (isEdit || (isReview && id)) {
+      if (isEdit || (isReviewing && id)) {
         const so = await getStockOpnameById(id);
+
+        setIsReviewed(!!so.reviewed_at);
 
         reset({
           opname_date: so.opname_date ? so.opname_date.substring(0, 10) : "",
           notes: so.notes ?? "",
           review_note: so.review_note ?? "",
-          status: isReview ? "reviewed" : so.status ?? "draft",
+          status: isReviewing ? "reviewed" : so.status ?? "draft",
           location_id: so.location_id,
           location_name: so.location_name,
           items: so.items ?? [],
@@ -91,7 +94,7 @@ export default function StockOpnameFormPage() {
       }
     };
     init();
-  }, [isEdit, isReview, id, reset]);
+  }, [isEdit, isReviewing, id, reset]);
 
   const handleSearchItem = async (keyword: string, location_id: string) => {
     if (!keyword || keyword.length < 2) return [];
@@ -115,7 +118,7 @@ export default function StockOpnameFormPage() {
       return;
     }
 
-    if (isReview && !canReview) {
+    if (isReviewing && !canReview) {
       showErrorToast("We're sorry, you don't have access for update!");
       return;
     }
@@ -132,7 +135,7 @@ export default function StockOpnameFormPage() {
         items: data.items.map(({ item_name, ...rest }) => rest),
       };
 
-      if (isEdit || isReview) {
+      if (isEdit || isReviewing) {
         await updateStockOpname(id!, cleanedData);
         const messageEdit = "Inventory Opname Updated";
         const messageReview = "Inventory Opname Reviewed";
@@ -141,9 +144,8 @@ export default function StockOpnameFormPage() {
       } else {
         await createStockOpname(cleanedData);
         showSuccessToast("Inventory Opname created");
+        reset(methods.formState.defaultValues);
       }
-
-      reset(methods.formState.defaultValues);
     } catch (err: any) {
       showErrorToast(err.message || "Failed to create inventory ppname");
     } finally {
@@ -162,7 +164,7 @@ export default function StockOpnameFormPage() {
         <h1 className="text-xl font-bold">
           {isEdit
             ? "Edit Inventory Opname"
-            : isReview
+            : isReviewing
             ? "Review Inventory Opname"
             : "New Inventory Opname"}
         </h1>
@@ -228,7 +230,7 @@ export default function StockOpnameFormPage() {
             control={control}
             render={({ field }) => (
               <textarea
-                readOnly={isReview}
+                readOnly={isReviewing}
                 className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                 {...field}
                 value={field.value ?? ""}
@@ -243,7 +245,7 @@ export default function StockOpnameFormPage() {
           )}
         </div>
 
-        {id && (
+        {(isReviewing || (id && isReviewed)) && (
           <div>
             <label className="block text-[var(--content-text-muted)]">
               Review Note
@@ -253,7 +255,7 @@ export default function StockOpnameFormPage() {
               control={control}
               render={({ field }) => (
                 <textarea
-                  readOnly={isEdit}
+                  readOnly={!canReview}
                   className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
                   {...field}
                   value={field.value ?? ""}
@@ -354,7 +356,7 @@ export default function StockOpnameFormPage() {
                           readOnly
                           className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
                           {...field}
-                          value={field.value ?? 0}
+                          value={Number(field.value) ?? 0}
                         />
                       )}
                     />
@@ -371,7 +373,7 @@ export default function StockOpnameFormPage() {
                           inputMode="numeric"
                           className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
                           {...field}
-                          value={field.value ?? ""}
+                          value={Number(field.value) ?? 0}
                           onChange={(e) =>
                             field.onChange(Number(e.target.value) || 0)
                           }

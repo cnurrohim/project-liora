@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { login } from "./login.api";
 import { useNavigate } from "react-router-dom";
 import { IconRenderer } from "@/components/IconRenderer";
+import { getAppSetting } from "../AppSettings/appSetting.api";
+
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function LoginPage() {
   useAuthRedirect();
@@ -13,6 +16,16 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    getAppSetting().then((data) => {
+      if (data.app_logo) {
+        setPreviewUrl(`${API_URL}/uploads/app/${data.app_logo}`);
+      }
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,21 +51,27 @@ export default function LoginPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-800 p-6 rounded shadow-md w-80 space-y-4"
+        className="p-6 rounded shadow-md w-80 space-y-4"
       >
-        <h2 className="text-2xl font-bold text-blue-400 text-center flex flex-col items-center">
-          <IconRenderer
-            name="RiLock2Line"
-            size={300}
-            className="text-gray-900"
-          />
-        </h2>
+        <div className="text-2xl mb-4 text-gray-900 text-center flex flex-col items-center justify-center">
+          {previewUrl && (
+            <img src={previewUrl} alt="Logo" className="h-100 object-contain" />
+          )}
+
+          {!previewUrl && (
+            <IconRenderer
+              name="RiBox2Line"
+              className="text-gray-400"
+              size={200}
+            />
+          )}
+        </div>
 
         {error && <div className="text-blue-400 text-sm">{error}</div>}
 
         <input
           type="text"
-          placeholder="Username or Email"
+          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white outline-none"

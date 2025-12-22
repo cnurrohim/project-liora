@@ -23,7 +23,7 @@ stockLocationsRoute.get("/", async (c) => {
 stockLocationsRoute.get("/:term/search", async (c) => {
   const term = c.req.param("term");
   const { rows } = await db.query(
-    `SELECT id, code, name, type
+    `SELECT id, code, name
      FROM inventory.stock_locations
      WHERE deleted_at IS NULL
        AND (code ILIKE $1 OR name ILIKE $1)

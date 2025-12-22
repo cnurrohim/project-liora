@@ -5,6 +5,8 @@ export function generateStockHistoryHTML(
     period: string;
     total_in: number;
     total_out: number;
+    adjustment_in: number;
+    adjustment_out: number;
     closing_balance: number;
   }[],
   filters: {
@@ -78,7 +80,7 @@ export function generateStockHistoryHTML(
         </style>
       </head>
       <body>
-        <h2>Laporan Riwayat Masuk / Keluar</h2>
+        <h2>Inventory History Inbound/Outbound</h2>
 
         <div class="filters">
           <div><strong>Period:</strong> ${formatPeriod(period)}</div>
@@ -95,6 +97,8 @@ export function generateStockHistoryHTML(
               <th>Item Name</th>
               <th>Inbound</th>
               <th>Outbound</th>
+              <th>Adj, In</th>
+              <th>Adj, Out</th>
               <th>Balance After</th>
             </tr>
           </thead>
@@ -112,6 +116,8 @@ export function generateStockHistoryHTML(
                     <td>${row.item_name}</td>
                     <td class="text-green text-right">${row.total_in}</td>
                     <td class="text-red text-right">${row.total_out}</td>
+                    <td class="text-red text-right">${row.adjustment_in}</td>
+                    <td class="text-red text-right">${row.adjustment_out}</td>
                     <td class="text-right">${row.closing_balance}</td>
                   </tr>
                 `;

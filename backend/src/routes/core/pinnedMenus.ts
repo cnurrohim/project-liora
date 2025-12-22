@@ -7,7 +7,6 @@ import { clearRedisCache } from "../../lib/redis.js";
 export const pinnedMenusRoute = new Hono<{ Variables: Variables }>();
 pinnedMenusRoute.use(authMiddleware);
 
-// Get pinned menus (only not deleted)
 pinnedMenusRoute.get("/", async (c) => {
   const user = c.get("user");
   const { rows } = await db.query(
@@ -16,16 +15,16 @@ pinnedMenusRoute.get("/", async (c) => {
       FROM user_pinned_menus pm
       JOIN menu_items m ON m.id = pm.menu_id
       WHERE pm.user_id = $1 
-        AND pm.role_id = $2
-        AND m.deleted_at IS NULL
+      AND pm.role_id = $2
+      AND m.deleted_at IS NULL
       ORDER BY pm.pinned_at ASC
-    `,
+      `,
     [user.id, user.role]
   );
   return c.json(rows);
 });
 
-// Pin menu (reactivate if previously unpinned)
+// Pin menu
 pinnedMenusRoute.post("/", async (c) => {
   const body = await c.req.json();
   const user = c.get("user");
@@ -33,12 +32,11 @@ pinnedMenusRoute.post("/", async (c) => {
   try {
     const { rows } = await db.query(
       `
-        INSERT INTO user_pinned_menus (user_id, role_id, menu_id)
-        VALUES ($1, $2, $3)
-        ON CONFLICT (user_id, role_id, menu_id) DO UPDATE
-          SET deleted_at = NULL, pinned_at = now()
-        RETURNING *
-      `,
+          INSERT INTO user_pinned_menus (user_id, role_id, menu_id)
+          VALUES ($1, $2, $3)
+          ON CONFLICT (user_id, role_id, menu_id) DO NOTHING
+          RETURNING *
+          `,
       [user.id, user.role, body.menu_id]
     );
 
@@ -51,24 +49,15 @@ pinnedMenusRoute.post("/", async (c) => {
   }
 });
 
-// Soft unpin menu
+// Unpin menu
 pinnedMenusRoute.delete("/:id", async (c) => {
   const id = c.req.param("id");
   const user = c.get("user");
 
-  const result = await db.query(
-    `
-      UPDATE user_pinned_menus
-      SET deleted_at = now()
-      WHERE user_id = $1 AND role_id = $2 AND menu_id = $3 AND deleted_at IS NULL
-      RETURNING id
-    `,
+  await db.query(
+    `DELETE FROM user_pinned_menus WHERE user_id = $1 AND role_id = $2 AND menu_id = $3`,
     [user.id, user.role, id]
   );
-
-  if (result.rowCount === 0) {
-    return c.json({ error: "Pinned menu not found or already unpinned" }, 404);
-  }
 
   await clearRedisCache();
 

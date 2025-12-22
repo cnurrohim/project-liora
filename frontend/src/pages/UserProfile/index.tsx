@@ -257,7 +257,7 @@ export default function UserProfilePage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full flex justify-center text-[var(--content-text)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
+          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer"
         >
           {loading ? "Saving..." : "Save"}
         </button>

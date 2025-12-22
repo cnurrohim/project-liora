@@ -4,6 +4,7 @@ import { z } from "zod";
 import { authMiddleware } from "../../middleware/auth.js";
 import type { Variables } from "../../types/context.js";
 import { createStockMovement } from "../../helpers/stockMovement.helper.js";
+import { buildWhereQuery } from "../../utils/queryHelper.js";
 
 export const stockAdjustmentRoute = new Hono<{ Variables: Variables }>();
 
@@ -87,11 +88,17 @@ stockAdjustmentRoute.post("/", async (c) => {
  * GET /stock-adjustments - list semua Adjustment
  */
 stockAdjustmentRoute.get("/", async (c) => {
+  const adjustment_number = c.req.query("adjustment_number");
+
+  const { whereSQL, params } = buildWhereQuery({ adjustment_number }, "sa");
+
   const { rows } = await db.query(
     `SELECT sa.*, u.name AS created_by
      FROM inventory.stock_adjustments sa
      JOIN public.users u ON sa.created_by = u.id
-     ORDER BY sa.adjustment_date DESC, sa.created_at DESC`
+     ${whereSQL}
+     ORDER BY sa.adjustment_date DESC, sa.created_at DESC`,
+    params
   );
   return c.json({ data: rows });
 });

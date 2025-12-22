@@ -79,10 +79,12 @@ export default function PreferencesForm() {
     const availableDefault = RouteRegistry.getAllOptions("default");
 
     setAllDefaultPage(
-      [...availableRoute, ...availableDefault].map((p: any) => ({
-        id: p.value,
-        name: p.label,
-      }))
+      [...availableLauncher, ...availableRoute, ...availableDefault].map(
+        (p: any) => ({
+          id: p.value,
+          name: p.label,
+        })
+      )
     );
 
     const unsubUpdate = LayoutController.subscribe(update);
@@ -284,7 +286,7 @@ export default function PreferencesForm() {
                   value={field.value ?? ""}
                   onChange={(e) => field.onChange(e.target.value || null)}
                 >
-                  <option value="">-- pilih route --</option>
+                  <option value="">-- choose default new tab --</option>
                   {allLauncher.map((opt) => (
                     <option key={opt.id} value={opt.id}>
                       {opt.name}

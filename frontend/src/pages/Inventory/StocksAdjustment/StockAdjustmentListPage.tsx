@@ -48,10 +48,18 @@ export default function StockAdjustmentListPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setSearch(searchInput), 500);
+    return () => clearTimeout(timeout);
+  }, [searchInput]);
+
   const fetchAdjustments = async () => {
     setLoading(true);
     try {
-      const data = await getStockAdjustments();
+      const data = await getStockAdjustments(search);
       setAdjustments(data);
     } catch (err: any) {
       setError(err.message || "Failed to fetch Inventory Adjustment");
@@ -62,7 +70,7 @@ export default function StockAdjustmentListPage() {
 
   useEffect(() => {
     fetchAdjustments();
-  }, []);
+  }, [search]);
 
   const data = useMemo(() => adjustments, [adjustments]);
 
@@ -222,6 +230,17 @@ export default function StockAdjustmentListPage() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Inventory Adjustment List</h1>
+      </div>
+      {/* 🔹 filter section */}
+      <div className="flex justify-between items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search PO Number"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded w-90"
+        />
+
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={

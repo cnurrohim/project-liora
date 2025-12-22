@@ -6,23 +6,22 @@ export interface StockHistoryFilters {
   date_to?: string;
 }
 
-function buildStockHistoryQueryParams(filters: StockHistoryFilters = {}) {
+function buildQueryParams(filters: StockHistoryFilters = {}) {
   const params = new URLSearchParams();
 
   if (filters.period) params.append("period", filters.period);
   if (filters.date_from) params.append("date_from", filters.date_from);
   if (filters.date_to) params.append("date_to", filters.date_to);
 
-  return params.toString();
+  if (params.size == 0) return "";
+  return `?${params.toString()}`;
 }
 
 export async function getStockHistoryReports(
   filters: StockHistoryFilters = {}
 ) {
-  const query = buildStockHistoryQueryParams(filters);
-  const res = await apiFetch(
-    `/inventory/stock-history-report${query ? `?${query}` : ""}`
-  );
+  const query = buildQueryParams(filters);
+  const res = await apiFetch(`/inventory/stock-history-report${query}`);
   if (!res.ok) throw new Error("Gagal mengambil data riwayat masuk/keluar");
   return (await res.json()).data;
 }
@@ -30,10 +29,8 @@ export async function getStockHistoryReports(
 export async function printStockHistoryReportsPDF(
   filters: StockHistoryFilters = {}
 ) {
-  const query = buildStockHistoryQueryParams(filters);
-  const res = await apiFetch(
-    `/inventory/stock-history-report/pdf${query ? `?${query}` : ""}`
-  );
+  const query = buildQueryParams(filters);
+  const res = await apiFetch(`/inventory/stock-history-report/pdf${query}`);
   if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }
@@ -41,10 +38,8 @@ export async function printStockHistoryReportsPDF(
 export async function printStockHistoryReportsExcel(
   filters: StockHistoryFilters = {}
 ) {
-  const query = buildStockHistoryQueryParams(filters);
-  const res = await apiFetch(
-    `/inventory/stock-history-report/excel${query ? `?${query}` : ""}`
-  );
+  const query = buildQueryParams(filters);
+  const res = await apiFetch(`/inventory/stock-history-report/excel${query}`);
   if (!res.ok) throw new Error("Excel report export failed");
   return await res.blob();
 }

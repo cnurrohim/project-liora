@@ -62,10 +62,18 @@ export default function PurchaseOrderListPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setSearch(searchInput), 500);
+    return () => clearTimeout(timeout);
+  }, [searchInput]);
+
   const fetchPurchaseOrders = async () => {
     setLoading(true);
     try {
-      const data = await getPurchaseOrders();
+      const data = await getPurchaseOrders(search);
       setPurchaseOrders(data);
     } catch (err: any) {
       setError(err.message || "Failed to load purchase order data");
@@ -76,7 +84,7 @@ export default function PurchaseOrderListPage() {
 
   useEffect(() => {
     fetchPurchaseOrders();
-  }, []);
+  }, [search]);
 
   const data = useMemo(() => purchaseOrders, [purchaseOrders]);
 
@@ -326,6 +334,18 @@ export default function PurchaseOrderListPage() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Purchase Order List</h1>
+      </div>
+
+      {/* 🔹 filter section */}
+      <div className="flex justify-between items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search PO Number"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded w-90"
+        />
+
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={

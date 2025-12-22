@@ -3,6 +3,7 @@ import { db } from "../../db.js";
 import puppeteer from "puppeteer";
 import { generateInventoryDetailsHTML } from "../../templates/printInventoryDetailsPDF.js";
 import { generateInventoryDetailsExcel } from "../../templates/printInventoryDetailsExcel.js";
+import { createExcel, createPDF } from "../../utils/reportCreator.js";
 
 export const itemDetailsRoute = new Hono();
 
@@ -15,10 +16,9 @@ async function getFilteredItemDetails(term?: string) {
 
   if (hasTerm) {
     params.push(`%${term}%`);
-    params.push(`%${term}%`);
     whereClause += `
       AND (
-        LOWER(i.sku)  ILIKE $${params.length - 1} OR
+        LOWER(i.sku)  ILIKE $${params.length} OR
         LOWER(i.name) ILIKE $${params.length}
       )`;
   }
@@ -60,46 +60,36 @@ itemDetailsRoute.get("/", async (c) => {
   return c.json({ data });
 });
 
-itemDetailsRoute.get("/pdf", async (c) => {
-  const term = c.req.query("term")?.trim().toLowerCase();
-  const data = await getFilteredItemDetails(term);
-  const locations = await getAllLocations();
+itemDetailsRoute.get(
+  "/pdf",
+  createPDF({
+    filename: "inventory-details",
+    getFilters: (c) => ({
+      term: c.req.query("term")?.trim().toLowerCase(),
+    }),
+    getData: async ({ term }) => {
+      const data = await getFilteredItemDetails(term);
+      const locations = await getAllLocations();
+      return { data, locations };
+    },
+    buildHTML: ({ data, locations }) =>
+      generateInventoryDetailsHTML(data, locations),
+  })
+);
 
-  const html = generateInventoryDetailsHTML(data, locations);
-
-  // render pakai Puppeteer
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-
-  const page = await browser.newPage();
-  await page.setContent(html, { waitUntil: "networkidle0" });
-  const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
-  await browser.close();
-
-  c.header("Content-Type", "application/pdf");
-  c.header(
-    "Content-Disposition",
-    "attachment; filename=inventory_per_location.pdf"
-  );
-  return c.body(pdfBuffer);
-});
-
-itemDetailsRoute.get("/excel", async (c) => {
-  const term = c.req.query("term")?.trim().toLowerCase();
-  const data = await getFilteredItemDetails(term);
-  const locations = await getAllLocations();
-
-  const excelBuffer = await generateInventoryDetailsExcel(data, locations);
-
-  c.header(
-    "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  );
-  c.header(
-    "Content-Disposition",
-    "attachment; filename=inventory_per_location.xlsx"
-  );
-  return c.body(excelBuffer);
-});
+itemDetailsRoute.get(
+  "/excel",
+  createExcel({
+    filename: "inventory-details",
+    getFilters: (c) => ({
+      term: c.req.query("term")?.trim().toLowerCase(),
+    }),
+    getData: async ({ term }) => {
+      const data = await getFilteredItemDetails(term);
+      const locations = await getAllLocations();
+      return { data, locations };
+    },
+    buildExcel: ({ data, locations }) =>
+      generateInventoryDetailsExcel(data, locations),
+  })
+);

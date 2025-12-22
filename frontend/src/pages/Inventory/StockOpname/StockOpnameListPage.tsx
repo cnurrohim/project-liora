@@ -51,10 +51,18 @@ export default function StockOpnameListPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setSearch(searchInput), 500);
+    return () => clearTimeout(timeout);
+  }, [searchInput]);
+
   const fetchOpnames = async () => {
     setLoading(true);
     try {
-      const data = await getStockOpnames();
+      const data = await getStockOpnames(search);
       setOpnames(data);
     } catch (err: any) {
       setError(err.message || "Failed to fetch Inventory Opname");
@@ -65,7 +73,7 @@ export default function StockOpnameListPage() {
 
   useEffect(() => {
     fetchOpnames();
-  }, []);
+  }, [search]);
 
   const data = useMemo(() => opnames, [opnames]);
 
@@ -272,6 +280,17 @@ export default function StockOpnameListPage() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Inventory Opname List</h1>
+      </div>
+      {/* 🔹 filter section */}
+      <div className="flex justify-between items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search PO Number"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded w-90"
+        />
+
         {canCreate && (
           <ButtonGroupWithDropdown
             mainLabel={

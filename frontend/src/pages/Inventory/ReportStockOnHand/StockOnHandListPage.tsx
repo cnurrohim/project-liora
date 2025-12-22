@@ -83,7 +83,7 @@ export default function StockOnHandListPage() {
         location_id: locationId || undefined,
         location_name: locationName || undefined,
       });
-      downloadBlob(blob, "stock-on-hand.pdf");
+      downloadBlob(blob, "inventory-on-hand.pdf");
     } catch (err: any) {
       showErrorToast(err.message || "Export to PDF failed");
     } finally {
@@ -99,7 +99,7 @@ export default function StockOnHandListPage() {
         location_id: locationId || undefined,
         location_name: locationName || undefined,
       });
-      downloadBlob(blob, "stock-on-hand.xlsx");
+      downloadBlob(blob, "inventory-on-hand.xlsx");
     } catch (err: any) {
       showErrorToast(err.message || "Export to excel failed");
     } finally {

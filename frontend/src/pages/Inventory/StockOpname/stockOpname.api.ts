@@ -1,7 +1,16 @@
 import { apiFetch } from "@/utils/apiFetch";
 
-export async function getStockOpnames() {
-  const res = await apiFetch("/inventory/stock-opnames");
+function buildQueryParams(opname_number: string) {
+  const params = new URLSearchParams();
+  if (opname_number) params.append("opname_number", opname_number);
+  if (params.size == 0) return "";
+  return `?${params.toString()}`;
+}
+
+export async function getStockOpnames(opname_number: string) {
+  const query = buildQueryParams(opname_number);
+  const res = await apiFetch(`/inventory/stock-opnames${query}`);
+
   if (!res.ok) throw new Error("Gagal mengambil data stock opname");
   return (await res.json()).data;
 }

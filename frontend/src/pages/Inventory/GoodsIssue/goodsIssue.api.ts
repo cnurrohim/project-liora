@@ -1,8 +1,17 @@
 import { apiFetch } from "@/utils/apiFetch";
 
+function buildQueryParams(issue_number: string) {
+  const params = new URLSearchParams();
+  if (issue_number) params.append("issue_number", issue_number);
+  if (params.size == 0) return "";
+  return `?${params.toString()}`;
+}
+
 // ambil semua goods issues
-export async function getGoodsIssues() {
-  const res = await apiFetch("/inventory/goods-issues");
+export async function getGoodsIssues(issue_number: string) {
+  const query = buildQueryParams(issue_number);
+  const res = await apiFetch(`/inventory/goods-issues${query}`);
+
   if (!res.ok) throw new Error("Gagal mengambil data goods issue");
   const data = await res.json();
   return data.data;

@@ -6,6 +6,8 @@ interface StockHistoryRow {
   period: string; // yyyy-mm-dd
   total_in: number;
   total_out: number;
+  adjustment_in: number;
+  adjustment_out: number;
   closing_balance: number;
 }
 
@@ -33,7 +35,7 @@ export async function generateStockHistoryExcel(
     return "Monthly";
   };
 
-  sheet.addRow(["Entry/Exit History Report"]).font = {
+  sheet.addRow(["Inbound/Outbond History Report"]).font = {
     size: 14,
     bold: true,
   };
@@ -50,6 +52,8 @@ export async function generateStockHistoryExcel(
     "Item Name",
     "Inbound",
     "Outbound",
+    "Adj. In",
+    "Adj. Out",
     "Balance After",
   ]).font = { bold: true };
 
@@ -62,6 +66,8 @@ export async function generateStockHistoryExcel(
       r.item_name,
       r.total_in,
       r.total_out,
+      r.adjustment_in,
+      r.adjustment_out,
       r.closing_balance,
     ]);
   });

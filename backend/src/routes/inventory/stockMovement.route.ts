@@ -4,6 +4,7 @@ import { z } from "zod";
 import puppeteer from "puppeteer";
 import { generateStockMovementHTML } from "../../templates/stockMovementPDF.js";
 import { generateStockMovementExcel } from "../../templates/stockMovementExcel.js";
+import { createExcel, createPDF } from "../../utils/reportCreator.js";
 
 export const stockMovementRoute = new Hono();
 
@@ -99,60 +100,37 @@ stockMovementRoute.get("/", async (c) => {
   return c.json({ data });
 });
 
-// PDF export
-stockMovementRoute.get("/pdf", async (c) => {
-  const filters = {
-    search: c.req.query("search"),
-    movement_type: c.req.query("movement_type"),
-    date_from: c.req.query("date_from"),
-    date_to: c.req.query("date_to"),
-  };
+stockMovementRoute.get(
+  "/pdf",
+  createPDF({
+    filename: "inventory-movement",
+    getFilters: (c) => ({
+      search: c.req.query("search") || "",
+      movement_type: c.req.query("movement_type") || "",
+      date_from: c.req.query("date_from") || "",
+      date_to: c.req.query("date_to") || "",
+    }),
+    getData: (filters) =>
+      getFilteredStockMovements({ ...filters, limit: 1000 }),
+    buildHTML: generateStockMovementHTML,
+  })
+);
 
-  const data = await getFilteredStockMovements({
-    ...filters,
-    limit: 1000,
-  });
-
-  const html = generateStockMovementHTML(data, filters);
-
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-
-  const page = await browser.newPage();
-  await page.setContent(html, { waitUntil: "networkidle0" });
-  const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
-  await browser.close();
-
-  c.header("Content-Type", "application/pdf");
-  c.header("Content-Disposition", "attachment; filename=stock-movement.pdf");
-  return c.body(pdfBuffer);
-});
-
-// Excel export
-stockMovementRoute.get("/excel", async (c) => {
-  const filters = {
-    search: c.req.query("search"),
-    movement_type: c.req.query("movement_type"),
-    date_from: c.req.query("date_from"),
-    date_to: c.req.query("date_to"),
-  };
-
-  const data = await getFilteredStockMovements({
-    ...filters,
-    limit: 1000,
-  });
-
-  const excelBuffer = await generateStockMovementExcel(data, filters);
-
-  c.header(
-    "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  );
-  c.header("Content-Disposition", "attachment; filename=stock-movement.xlsx");
-  return c.body(excelBuffer);
-});
+stockMovementRoute.get(
+  "/excel",
+  createExcel({
+    filename: "inventory-movement",
+    getFilters: (c) => ({
+      search: c.req.query("search") || "",
+      movement_type: c.req.query("movement_type") || "",
+      date_from: c.req.query("date_from") || "",
+      date_to: c.req.query("date_to") || "",
+    }),
+    getData: (filters) =>
+      getFilteredStockMovements({ ...filters, limit: 1000 }),
+    buildExcel: generateStockMovementExcel,
+  })
+);
 
 // GET /stock-movements/:id
 stockMovementRoute.get("/:id", async (c) => {

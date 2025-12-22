@@ -217,7 +217,7 @@ export default function MenuFormPage() {
                     allRoutes.find((opt) => opt.id === field.value) ?? null
                   }
                   onChange={(val) => field.onChange(val ? val.id : null)}
-                  placeholder="Pilih Route"
+                  placeholder="Choose Route"
                 />
               )}
             />
@@ -232,7 +232,7 @@ export default function MenuFormPage() {
               className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("command")}
             >
-              <option value="">(pilih command)</option>
+              <option value="">(choose command)</option>
               {CommandRegistry.getOptions().map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
@@ -244,12 +244,12 @@ export default function MenuFormPage() {
 
         {/* Parent */}
         <div>
-          <label>Parent Menu (opsional)</label>
+          <label>Parent Menu (optional)</label>
           <select
             className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
             {...register("parent_id")}
           >
-            <option value="">(tanpa parent)</option>
+            <option value="">(without parent)</option>
             {allMenus
               .filter((m) => m.id !== id)
               .map((menu) => (

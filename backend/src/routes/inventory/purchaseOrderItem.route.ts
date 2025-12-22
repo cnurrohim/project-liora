@@ -9,7 +9,6 @@ const purchaseOrderItemSchema = z.object({
   purchase_order_id: z.uuid(),
   item_id: z.uuid(),
   qty: z.number().int().min(1),
-  price: z.number().min(0).optional(),
   received_qty: z.number().int().min(0).optional(),
 });
 
@@ -52,14 +51,13 @@ purchaseOrderItemRoute.post("/", async (c) => {
 
     const result = await db.query(
       `INSERT INTO inventory.purchase_order_items
-       (id, purchase_order_id, item_id, qty, price, received_qty)
-       VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)
+       (id, purchase_order_id, item_id, qty, received_qty)
+       VALUES (gen_random_uuid(), $1, $2, $3, $4)
        RETURNING *`,
       [
         parsed.purchase_order_id,
         parsed.item_id,
         parsed.qty,
-        parsed.price ?? 0,
         parsed.received_qty ?? 0,
       ]
     );
@@ -81,14 +79,13 @@ purchaseOrderItemRoute.put("/:id", async (c) => {
 
     const result = await db.query(
       `UPDATE inventory.purchase_order_items
-       SET purchase_order_id=$1, item_id=$2, qty=$3, price=$4, received_qty=$5, updated_at=NOW()
-       WHERE id=$6 AND deleted_at IS NULL
+       SET purchase_order_id=$1, item_id=$2, qty=$3, received_qty=$4, updated_at=NOW()
+       WHERE id=$5 AND deleted_at IS NULL
        RETURNING *`,
       [
         parsed.purchase_order_id,
         parsed.item_id,
         parsed.qty,
-        parsed.price ?? 0,
         parsed.received_qty ?? 0,
         id,
       ]

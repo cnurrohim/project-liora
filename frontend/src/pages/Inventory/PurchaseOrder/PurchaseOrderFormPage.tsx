@@ -125,15 +125,16 @@ export default function PurchaseOrderFormPage() {
       } else {
         await createPurchaseOrder(data);
         showSuccessToast("Purchase Order created");
+        reset(methods.formState.defaultValues);
       }
-
-      reset(methods.formState.defaultValues);
     } catch (err: any) {
       showErrorToast(err.message || "Saving purchase order failed");
     } finally {
       setLoading(false);
     }
   };
+
+  console.log(errors);
 
   return (
     <FormProvider {...methods}>
@@ -187,6 +188,11 @@ export default function PurchaseOrderFormPage() {
               className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("order_date")}
             />
+            {typeof errors.order_date?.message === "string" && (
+              <p className="text-[var(--danger)] text-sm">
+                {errors.order_date.message}
+              </p>
+            )}
           </div>
 
           {/* Expected date */}
@@ -199,31 +205,26 @@ export default function PurchaseOrderFormPage() {
               className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("expected_date")}
             />
+            {typeof errors.expected_date?.message === "string" && (
+              <p className="text-[var(--danger)] text-sm">
+                {errors.expected_date.message}
+              </p>
+            )}
           </div>
 
-          {/* Status */}
-          {/* <div>
-            <label className="block text-[var(--content-text-muted)]">Status</label>
-            <select
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
-              {...register("status")}
-            >
-              <option value="draft">Draft</option>
-              <option value="confirmed">confirmed</option>
-              <option value="received">Received</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div> */}
-
-          {/* Notes */}
           <div>
             <label className="block text-[var(--content-text-muted)]">
-              Catatan
+              Notes
             </label>
             <textarea
               className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
               {...register("notes")}
             />
+            {typeof errors.notes?.message === "string" && (
+              <p className="text-[var(--danger)] text-sm">
+                {errors.notes.message}
+              </p>
+            )}
           </div>
 
           {/* Items */}
@@ -238,9 +239,6 @@ export default function PurchaseOrderFormPage() {
                   <th className="border border-[var(--content-border)] px-2 py-1">
                     Qty
                   </th>
-                  {/* <th className="border border-[var(--content-border)] px-2 py-1">
-                    Price
-                  </th> */}
                   <th className="border border-[var(--content-border)] px-2 py-1">
                     Action
                   </th>
@@ -288,16 +286,6 @@ export default function PurchaseOrderFormPage() {
                         })}
                       />
                     </td>
-                    {/* <td className="border border-[var(--content-border)] px-2 py-1">
-                      <input
-                        type="number"
-                        placeholder="Harga"
-                        className="w-32 p-2 bg-[var(--content-surface)] rounded"
-                        {...register(`items.${index}.price`, {
-                          valueAsNumber: true,
-                        })}
-                      />
-                    </td> */}
                     <td className="border border-[var(--content-border)] px-2 py-1">
                       <button
                         type="button"
@@ -313,7 +301,7 @@ export default function PurchaseOrderFormPage() {
                   <td className="text-left">
                     <button
                       type="button"
-                      onClick={() => append({ item_id: "", qty: 1, price: 0 })}
+                      onClick={() => append({ item_id: "", qty: 1 })}
                       className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--success-foreground)] rounded"
                     >
                       + Add Item

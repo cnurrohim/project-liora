@@ -155,11 +155,7 @@ export default function POSummaryListPage() {
                   : "bg-[var(--warning)]"
               }`}
               style={{
-                width: `${
-                  row.original.status === "Cancelled"
-                    ? 100
-                    : row.original.received_percent
-                }%`,
+                width: `${row.original.received_percent}%`,
               }}
             />
           </div>
@@ -239,6 +235,7 @@ export default function POSummaryListPage() {
           <option value="Open">Open</option>
           <option value="Partial">Partial</option>
           <option value="Received">Received</option>
+          <option value="Cancelled">Cancelled</option>
         </select>
 
         <button

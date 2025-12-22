@@ -55,13 +55,13 @@ menuRoute.get("/", async (c) => {
 
     const cacheKey = `menus:${userId}:${roleId}`;
     const cached = await redis.get(cacheKey);
-    if (cached) {
-      return c.json(JSON.parse(cached));
-    }
+    // if (cached) {
+    //   return c.json(JSON.parse(cached));
+    // }
 
     // fetch
     const [userPermissions, menus, pinnedIds] = await Promise.all([
-      getUserPermissions(userId),
+      getUserPermissions(userId, roleId),
       getMenus(),
       getPinnedMenuIds(userId, roleId),
     ]);
@@ -407,18 +407,30 @@ async function insertMenuPermissions(
 }
 
 // === helper DB functions ===
-async function getUserPermissions(userId: string): Promise<Permission[]> {
-  const res = await db.query(
-    `
+async function getUserPermissions(
+  userId: string,
+  roleId?: string
+): Promise<Permission[]> {
+  const params = [];
+  params.push(userId);
+  let whereClause = `WHERE (ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true))`;
+
+  if (roleId) {
+    params.push(roleId);
+    whereClause = `WHERE (ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true)) and rp.role_id = $2`;
+  }
+
+  const sql = `
     SELECT DISTINCT p.id, p.domain, p.name
     FROM permissions p
     LEFT JOIN role_permissions rp ON rp.permission_id = p.id
     LEFT JOIN user_roles ur ON ur.role_id = rp.role_id
     LEFT JOIN user_permissions up ON up.permission_id = p.id
-    WHERE (ur.user_id = $1 OR (up.user_id = $1 AND up.granted = true))
-    `,
-    [userId]
-  );
+    ${whereClause}
+    `;
+
+  const res = await db.query(sql, params);
+
   return res.rows as Permission[];
 }
 

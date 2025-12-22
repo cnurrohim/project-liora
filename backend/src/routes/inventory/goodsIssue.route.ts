@@ -5,6 +5,7 @@ import { authMiddleware } from "../../middleware/auth.js";
 import type { Variables } from "../../types/context.js";
 import { createStockMovement } from "../../helpers/stockMovement.helper.js";
 import { createStockTransfer } from "../../helpers/StockTransfer.helper.js";
+import { buildWhereQuery } from "../../utils/queryHelper.js";
 
 export const goodsIssueRoute = new Hono<{ Variables: Variables }>();
 
@@ -122,11 +123,16 @@ goodsIssueRoute.post("/", async (c) => {
  * GET /goods-issues - list semua GI
  */
 goodsIssueRoute.get("/", async (c) => {
+  const issue_number = c.req.query("issue_number");
+  const { whereSQL, params } = buildWhereQuery({ issue_number }, "gi");
+
   const { rows } = await db.query(
     `SELECT gi.*, u.name AS created_by_name
      FROM inventory.goods_issues gi
      JOIN public.users u ON gi.created_by = u.id
-     ORDER BY gi.issue_date DESC, gi.created_at DESC`
+     ${whereSQL}
+     ORDER BY gi.issue_date DESC, gi.created_at DESC`,
+    params
   );
   return c.json({ data: rows });
 });

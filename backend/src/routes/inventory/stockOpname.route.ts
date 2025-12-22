@@ -4,6 +4,7 @@ import { z } from "zod";
 import { authMiddleware } from "../../middleware/auth.js";
 import type { Variables } from "../../types/context.js";
 import { createStockMovement } from "../../helpers/stockMovement.helper.js";
+import { buildWhereQuery } from "../../utils/queryHelper.js";
 
 export const stockOpnameRoute = new Hono<{ Variables: Variables }>();
 
@@ -114,11 +115,17 @@ stockOpnameRoute.get("/:id", async (c) => {
  * GET /stock-opnames - list all opnames
  */
 stockOpnameRoute.get("/", async (c) => {
+  const opname_number = c.req.query("opname_number");
+
+  const { whereSQL, params } = buildWhereQuery({ opname_number }, "so");
+
   const { rows } = await db.query(
     `SELECT so.*, u.name AS created_by
      FROM inventory.stock_opnames so
      JOIN public.users u ON so.created_by = u.id
-     ORDER BY so.opname_date DESC`
+     ${whereSQL}
+     ORDER BY so.opname_date DESC`,
+    params
   );
   return c.json({ data: rows });
 });
@@ -364,10 +371,23 @@ stockOpnameRoute.patch("/:id", async (c) => {
          SET review_note = $1,
              reviewed_by = $2,
              reviewed_at = now(),
-             status = 'reviewed'
-         WHERE id = $3 AND status IN ('draft','reviewed')
+             status = 'reviewed',
+             location_id = $3,
+             opname_date = $4,
+             notes = $5,
+             updated_by = $6,
+             updated_at = now()
+         WHERE id = $7 AND status IN ('draft','reviewed')
          RETURNING *`,
-        [parsed.review_note ?? null, user.id, id]
+        [
+          parsed.review_note ?? null,
+          user.id,
+          parsed.location_id,
+          parsed.opname_date ?? new Date().toISOString().substring(0, 10),
+          parsed.notes ?? null,
+          user.id,
+          id,
+        ]
       );
     } else {
       opnameRes = await client.query(
@@ -387,21 +407,23 @@ stockOpnameRoute.patch("/:id", async (c) => {
           id,
         ]
       );
+    }
 
-      // Hapus + insert ulang items
-      await client.query(
-        `DELETE FROM inventory.stock_opname_items WHERE opname_id = $1`,
-        [id]
-      );
+    await client.query(
+      `DELETE FROM inventory.stock_opname_items WHERE opname_id = $1`,
+      [id]
+    );
 
-      for (const item of parsed.items) {
-        await client.query(
-          `INSERT INTO inventory.stock_opname_items
+    for (const item of parsed.items) {
+      const updateSOItemsQuery = `INSERT INTO inventory.stock_opname_items
            (opname_id, item_id, quantity_system, quantity_counted)
-           VALUES ($1, $2, $3, $4)`,
-          [id, item.item_id, item.quantity_system, item.quantity_counted]
-        );
-      }
+           VALUES ($1, $2, $3, $4)`;
+      await client.query(updateSOItemsQuery, [
+        id,
+        item.item_id,
+        item.quantity_system,
+        item.quantity_counted,
+      ]);
     }
 
     if (opnameRes.rowCount === 0) {

@@ -36,10 +36,10 @@ export function generateStockLocationHTML(
         </style>
       </head>
       <body>
-        <h2>Laporan Inventory per Lokasi</h2>
+        <h2>Inventory Report per Location</h2>
 
         <div class="filters">
-          <div><strong>Lokasi:</strong> ${location_name || "-"}</div>
+          <div><strong>Location:</strong> ${location_name || "-"}</div>
         </div>
 
         <table>

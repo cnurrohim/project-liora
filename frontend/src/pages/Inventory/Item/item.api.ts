@@ -7,24 +7,34 @@ export async function getItems() {
   return data.data;
 }
 
-export async function getItemDetails(term?: string) {
-  const q = term ? `?term=${encodeURIComponent(term)}` : "";
-  const res = await apiFetch(`/inventory/item-details${q}`);
+function buildQueryParams(term: string) {
+  const params = new URLSearchParams();
+  if (term) params.append("term", term);
+  if (params.size == 0) return "";
+  return `?${params.toString()}`;
+}
+
+export async function getItemDetails(term: string) {
+  const query = buildQueryParams(term);
+  const res = await apiFetch(`/inventory/item-details${query}`);
+
   if (!res.ok) throw new Error("Failed to fetch inventory item details");
   const data = await res.json();
   return data.data;
 }
 
-export async function printItemDetailsPDF(term?: string) {
-  const q = term ? `?term=${encodeURIComponent(term)}` : "";
-  const res = await apiFetch(`/inventory/item-details/pdf?${q}`);
+export async function printItemDetailsPDF(term: string) {
+  const query = buildQueryParams(term);
+  const res = await apiFetch(`/inventory/item-details/pdf${query}`);
+
   if (!res.ok) throw new Error("PDF report export failed");
   return await res.blob();
 }
 
-export async function printItemDetailsExcel(term?: string) {
-  const q = term ? `?term=${encodeURIComponent(term)}` : "";
-  const res = await apiFetch(`/inventory/item-details/excel?${q}`);
+export async function printItemDetailsExcel(term: string) {
+  const query = buildQueryParams(term);
+  const res = await apiFetch(`/inventory/item-details/excel${query}`);
+
   if (!res.ok) throw new Error("EXcel report export failed");
   return await res.blob();
 }

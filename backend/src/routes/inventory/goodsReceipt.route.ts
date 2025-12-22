@@ -4,6 +4,7 @@ import { z } from "zod";
 import { authMiddleware } from "../../middleware/auth.js";
 import type { Variables } from "../../types/context.js";
 import { createStockMovement } from "../../helpers/stockMovement.helper.js";
+import { buildWhereQuery } from "../../utils/queryHelper.js";
 
 export const goodsReceiptRoute = new Hono<{ Variables: Variables }>();
 
@@ -97,13 +98,21 @@ goodsReceiptRoute.post("/", async (c) => {
  * GET /goods-receipts - list semua GR
  */
 goodsReceiptRoute.get("/", async (c) => {
-  const { rows } = await db.query(
-    `SELECT gr.*, s.name AS supplier_name
+  const receipt_number = c.req.query("receipt_number");
+  const { whereSQL, params } = buildWhereQuery({ receipt_number }, "gr");
+
+  const finalWhere =
+    whereSQL === ""
+      ? "WHERE gr.deleted_at IS NULL"
+      : whereSQL.replace("WHERE", "WHERE gr.deleted_at IS NULL AND");
+
+  const sql = `SELECT gr.*, s.name AS supplier_name
      FROM inventory.goods_receipts gr
      JOIN inventory.suppliers s ON gr.supplier_id = s.id
-     WHERE gr.deleted_at IS NULL
-     ORDER BY gr.receipt_date DESC, gr.created_at DESC`
-  );
+     ${finalWhere}
+     ORDER BY gr.receipt_date DESC, gr.created_at DESC, gr.receipt_number desc`;
+
+  const { rows } = await db.query(sql, params);
   return c.json({ data: rows });
 });
 
