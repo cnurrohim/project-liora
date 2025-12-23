@@ -85,7 +85,7 @@ export default function LoginPage() {
         </div>
 
         {error && <div className="text-red-400 text-sm">{error}</div>}
-
+        <h1 className="text-center">Welcome</h1>
         <input
           type="text"
           placeholder="Username"
