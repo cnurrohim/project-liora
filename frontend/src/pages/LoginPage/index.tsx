@@ -8,6 +8,7 @@ import { getAppSetting } from "../AppSettings/appSetting.api";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 const DEMO_MODE = import.meta.env.VITE_API_DEMO_MODE === "true";
+console.log("DEMO:", import.meta.env.VITE_API_DEMO_MODE);
 
 export default function LoginPage() {
   useAuthRedirect();
