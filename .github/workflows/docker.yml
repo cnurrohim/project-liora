@@ -25,5 +25,5 @@ jobs:
           ssh -vvv -i ~/.ssh/deploy_key rokim@103.127.99.96 << 'EOF'
             cd /home/rokim/project-root
             git pull origin main
-            docker compose up -d
+            docker compose up -d --build
           EOF
