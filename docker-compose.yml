@@ -22,7 +22,7 @@ services:
       - internal
 
   backend:
-    build: ./backend
+    image: ghcr.io/cnurrohim/project-root-backend:latest
     restart: always
     env_file:
       - .env.backend
@@ -35,10 +35,8 @@ services:
       - internal
 
   frontend:
-    build: ./frontend
+    image: ghcr.io/cnurrohim/project-root-frontend:latest
     restart: always
-    env_file:
-      - ./frontend/.env
     ports:
       - "80:80"
     depends_on:
