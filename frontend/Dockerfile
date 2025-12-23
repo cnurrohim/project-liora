@@ -2,6 +2,12 @@
 FROM node:20-alpine as build
 WORKDIR /app
 
+ARG VITE_API_BASE_URL
+ARG VITE_API_DEMO_MODE
+
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_API_DEMO_MODE=$VITE_API_DEMO_MODE
+
 ENV NODE_OPTIONS=--max-old-space-size=1024
 
 # Copy package.json & tsconfig
@@ -13,8 +19,6 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Copy frontend env file
-COPY .env .env
 
 # Build Vite
 RUN npm run build
