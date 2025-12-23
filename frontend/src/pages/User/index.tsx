@@ -28,6 +28,8 @@ import { usePermissions } from "./permissions";
 import ForbiddenPage from "pages/Misc/403";
 import { getActiveUser } from "@/services/authServices";
 
+const IS_MODE = import.meta.env.VITE_API_DEMO_MODE === "true";
+
 type User = {
   id: string;
   name: string;
@@ -258,14 +260,14 @@ export default function UserListPage() {
                 icon={
                   row.original.is_active ? "RiForbid2Line" : "RiForbid2Line"
                 }
-                label={row.original.is_active ? "Nonaktifkan" : "Aktifkan"}
+                label={row.original.is_active ? "Deactivate" : "Activate"}
                 onClick={() =>
                   toggleUserActivation(row.original.id, row.original.is_active)
                 }
               />
             )}
 
-            {canDelete && (
+            {canDelete && !IS_MODE && (
               <DeleteButtonLink onClick={() => handleDelete(row.original.id)} />
             )}
           </div>

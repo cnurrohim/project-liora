@@ -35,7 +35,7 @@ export async function apiFetch(
         window.location.href = "/login";
       }
     } catch (e) {
-      console.error("Gagal refresh token:", e);
+      console.error("refreshing token failed:", e);
       localStorage.clear();
       window.location.href = "/login";
     }

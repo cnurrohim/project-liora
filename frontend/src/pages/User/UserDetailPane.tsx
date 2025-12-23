@@ -68,7 +68,7 @@ export function UserDetailPane() {
         <div>
           <p className="text-sm text-[var(--content-text-muted)]">Status</p>
           <p className="text-[var(--content-text)]">
-            {user.is_active ? "Aktif" : "Nonaktif"}
+            {user.is_active ? "Active" : "Inactive"}
           </p>
         </div>
 

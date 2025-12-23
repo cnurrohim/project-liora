@@ -28,6 +28,28 @@ export async function login({
   return data;
 }
 
+export async function loginDemo({ role }: { role: "admin" | "staff" | "dev" }) {
+  const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const res = await fetch(`${API_URL}/auth/demo-login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ role }),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error?.error || "Demo Login failed");
+  }
+
+  // ✅ Ini bagian penting: parse response jadi object
+  const data = await res.json();
+
+  // Harus mengandung { token, refreshToken, user }
+  return data;
+}
+
 export async function switchRoleAPI(roleId: string) {
   const res = await apiFetch("/auth/switch-role", {
     method: "POST",

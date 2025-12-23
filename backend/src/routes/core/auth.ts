@@ -229,8 +229,91 @@ authRoute.post("/refresh", async (c) => {
 
 authRoute.post("/logout", async (c) => {
   setCookie(c, "refreshToken", "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
     maxAge: 0,
     path: "/",
   });
   return c.json({ message: "Logged out" });
+});
+
+authRoute.post("/demo-login", async (c) => {
+  if (process.env.DEMO_MODE !== "true") {
+    return c.json({ error: `Demo mode disabled` }, 403);
+  }
+
+  const { role } = await c.req.json();
+  if (!["admin", "staff", "dev"].includes(role)) {
+    return c.json({ error: "Invalid demo role" }, 400);
+  }
+
+  // mapping role → username demo
+  const demoUserMap: Record<string, string> = {
+    admin: "supervisor",
+    staff: "operator",
+    dev: "dev",
+  };
+
+  const username = demoUserMap[role];
+
+  const result = await db.query(
+    "SELECT * FROM users WHERE username = $1 LIMIT 1",
+    [username]
+  );
+
+  const user = result.rows[0];
+  if (!user) {
+    return c.json({ error: "Demo user not found" }, 404);
+  }
+
+  // ambil role user
+  const roles = await getUserRoles(user.id);
+  const activeRole =
+    roles.find((r) => r.name.toLowerCase() === role) ||
+    roles.find((r) => r.is_default) ||
+    roles[0];
+
+  if (!activeRole) {
+    return c.json({ error: "Role not assigned" }, 400);
+  }
+
+  // simpan active role
+  await db.query("UPDATE users SET active_role_id = $1 WHERE id = $2", [
+    activeRole.id,
+    user.id,
+  ]);
+
+  const token = generateToken({
+    id: String(user.id),
+    name: user.name,
+    role: String(activeRole.id),
+  });
+
+  const refreshToken = generateRefreshToken({
+    id: user.id,
+    name: user.name,
+  });
+
+  const permissions = await getUserPermissions(user.id, activeRole.id);
+
+  setCookie(c, "refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  });
+
+  return c.json({
+    token,
+    user: {
+      id: user.id,
+      name: user.name,
+      roles: roles.map((r) => ({ id: r.id, name: r.name })),
+      defaultRole: { id: activeRole.id, name: activeRole.name },
+      permissions,
+      demo: true,
+    },
+  });
 });

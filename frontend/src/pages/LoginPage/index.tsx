@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
-import { login } from "./login.api";
+import { login, loginDemo } from "./login.api";
 import { useNavigate } from "react-router-dom";
 import { IconRenderer } from "@/components/IconRenderer";
 import { getAppSetting } from "../AppSettings/appSetting.api";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
+const DEMO_MODE = import.meta.env.VITE_API_DEMO_MODE === "true";
 
 export default function LoginPage() {
   useAuthRedirect();
@@ -27,21 +28,36 @@ export default function LoginPage() {
     });
   }, []);
 
+  const applyAuthSession = (token: string, user: any) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    navigate("/", { replace: true });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!DEMO_MODE || loading) return;
     setError("");
     setLoading(true);
     try {
       const { token, user } = await login({ username, password });
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      setTimeout(() => {
-        navigate("/", { replace: true });
-      }, 1000);
+      applyAuthSession(token, user);
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoLogin = async (role: "admin" | "staff" | "dev") => {
+    if (!DEMO_MODE || loading) return;
+    setError("");
+    setLoading(true);
+    try {
+      const { token, user } = await loginDemo({ role });
+      applyAuthSession(token, user);
+    } catch {
+      setError("Demo login failed");
     } finally {
       setLoading(false);
     }
@@ -67,7 +83,7 @@ export default function LoginPage() {
           )}
         </div>
 
-        {error && <div className="text-blue-400 text-sm">{error}</div>}
+        {error && <div className="text-red-400 text-sm">{error}</div>}
 
         <input
           type="text"
@@ -107,13 +123,13 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+          className="cursor-pointer w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
           disabled={loading}
         >
           {loading ? (
             <>
               <IconRenderer
-                name="RiKey2Line"
+                name="RiLoginBoxFill"
                 size={20}
                 className="text-white"
               />
@@ -121,11 +137,68 @@ export default function LoginPage() {
             </>
           ) : (
             <>
-              <IconRenderer name="RiKeyLine" size={20} className="text-white" />
+              <IconRenderer
+                name="RiLoginBoxLine"
+                size={20}
+                className="text-white"
+              />
               Login
             </>
           )}
         </button>
+
+        {DEMO_MODE && (
+          <>
+            <div className="flex items-center my-4">
+              <div className="grow border-t border-gray-700" />
+              <span className="mx-3 text-xs text-gray-400 tracking-wider uppercase">
+                Demo Access
+              </span>
+              <div className="grow border-t border-gray-700" />
+            </div>
+
+            <div className="flex flex-col gap-2 mt-4">
+              <button
+                disabled={loading}
+                onClick={() => handleDemoLogin("admin")}
+                className="cursor-pointer w-full py-2 bg-slate-700 hover:bg-slate-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+              >
+                <IconRenderer
+                  name="RiShieldUserLine"
+                  size={20}
+                  className="text-white"
+                />
+                Admin
+              </button>
+
+              <button
+                disabled={loading}
+                onClick={() => handleDemoLogin("staff")}
+                className="cursor-pointer w-full py-2 bg-slate-700 hover:bg-slate-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+              >
+                <IconRenderer
+                  name="RiUserLine"
+                  size={20}
+                  className="text-white"
+                />
+                Staff
+              </button>
+
+              <button
+                disabled={loading}
+                onClick={() => handleDemoLogin("dev")}
+                className="cursor-pointer w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+              >
+                <IconRenderer
+                  name="RiTerminalBoxLine"
+                  size={20}
+                  className="text-white"
+                />
+                Developer
+              </button>
+            </div>
+          </>
+        )}
       </form>
     </div>
   );
