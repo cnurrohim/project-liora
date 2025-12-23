@@ -1,11 +1,11 @@
-name: Build & Push Docker Images
+name: Build, Push & Deploy
 
 on:
   push:
     branches: [main]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     permissions:
@@ -13,7 +13,8 @@ jobs:
       packages: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -25,6 +26,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # =====================
+      # BUILD & PUSH IMAGES
+      # =====================
       - name: Build & push backend
         uses: docker/build-push-action@v5
         with:
@@ -41,3 +45,21 @@ jobs:
           build-args: |
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
             VITE_API_DEMO_MODE=${{ secrets.VITE_API_DEMO_MODE }}
+
+      # =====================
+      # DEPLOY TO SERVER
+      # =====================
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H 103.127.99.96 >> ~/.ssh/known_hosts
+
+      - name: Deploy to Server
+        run: |
+          ssh -i ~/.ssh/deploy_key rokim@103.127.99.96 << 'EOF'
+            cd /home/rokim/project-root
+            docker compose pull
+            docker compose up -d
+          EOF
