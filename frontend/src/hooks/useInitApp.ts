@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { initializeApp } from "../config/appInit";
 import { PermissionController } from "../controller/permissionController";
+import { LayoutController } from "@/controller/layoutController";
+import { UserPreferencesController } from "@/controller/UserPreferencesController";
 
 let globalStopFn: (() => void) | null = null;
 
@@ -10,6 +12,8 @@ export async function reinitializeApp() {
     globalStopFn?.();
     // init ulang
     await PermissionController.getPermissions();
+    LayoutController.markAsDehydrate();
+    UserPreferencesController.resetTheme();
     const stop = await initializeApp();
     globalStopFn = stop;
   } catch (err) {

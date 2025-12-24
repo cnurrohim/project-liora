@@ -89,7 +89,7 @@ export default function RoleListPage() {
   }
 
   return (
-    <div className="p-4 text-[var(--primary)]">
+    <div className="p-4 text-(--primary)">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Roles</h1>
 
@@ -121,25 +121,22 @@ export default function RoleListPage() {
         <div>There is no role</div>
       ) : (
         <table className="w-full border-collapse ">
-          <thead className="bg-[var(--content-surface)]">
+          <thead className="bg-(--content-surface)">
             <tr>
-              <th className="p-2  text-left text-[var(--content-text-muted)]">
+              <th className="p-2  text-left text-(--content-text-muted)">
                 Name
               </th>
-              <th className="p-2  text-left text-[var(--content-text-muted)]">
+              <th className="p-2  text-left text-(--content-text-muted)">
                 Descriptions
               </th>
-              <th className="p-2  text-left text-[var(--content-text-muted)]">
+              <th className="p-2  text-left text-(--content-text-muted)">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
             {roles.map((role) => (
-              <tr
-                key={role.id}
-                className="hover:bg-[var(--content-surface-hover)]"
-              >
+              <tr key={role.id} className="hover:bg-(--content-surface-hover)">
                 <td className="p-2  ">{role.name}</td>
                 <td className="p-2 ">{role.description || "-"}</td>
                 <td className="p-2  flex">

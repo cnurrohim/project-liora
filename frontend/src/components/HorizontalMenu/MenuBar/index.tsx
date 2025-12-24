@@ -28,12 +28,12 @@ export default function MenuBar() {
       key={entry.key}
       title={entry.label}
       className={`text-2xl w-8 h-8 rounded flex items-center justify-center 
-        hover:bg-[var(--accent-primary)] 
-        hover:text-[var(--horizontal-text-hover)] 
+        hover:bg-(--accent-primary) 
+        hover:text-(--horizontal-text-hover) 
         cursor-pointer ${
           entry.key === MenuBarController.getActive()
-            ? "text-[var(--horizontal-text-hover)] bg-[var(--accent-primary)]"
-            : "text-[var(--horizontal-text)]"
+            ? "text-(--horizontal-text-hover) bg-(--accent-primary)"
+            : "text-(--horizontal-text)"
         }`}
       onClick={() => handleClick(entry)}
     >
@@ -65,17 +65,17 @@ export default function MenuBar() {
   return (
     <div className="relative w-screen z-80">
       <aside
-        className={`relative w-full h-12 px-4 bg-[var(--horizontal-surface)] text-[var(--horizontal-text)] flex flex-row justify-between py-1 z-100 shadow-md`}
+        className={`relative w-full h-12 px-4 bg-(--horizontal-surface) text-(--horizontal-text) flex flex-row justify-between py-1 z-100 shadow-md`}
       >
         <div className="flex flex-row items-center gap-1">
-          <div className="text-2xl font-bold text-[var(--accent-primary)]  mr-5 flex flex-row items-center gap-2">
+          <div className="text-2xl font-bold text-(--accent-primary)  mr-5 flex flex-row items-center gap-2">
             <Logo
               src={appInfo.logo ? `${API_URL}/uploads/app/${appInfo.logo}` : ""}
               alt={`${appInfo.name} logo`}
             />
 
             <span
-              className="text-[var(--accent-primary)] break-words"
+              className="text-(--accent-primary) break-words"
               style={{
                 fontSize: "clamp(1rem, 2vw, 1rem)",
                 maxWidth: "80%",

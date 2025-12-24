@@ -71,7 +71,7 @@ export default function SlidingPanel({
       className={`
     fixed
     ${state.position === "top" ? "top-0" : "bottom-0"}
-    h-64 w-full bg-[var(--horizontal-secondary-surface)] text-[var(--horizontal-secondary-text)] shadow-lg
+    h-64 w-full bg-(--horizontal-secondary-surface) text-(--horizontal-secondary-text) shadow-lg
     transform transition-transform duration-300 z-40 flex flex-row  py-4 gap-3 
     ${
       visible
@@ -87,7 +87,7 @@ export default function SlidingPanel({
     >
       <div className="flex flex-col w-full mt-2 pl-3">
         <div className="relative w-full mb-2">
-          <span className="absolute left-3 top-1/4 text-[var(--horizontal-secondary-text)]">
+          <span className="absolute left-3 top-1/4 text-(--horizontal-secondary-text)">
             {iconRenderer?.({
               name: "RiSearchLine",
               size: 18,
@@ -100,12 +100,12 @@ export default function SlidingPanel({
             placeholder="Search menu..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full mb-3 p-2 pl-10 rounded text-[var(--horizontal-secondary-tex)] bg-[var(--horizontal-secondary-surface-hover)] focus:outline-none"
+            className="w-full mb-3 p-2 pl-10 rounded text-(--horizontal-secondary-tex) bg-(--horizontal-secondary-surface-hover) focus:outline-none"
           />
         </div>
 
         {state.start?.label && (
-          <div className="text-sm uppercase text-[var(--horizontal-secondary-text)] mb-2 px-1">
+          <div className="text-sm uppercase text-(--horizontal-secondary-text) mb-2 px-1">
             {state.start.label}
           </div>
         )}
@@ -127,15 +127,15 @@ export default function SlidingPanel({
         {state.activePath.length > 0 && (
           <div
             onClick={() => SlidingPanelController.goBack()}
-            className="text-[var(--horizontal-secondary-text)] group hover:text-[var(--horizontal-secondary-text-hover)] hover:bg-[var(--accent-primary)] cursor-pointer flex flex-row items-center w-50 px-3 py-2 mt-2"
+            className="text-(--horizontal-secondary-text) group hover:text-(--horizontal-secondary-text-hover) hover:bg-(--accent-primary) cursor-pointer flex flex-row items-center w-50 px-3 py-2 mt-2"
           >
-            <span className=" group-hover:text-[var(--horizontal-secondary-text-hover)] text-[var(--horizontal-secondary-text)] pr-2">
+            <span className=" group-hover:text-(--horizontal-secondary-text-hover) text-(--horizontal-secondary-text) pr-2">
               {iconRenderer?.({
                 name: "RiArrowLeftUpBoxFill",
                 size: 18,
               })}
             </span>
-            <span className="text-[var(--horizontal-secondary-text)] group-hover:text-[var(--horizontal-secondary-text-hover)]">
+            <span className="text-(--horizontal-secondary-text) group-hover:text-(--horizontal-secondary-text-hover)">
               Back
             </span>
           </div>
@@ -145,7 +145,7 @@ export default function SlidingPanel({
       {/* Header */}
       <div className="w-1/3 px-4 relative">
         <button
-          className="cursor-pointer bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] rounded-full absolute right-5 top-2"
+          className="cursor-pointer bg-(--accent-primary) hover:bg-(--accent-hover) rounded-full absolute right-5 top-2"
           title="Collapse menu"
           onClick={() => SlidingPanelController.close()}
         >
@@ -174,13 +174,13 @@ export default function SlidingPanel({
                 className="w-[52px] h-[52px] rounded-full object-cover border border-gray-600"
               />
               <div className="flex flex-col">
-                <span className="font-semibold text-[var(bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)])] text-sm">
+                <span className="font-semibold text-[var(bg-(--accent-primary) hover:bg-(--accent-hover))] text-sm">
                   {userProfile.user?.name}
                 </span>
-                <span className="text-xs text-[var(--horizontal-secondary-text-muted)]">
+                <span className="text-xs text-(--horizontal-secondary-text-muted)">
                   @{userProfile.user?.username}
                 </span>
-                <span className="text-xs text-[var(--horizontal-secondary-text-muted)]">
+                <span className="text-xs text-(--horizontal-secondary-text-muted)">
                   {userProfile.user?.defaultRole?.name}
                 </span>
               </div>
@@ -191,11 +191,11 @@ export default function SlidingPanel({
               <div className="relative mt-3 overflow-auto max-h-26">
                 <button
                   onClick={() => setShowRoles((prev) => !prev)}
-                  className={`cursor-pointer relative w-full text-[var(--horizontal-secondary-text)] 
-                  hover:text-[var(--horizontal-secondary-text-hover)] hover:bg-[var(--accent-primary)] ${
+                  className={`cursor-pointer relative w-full text-(--horizontal-secondary-text) 
+                  hover:text-(--horizontal-secondary-text-hover) hover:bg-(--accent-primary) ${
                     showRoles
-                      ? "text-[var(--horizontal-secondary-text-muted)]"
-                      : "text-[var(--horizontal-secondary-text)]"
+                      ? "text-(--horizontal-secondary-text-muted)"
+                      : "text-(--horizontal-secondary-text)"
                   } text-sm py-1 rounded flex justify-between items-center px-3`}
                 >
                   Switch Role
@@ -229,14 +229,14 @@ export default function SlidingPanel({
                             key={role.id}
                             onClick={() => onSwitchRole(role.id)}
                             className="cursor-pointer 
-                          bg-[var(--horizontal-secondary-surface-hover)] 
-                          text-[var(--horizontal-secondary-text)] 
+                          bg-(--horizontal-secondary-surface-hover) 
+                          text-(--horizontal-secondary-text) 
                           
                           block w-full 
                           text-left 
                           px-3 py-2 text-sm 
-                          hover:text-[var(--horizontal-secondary-text-hover)] 
-                          hover:bg-[var(--accent-primary)] rounded"
+                          hover:text-(--horizontal-secondary-text-hover) 
+                          hover:bg-(--accent-primary) rounded"
                           >
                             {role.name}
                           </button>
@@ -253,11 +253,11 @@ export default function SlidingPanel({
                 <button
                   onClick={onViewProfileClick}
                   className="cursor-pointer mt-3 w-full 
-                bg-[var(--horizontal-secondary-surface-hover)] 
-                text-[var(--horizontal-secondary-text)] 
+                bg-(--horizontal-secondary-surface-hover) 
+                text-(--horizontal-secondary-text) 
                 
-                          hover:text-[var(--horizontal-secondary-text-hover)] 
-                          hover:bg-[var(--accent-primary)] text-sm py-1 rounded"
+                          hover:text-(--horizontal-secondary-text-hover) 
+                          hover:bg-(--accent-primary) text-sm py-1 rounded"
                 >
                   View Profile
                 </button>
@@ -266,11 +266,11 @@ export default function SlidingPanel({
                 <button
                   onClick={onLogout}
                   className="cursor-pointer mt-3 px-2 w-fit 
-                border-[var(--horizontal-secondary-border)] border-1 
-                text-[var(--horizontal-secondary-text)] 
+                border-(--horizontal-secondary-border) border 
+                text-(--horizontal-secondary-text) 
                 
-                          hover:text-[var(--horizontal-secondary-text-hover)] 
-                          hover:bg-[var(--accent-primary)] text-sm py-1 rounded"
+                          hover:text-(--horizontal-secondary-text-hover) 
+                          hover:bg-(--accent-primary) text-sm py-1 rounded"
                 >
                   {iconRenderer?.({
                     name: "RiShutDownLine",

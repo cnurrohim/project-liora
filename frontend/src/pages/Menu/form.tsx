@@ -151,13 +151,11 @@ export default function MenuFormPage() {
         <div>
           <label>Label</label>
           <input
-            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) rounded"
             {...register("label")}
           />
           {errors.label && (
-            <p className="text-[var(--danger)] text-sm">
-              {errors.label.message}
-            </p>
+            <p className="text-(--danger) text-sm">{errors.label.message}</p>
           )}
         </div>
 
@@ -165,7 +163,7 @@ export default function MenuFormPage() {
         <div>
           <label>Description</label>
           <input
-            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) rounded"
             {...register("description")}
           />
         </div>
@@ -184,9 +182,7 @@ export default function MenuFormPage() {
             )}
           />
           {errors.icon && (
-            <p className="text-[var(--danger)] text-sm">
-              {errors.icon.message}
-            </p>
+            <p className="text-(--danger) text-sm">{errors.icon.message}</p>
           )}
         </div>
 
@@ -194,7 +190,7 @@ export default function MenuFormPage() {
         <div>
           <label>Tipe</label>
           <select
-            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) rounded"
             {...register("type")}
           >
             {typeOptions.map((opt) => (
@@ -229,7 +225,7 @@ export default function MenuFormPage() {
           <div>
             <label>Command</label>
             <select
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+              className="w-full p-2 bg-(--content-surface-hover) rounded"
               {...register("command")}
             >
               <option value="">(choose command)</option>
@@ -246,7 +242,7 @@ export default function MenuFormPage() {
         <div>
           <label>Parent Menu (optional)</label>
           <select
-            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) rounded"
             {...register("parent_id")}
           >
             <option value="">(without parent)</option>
@@ -264,7 +260,7 @@ export default function MenuFormPage() {
         <div>
           <label>Alignment</label>
           <select
-            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) rounded"
             {...register("alignment")}
           >
             {alignmentOptions.map((a) => (
@@ -293,7 +289,7 @@ export default function MenuFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer"
+          className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer"
         >
           {loading ? "Saving..." : "Save"}
         </button>

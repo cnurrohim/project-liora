@@ -184,7 +184,7 @@ export default function StockLocationReportPage() {
         </div>
         <button
           onClick={handleDownloadPDF}
-          className="px-3 py-1 bg-[var(--warning)] font-bold hover:bg-[var(--warning-hover)] cursor-pointer text-[var(--warning-foreground)] rounded flex flex-row gap-2 items-center"
+          className="px-3 py-1 bg-(--warning) font-bold hover:bg-(--warning-hover) cursor-pointer text-(--warning-foreground) rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
           <IconRenderer name="RiFilePdf2Line" size={20} />{" "}
@@ -193,7 +193,7 @@ export default function StockLocationReportPage() {
 
         <button
           onClick={handleDownloadExcel}
-          className="px-3 py-1 bg-[var(--success)] font-bold hover:bg-[var(--success-hover)] cursor-pointer text-[var(--success-foreground)] rounded flex flex-row gap-2 items-center"
+          className="px-3 py-1 bg-(--success) font-bold hover:bg-(--success-hover) cursor-pointer text-(--success-foreground) rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
           <IconRenderer name="RiFileExcel2Line" size={20} />{" "}
@@ -201,7 +201,7 @@ export default function StockLocationReportPage() {
         </button>
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (

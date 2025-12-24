@@ -112,11 +112,11 @@ export default function DepartmentListPage() {
                 <div>{row.getValue("name")} </div>
                 <div>
                   {row.getIsExpanded() ? (
-                    <div className=" text-[var(--content-text)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className=" text-(--content-text) w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowUpWideFill" size={20} />
                     </div>
                   ) : (
-                    <div className="text-[var(--content-text)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className="text-(--content-text) w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowDownWideFill" size={20} />
                     </div>
                   )}
@@ -207,14 +207,14 @@ export default function DepartmentListPage() {
         />
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
 
       {loading ? (
         <div>Fetching...</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text-muted)]">
+            <thead className="bg-(--content-surface-hover) text-(--content-text-muted)">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -243,10 +243,7 @@ export default function DepartmentListPage() {
             </thead>
             <tbody>
               {table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="border-b border-[var(--content-border)]"
-                >
+                <tr key={row.id} className="border-b border-(--content-border)">
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="p-2">
                       {flexRender(

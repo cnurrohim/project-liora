@@ -154,7 +154,7 @@ export default function PurchaseOrderFormPage() {
         <div className="space-y-4">
           {/* Supplier */}
           <div>
-            <label className="block text-[var(--content-text-muted)]">
+            <label className="block text-(--content-text-muted)">
               Supplier
             </label>
             <Controller
@@ -172,7 +172,7 @@ export default function PurchaseOrderFormPage() {
               )}
             />
             {typeof errors.supplier_id?.message === "string" && (
-              <p className="text-[var(--danger)] text-sm">
+              <p className="text-(--danger) text-sm">
                 {errors.supplier_id.message}
               </p>
             )}
@@ -180,16 +180,16 @@ export default function PurchaseOrderFormPage() {
 
           {/* Order date */}
           <div>
-            <label className="block text-[var(--content-text-muted)]">
+            <label className="block text-(--content-text-muted)">
               Order Date
             </label>
             <input
               type="date"
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+              className="w-full p-2 bg-(--content-surface-hover) rounded"
               {...register("order_date")}
             />
             {typeof errors.order_date?.message === "string" && (
-              <p className="text-[var(--danger)] text-sm">
+              <p className="text-(--danger) text-sm">
                 {errors.order_date.message}
               </p>
             )}
@@ -197,49 +197,45 @@ export default function PurchaseOrderFormPage() {
 
           {/* Expected date */}
           <div>
-            <label className="block text-[var(--content-text-muted)]">
+            <label className="block text-(--content-text-muted)">
               Estimated Arrival Date
             </label>
             <input
               type="date"
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+              className="w-full p-2 bg-(--content-surface-hover) rounded"
               {...register("expected_date")}
             />
             {typeof errors.expected_date?.message === "string" && (
-              <p className="text-[var(--danger)] text-sm">
+              <p className="text-(--danger) text-sm">
                 {errors.expected_date.message}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-[var(--content-text-muted)]">
-              Notes
-            </label>
+            <label className="block text-(--content-text-muted)">Notes</label>
             <textarea
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+              className="w-full p-2 bg-(--content-surface-hover) rounded"
               {...register("notes")}
             />
             {typeof errors.notes?.message === "string" && (
-              <p className="text-[var(--danger)] text-sm">
-                {errors.notes.message}
-              </p>
+              <p className="text-(--danger) text-sm">{errors.notes.message}</p>
             )}
           </div>
 
           {/* Items */}
 
           <div>
-            <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
+            <table className="table-auto border border-(--content-border) border-collapse w-full">
               <thead>
                 <tr>
-                  <th className="border border-[var(--content-border)] px-2 py-1">
+                  <th className="border border-(--content-border) px-2 py-1">
                     Items
                   </th>
-                  <th className="border border-[var(--content-border)] px-2 py-1">
+                  <th className="border border-(--content-border) px-2 py-1">
                     Qty
                   </th>
-                  <th className="border border-[var(--content-border)] px-2 py-1">
+                  <th className="border border-(--content-border) px-2 py-1">
                     Action
                   </th>
                 </tr>
@@ -247,7 +243,7 @@ export default function PurchaseOrderFormPage() {
               <tbody>
                 {fields.map((field, index) => (
                   <tr key={field.id}>
-                    <td className="border border-[var(--content-border)] px-2 py-1">
+                    <td className="border border-(--content-border) px-2 py-1">
                       <Controller
                         name={`items.${index}.item_id`}
                         control={control}
@@ -276,21 +272,21 @@ export default function PurchaseOrderFormPage() {
                         }}
                       />
                     </td>
-                    <td className="border border-[var(--content-border)] px-2 py-1">
+                    <td className="border border-(--content-border) px-2 py-1">
                       <input
                         type="number"
                         placeholder="Qty"
-                        className="w-20 p-2 bg-[var(--content-surface)] rounded"
+                        className="w-20 p-2 bg-(--content-surface) rounded"
                         {...register(`items.${index}.qty`, {
                           valueAsNumber: true,
                         })}
                       />
                     </td>
-                    <td className="border border-[var(--content-border)] px-2 py-1">
+                    <td className="border border-(--content-border) px-2 py-1">
                       <button
                         type="button"
                         onClick={() => remove(index)}
-                        className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--success-foreground)] rounded"
+                        className="px-2 py-1 cursor-pointer bg-(--danger) hover:bg-(--danger-hover) text-(--success-foreground) rounded"
                       >
                         delete
                       </button>
@@ -302,7 +298,7 @@ export default function PurchaseOrderFormPage() {
                     <button
                       type="button"
                       onClick={() => append({ item_id: "", qty: 1 })}
-                      className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--success-foreground)] rounded"
+                      className="px-3 py-1 cursor-pointer bg-(--success) hover:bg-(--success-hover) text-(--success-foreground) rounded"
                     >
                       + Add Item
                     </button>
@@ -316,7 +312,7 @@ export default function PurchaseOrderFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
+          className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer max-w-3/4"
         >
           {loading ? "Saving..." : "Save"}
         </button>

@@ -34,7 +34,7 @@ export default function PermissionForm({
 
       <input
         type="text"
-        className="mb-4 px-3 py-2 w-full bg-[var(--content-surface)] text-[var(--content-text)] rounded"
+        className="mb-4 px-3 py-2 w-full bg-(--content-surface) text-(--content-text) rounded"
         placeholder="Cari permission..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -51,13 +51,10 @@ export default function PermissionForm({
           if (filtered.length === 0) return null;
 
           return (
-            <details
-              key={group.domain}
-              className="bg-[var(--foreground)] rounded"
-            >
-              <summary className="cursor-pointer px-4 py-2 bg-[var(--content-surface)] font-semibold">
+            <details key={group.domain} className="bg-(--foreground) rounded">
+              <summary className="cursor-pointer px-4 py-2 bg-(--content-surface) font-semibold">
                 {group.domain}
-                <span className="text-sm ml-2 text-[var(--content-text)]">
+                <span className="text-sm ml-2 text-(--content-text)">
                   ({filtered.length})
                 </span>
               </summary>
@@ -80,7 +77,7 @@ export default function PermissionForm({
                       }));
                     }}
                   />{" "}
-                  <span className=" text-sm text-[var(--content-text-muted)]/90">
+                  <span className=" text-sm text-(--content-text-muted)/90">
                     Pilih semua di {group.domain}
                   </span>
                 </label>

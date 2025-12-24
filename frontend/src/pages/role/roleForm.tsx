@@ -127,8 +127,7 @@ export default function RoleFormPage() {
     }
   };
 
-  if (loading)
-    return <div className="text-[var(--content-text)]">Loading...</div>;
+  if (loading) return <div className="text-(--content-text)">Loading...</div>;
 
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4 max-w-3/4 mx-auto">
@@ -137,7 +136,7 @@ export default function RoleFormPage() {
         {isEdit ? "Edit Role" : "Add New Role"}
       </h1>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
 
       <div className="mb-4">
         <label className="block mb-1">Role Name</label>
@@ -146,7 +145,7 @@ export default function RoleFormPage() {
           name="name"
           value={form.name}
           onChange={handleChange}
-          className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+          className="w-full p-2 bg-(--content-surface-hover) rounded"
         />
       </div>
 
@@ -156,7 +155,7 @@ export default function RoleFormPage() {
           name="description"
           value={form.description}
           onChange={handleChange}
-          className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+          className="w-full p-2 bg-(--content-surface-hover) rounded"
         />
       </div>
 
@@ -171,7 +170,7 @@ export default function RoleFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
+          className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer max-w-3/4"
         >
           {loading ? "Saving..." : "Save"}
         </button>

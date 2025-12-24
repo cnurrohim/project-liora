@@ -28,12 +28,12 @@ export default function MenuBar() {
       key={entry.key}
       title={entry.label}
       className={`p-2 rounded-md 
-        hover:bg-[var(--accent-primary)] 
-        hover:text-[var(--vertical-text-hover)] 
+        hover:bg-(--accent-primary) 
+        hover:text-(--vertical-text-hover) 
         transition cursor-pointer ${
           entry.key === MenuBarController.getActive()
-            ? "text-[var(--vertical-text-hover)] bg-[var(--accent-primary)]"
-            : "text-[var(--vertical-text)]"
+            ? "text-(--vertical-text-hover) bg-(--accent-primary)"
+            : "text-(--vertical-text)"
         }`}
       onClick={() => handleClick(entry)}
     >
@@ -63,7 +63,7 @@ export default function MenuBar() {
   }
   return (
     <aside
-      className={` relative  h-full w-14  bg-[var(--vertical-surface)] text-[var(--vertical-text)] flex flex-col justify-between z-40`}
+      className={` relative  h-full w-14  bg-(--vertical-surface) text-(--vertical-text) flex flex-col justify-between z-40`}
     >
       <div className="flex flex-col items-center ">
         <Logo

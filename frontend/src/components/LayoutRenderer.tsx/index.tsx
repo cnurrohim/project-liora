@@ -13,22 +13,18 @@ export function LayoutRenderer() {
 
   return (
     <div className="flex flex-1 min-h-0 min-w-0">
-      {layout.leftPane && (
-        <div className="flex-shrink-0">{layout.leftPane}</div>
-      )}
+      {layout.leftPane && <div className="shrink-0">{layout.leftPane}</div>}
 
       <main
         id="mainContent"
-        className="flex flex-col flex-1 min-w-0 h-full bg-[var(--base)]"
+        className="flex flex-col flex-1 min-w-0 h-full bg-(--base)"
       >
         {layout.topPane && <div className="w-full">{layout.topPane}</div>}
         {layout.content ?? <EmptyPage />}
         {layout.bottomPane && <div className="w-full">{layout.bottomPane}</div>}
       </main>
 
-      {layout.rightPane && (
-        <div className="flex-shrink-0">{layout.rightPane}</div>
-      )}
+      {layout.rightPane && <div className="shrink-0">{layout.rightPane}</div>}
     </div>
   );
 }

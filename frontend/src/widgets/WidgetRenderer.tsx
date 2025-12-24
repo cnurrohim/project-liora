@@ -32,7 +32,7 @@ export function WidgetRenderer({
 
   if (!config)
     return (
-      <div className="border border-[var(--content-border)] rounded p-4 bg-red-100">
+      <div className="border border-(--content-border) rounded p-4 bg-red-100">
         Unknown widget: {widgetKey}
       </div>
     );

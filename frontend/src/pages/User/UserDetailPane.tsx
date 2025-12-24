@@ -58,16 +58,16 @@ export function UserDetailPane() {
       <section className="space-y-4 mb-52">
         {/* Info User */}
         <div>
-          <p className="text-sm text-[var(--content-text-muted)]">Email</p>
-          <p className="text-[var(--content-text)]">{user.email}</p>
+          <p className="text-sm text-(--content-text-muted)">Email</p>
+          <p className="text-(--content-text)">{user.email}</p>
         </div>
         <div>
-          <p className="text-sm text-[var(--content-text-muted)]">Username</p>
-          <p className="text-[var(--content-text)]">{user.username}</p>
+          <p className="text-sm text-(--content-text-muted)">Username</p>
+          <p className="text-(--content-text)">{user.username}</p>
         </div>
         <div>
-          <p className="text-sm text-[var(--content-text-muted)]">Status</p>
-          <p className="text-[var(--content-text)]">
+          <p className="text-sm text-(--content-text-muted)">Status</p>
+          <p className="text-(--content-text)">
             {user.is_active ? "Active" : "Inactive"}
           </p>
         </div>
@@ -75,13 +75,13 @@ export function UserDetailPane() {
         {/* Roles */}
         {roles.length > 0 && (
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">Roles</p>
-            <ul className="list-disc pl-5 text-[var(--content-text)]">
+            <p className="text-sm text-(--content-text-muted)">Roles</p>
+            <ul className="list-disc pl-5 text-(--content-text)">
               {roles.map((r) => (
                 <li key={r.id}>
                   {r.name}
                   {r.is_default && (
-                    <span className="ml-2 text-xs text-[var(--content-text)] bg-[var(--content-surface)] px-2 py-0.5 rounded">
+                    <span className="ml-2 text-xs text-(--content-text) bg-(--content-surface) px-2 py-0.5 rounded">
                       default
                     </span>
                   )}
@@ -94,10 +94,8 @@ export function UserDetailPane() {
         {/* Departments */}
         {departments.length > 0 && (
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
-              Departments
-            </p>
-            <ul className="list-disc pl-5 text-[var(--content-text)]">
+            <p className="text-sm text-(--content-text-muted)">Departments</p>
+            <ul className="list-disc pl-5 text-(--content-text)">
               {departments.map((d) => (
                 <li key={d.id}>{d.name}</li>
               ))}
@@ -107,18 +105,15 @@ export function UserDetailPane() {
 
         {/* Permissions */}
         <div>
-          <p className="text-sm text-[var(--content-text-muted)] mb-2">
+          <p className="text-sm text-(--content-text-muted) mb-2">
             Permissions
           </p>
           <div className="space-y-2">
             {Object.entries(permissions).map(([domain, perms]) => (
-              <details
-                key={domain}
-                className="bg-[var(--content-surface)] rounded"
-              >
-                <summary className="cursor-pointer px-4 py-2 font-semibold text-[var(--content-text)]">
+              <details key={domain} className="bg-(--content-surface) rounded">
+                <summary className="cursor-pointer px-4 py-2 font-semibold text-(--content-text)">
                   {domain}
-                  <span className="ml-2 text-sm text-[var(--content-text)]">
+                  <span className="ml-2 text-sm text-(--content-text)">
                     ({perms.length})
                   </span>
                 </summary>
@@ -126,16 +121,16 @@ export function UserDetailPane() {
                   {perms.map((p) => (
                     <div
                       key={p.id}
-                      className="border-b border-[var(--content-border)] pb-2 space-y-1"
+                      className="border-b border-(--content-border) pb-2 space-y-1"
                     >
-                      <div className="font-semibold text-[var(--content-text)]">
+                      <div className="font-semibold text-(--content-text)">
                         {p.label}
                         {p.source === "user" && (
                           <span
                             className={`${
                               p.granted
-                                ? "text-[var(--success-foreground)] bg-[var(--success)]"
-                                : "text-[var(--danger-foreground)] bg-[var(--danger)]"
+                                ? "text-(--success-foreground) bg-(--success)"
+                                : "text-(--danger-foreground) bg-(--danger)"
                             }
                           ml-2 text-xs  px-2 py-0.5 rounded`}
                           >
@@ -143,7 +138,7 @@ export function UserDetailPane() {
                           </span>
                         )}
                       </div>
-                      <div className="text-[var(--content-text)] text-sm">
+                      <div className="text-(--content-text) text-sm">
                         {p.description}
                       </div>
                       <div className="text-gray-500 text-xs italic">

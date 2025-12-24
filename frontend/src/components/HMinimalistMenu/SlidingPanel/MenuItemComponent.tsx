@@ -27,7 +27,7 @@ export default function MenuItemComponent({
     <div className="flex flex-row ">
       <div
         key={i}
-        className="group flex items-center gap-2  hover:bg-[var(--background)] cursor-pointer p-2 rounded w-48"
+        className="group flex items-center gap-2  hover:bg-(--background) cursor-pointer p-2 rounded w-48"
         onClick={() => {
           if (item.type === MENU.TYPE.GROUP) {
             SlidingPanelController.setActivePath([...state.activePath, i]);
@@ -40,7 +40,7 @@ export default function MenuItemComponent({
           onItemClick(item);
         }}
       >
-        <span className="text-[var(--panel-text-primary)] group-hover:text-[var(--text-primary)]">
+        <span className="text-(--panel-text-primary) group-hover:text-(--text-primary)">
           {typeof item.icon === "string" && item.icon
             ? iconRenderer?.({
                 name: item.icon,
@@ -53,14 +53,14 @@ export default function MenuItemComponent({
               })}
         </span>
 
-        <span className="font-semibold text-sm text-[var(--panel-text-primary)] group-hover:text-[var(--text-primary)] flex-1 truncate">
+        <span className="font-semibold text-sm text-(--panel-text-primary) group-hover:text-(--text-primary) flex-1 truncate">
           {item.label}
         </span>
       </div>
       {item.type !== "group" && onPinClick && (
         <button
           type="button"
-          className="ml-auto text-[var(--panel-text-primary)] cursor-pointer hover:bg-gray-700 hover:text-[var(--text-primary)] p-2"
+          className="ml-auto text-(--panel-text-primary) cursor-pointer hover:bg-gray-700 hover:text-(--text-primary) p-2"
           title={item.isPinned ? "Unpin menu" : "Pin menu"}
           onClick={() => {
             onPinClick(item);

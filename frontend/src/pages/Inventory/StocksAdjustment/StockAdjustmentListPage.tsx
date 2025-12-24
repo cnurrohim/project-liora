@@ -151,8 +151,8 @@ export default function StockAdjustmentListPage() {
             <span
               className={`px-2 py-0.5 rounded text-xs ${
                 row.original.status === "confirmed"
-                  ? "bg-[var(--info)] text-[var(--info-foreground)]"
-                  : "bg-[var(--warning)] text-[var(--warning-foreground)]"
+                  ? "bg-(--info) text-(--info-foreground)"
+                  : "bg-(--warning) text-(--warning-foreground)"
               }`}
             >
               {row.original.status}
@@ -185,7 +185,7 @@ export default function StockAdjustmentListPage() {
             {canApprove && row.original.status === "draft" && (
               <CancelButtonLink
                 onClick={() => handleCancel(row.original.id)}
-                className={`flex items-center gap-1 cursor-pointer text-[var(--warning-foreground)] px-2 py-1 rounded text-xs font-semibold hover:bg-amber-500 bg-amber-600`}
+                className={`flex items-center gap-1 cursor-pointer text-(--warning-foreground) px-2 py-1 rounded text-xs font-semibold hover:bg-amber-500 bg-amber-600`}
               />
             )}
           </div>
@@ -238,7 +238,7 @@ export default function StockAdjustmentListPage() {
           placeholder="Search PO Number"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded w-90"
+          className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded w-90"
         />
 
         {canCreate && (
@@ -265,7 +265,7 @@ export default function StockAdjustmentListPage() {
         )}
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (

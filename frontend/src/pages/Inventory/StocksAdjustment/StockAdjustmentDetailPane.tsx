@@ -71,39 +71,37 @@ export function StockAdjustmentDetailPane() {
         {/* Header */}
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
+            <p className="text-sm text-(--content-text-muted)">
               Adjustment Date
             </p>
-            <p className="text-[var(--content-text)]">
+            <p className="text-(--content-text)">
               {formatDate(adjustment_date)}
             </p>
           </div>
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">Status</p>
-            <p className="text-[var(--content-text)] capitalize">{status}</p>
+            <p className="text-sm text-(--content-text-muted)">Status</p>
+            <p className="text-(--content-text) capitalize">{status}</p>
           </div>
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
-              Created By
-            </p>
-            <p className="text-[var(--content-text)]">{created_by}</p>
+            <p className="text-sm text-(--content-text-muted)">Created By</p>
+            <p className="text-(--content-text)">{created_by}</p>
           </div>
           {reason && (
             <div>
-              <p className="text-sm text-[var(--content-text-muted)]">Reason</p>
-              <p className="text-[var(--content-text)]">{reason}</p>
+              <p className="text-sm text-(--content-text-muted)">Reason</p>
+              <p className="text-(--content-text)">{reason}</p>
             </div>
           )}
         </div>
 
         {/* Items */}
         {items.length > 0 && (
-          <div className="text-[var(--content-text)]">
-            <p className="text-sm text-[var(--content-text-muted)] mb-2">
+          <div className="text-(--content-text)">
+            <p className="text-sm text-(--content-text-muted) mb-2">
               Adjusted Items
             </p>
-            <table className="w-full text-sm border border-[var(--content-border)]">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
+            <table className="w-full text-sm border border-(--content-border)">
+              <thead className="bg-(--content-surface-hover) text-(--content-text)">
                 <tr>
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
@@ -117,7 +115,7 @@ export function StockAdjustmentDetailPane() {
                 {items.map((it) => (
                   <tr
                     key={it.id}
-                    className="border-t border-[var(--content-border)]"
+                    className="border-t border-(--content-border)"
                   >
                     <td className="px-2 py-1">{it.sku}</td>
                     <td className="px-2 py-1">{it.item_name}</td>
@@ -145,12 +143,12 @@ export function StockAdjustmentDetailPane() {
         )}
 
         {stock_movements.length > 0 && (
-          <div className="text-[var(--content-text)]">
-            <p className="text-sm text-[var(--content-text-muted)] mb-2">
+          <div className="text-(--content-text)">
+            <p className="text-sm text-(--content-text-muted) mb-2">
               Inventory Movements
             </p>
-            <table className="w-full text-sm border border-[var(--content-border)]">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
+            <table className="w-full text-sm border border-(--content-border)">
+              <thead className="bg-(--content-surface-hover) text-(--content-text)">
                 <tr>
                   <th className="px-2 py-1 text-left">Date</th>
                   <th className="px-2 py-1 text-left">Item</th>
@@ -163,7 +161,7 @@ export function StockAdjustmentDetailPane() {
                 {stock_movements.map((sm) => (
                   <tr
                     key={sm.id}
-                    className="border-t border-[var(--content-border)]"
+                    className="border-t border-(--content-border)"
                   >
                     <td className="px-2 py-1">
                       {new Date(sm.created_at).toLocaleString()}

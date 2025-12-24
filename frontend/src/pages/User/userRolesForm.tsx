@@ -37,7 +37,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
       <h1 className="text-xl font-bold">{isEdit ? "Edit" : "Set"} Roles</h1>
 
       <div>
-        <label className="block text-[var(--content-text-muted)]">Roles</label>
+        <label className="block text-(--content-text-muted)">Roles</label>
         <Controller
           control={control}
           name="roles"
@@ -50,7 +50,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
                 placeholder="Pilih roles"
               />
               {fieldState.error && (
-                <p className="text-[var(--danger)] text-sm mt-1">
+                <p className="text-(--danger) text-sm mt-1">
                   {fieldState.error.message}
                 </p>
               )}
@@ -61,11 +61,11 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
 
       {selectedRoles.length > 0 && (
         <div>
-          <label className="block text-[var(--content-text-muted)]">
+          <label className="block text-(--content-text-muted)">
             Default Role
           </label>
           <select
-            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) rounded"
             {...register("defaultRole")}
           >
             <option value="">Pilih default role</option>
@@ -76,7 +76,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
             ))}
           </select>
           {typeof errors.defaultRole?.message === "string" && (
-            <p className="text-[var(--danger)] text-sm mt-1">
+            <p className="text-(--danger) text-sm mt-1">
               {errors.defaultRole.message}
             </p>
           )}
@@ -89,7 +89,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
             Permissions dari Roles
           </label>
           {loading ? (
-            <p className="text-sm text-[var(--content-text)]">
+            <p className="text-sm text-(--content-text)">
               Loading permissions...
             </p>
           ) : permissions.length === 0 ? (
@@ -97,7 +97,7 @@ export default function UserRolesForm({ isEdit, roles }: Props) {
               Tidak ada permission.
             </p>
           ) : (
-            <ul className="mt-2 text-sm text-[var(--content-text)] list-disc list-inside space-y-1">
+            <ul className="mt-2 text-sm text-(--content-text) list-disc list-inside space-y-1">
               {permissions.map((p) => (
                 <li key={p.id}>
                   <strong>{p.label}</strong> — {p.description}

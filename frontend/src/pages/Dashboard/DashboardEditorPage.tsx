@@ -132,11 +132,11 @@ export default function DashboardEditorPage({
   }
 
   const addRowButton = (
-    <div className="flex justify-center border py-5 border-[var(--content-text-hover)] border-dashed">
+    <div className="flex justify-center border py-5 border-(--content-text-hover) border-dashed">
       <button
         type="button"
         onClick={addRow}
-        className="w-15 h-15 p-0 rounded-full bg-[var(--content-surface-hover)] text-[var(--content-text-muted)] hover:bg-[var(--content-surface-highlight)] cursor-pointer flex items-center justify-center"
+        className="w-15 h-15 p-0 rounded-full bg-(--content-surface-hover) text-(--content-text-muted) hover:bg-(--content-surface-highlight) cursor-pointer flex items-center justify-center"
       >
         <IconRenderer name="RiAddCircleFill" className="w-8 h-8" />
       </button>
@@ -147,13 +147,13 @@ export default function DashboardEditorPage({
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="p-6 mx-auto space-y-4">
         <div className="flex flex-row gap-2">
-          <h1 className="text-2xl font-bold text-[var(--accent-primary)]">
+          <h1 className="text-2xl font-bold text-(--accent-primary)">
             Manage Dashboard
           </h1>
 
           <button
             onClick={onView}
-            className="px-1 border border-[var(--content-border)] rounded text-[var(--content-text-muted)] hover:text-[var(--content-text)] hover:bg-[var(--content-surface-hover)] cursor-pointer"
+            className="px-1 border border-(--content-border) rounded text-(--content-text-muted) hover:text-(--content-text) hover:bg-(--content-surface-hover) cursor-pointer"
           >
             <IconRenderer name="RiEyeLine" className="w-4 h-4" />
           </button>
@@ -168,14 +168,14 @@ export default function DashboardEditorPage({
               {row.columns.map((col, colIdx) => (
                 <div
                   key={colIdx}
-                  className="rounded p-4 bg-[var(--content-surface-inset)] relative"
+                  className="rounded p-4 bg-(--content-surface-inset) relative"
                   style={{ flex: col.width }}
                 >
                   {/* tombol delete kolom */}
                   <button
                     type="button"
                     onClick={() => deleteColumn(rowIdx, colIdx)}
-                    className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full bg-[var(--content-surface-inset)] text-red-300 hover:bg-[var(--danger-hover)] hover:text-[var(--content-surface-inset)] cursor-pointer"
+                    className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full bg-(--content-surface-inset) text-red-300 hover:bg-(--danger-hover) hover:text-(--content-surface-inset) cursor-pointer"
                   >
                     ✖
                   </button>
@@ -186,7 +186,7 @@ export default function DashboardEditorPage({
                     onChange={(e) =>
                       updateColumn(rowIdx, colIdx, "component", e.target.value)
                     }
-                    className="w-full border rounded border-[var(--content-border)] bg-[var(--content-surface-hover)] px-2 py-1 mb-2 cursor-pointer"
+                    className="w-full border rounded border-(--content-border) bg-(--content-surface-hover) px-2 py-1 mb-2 cursor-pointer"
                   >
                     <option value="">-- Select Widget --</option>
                     {WidgetRegistry.getAllOptions().map((opt) => (
@@ -211,7 +211,7 @@ export default function DashboardEditorPage({
                     <button
                       type="button"
                       onClick={() => adjustWidth(rowIdx, colIdx, -1)}
-                      className="px-2 py-1 border border-[var(--content-border)] rounded cursor-pointer text-[var(--content-text)] hover:text-[var(--info-hover)] "
+                      className="px-2 py-1 border border-(--content-border) rounded cursor-pointer text-(--content-text) hover:text-(--info-hover) "
                     >
                       <IconRenderer
                         name="RiArrowLeftWideFill"
@@ -221,7 +221,7 @@ export default function DashboardEditorPage({
                     <button
                       type="button"
                       onClick={() => adjustWidth(rowIdx, colIdx, +1)}
-                      className="px-2 py-1 border border-[var(--content-border)] rounded cursor-pointer text-[var(--content-text)] hover:text-[var(--info-hover)] "
+                      className="px-2 py-1 border border-(--content-border) rounded cursor-pointer text-(--content-text) hover:text-(--info-hover) "
                     >
                       <IconRenderer
                         name="RiArrowRightWideFill"
@@ -239,7 +239,7 @@ export default function DashboardEditorPage({
                 <button
                   type="button"
                   onClick={() => addColumn(rowIdx)}
-                  className="self-start h-8 w-8 flex items-center justify-center border rounded text-[var(--info)] hover:text-[var(--info-hover)] cursor-pointer"
+                  className="self-start h-8 w-8 flex items-center justify-center border rounded text-(--info) hover:text-(--info-hover) cursor-pointer"
                 >
                   <IconRenderer name="RiAddLargeLine" className="w-4 h-4" />
                 </button>
@@ -247,7 +247,7 @@ export default function DashboardEditorPage({
                 <button
                   type="button"
                   onClick={() => deleteRow(rowIdx)}
-                  className="self-start h-8 w-8 flex items-center justify-center border rounded text-[var(--danger)] hover:text-[var(--danger-hover)]  cursor-pointer"
+                  className="self-start h-8 w-8 flex items-center justify-center border rounded text-(--danger) hover:text-(--danger-hover)  cursor-pointer"
                 >
                   <IconRenderer name="RiDeleteBin6Line" className="w-4 h-4" />
                 </button>
@@ -265,7 +265,7 @@ export default function DashboardEditorPage({
             <button
               type="submit"
               disabled={isSaving}
-              className="w-38 flex justify-center items-center px-4 py-2 bg-[var(--info)] text-[var(--success-foreground)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer"
+              className="w-38 flex justify-center items-center px-4 py-2 bg-(--info) text-(--success-foreground) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer"
             >
               {isSaving ? "Saving..." : "Set Dashboard"}
             </button>

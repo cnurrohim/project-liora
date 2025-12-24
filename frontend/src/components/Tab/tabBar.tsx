@@ -53,11 +53,11 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
   }, [activeTabKey]);
 
   return (
-    <div className="flex items-center bg-[var(--horizontal-surface)] ">
+    <div className="flex items-center bg-(--horizontal-surface) ">
       {showArrows && (
         <button
           ref={leftBtnRef}
-          className="px-2 text-xl text-[var(--accent-primary)]"
+          className="px-2 text-xl text-(--accent-primary)"
           onClick={() =>
             scrollRef.current?.scrollBy({ left: -100, behavior: "smooth" })
           }
@@ -73,10 +73,10 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
         {tabList.map((tab) => (
           <div
             key={tab.key}
-            className={`tab-wrapper flex items-center group hover:bg-[var(--horizontal-surface-hover)] hover:rounded-3xl ${
+            className={`tab-wrapper flex items-center group hover:bg-(--horizontal-surface-hover) hover:rounded-3xl ${
               tab.key === activeTabKey
-                ? "bg-[var(--horizontal-surface-hover)] text-[var(--horizontal-text)] rounded-3xl"
-                : "bg-[var(--horizontal-surface)] text-[var(--horizontal-text)] hover:bg-[--horizontal-surface)]"
+                ? "bg-(--horizontal-surface-hover) text-(--horizontal-text) rounded-3xl"
+                : "bg-(--horizontal-surface) text-(--horizontal-text) hover:bg-[--horizontal-surface)]"
             }`}
           >
             <button
@@ -87,8 +87,8 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
               <span
                 className={`${
                   tab.key === activeTabKey
-                    ? "text-[var(--horizontal-text)]"
-                    : "text-[var(--horizontal-text-muted)]"
+                    ? "text-(--horizontal-text)"
+                    : "text-(--horizontal-text-muted)"
                 }`}
               >
                 {tab.icon ? iconRenderer?.(tab.icon) ?? "🗱" : "🗱"}
@@ -96,8 +96,8 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
               <span
                 className={`${
                   tab.key === activeTabKey
-                    ? "text-[var(--horizontal-text)]"
-                    : "text-[var(--horizontal-text-muted)]"
+                    ? "text-(--horizontal-text)"
+                    : "text-(--horizontal-text-muted)"
                 }`}
               >
                 {tab.label}
@@ -108,8 +108,8 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
               onClick={() => TabController.closeTab(tab.key)}
               className={`mr-2 text-lg ${
                 tab.key === activeTabKey
-                  ? "text-[var(--horizontal-text)]"
-                  : "text-[var(--horizontal-text-muted)]"
+                  ? "text-(--horizontal-text)"
+                  : "text-(--horizontal-text-muted)"
               }
                  cursor-pointer`}
             >
@@ -122,7 +122,7 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
       {showArrows && (
         <button
           ref={rightBtnRef}
-          className="px-2 text-xl text-[var(--accent-primary)]"
+          className="px-2 text-xl text-(--accent-primary)"
           onClick={() =>
             scrollRef.current?.scrollBy({ left: 100, behavior: "smooth" })
           }
@@ -142,8 +142,8 @@ export default function TabBar({ iconRenderer }: TabBarProps) {
           });
         }}
         className=" h-12 w-12 cursor-pointer flex items-center justify-center 
-        text-[var(--accent-primary)] 
-        hover:text-[var(--accent-highlight)]"
+        text-(--accent-primary) 
+        hover:text-(--accent-highlight)"
       >
         {iconRenderer?.("RiAddCircleFill", 23)}
       </button>

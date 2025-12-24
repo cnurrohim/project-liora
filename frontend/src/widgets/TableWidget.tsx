@@ -24,7 +24,7 @@ export function TableWidget({
             {normalized.map((h) => (
               <th
                 key={h.key}
-                className="border-b border-[var(--content-border)] px-2 py-1 text-left"
+                className="border-b border-(--content-border) px-2 py-1 text-left"
               >
                 {h.label ?? h.key}
               </th>
@@ -37,7 +37,7 @@ export function TableWidget({
               {normalized.map((h) => (
                 <td
                   key={h.key}
-                  className="px-2 py-1 border-b border-[var(--content-border)]"
+                  className="px-2 py-1 border-b border-(--content-border)"
                 >
                   {h.formatter ? h.formatter(row[h.key]) : row[h.key] ?? "-"}
                 </td>

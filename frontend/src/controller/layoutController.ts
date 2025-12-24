@@ -76,6 +76,19 @@ export const LayoutController = {
     notify();
   },
 
+  resetPane(pos: LayoutPosition) {
+    state[pos] = null;
+    state[`${pos}Key`] = undefined;
+  },
+
+  resetLayout() {
+    this.resetPane("leftPane");
+    this.resetPane("rightPane");
+    this.resetPane("topPane");
+    this.resetPane("bottomPane");
+    notify();
+  },
+
   clearComponentFromOtherPositions(
     currentPane: LayoutPosition,
     componentId: string
@@ -97,6 +110,10 @@ export const LayoutController = {
 
   markAsHydrated() {
     isLayoutHydrated = true;
+  },
+
+  markAsDehydrate() {
+    isLayoutHydrated = false;
   },
 
   isHydrated() {

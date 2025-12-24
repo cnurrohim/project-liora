@@ -28,9 +28,9 @@ export default function MenuItemComponent({
       <div
         key={i}
         className="group flex items-center gap-2  
-        text-[var(--horizontal-secondary-text)] 
-                          hover:text-[var(--horizontal-secondary-text-hover)] 
-                          hover:bg-[var(--accent-primary)]
+        text-(--horizontal-secondary-text) 
+                          hover:text-(--horizontal-secondary-text-hover) 
+                          hover:bg-(--accent-primary)
         cursor-pointer p-2 rounded w-48"
         onClick={() => {
           if (item.type === MENU.TYPE.GROUP) {
@@ -44,7 +44,7 @@ export default function MenuItemComponent({
           onItemClick(item);
         }}
       >
-        <span className="text-[var(--horizontal-secondary-text)] group-hover:text-[var(--horizontal-secondary-text-hover)]">
+        <span className="text-(--horizontal-secondary-text) group-hover:text-(--horizontal-secondary-text-hover)">
           {typeof item.icon === "string" && item.icon
             ? iconRenderer?.({
                 name: item.icon,
@@ -57,14 +57,14 @@ export default function MenuItemComponent({
               })}
         </span>
 
-        <span className="font-semibold text-sm text-[var(--horizontal-secondary-text)] group-hover:text-[var(--horizontal-secondary-text-hover)] flex-1 truncate">
+        <span className="font-semibold text-sm text-(--horizontal-secondary-text) group-hover:text-(--horizontal-secondary-text-hover) flex-1 truncate">
           {item.label}
         </span>
       </div>
       {item.type !== "group" && onPinClick && (
         <button
           type="button"
-          className="ml-auto text-[var(--horizontal-secondary-text)] cursor-pointer hover:bg-[var(--accent-primary)] hover:text-[var(--horizontal-secondary-text)] p-2"
+          className="ml-auto text-(--horizontal-secondary-text) cursor-pointer hover:bg-(--accent-primary) hover:text-(--horizontal-secondary-text) p-2"
           title={item.isPinned ? "Unpin menu" : "Pin menu"}
           onClick={() => {
             onPinClick(item);
@@ -79,7 +79,7 @@ export default function MenuItemComponent({
       )}
 
       {item.type === "group" && (
-        <span className="ml-auto text-[var(--horizontal-secondary-text)] p-2">
+        <span className="ml-auto text-(--horizontal-secondary-text) p-2">
           {iconRenderer?.({
             name: "RiArrowDownDoubleLine",
             size: 20,

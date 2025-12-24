@@ -6,12 +6,12 @@ export default function ForbiddenPage() {
       <div className="text-[400px] mb-2 text-gray-900">
         <IconRenderer
           name="RiForbid2Line"
-          className="text-[var(--danger)]"
+          className="text-(--danger)"
           size={300}
         />
       </div>
       <div className="text-center text-sm">
-        <h1 className="font-logo text-xl text-[var(--danger)]">
+        <h1 className="font-logo text-xl text-(--danger)">
           403 - Unauthorized access
         </h1>
       </div>

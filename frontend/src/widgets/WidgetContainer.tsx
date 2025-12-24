@@ -19,14 +19,14 @@ export function WidgetContainer({
 
   return (
     <div
-      className={`border rounded p-4 border-[var(--content-border)]`}
+      className={`border rounded p-4 border-(--content-border)`}
       style={{
         flex: width ?? config.defaultWidth ?? fallbackWidth[config.type],
         backgroundColor: config.bgColor,
         color: config.textColor,
       }}
     >
-      <h3 className="font-bold flex items-center gap-2 mb-4 text-[var(--content-text-muted)]">
+      <h3 className="font-bold flex items-center gap-2 mb-4 text-(--content-text-muted)">
         <IconRenderer name={config.icon} className="w-4 h-4" /> {config.label}
       </h3>
       {children}

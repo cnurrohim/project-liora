@@ -184,7 +184,7 @@ export default function StockOnHandListPage() {
           placeholder="Enter SKU / Item Name..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)] w-60"
+          className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded text-(--muted) w-60"
         />
 
         <div className="w-48">
@@ -202,7 +202,7 @@ export default function StockOnHandListPage() {
 
         <button
           onClick={handleDownloadPDF}
-          className="px-3 py-1 bg-[var(--warning)] hover:bg-[var(--warning-hover)] cursor-pointer text-[var(--warning-foreground)] rounded flex flex-row gap-2 items-center"
+          className="px-3 py-1 bg-(--warning) hover:bg-(--warning-hover) cursor-pointer text-(--warning-foreground) rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
           <IconRenderer name="RiFilePdf2Line" size={20} />{" "}
@@ -211,7 +211,7 @@ export default function StockOnHandListPage() {
 
         <button
           onClick={handleDownloadExcel}
-          className="px-3 py-1 bg-[var(--success)] hover:bg-[var(--success-hover)] cursor-pointer text-[var(--success-foreground)] rounded flex flex-row gap-2 items-center"
+          className="px-3 py-1 bg-(--success) hover:bg-(--success-hover) cursor-pointer text-(--success-foreground) rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
           <IconRenderer name="RiFileExcel2Line" size={20} />{" "}
@@ -219,7 +219,7 @@ export default function StockOnHandListPage() {
         </button>
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (

@@ -75,15 +75,7 @@ export async function hydrateUserLayout(user: ActiveUser): Promise<boolean> {
   const layout = await getLayout(user.id, user.defaultRole.id);
   if (!layout) return false;
 
-  // 🔹 Reset semua pane sebelum isi ulang
-  for (const pos of [
-    "leftPane",
-    "rightPane",
-    "topPane",
-    "bottomPane",
-  ] as const) {
-    LayoutController.updatePaneWithKey(pos, null, null);
-  }
+  LayoutController.resetLayout();
 
   for (const pos of [
     "leftPane",

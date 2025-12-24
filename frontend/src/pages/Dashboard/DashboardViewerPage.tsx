@@ -44,17 +44,17 @@ export default function DashboardViewerPage({
       {user && (
         <div className="flex flex-col ">
           <div className="flex flex-row justify-between">
-            <p className="text-sm font-bold text-[var(--content-text-muted)] ">
+            <p className="text-sm font-bold text-(--content-text-muted) ">
               Welcome {user.name}
             </p>
             <button
               onClick={onEdit}
-              className="px-1 border border-[var(--content-border)] rounded text-[var(--content-text-muted)] hover:text-[var(--content-text)] hover:bg-[var(--content-surface-hover)] cursor-pointer"
+              className="px-1 border border-(--content-border) rounded text-(--content-text-muted) hover:text-(--content-text) hover:bg-(--content-surface-hover) cursor-pointer"
             >
               <IconRenderer name="RiEdit2Line" className="w-4 h-4" />
             </button>
           </div>
-          <p className="text-2xl font-bold text-[var(--accent-primary)] ">
+          <p className="text-2xl font-bold text-(--accent-primary) ">
             {greeting}
           </p>
         </div>

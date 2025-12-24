@@ -191,7 +191,7 @@ export default function ItemListPage() {
         )}
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (

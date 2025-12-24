@@ -33,10 +33,10 @@ export default function MenuItemComponent({
       >
         <div
           key={i}
-          className={`group text-[var(--vertical-secondary-text)] flex flex-1 items-center ${
+          className={`group text-(--vertical-secondary-text) flex flex-1 items-center ${
             !isGroupActive
-              ? " hover:text-[var(--vertical-secondary-text-hover)] hover:bg-[var(--accent-primary)] p-2"
-              : "text-[var(--vertical-secondary-text-muted)]"
+              ? " hover:text-(--vertical-secondary-text-hover) hover:bg-(--accent-primary) p-2"
+              : "text-(--vertical-secondary-text-muted)"
           }  rounded-md`}
           onClick={() => {
             if (
@@ -73,7 +73,7 @@ export default function MenuItemComponent({
           <span
             className={` font-semibold text-sm ${
               item.items?.length && isGroupActive
-                ? " w-full uppercase text-xs text-[var(--vertical-secondary-text-muted)]"
+                ? " w-full uppercase text-xs text-(--vertical-secondary-text-muted)"
                 : ""
             }   truncate`}
           >
@@ -81,7 +81,7 @@ export default function MenuItemComponent({
           </span>
 
           {item.type === "group" && state.activePath.length !== 0 && (
-            <span className="ml-auto pr-1 text-[var(--vertical-secondary-text)]">
+            <span className="ml-auto pr-1 text-(--vertical-secondary-text)">
               ⮯
             </span>
           )}
@@ -91,7 +91,7 @@ export default function MenuItemComponent({
           <button
             type="button"
             title={item.isPinned ? "Unpin menu" : "Pin menu"}
-            className="text-[var(--vertical-secondary-text)] hover:bg-[var(--accent-primary)] hover:text-[var(--vertical-secondary-text-hover)] p-2 rounded cursor-pointer"
+            className="text-(--vertical-secondary-text) hover:bg-(--accent-primary) hover:text-(--vertical-secondary-text-hover) p-2 rounded cursor-pointer"
             onClick={() => onPinClick(item)}
           >
             {iconRenderer?.({

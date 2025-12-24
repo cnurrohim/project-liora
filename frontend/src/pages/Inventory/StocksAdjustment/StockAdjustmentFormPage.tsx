@@ -155,7 +155,7 @@ export default function StockAdjustmentFormPage() {
 
         {/* Adjustment Date */}
         <div>
-          <label className="block text-[var(--content-text-muted)]">
+          <label className="block text-(--content-text-muted)">
             Adjustment Date
           </label>
           <Controller
@@ -164,13 +164,13 @@ export default function StockAdjustmentFormPage() {
             render={({ field }) => (
               <input
                 type="date"
-                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+                className="w-full p-2 bg-(--content-surface-hover) rounded"
                 {...field}
               />
             )}
           />
           {errors.adjustment_date && (
-            <p className="text-[var(--danger)] text-sm">
+            <p className="text-(--danger) text-sm">
               {errors.adjustment_date.message}
             </p>
           )}
@@ -178,7 +178,7 @@ export default function StockAdjustmentFormPage() {
 
         {/* Reason */}
         <div>
-          <label className="block text-[var(--content-text-muted)]">
+          <label className="block text-(--content-text-muted)">
             Adjustment Note
           </label>
           <Controller
@@ -186,7 +186,7 @@ export default function StockAdjustmentFormPage() {
             control={control}
             render={({ field }) => (
               <textarea
-                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+                className="w-full p-2 bg-(--content-surface-hover) rounded"
                 {...field}
                 value={field.value ?? ""} // <--- null/undefined jadi string kosong
               />
@@ -194,33 +194,31 @@ export default function StockAdjustmentFormPage() {
           />
 
           {errors.reason && (
-            <p className="text-[var(--danger)] text-sm">
-              {errors.reason.message}
-            </p>
+            <p className="text-(--danger) text-sm">{errors.reason.message}</p>
           )}
         </div>
 
         {/* Items */}
         <div>
-          <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
+          <table className="table-auto border border-(--content-border) border-collapse w-full">
             <thead>
               <tr>
-                <th className="border border-[var(--content-border)] px-2 py-1">
+                <th className="border border-(--content-border) px-2 py-1">
                   Item
                 </th>
-                <th className="border border-[var(--content-border)] px-2 py-1">
+                <th className="border border-(--content-border) px-2 py-1">
                   Stored Location
                 </th>
-                <th className="border border-[var(--content-border)] px-2 py-1">
+                <th className="border border-(--content-border) px-2 py-1">
                   Qty
                 </th>
-                <th className="border border-[var(--content-border)] px-2 py-1">
+                <th className="border border-(--content-border) px-2 py-1">
                   Adj. (+/-)
                 </th>
-                <th className="border border-[var(--content-border)] px-2 py-1">
+                <th className="border border-(--content-border) px-2 py-1">
                   Notes
                 </th>
-                <th className="border border-[var(--content-border)] px-2 py-1">
+                <th className="border border-(--content-border) px-2 py-1">
                   Action
                 </th>
               </tr>
@@ -229,7 +227,7 @@ export default function StockAdjustmentFormPage() {
               {fields.map((field, index) => (
                 <tr key={field.id}>
                   {/* Item */}
-                  <td className="border border-[var(--content-border)] px-2 py-1">
+                  <td className="border border-(--content-border) px-2 py-1">
                     <Controller
                       name={`items.${index}.item_id`}
                       control={control}
@@ -270,14 +268,14 @@ export default function StockAdjustmentFormPage() {
 
                     {typeof errors.items?.[index]?.item_id?.message ===
                       "string" && (
-                      <p className="text-[var(--danger)] text-sm">
+                      <p className="text-(--danger) text-sm">
                         {errors.items[index]?.item_id?.message}
                       </p>
                     )}
                   </td>
 
                   {/* Location */}
-                  <td className="border border-[var(--content-border)] px-2 py-1">
+                  <td className="border border-(--content-border) px-2 py-1">
                     <Controller
                       name={`items.${index}.location_id`}
                       control={control}
@@ -323,14 +321,14 @@ export default function StockAdjustmentFormPage() {
 
                     {typeof errors.items?.[index]?.location_id?.message ===
                       "string" && (
-                      <p className="text-[var(--danger)] text-sm">
+                      <p className="text-(--danger) text-sm">
                         {errors.items[index]?.location_id?.message}
                       </p>
                     )}
                   </td>
 
                   {/* Current Quantity */}
-                  <td className="border border-[var(--content-border)] px-2 py-1">
+                  <td className="border border-(--content-border) px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_before`}
                       control={control}
@@ -340,21 +338,21 @@ export default function StockAdjustmentFormPage() {
                           disabled
                           readOnly
                           placeholder="current qty"
-                          className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
+                          className="w-24 p-2 bg-(--content-surface-hover) rounded"
                           {...field}
                           value={field.value ?? 0}
                         />
                       )}
                     />
                     {errors.items?.[index]?.quantity_before && (
-                      <p className="text-[var(--danger)] text-sm">
+                      <p className="text-(--danger) text-sm">
                         {errors.items[index]?.quantity_before?.message}
                       </p>
                     )}
                   </td>
 
                   {/* Quantity Diff */}
-                  <td className="border border-[var(--content-border)] px-2 py-1">
+                  <td className="border border-(--content-border) px-2 py-1">
                     <Controller
                       name={`items.${index}.quantity_diff`}
                       control={control}
@@ -363,7 +361,7 @@ export default function StockAdjustmentFormPage() {
                           type="string"
                           inputMode="numeric"
                           placeholder="+/- Qty"
-                          className="w-24 p-2 bg-[var(--content-surface-hover)] rounded"
+                          className="w-24 p-2 bg-(--content-surface-hover) rounded"
                           {...field}
                           value={field.value ?? ""}
                           onChange={(e) => field.onChange(e.target.value)}
@@ -372,14 +370,14 @@ export default function StockAdjustmentFormPage() {
                     />
 
                     {errors.items?.[index]?.quantity_diff && (
-                      <p className="text-[var(--danger)] text-sm">
+                      <p className="text-(--danger) text-sm">
                         {errors.items[index]?.quantity_diff?.message}
                       </p>
                     )}
                   </td>
 
                   {/* Notes */}
-                  <td className="border border-[var(--content-border)] px-2 py-1">
+                  <td className="border border-(--content-border) px-2 py-1">
                     <Controller
                       name={`items.${index}.notes`}
                       control={control}
@@ -387,7 +385,7 @@ export default function StockAdjustmentFormPage() {
                         <input
                           type="text"
                           placeholder="Note"
-                          className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+                          className="w-full p-2 bg-(--content-surface-hover) rounded"
                           {...field}
                           value={field.value ?? ""} // <-- pastikan bukan null
                         />
@@ -396,11 +394,11 @@ export default function StockAdjustmentFormPage() {
                   </td>
 
                   {/* Action */}
-                  <td className="border border-[var(--content-border)] px-2 py-1">
+                  <td className="border border-(--content-border) px-2 py-1">
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--success-foreground)] rounded"
+                      className="px-2 py-1 cursor-pointer bg-(--danger) hover:bg-(--danger-hover) text-(--success-foreground) rounded"
                     >
                       delete
                     </button>
@@ -421,7 +419,7 @@ export default function StockAdjustmentFormPage() {
                         notes: "",
                       })
                     }
-                    className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--success-foreground)] rounded"
+                    className="px-3 py-1 cursor-pointer bg-(--success) hover:bg-(--success-hover) text-(--success-foreground) rounded"
                   >
                     + Add Item
                   </button>
@@ -434,7 +432,7 @@ export default function StockAdjustmentFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
+          className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer max-w-3/4"
         >
           {loading ? "Saving..." : "Save"}
         </button>

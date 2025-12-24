@@ -143,16 +143,16 @@ export default function POSummaryListPage() {
         accessorKey: "received_percent",
         header: "Progress",
         cell: ({ row }) => (
-          <div className="w-32 bg-[var(--content-surface-hover)] rounded-full h-3 overflow-hidden">
+          <div className="w-32 bg-(--content-surface-hover) rounded-full h-3 overflow-hidden">
             <div
               className={`h-3 ${
                 row.original.status === "Cancelled"
-                  ? "bg-[var(--mute)]"
+                  ? "bg-(--mute)"
                   : row.original.received_percent >= 100
-                  ? "bg-[var(--info)]"
+                  ? "bg-(--info)"
                   : row.original.received_percent > 0
-                  ? "bg-[var(--success)]"
-                  : "bg-[var(--warning)]"
+                  ? "bg-(--success)"
+                  : "bg-(--warning)"
               }`}
               style={{
                 width: `${row.original.received_percent}%`,
@@ -168,12 +168,12 @@ export default function POSummaryListPage() {
           <div
             className={`px-2 py-0.5 rounded text-xs font-medium w-full text-center ${
               row.original.status === "Open"
-                ? "bg-[var(--warning)] text-[var(--warning-foreground)]"
+                ? "bg-(--warning) text-(--warning-foreground)"
                 : row.original.status === "Partial"
-                ? "bg-[var(--success)] text-[var(--success-foreground)]"
+                ? "bg-(--success) text-(--success-foreground)"
                 : row.original.status === "Cancelled"
-                ? "bg-[var(--mute)] text-[var(--mute-foreground)]"
-                : "bg-[var(--info)] text-[var(--info-foreground)]"
+                ? "bg-(--mute) text-(--mute-foreground)"
+                : "bg-(--info) text-(--info-foreground)"
             }`}
           >
             {row.original.status}
@@ -214,7 +214,7 @@ export default function POSummaryListPage() {
             type="date"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
-            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
+            className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded text-(--muted)"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -223,13 +223,13 @@ export default function POSummaryListPage() {
             type="date"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
+            className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded text-(--muted)"
           />
         </div>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
+          className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded text-(--muted)"
         >
           <option value="">All Status</option>
           <option value="Open">Open</option>
@@ -240,7 +240,7 @@ export default function POSummaryListPage() {
 
         <button
           onClick={handleDownloadPDF}
-          className="px-3 py-1 bg-[var(--warning)] hover:bg-[var(--warning-hover)] cursor-pointer text-[var(--warning-foreground)] rounded flex flex-row gap-2 items-center"
+          className="px-3 py-1 bg-(--warning) hover:bg-(--warning-hover) cursor-pointer text-(--warning-foreground) rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
           <IconRenderer name="RiFilePdf2Line" size={20} />{" "}
@@ -249,7 +249,7 @@ export default function POSummaryListPage() {
 
         <button
           onClick={handleDownloadExcel}
-          className="px-3 py-1 bg-[var(--success)] hover:bg-[var(--success-hover)] cursor-pointer text-[var(--success-foreground)] rounded flex flex-row gap-2 items-center"
+          className="px-3 py-1 bg-(--success) hover:bg-(--success-hover) cursor-pointer text-(--success-foreground) rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
           <IconRenderer name="RiFileExcel2Line" size={20} />{" "}
@@ -257,7 +257,7 @@ export default function POSummaryListPage() {
         </button>
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (

@@ -153,10 +153,10 @@ export default function PreferencesForm() {
     label: string
   ) => (
     <div className="space-y-2 w-full ">
-      <label className="text-sm text-[var(--content-text-muted)] capitalize flex flex-row gap-2">
+      <label className="text-sm text-(--content-text-muted) capitalize flex flex-row gap-2">
         <IconRenderer
           name={iconName}
-          className="text-[var(--content-text)]"
+          className="text-(--content-text)"
           size={20}
         />
         {label}
@@ -166,7 +166,7 @@ export default function PreferencesForm() {
         control={control}
         render={({ field }) => (
           <select
-            className="w-full p-2 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) text-(--content-text) rounded"
             value={field.value ?? "none"}
             onChange={(e) => {
               const nextKey = e.target.value === "none" ? null : e.target.value;
@@ -218,10 +218,10 @@ export default function PreferencesForm() {
   return (
     <FormProvider {...methods}>
       <div className="pt-6 max-w-3/4 mx-auto px-6">
-        <h1 className="text-2xl font-bold text-[var(--accent-primary)] flex flex-row gap-2">
+        <h1 className="text-2xl font-bold text-(--accent-primary) flex flex-row gap-2">
           Preferences
         </h1>
-        <p className="text-sm text-[var(--content-text-muted)] leading-relaxed mt-2">
+        <p className="text-sm text-(--content-text-muted) leading-relaxed mt-2">
           This page allows you to customize the application layout and default
           behavior according to your needs. Each{" "}
           <span className="font-medium">pane</span>
@@ -240,10 +240,10 @@ export default function PreferencesForm() {
         onSubmit={handleSubmit(onSubmit)}
         className="p-6 max-w-3/4 mx-auto space-y-4 "
       >
-        <h2 className="text-xl font-semibold text-[var(--accent-primary)] flex flex-row gap-2">
+        <h2 className="text-xl font-semibold text-(--accent-primary) flex flex-row gap-2">
           <IconRenderer
             name="RiLayoutLine"
-            className="text-[var(--accent-primary)]"
+            className="text-(--accent-primary)"
             size={30}
           />
           Layout
@@ -258,10 +258,10 @@ export default function PreferencesForm() {
           {renderSelect("bottomPane", "RiLayoutBottomLine", "Bottom Pane")}
         </div>
 
-        <h2 className="text-xl font-semibold text-[var(--accent-primary)] flex flex-row gap-2 ">
+        <h2 className="text-xl font-semibold text-(--accent-primary) flex flex-row gap-2 ">
           <IconRenderer
             name="RiAppsLine"
-            className="text-[var(--accent-primary)]"
+            className="text-(--accent-primary)"
             size={30}
           />
           Others
@@ -269,10 +269,10 @@ export default function PreferencesForm() {
 
         <div className="ml-10 flex flex-col gap-5 mb-20">
           <div className="flex flex-row items-center">
-            <label className="text-[var(--content-text-muted)] flex flex-row gap-2 w-58">
+            <label className="text-(--content-text-muted) flex flex-row gap-2 w-58">
               <IconRenderer
                 name="RiPagesLine"
-                className="text-[var(--content-text)]"
+                className="text-(--content-text)"
                 size={20}
               />
               Default New Tab
@@ -282,7 +282,7 @@ export default function PreferencesForm() {
               control={control}
               render={({ field }) => (
                 <select
-                  className="w-full p-2 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded"
+                  className="w-full p-2 bg-(--content-surface-hover) text-(--content-text) rounded"
                   value={field.value ?? ""}
                   onChange={(e) => field.onChange(e.target.value || null)}
                 >
@@ -298,10 +298,10 @@ export default function PreferencesForm() {
           </div>
 
           <div className="flex flex-row items-center">
-            <label className="text-[var(--content-text-muted)] flex flex-row gap-2 w-58">
+            <label className="text-(--content-text-muted) flex flex-row gap-2 w-58">
               <IconRenderer
                 name="RiPagesLine"
-                className="text-[var(--content-text)]"
+                className="text-(--content-text)"
                 size={20}
               />
               Dashboard
@@ -323,10 +323,10 @@ export default function PreferencesForm() {
           </div>
 
           <div className="flex flex-row items-center">
-            <label className="text-[var(--content-text-muted)] flex flex-row gap-2 w-58">
+            <label className="text-(--content-text-muted) flex flex-row gap-2 w-58">
               <IconRenderer
                 name="RiPagesLine"
-                className="text-[var(--content-text)]"
+                className="text-(--content-text)"
                 size={20}
               />
               Theme
@@ -341,7 +341,7 @@ export default function PreferencesForm() {
                     field.onChange(e.target.value);
                     setTheme(e.target.value as any); // ✅ apply langsung ke hook
                   }}
-                  className="w-full p-2 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded"
+                  className="w-full p-2 bg-(--content-surface-hover) text-(--content-text) rounded"
                 >
                   {themes.map((t) => (
                     <option key={t.id} value={t.id}>
@@ -359,7 +359,7 @@ export default function PreferencesForm() {
             <button
               type="submit"
               disabled={isSaving}
-              className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer"
+              className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer"
             >
               {isSaving ? "Saving..." : "Apply"}
             </button>

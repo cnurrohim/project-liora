@@ -114,7 +114,7 @@ export default function DepartmentFormPage() {
         <div>
           <label className="block mb-1">Department Name</label>
           <input
-            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) rounded"
             value={form.name}
             onChange={(e) => handleChange("name", e.target.value)}
             required
@@ -124,7 +124,7 @@ export default function DepartmentFormPage() {
         <div>
           <label className="block mb-1">Description</label>
           <input
-            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) rounded"
             value={form.description}
             onChange={(e) => handleChange("description", e.target.value)}
           />
@@ -133,10 +133,10 @@ export default function DepartmentFormPage() {
         <div>
           <label className="block mb-1">
             Parent Department{" "}
-            <span className="text-[var(--content-text-muted)]">(optional)</span>{" "}
+            <span className="text-(--content-text-muted)">(optional)</span>{" "}
           </label>
           <select
-            className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+            className="w-full p-2 bg-(--content-surface-hover) rounded"
             value={form.parent_id || ""}
             onChange={(e) => handleChange("parent_id", e.target.value || null)}
           >
@@ -156,14 +156,14 @@ export default function DepartmentFormPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer"
+              className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer"
             >
               {loading ? "Saving..." : "Save"}
             </button>
           )}
         </div>
 
-        {error && <div className="text-[var(--danger)]">{error}</div>}
+        {error && <div className="text-(--danger)">{error}</div>}
       </form>
     </>
   );

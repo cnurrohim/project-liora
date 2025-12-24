@@ -22,28 +22,35 @@ const state: UserPreferences = {
   language: "en",
 };
 
+const DEFAULT_THEME: ThemeId = "light";
+
 let updateCallbacks: (() => void)[] = [];
 
 export const UserPreferencesController = {
   async load(userID: string, roleID: string) {
     try {
+      // 1️⃣ reset state DATA saja
       this.clear();
+
       const res = await apiFetch(`/user-layout/config/${userID}/${roleID}`);
       const config = await res.json();
 
       if (config.default_page) {
-        this.set("defaultPage", config.default_page);
+        state.defaultPage = config.default_page;
       }
 
       if (config.default_new_tab) {
-        this.set("defaultNewTab", config.default_new_tab);
+        state.defaultNewTab = config.default_new_tab;
       }
 
-      if (config.theme) {
-        this.set("theme", config.theme);
-        this.applyTheme(config.theme as ThemeId);
-      }
+      // 2️⃣ tentukan theme final
+      const theme = (config.theme as ThemeId) ?? DEFAULT_THEME;
+      state.theme = theme;
 
+      // 3️⃣ apply side-effect SEKALI
+      this.applyTheme(theme);
+
+      // 4️⃣ notify SEKALI
       notify();
     } catch (err) {
       console.error("Gagal load user preferences:", err);
@@ -70,7 +77,24 @@ export const UserPreferencesController = {
     state.language = "en";
   },
 
+  resetTheme() {
+    state.theme = DEFAULT_THEME;
+    this.applyTheme(DEFAULT_THEME);
+    notify();
+  },
+
+  setTheme(theme: ThemeId) {
+    state.theme = theme;
+    this.applyTheme(theme);
+    notify();
+  },
+
   applyTheme(theme: ThemeId) {
+    if (!themes.some((t) => t.id === theme)) {
+      console.warn("Unknown theme:", theme);
+      return;
+    }
+
     const root = document.documentElement;
     root.classList.remove(...themes.map((t) => t.id));
     root.classList.add(theme);

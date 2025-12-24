@@ -157,10 +157,10 @@ export default function StockMovementListPage() {
           <span
             className={`px-2 py-0.5 rounded text-xs ${
               row.original.movement_type === "inbound"
-                ? "bg-[var(--success)] text-[var(--success-foreground)]"
+                ? "bg-(--success) text-(--success-foreground)"
                 : row.original.movement_type === "outbound"
-                ? "bg-[var(--warning)] text-[var(--warning-foreground)]"
-                : "bg-[var(--content-surface-hover)] text-[var(--content-text)]"
+                ? "bg-(--warning) text-(--warning-foreground)"
+                : "bg-(--content-surface-hover) text-(--content-text)"
             }`}
           >
             {row.original.movement_type}
@@ -178,8 +178,8 @@ export default function StockMovementListPage() {
           <span
             className={
               row.original.adjustment_direction === "increase"
-                ? "text-[var(--success)] font-semibold"
-                : "text-[var(--danger)] font-semibold"
+                ? "text-(--success) font-semibold"
+                : "text-(--danger) font-semibold"
             }
           >
             {row.original.qty}
@@ -247,12 +247,12 @@ export default function StockMovementListPage() {
           placeholder="Enter SKU / Item Name..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded w-60"
+          className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded w-60"
         />
         <select
           value={movementType}
           onChange={(e) => setMovementType(e.target.value as MovementType)}
-          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
+          className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded text-(--muted)"
         >
           <option value="">All Type</option>
           <option value="inbound">Inbound</option>
@@ -265,7 +265,7 @@ export default function StockMovementListPage() {
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
+            className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded text-(--muted)"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -274,12 +274,12 @@ export default function StockMovementListPage() {
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded text-[var(--muted)]"
+            className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded text-(--muted)"
           />
         </div>
         <button
           onClick={handleDownloadPDF}
-          className="px-3 py-1 bg-[var(--warning)] hover:bg-[var(--warning-hover)] cursor-pointer text-[var(--warning-foreground)] rounded flex flex-row gap-2 items-center"
+          className="px-3 py-1 bg-(--warning) hover:bg-(--warning-hover) cursor-pointer text-(--warning-foreground) rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
           <IconRenderer name="RiFilePdf2Line" size={20} />{" "}
@@ -288,7 +288,7 @@ export default function StockMovementListPage() {
 
         <button
           onClick={handleDownloadExcel}
-          className="px-3 py-1 bg-[var(--success)] hover:bg-[var(--success-hover)] cursor-pointer text-[var(--success-foreground)] rounded flex flex-row gap-2 items-center"
+          className="px-3 py-1 bg-(--success) hover:bg-(--success-hover) cursor-pointer text-(--success-foreground) rounded flex flex-row gap-2 items-center"
           disabled={loading}
         >
           <IconRenderer name="RiFileExcel2Line" size={20} />{" "}
@@ -296,7 +296,7 @@ export default function StockMovementListPage() {
         </button>
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (

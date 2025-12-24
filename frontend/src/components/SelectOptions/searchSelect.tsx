@@ -70,7 +70,7 @@ export default function SearchSelect({
           setInput(e.target.value);
           if (value) onChange(null); // reset kalau user edit lagi
         }}
-        className="w-full outline-none bg-[var(--content-surface-hover)] p-2"
+        className="w-full outline-none bg-(--content-surface-hover) p-2"
         placeholder={placeholder}
         disabled={disabled}
         onFocus={() => setIsOpen(true)}
@@ -86,28 +86,28 @@ export default function SearchSelect({
         <button
           type="button"
           onClick={clearOption}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--danger)] cursor-pointer"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-(--danger) cursor-pointer"
         >
           ×
         </button>
       )}
 
       {isOpen && (
-        <ul className="absolute left-0 right-0 z-10 mt-1 bg-[var(--content-surface-hover)] rounded shadow max-h-60 overflow-auto border-1 border-[var(--content-border)]">
+        <ul className="absolute left-0 right-0 z-10 mt-1 bg-(--content-surface-hover) rounded shadow max-h-60 overflow-auto border border-(--content-border)">
           {loading ? (
-            <li className="px-2 py-1 text-[var(--content-text)]">Loading...</li>
+            <li className="px-2 py-1 text-(--content-text)">Loading...</li>
           ) : options.length > 0 ? (
             options.map((opt) => (
               <li
                 key={opt.id}
-                className="px-2 py-1 hover:bg-[var(--content-surface)] cursor-pointer"
+                className="px-2 py-1 hover:bg-(--content-surface) cursor-pointer"
                 onMouseDown={() => selectOption(opt)}
               >
                 {opt.name}
               </li>
             ))
           ) : (
-            <li className="px-2 py-1 text-[var(--content-text)]">Not found</li>
+            <li className="px-2 py-1 text-(--content-text)">Not found</li>
           )}
         </ul>
       )}

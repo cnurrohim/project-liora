@@ -31,15 +31,15 @@ export function RoleDetailPane() {
       onClose={RoleDetailPaneController.close}
     >
       <div>
-        <p className="text-sm text-[var(--content-text)]">Description</p>
-        <p className="text-[var(--content-text)]">{description || "-"}</p>
+        <p className="text-sm text-(--content-text)">Description</p>
+        <p className="text-(--content-text)">{description || "-"}</p>
       </div>
 
       {Object.entries(permissions).map(([domain, perms]) => (
-        <details key={domain} className="bg-[var(--content-surface)] rounded">
+        <details key={domain} className="bg-(--content-surface) rounded">
           <summary className="cursor-pointer px-4 py-2 font-semibold">
             {domain}
-            <span className="ml-2 text-sm text-[var(--content-text)]">
+            <span className="ml-2 text-sm text-(--content-text)">
               ({perms.length})
             </span>
           </summary>
@@ -47,12 +47,12 @@ export function RoleDetailPane() {
             {perms.map((p) => (
               <div
                 key={p.id}
-                className="border-b border-[var(--content-border)] pb-2"
+                className="border-b border-(--content-border) pb-2"
               >
-                <div className="font-semibold text-[var(--content-text)]">
+                <div className="font-semibold text-(--content-text)">
                   {p.label}
                 </div>
-                <div className="text-[var(--content-text)] text-sm">
+                <div className="text-(--content-text) text-sm">
                   {p.description}
                 </div>
                 <div className="text-gray-500 text-xs italic">{p.name}</div>

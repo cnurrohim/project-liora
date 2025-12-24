@@ -166,7 +166,7 @@ export default function GoodsReceiptListPage() {
           placeholder="Search PO Number"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded w-90"
+          className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded w-90"
         />
 
         {canCreate && (
@@ -193,7 +193,7 @@ export default function GoodsReceiptListPage() {
         )}
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (

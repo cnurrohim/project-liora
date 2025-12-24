@@ -88,43 +88,37 @@ export function StockOpnameDetailPane() {
         {/* Header */}
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
+            <p className="text-sm text-(--content-text-muted)">
               Opname Location
             </p>
-            <p className="text-[var(--content-text)]">{location}</p>
+            <p className="text-(--content-text)">{location}</p>
           </div>
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
-              Opname Date
-            </p>
-            <p className="text-[var(--content-text)]">
-              {formatDate(opname_date)}
-            </p>
+            <p className="text-sm text-(--content-text-muted)">Opname Date</p>
+            <p className="text-(--content-text)">{formatDate(opname_date)}</p>
           </div>
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
-              Created By
-            </p>
-            <p className="text-[var(--content-text)]">{created_by}</p>
+            <p className="text-sm text-(--content-text-muted)">Created By</p>
+            <p className="text-(--content-text)">{created_by}</p>
           </div>
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
+            <p className="text-sm text-(--content-text-muted)">
               Current Status
             </p>
-            <p className="text-[var(--content-text)]">{status}</p>
+            <p className="text-(--content-text)">{status}</p>
           </div>
           {!updated_at && (
             <div>
-              <p className="text-sm text-[var(--content-text-muted)]">Note</p>
-              <p className="text-[var(--content-text)]">{notes}</p>
+              <p className="text-sm text-(--content-text-muted)">Note</p>
+              <p className="text-(--content-text)">{notes}</p>
             </div>
           )}
         </div>
 
         {status !== "draft" && (
-          <div className="text-[var(--content-text)]">
-            <table className="w-full text-sm border border-[var(--content-border)] mb-4 ">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
+          <div className="text-(--content-text)">
+            <table className="w-full text-sm border border-(--content-border) mb-4 ">
+              <thead className="bg-(--content-surface-hover) text-(--content-text)">
                 <tr>
                   <th className="px-2 py-1 text-left">Progress</th>
                   <th className="px-2 py-1 text-left">Note</th>
@@ -173,12 +167,12 @@ export function StockOpnameDetailPane() {
 
         {/* Items */}
         {items.length > 0 && (
-          <div className="text-[var(--content-text)]">
-            <p className="text-sm text-[var(--content-text-muted)] mb-2">
+          <div className="text-(--content-text)">
+            <p className="text-sm text-(--content-text-muted) mb-2">
               Opname Items
             </p>
-            <table className="w-full text-sm border border-[var(--content-border)]">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
+            <table className="w-full text-sm border border-(--content-border)">
+              <thead className="bg-(--content-surface-hover) text-(--content-text)">
                 <tr>
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
@@ -193,7 +187,7 @@ export function StockOpnameDetailPane() {
                   return (
                     <tr
                       key={it.id}
-                      className="border-t border-[var(--content-border)]"
+                      className="border-t border-(--content-border)"
                     >
                       <td className="px-2 py-1">{it.sku}</td>
                       <td className="px-2 py-1">{it.item_name}</td>
@@ -223,12 +217,12 @@ export function StockOpnameDetailPane() {
         )}
 
         {stock_movements.length > 0 && (
-          <div className="text-[var(--content-text)]">
-            <p className="text-sm text-[var(--content-text-muted)] mb-2">
+          <div className="text-(--content-text)">
+            <p className="text-sm text-(--content-text-muted) mb-2">
               Inventory Movements
             </p>
-            <table className="w-full text-sm border border-[var(--content-border)]">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
+            <table className="w-full text-sm border border-(--content-border)">
+              <thead className="bg-(--content-surface-hover) text-(--content-text)">
                 <tr>
                   <th className="px-2 py-1 text-left">Date</th>
                   <th className="px-2 py-1 text-left">Item</th>
@@ -241,7 +235,7 @@ export function StockOpnameDetailPane() {
                 {stock_movements.map((sm) => (
                   <tr
                     key={sm.id}
-                    className="border-t border-[var(--content-border)]"
+                    className="border-t border-(--content-border)"
                   >
                     <td className="px-2 py-1">
                       {new Date(sm.created_at).toLocaleString()}

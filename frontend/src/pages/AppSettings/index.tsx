@@ -55,7 +55,7 @@ export default function AppSettingPage() {
           value={appName}
           onChange={(e) => setAppName(e.target.value)}
           placeholder="Eg: Aterna Somnia"
-          className="w-full bg-[var(--content-surface)] rounded-md shadow-sm  p-2"
+          className="w-full bg-(--content-surface) rounded-md shadow-sm  p-2"
         />
       </div>
 
@@ -70,12 +70,12 @@ export default function AppSettingPage() {
               setLogoFile(file);
               if (file) setPreviewUrl(URL.createObjectURL(file));
             }}
-            className="block w-full text-sm text-[var(--content-text)]
+            className="block w-full text-sm text-(--content-text)
                   file:mr-4 file:py-2 file:px-4
                   file:rounded-md file:border-0
                   file:text-sm file:font-semibold
-                  file:bg-[var(--content-surface)] file:text-[var(--content-text)]
-                  hover:file:bg-[var(--content-surface-hover)]
+                  file:bg-(--content-surface) file:text-(--content-text)
+                  hover:file:bg-(--content-surface-hover)
                   cursor-pointer"
           />
           {previewUrl && (
@@ -92,7 +92,7 @@ export default function AppSettingPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer"
+          className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer"
         >
           {loading ? "Saving..." : "Save"}
         </button>

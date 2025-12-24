@@ -192,14 +192,14 @@ export default function StockLocationsListPage() {
         )}
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (
         <>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text-muted)]">
+              <thead className="bg-(--content-surface-hover) text-(--content-text-muted)">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -230,7 +230,7 @@ export default function StockLocationsListPage() {
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="border-b border-[var(--content-border)]"
+                    className="border-b border-(--content-border)"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="p-2 align-top">
@@ -255,14 +255,14 @@ export default function StockLocationsListPage() {
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded disabled:opacity-50"
+                className="px-2 py-1 bg-(--content-surface-hover) text-(--content-text) rounded disabled:opacity-50"
               >
                 Prev
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded disabled:opacity-50"
+                className="px-2 py-1 bg-(--content-surface-hover) text-(--content-text) rounded disabled:opacity-50"
               >
                 Next
               </button>

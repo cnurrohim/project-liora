@@ -87,41 +87,39 @@ export function PurchaseOrderDetailPane() {
         {/* Header */}
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">Supplier</p>
-            <p className="text-[var(--content-text)]">{supplier_name}</p>
+            <p className="text-sm text-(--content-text-muted)">Supplier</p>
+            <p className="text-(--content-text)">{supplier_name}</p>
           </div>
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
-              Order Date
-            </p>
-            <p className="text-[var(--content-text)]">{order_date}</p>
+            <p className="text-sm text-(--content-text-muted)">Order Date</p>
+            <p className="text-(--content-text)">{order_date}</p>
           </div>
           {expected_date && (
             <div>
-              <p className="text-sm text-[var(--content-text-muted)]">
+              <p className="text-sm text-(--content-text-muted)">
                 Expected Date
               </p>
-              <p className="text-[var(--content-text)]">{expected_date}</p>
+              <p className="text-(--content-text)">{expected_date}</p>
             </div>
           )}
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">Status</p>
-            <p className="text-[var(--content-text)] capitalize">{status}</p>
+            <p className="text-sm text-(--content-text-muted)">Status</p>
+            <p className="text-(--content-text) capitalize">{status}</p>
           </div>
           {notes && (
             <div>
-              <p className="text-sm text-[var(--content-text-muted)]">Notes</p>
-              <p className="text-[var(--content-text)]">{notes}</p>
+              <p className="text-sm text-(--content-text-muted)">Notes</p>
+              <p className="text-(--content-text)">{notes}</p>
             </div>
           )}
         </div>
 
         {/* Items */}
         {items.length > 0 && (
-          <div className="text-[var(--content-text)]">
+          <div className="text-(--content-text)">
             <p className="text-sm  mb-2">Items</p>
-            <table className="w-full text-sm border border-[var(--content-border)]">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
+            <table className="w-full text-sm border border-(--content-border)">
+              <thead className="bg-(--content-surface-hover) text-(--content-text)">
                 <tr>
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
@@ -132,7 +130,7 @@ export function PurchaseOrderDetailPane() {
                 {items.map((it) => (
                   <tr
                     key={it.id}
-                    className="border-t border-[var(--content-border)]"
+                    className="border-t border-(--content-border)"
                   >
                     <td className="px-2 py-1">{it.sku}</td>
                     <td className="px-2 py-1">{it.item_name}</td>
@@ -146,33 +144,31 @@ export function PurchaseOrderDetailPane() {
 
         {/* Receives */}
         {receives.length > 0 && (
-          <div className="text-[var(--content-text)]">
-            <p className="text-sm text-[var(--content-text)] mb-2">Receives</p>
+          <div className="text-(--content-text)">
+            <p className="text-sm text-(--content-text) mb-2">Receives</p>
             {receives.map((r) => (
               <details
                 key={r.id}
-                className="bg-[var(--content-surface-inset)] rounded mb-2 "
+                className="bg-(--content-surface-inset) rounded mb-2 "
               >
                 <summary className="cursor-pointer px-4 py-2 font-semibold">
                   {r.receive_date} - {r.received_by} - {r.stored_location}
                 </summary>
                 <div className="p-4 text-sm space-y-2">
-                  {r.note && (
-                    <p className="text-[var(--content-text)]">{r.note}</p>
-                  )}
-                  <table className="w-full text-sm border border-[var(--content-border)]">
-                    <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
+                  {r.note && <p className="text-(--content-text)">{r.note}</p>}
+                  <table className="w-full text-sm border border-(--content-border)">
+                    <thead className="bg-(--content-surface-hover) text-(--content-text)">
                       <tr>
                         <th className="px-2 py-1 text-left">SKU</th>
                         <th className="px-2 py-1 text-left">Name</th>
                         <th className="px-2 py-1 text-right">Qty</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-[var(--content-surface)] text-[var(--content-text)]">
+                    <tbody className="bg-(--content-surface) text-(--content-text)">
                       {r.items.map((ri) => (
                         <tr
                           key={ri.id}
-                          className="border-t border-[var(--content-border)]"
+                          className="border-t border-(--content-border)"
                         >
                           <td className="px-2 py-1">{ri.sku}</td>
                           <td className="px-2 py-1">{ri.item_name}</td>
@@ -188,12 +184,12 @@ export function PurchaseOrderDetailPane() {
         )}
 
         {stock_movements.length > 0 && (
-          <div className="text-[var(--content-text)]">
-            <p className="text-sm text-[var(--content-text)] mb-2">
+          <div className="text-(--content-text)">
+            <p className="text-sm text-(--content-text) mb-2">
               Inventory Movements
             </p>
-            <table className="w-full text-sm border border-[var(--content-border)]">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text)]">
+            <table className="w-full text-sm border border-(--content-border)">
+              <thead className="bg-(--content-surface-hover) text-(--content-text)">
                 <tr>
                   <th className="px-2 py-1 text-left">Date</th>
                   <th className="px-2 py-1 text-left">SKU</th>
@@ -208,7 +204,7 @@ export function PurchaseOrderDetailPane() {
                 {stock_movements.map((sm) => (
                   <tr
                     key={sm.id}
-                    className="border-t border-[var(--content-border)]"
+                    className="border-t border-(--content-border)"
                   >
                     <td className="px-2 py-1">
                       {new Date(sm.created_at).toLocaleString()}

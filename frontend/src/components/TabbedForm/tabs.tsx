@@ -45,8 +45,8 @@ export function TabsTrigger({
       onClick={() => ctx.setActiveValue(value)}
       className={` px-3 py-1.5 text-sm font-medium rounded-t border-b-1 flex flex-row gap-2 cursor-pointer ${
         isActive
-          ? "border-[var(--accent-primary)] text-[var(--primary)]"
-          : "border-transparent text-[var(--panel-text-primary)] hover:text-[var(--text-muted)]"
+          ? "border-(--accent-primary) text-(--primary)"
+          : "border-transparent text-(--panel-text-primary) hover:text-(--text-muted)"
       }`}
     >
       {children}

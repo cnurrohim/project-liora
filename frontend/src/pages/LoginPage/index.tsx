@@ -8,7 +8,6 @@ import { getAppSetting } from "../AppSettings/appSetting.api";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 const DEMO_MODE = import.meta.env.VITE_API_DEMO_MODE === "true";
-console.log("DEMO:", import.meta.env.VITE_API_DEMO_MODE);
 
 export default function LoginPage() {
   useAuthRedirect();
@@ -72,7 +71,11 @@ export default function LoginPage() {
       >
         <div className="text-2xl mb-4 text-gray-900 text-center flex flex-col items-center justify-center">
           {previewUrl && (
-            <img src={previewUrl} alt="Logo" className="h-100 object-contain" />
+            <img
+              src={previewUrl}
+              alt="Logo"
+              className={`${DEMO_MODE ? "h-50" : "h-100"} object-contain`}
+            />
           )}
 
           {!previewUrl && (

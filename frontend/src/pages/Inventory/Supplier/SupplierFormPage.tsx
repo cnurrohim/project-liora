@@ -96,45 +96,39 @@ export default function SupplierFormPage() {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[var(--content-text-muted)]">
+            <label className="block text-(--content-text-muted)">
               Supplier Name
             </label>
             <input
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+              className="w-full p-2 bg-(--content-surface-hover) rounded"
               {...register("name")}
             />
             {typeof errors.name?.message === "string" && (
-              <p className="text-[var(--danger)] text-sm">
-                {errors.name.message}
-              </p>
+              <p className="text-(--danger) text-sm">{errors.name.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-[var(--content-text-muted)]">
-              Contact
-            </label>
+            <label className="block text-(--content-text-muted)">Contact</label>
             <input
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+              className="w-full p-2 bg-(--content-surface-hover) rounded"
               {...register("contact")}
             />
             {typeof errors.contact?.message === "string" && (
-              <p className="text-[var(--danger)] text-sm">
+              <p className="text-(--danger) text-sm">
                 {errors.contact.message}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-[var(--content-text-muted)]">
-              Address
-            </label>
+            <label className="block text-(--content-text-muted)">Address</label>
             <textarea
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+              className="w-full p-2 bg-(--content-surface-hover) rounded"
               {...register("address")}
             />
             {typeof errors.address?.message === "string" && (
-              <p className="text-[var(--danger)] text-sm">
+              <p className="text-(--danger) text-sm">
                 {errors.address.message}
               </p>
             )}
@@ -144,7 +138,7 @@ export default function SupplierFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
+          className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer max-w-3/4"
         >
           {loading ? "Saving..." : "Save"}
         </button>

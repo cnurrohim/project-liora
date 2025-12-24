@@ -199,7 +199,7 @@ export default function UserFormTabs() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-28 flex justify-center text-[var(--info-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer "
+                className="w-28 flex justify-center text-(--info-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer "
               >
                 {loading ? "Saving..." : "Save"}
               </button>

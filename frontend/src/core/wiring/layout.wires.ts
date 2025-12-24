@@ -13,6 +13,7 @@ export const layoutWires: Wire[] = [
     to: () => {
       if (LayoutController.isHydrated()) return;
 
+      LayoutController.resetLayout();
       LayoutController.setPane(
         "leftPane",
         React.createElement(createVerticalMenu("leftPane"))

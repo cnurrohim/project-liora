@@ -159,19 +159,19 @@ export default function PurchaseReceiveKiosk() {
               <label>Receive Date</label>
               <input
                 type="date"
-                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+                className="w-full p-2 bg-(--content-surface-hover) rounded"
                 {...methods.register("receive_date")}
               />
 
               {methods.formState.errors.receive_date && (
-                <p className="text-[var(--danger)] text-xs mt-1">
+                <p className="text-(--danger) text-xs mt-1">
                   {methods.formState.errors.receive_date.message}
                 </p>
               )}
             </div>
 
             <div>
-              <label className="block text-[var(--content-text-muted)]">
+              <label className="block text-(--content-text-muted)">
                 Stored Location
               </label>
               {/* Target Location */}
@@ -185,7 +185,7 @@ export default function PurchaseReceiveKiosk() {
               />
 
               {methods.formState.errors.location_id && (
-                <p className="text-[var(--danger)] text-xs mt-1">
+                <p className="text-(--danger) text-xs mt-1">
                   {methods.formState.errors.location_id.message}
                 </p>
               )}
@@ -194,25 +194,25 @@ export default function PurchaseReceiveKiosk() {
             <div>
               <label>Catatan</label>
               <textarea
-                className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+                className="w-full p-2 bg-(--content-surface-hover) rounded"
                 {...methods.register("note")}
               />
             </div>
 
             <div>
-              <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
+              <table className="table-auto border border-(--content-border) border-collapse w-full">
                 <thead>
                   <tr>
-                    <th className="border border-[var(--content-border)] px-2 py-1">
+                    <th className="border border-(--content-border) px-2 py-1">
                       Item
                     </th>
-                    <th className="border border-[var(--content-border)] px-2 py-1">
+                    <th className="border border-(--content-border) px-2 py-1">
                       Ordered
                     </th>
-                    <th className="border border-[var(--content-border)] px-2 py-1">
+                    <th className="border border-(--content-border) px-2 py-1">
                       Remaining
                     </th>
-                    <th className="border border-[var(--content-border)] px-2 py-1">
+                    <th className="border border-(--content-border) px-2 py-1">
                       Qty Received
                     </th>
                   </tr>
@@ -220,19 +220,19 @@ export default function PurchaseReceiveKiosk() {
                 <tbody>
                   {fields.map((field, index) => (
                     <tr key={field.id}>
-                      <td className="border border-[var(--content-border)] px-2 py-1">
+                      <td className="border border-(--content-border) px-2 py-1">
                         {field.item_name}
                       </td>
-                      <td className="border border-[var(--content-border)] px-2 py-1 text-right">
+                      <td className="border border-(--content-border) px-2 py-1 text-right">
                         {field.ordered_qty}
                       </td>
-                      <td className="border border-[var(--content-border)] px-2 py-1 text-right">
+                      <td className="border border-(--content-border) px-2 py-1 text-right">
                         {field.remaining_qty}
                       </td>
-                      <td className="w-40 border border-[var(--content-border)] px-2 py-1">
+                      <td className="w-40 border border-(--content-border) px-2 py-1">
                         <input
                           type="number"
-                          className="w-40 p-2 border border-[var(--content-border)] bg-[var(--content-surface-hover)] rounded text-right"
+                          className="w-40 p-2 border border-(--content-border) bg-(--content-surface-hover) rounded text-right"
                           {...methods.register(`items.${index}.received_qty`, {
                             valueAsNumber: true,
                             validate: (value) => {
@@ -256,7 +256,7 @@ export default function PurchaseReceiveKiosk() {
                         />
                         {methods.formState.errors.items?.[index]
                           ?.received_qty && (
-                          <p className="text-[var(--danger)] text-xs">
+                          <p className="text-(--danger) text-xs">
                             {
                               methods.formState.errors.items[index]
                                 ?.received_qty?.message as string
@@ -269,7 +269,7 @@ export default function PurchaseReceiveKiosk() {
                 </tbody>
               </table>
               {methods.formState.errors.items?.message && (
-                <p className="text-[var(--danger)] text-xs mt-2">
+                <p className="text-(--danger) text-xs mt-2">
                   {methods.formState.errors.items.message}
                 </p>
               )}
@@ -278,7 +278,7 @@ export default function PurchaseReceiveKiosk() {
             <button
               type="submit"
               disabled={loading}
-              className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
+              className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer max-w-3/4"
             >
               {loading ? "Saving..." : "Save"}
             </button>

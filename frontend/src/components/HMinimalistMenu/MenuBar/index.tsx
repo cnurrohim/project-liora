@@ -19,7 +19,7 @@ export default function MenuBar() {
     <button
       key={entry.key}
       title={entry.label}
-      className={`text-2xl hover:bg-[var(--background)] w-8 h-8 rounded flex items-center justify-center hover:text-lime-400 text-[var(--text-primary)] cursor-pointer ${
+      className={`text-2xl hover:bg-(--background) w-8 h-8 rounded flex items-center justify-center hover:text-lime-400 text-(--text-primary) cursor-pointer ${
         entry.key === MenuBarController.getActive() ? "" : ""
       }`}
       onClick={() => handleClick(entry)}
@@ -31,7 +31,7 @@ export default function MenuBar() {
   return (
     <div className=" z-80 flex justify-center ">
       <aside
-        className={`inline-flex max-w-full py-1  text-[var(--text-primary)] items-center justify-between gap-4 rounded shadow-md z-100`}
+        className={`inline-flex max-w-full py-1  text-(--text-primary) items-center justify-between gap-4 rounded shadow-md z-100`}
       >
         <div className="flex flex-row items-center gap-2">
           {entries.start.map(renderButton)}

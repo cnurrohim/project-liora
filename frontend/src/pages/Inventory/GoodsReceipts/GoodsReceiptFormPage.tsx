@@ -151,7 +151,7 @@ export default function GoodsReceiptFormPage() {
         <div className="space-y-4">
           {/* Supplier */}
           <div>
-            <label className="block text-[var(--content-text-muted)]">
+            <label className="block text-(--content-text-muted)">
               Supplier (optional)
             </label>
             <Controller
@@ -169,14 +169,14 @@ export default function GoodsReceiptFormPage() {
               )}
             />
             {typeof errors.supplier_id?.message === "string" && (
-              <p className="text-[var(--danger)] text-sm">
+              <p className="text-(--danger) text-sm">
                 {errors.supplier_id.message}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-[var(--content-text-muted)]">
+            <label className="block text-(--content-text-muted)">
               Stored Location
             </label>
             {/* Target Location */}
@@ -197,7 +197,7 @@ export default function GoodsReceiptFormPage() {
             />
 
             {methods.formState.errors.location_id && (
-              <p className="text-[var(--danger)] text-xs mt-1">
+              <p className="text-(--danger) text-xs mt-1">
                 {methods.formState.errors.location_id.message}
               </p>
             )}
@@ -205,39 +205,37 @@ export default function GoodsReceiptFormPage() {
 
           {/* Receipt date */}
           <div>
-            <label className="block text-[var(--content-text-muted)]">
+            <label className="block text-(--content-text-muted)">
               Receipt Date
             </label>
             <input
               type="date"
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+              className="w-full p-2 bg-(--content-surface-hover) rounded"
               {...register("receipt_date")}
             />
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-[var(--content-text-muted)]">
-              Note
-            </label>
+            <label className="block text-(--content-text-muted)">Note</label>
             <textarea
-              className="w-full p-2 bg-[var(--content-surface-hover)] rounded"
+              className="w-full p-2 bg-(--content-surface-hover) rounded"
               {...register("notes")}
             />
           </div>
 
           {/* Items */}
           <div>
-            <table className="table-auto border border-[var(--content-border)] border-collapse w-full">
+            <table className="table-auto border border-(--content-border) border-collapse w-full">
               <thead>
                 <tr>
-                  <th className="border border-[var(--content-border)] px-2 py-1">
+                  <th className="border border-(--content-border) px-2 py-1">
                     Items
                   </th>
-                  <th className="border border-[var(--content-border)] px-2 py-1">
+                  <th className="border border-(--content-border) px-2 py-1">
                     Qty
                   </th>
-                  <th className="border border-[var(--content-border)] px-2 py-1">
+                  <th className="border border-(--content-border) px-2 py-1">
                     Action
                   </th>
                 </tr>
@@ -245,7 +243,7 @@ export default function GoodsReceiptFormPage() {
               <tbody>
                 {fields.map((field, index) => (
                   <tr key={field.id}>
-                    <td className="border border-[var(--content-border)] px-2 py-1">
+                    <td className="border border-(--content-border) px-2 py-1">
                       <Controller
                         name={`items.${index}.item_id`}
                         control={control}
@@ -274,21 +272,21 @@ export default function GoodsReceiptFormPage() {
                         }}
                       />
                     </td>
-                    <td className="border border-[var(--content-border)] px-2 py-1 w-24">
+                    <td className="border border-(--content-border) px-2 py-1 w-24">
                       <input
                         type="number"
                         placeholder="Qty"
-                        className="w-24 p-2 bg-[var(--content-surface-hover)] rounded text-right"
+                        className="w-24 p-2 bg-(--content-surface-hover) rounded text-right"
                         {...register(`items.${index}.quantity`, {
                           valueAsNumber: true,
                         })}
                       />
                     </td>
-                    <td className="border border-[var(--content-border)] px-2 py-1">
+                    <td className="border border-(--content-border) px-2 py-1">
                       <button
                         type="button"
                         onClick={() => remove(index)}
-                        className="px-2 py-1 cursor-pointer bg-[var(--danger)] hover:bg-[var(--danger-hover)] text-[var(--success-foreground)] rounded"
+                        className="px-2 py-1 cursor-pointer bg-(--danger) hover:bg-(--danger-hover) text-(--success-foreground) rounded"
                       >
                         delete
                       </button>
@@ -302,7 +300,7 @@ export default function GoodsReceiptFormPage() {
                       onClick={() =>
                         append({ item_id: "", quantity: 1, notes: "" })
                       }
-                      className="px-3 py-1 cursor-pointer bg-[var(--success)] hover:bg-[var(--success-hover)] text-[var(--success-foreground)] rounded"
+                      className="px-3 py-1 cursor-pointer bg-(--success) hover:bg-(--success-hover) text-(--success-foreground) rounded"
                     >
                       + Add Item
                     </button>
@@ -316,7 +314,7 @@ export default function GoodsReceiptFormPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-28 flex justify-center text-[var(--success-foreground)] items-center px-4 py-2 bg-[var(--info)] rounded hover:bg-[var(--info-hover)] disabled:opacity-50 cursor-pointer max-w-3/4"
+          className="w-28 flex justify-center text-(--success-foreground) items-center px-4 py-2 bg-(--info) rounded hover:bg-(--info-hover) disabled:opacity-50 cursor-pointer max-w-3/4"
         >
           {loading ? "Saving..." : "Save"}
         </button>

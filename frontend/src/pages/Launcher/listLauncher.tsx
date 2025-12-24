@@ -88,7 +88,7 @@ export default function ListLauncher() {
       <div className="p-4 space-y-4">
         <div className="flex justify-center w-full items-">
           <div className="relative my-6 w-2/3 ">
-            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[var(--content-text)]">
+            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-(--content-text)">
               <IconRenderer name={"RiSearchLine"} size={18} />
             </span>
             <input
@@ -96,14 +96,14 @@ export default function ListLauncher() {
               placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-15 px-3 py-2 bg-[var(--content-surface-hover)] text-[var(--content-text)] rounded-lg border-none outline-none"
+              className="w-full pl-15 px-3 py-2 bg-(--content-surface-hover) text-(--content-text) rounded-lg border-none outline-none"
             />
           </div>
         </div>
 
         <div>
           {filtered.length === 0 && (
-            <div className="text-[var(--content-text)]">No results.</div>
+            <div className="text-(--content-text)">No results.</div>
           )}
           {Object.entries(
             filtered.reduce<Record<string, FlatMenuItem[]>>((acc, item) => {
@@ -113,7 +113,7 @@ export default function ListLauncher() {
             }, {})
           ).map(([parent, items]) => (
             <div key={parent} className="mb-4">
-              <div className="text-[var(--accent-primary)] font-semibold">
+              <div className="text-(--accent-primary) font-semibold">
                 {parent}
               </div>
               <div className="pl-2 mt-1 space-y-1">
@@ -122,7 +122,7 @@ export default function ListLauncher() {
                     <button
                       type="button"
                       title={item.isPinned ? "Unpin menu" : "Pin menu"}
-                      className="text-[var(--content-text)] hover:text-[var(--accent-hover)] cursor-pointer hover:bg-[var(--content-surface-hover)] p-2"
+                      className="text-(--content-text) hover:text-(--accent-hover) cursor-pointer hover:bg-(--content-surface-hover) p-2"
                       onClick={() => {
                         handlePinClick(item);
                       }}
@@ -138,9 +138,9 @@ export default function ListLauncher() {
                     <div
                       key={i}
                       onClick={() => handleClick(item)}
-                      className="w-full flex items-center gap-2 text-sm text-[var(--content-text)] cursor-pointer hover:bg-[var(--content-surface-hover)] px-2 py-1 rounded group"
+                      className="w-full flex items-center gap-2 text-sm text-(--content-text) cursor-pointer hover:bg-(--content-surface-hover) px-2 py-1 rounded group"
                     >
-                      <span className="group-hover:text-[var(--accent-hover)] text-[var(--accent-primary)]">
+                      <span className="group-hover:text-(--accent-hover) text-(--accent-primary)">
                         {typeof item.icon === "string" && item.icon ? (
                           <IconRenderer
                             name={item.icon}
@@ -156,7 +156,7 @@ export default function ListLauncher() {
                         )}
                       </span>
                       <span>{item.label}</span>
-                      <span className="ml-auto text-[var(--content-text)] text-xs">
+                      <span className="ml-auto text-(--content-text) text-xs">
                         {item.route || item.command}
                       </span>
                     </div>

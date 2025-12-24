@@ -67,33 +67,27 @@ export function GoodsIssueDetailPane() {
         {/* Header */}
         <div className="space-y-2">
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
-              Issue Date
-            </p>
-            <p className="text-[var(--content-text)]">{issue_date}</p>
+            <p className="text-sm text-(--content-text-muted)">Issue Date</p>
+            <p className="text-(--content-text)">{issue_date}</p>
           </div>
           <div>
-            <p className="text-sm text-[var(--content-text-muted)]">
-              Created By
-            </p>
-            <p className="text-[var(--content-text)]">{created_by}</p>
+            <p className="text-sm text-(--content-text-muted)">Created By</p>
+            <p className="text-(--content-text)">{created_by}</p>
           </div>
           {notes && (
             <div>
-              <p className="text-sm text-[var(--content-text-muted)]">Notes</p>
-              <p className="text-[var(--content-text)]">{notes}</p>
+              <p className="text-sm text-(--content-text-muted)">Notes</p>
+              <p className="text-(--content-text)">{notes}</p>
             </div>
           )}
         </div>
 
         {/* Items */}
         {items.length > 0 && (
-          <div className="text-[var(--content-text)]">
-            <p className="text-sm text-[var(--content-text-muted)] mb-2">
-              Items
-            </p>
-            <table className="w-full text-sm border border-[var(--content-border)]">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text-muted)]">
+          <div className="text-(--content-text)">
+            <p className="text-sm text-(--content-text-muted) mb-2">Items</p>
+            <table className="w-full text-sm border border-(--content-border)">
+              <thead className="bg-(--content-surface-hover) text-(--content-text-muted)">
                 <tr>
                   <th className="px-2 py-1 text-left">SKU</th>
                   <th className="px-2 py-1 text-left">Name</th>
@@ -106,7 +100,7 @@ export function GoodsIssueDetailPane() {
                 {items.map((it) => (
                   <tr
                     key={it.id}
-                    className="border-t border-[var(--content-border)]"
+                    className="border-t border-(--content-border)"
                   >
                     <td className="px-2 py-1">{it.sku}</td>
                     <td className="px-2 py-1">{it.item_name}</td>
@@ -121,12 +115,12 @@ export function GoodsIssueDetailPane() {
         )}
 
         {stock_movements.length > 0 && (
-          <div className="text-[var(--content-text)]">
-            <p className="text-sm text-[var(--content-text-muted)] mb-2">
+          <div className="text-(--content-text)">
+            <p className="text-sm text-(--content-text-muted) mb-2">
               Inventory Movements
             </p>
-            <table className="w-full text-sm border border-[var(--content-border)]">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text-muted)]">
+            <table className="w-full text-sm border border-(--content-border)">
+              <thead className="bg-(--content-surface-hover) text-(--content-text-muted)">
                 <tr>
                   <th className="px-2 py-1 text-left">Date</th>
                   <th className="px-2 py-1 text-left">Item</th>
@@ -139,7 +133,7 @@ export function GoodsIssueDetailPane() {
                 {stock_movements.map((sm) => (
                   <tr
                     key={sm.id}
-                    className="border-t border-[var(--content-border)]"
+                    className="border-t border-(--content-border)"
                   >
                     <td className="px-2 py-1">
                       {new Date(sm.created_at).toLocaleString()}

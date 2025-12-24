@@ -195,7 +195,7 @@ export default function UserListPage() {
               {departments.map((d) => (
                 <span
                   key={d.name}
-                  className="bg-[var(--content-surface)] px-2 py-1 rounded text-xs text-[var(--content-text)]"
+                  className="bg-(--content-surface) px-2 py-1 rounded text-xs text-(--content-text)"
                 >
                   {d.name}
                 </span>
@@ -217,17 +217,15 @@ export default function UserListPage() {
               {roles.map((r) => (
                 <span
                   key={r.name}
-                  className={`px-2 py-1 rounded text-xs relative bg-[var(--content-surface)] ${
+                  className={`px-2 py-1 rounded text-xs relative bg-(--content-surface) ${
                     r.is_default
-                      ? " text-[var(--content-text)]"
-                      : " text-[var(--content-text)]"
+                      ? " text-(--content-text)"
+                      : " text-(--content-text)"
                   }`}
                 >
                   {r.name}
                   {r.is_default && (
-                    <span className="text-[var(--accent-primary)] ml-1 ">
-                      ★
-                    </span>
+                    <span className="text-(--accent-primary) ml-1 ">★</span>
                   )}
                 </span>
               ))}
@@ -336,14 +334,14 @@ export default function UserListPage() {
         )}
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (
         <>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text-muted)]">
+              <thead className="bg-(--content-surface-hover) text-(--content-text-muted)">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -374,7 +372,7 @@ export default function UserListPage() {
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="border-b border-[var(--content-border)]"
+                    className="border-b border-(--content-border)"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="p-2 align-top">
@@ -399,14 +397,14 @@ export default function UserListPage() {
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-[var(--content-surface)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
+                className="px-2 py-1 bg-(--content-surface) text-(--muted) rounded cursor-pointer disabled:opacity-50"
               >
                 Prev
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-[var(--content-surface)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
+                className="px-2 py-1 bg-(--content-surface) text-(--muted) rounded cursor-pointer disabled:opacity-50"
               >
                 Next
               </button>

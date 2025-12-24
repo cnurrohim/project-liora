@@ -233,12 +233,12 @@ export default function PurchaseOrderListPage() {
           const status = row.original.status;
           const color =
             status === "draft"
-              ? "bg-[var(--warning)] text-[var(--warning-foreground)]"
+              ? "bg-(--warning) text-(--warning-foreground)"
               : status === "confirmed"
-              ? "bg-[var(--success)] text-[var(--success-foreground)]"
+              ? "bg-(--success) text-(--success-foreground)"
               : status === "received"
-              ? "bg-[var(--info)] text-[var(--info-foreground)]"
-              : "bg-[var(--mute)] text-[var(--mute-foreground)]";
+              ? "bg-(--info) text-(--info-foreground)"
+              : "bg-(--mute) text-(--mute-foreground)";
           return (
             <div className="flex gap-2">
               <span
@@ -343,7 +343,7 @@ export default function PurchaseOrderListPage() {
           placeholder="Search PO Number"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="border border-[var(--content-border)] bg-[var(--content-surface-hover)] p-1 rounded w-90"
+          className="border border-(--content-border) bg-(--content-surface-hover) p-1 rounded w-90"
         />
 
         {canCreate && (
@@ -370,7 +370,7 @@ export default function PurchaseOrderListPage() {
         )}
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (

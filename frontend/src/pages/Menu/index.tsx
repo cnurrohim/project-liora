@@ -151,11 +151,11 @@ export default function MenuListPage() {
                 <div>{row.getValue("label")} </div>
                 <div>
                   {row.getIsExpanded() ? (
-                    <div className=" text-[var(--content-text)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className=" text-(--content-text) w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowUpWideFill" size={20} />
                     </div>
                   ) : (
-                    <div className="text-[var(--content-text)] w-6 h-6 rounded-full flex items-center justify-center text-sm">
+                    <div className="text-(--content-text) w-6 h-6 rounded-full flex items-center justify-center text-sm">
                       <IconRenderer name="RiArrowDownWideFill" size={20} />
                     </div>
                   )}
@@ -178,7 +178,7 @@ export default function MenuListPage() {
             name={row.original.icon}
             size={20}
             color={row.original.icon_color}
-            className="text-[var(--content-text)]"
+            className="text-(--content-text)"
           />
         ),
       },
@@ -231,7 +231,7 @@ export default function MenuListPage() {
               {index > 0 && (
                 <button
                   onClick={() => handleMove(row.original.id, true)}
-                  className="hover:text-[var(--success)] cursor-pointer"
+                  className="hover:text-(--success) cursor-pointer"
                 >
                   <IconRenderer name="RiArrowUpBoxFill" size={18} />
                 </button>
@@ -239,7 +239,7 @@ export default function MenuListPage() {
               {index < siblingRows.length - 1 && (
                 <button
                   onClick={() => handleMove(row.original.id, false)}
-                  className="hover:text-[var(--danger)] cursor-pointer"
+                  className="hover:text-(--danger) cursor-pointer"
                 >
                   <IconRenderer name="RiArrowDownBoxLine" size={18} />
                 </button>
@@ -316,14 +316,14 @@ export default function MenuListPage() {
         )}
       </div>
 
-      {error && <div className="text-[var(--danger)] mb-2">{error}</div>}
+      {error && <div className="text-(--danger) mb-2">{error}</div>}
       {loading ? (
         <div>Fetching...</div>
       ) : (
         <>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-[var(--content-surface-hover)] text-[var(--content-text-muted)]">
+              <thead className="bg-(--content-surface-hover) text-(--content-text-muted)">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
@@ -354,7 +354,7 @@ export default function MenuListPage() {
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="border-b border-[var(--content-border)]"
+                    className="border-b border-(--content-border)"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td key={cell.id} className="p-2">
@@ -379,14 +379,14 @@ export default function MenuListPage() {
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="px-2 py-1 bg-[var(--content-surface)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
+                className="px-2 py-1 bg-(--content-surface) text-(--muted) rounded cursor-pointer disabled:opacity-50"
               >
                 Prev
               </button>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="px-2 py-1 bg-[var(--content-surface)] text-[var(--muted)] rounded cursor-pointer disabled:opacity-50"
+                className="px-2 py-1 bg-(--content-surface) text-(--muted) rounded cursor-pointer disabled:opacity-50"
               >
                 Next
               </button>
