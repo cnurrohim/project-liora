@@ -64,146 +64,155 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
-      <form
-        onSubmit={handleSubmit}
-        className="p-6 rounded shadow-md w-80 space-y-4"
-      >
-        <div className="text-2xl mb-4 text-gray-900 text-center flex flex-col items-center justify-center">
-          {previewUrl && (
-            <img
-              src={previewUrl}
-              alt="Logo"
-              className={`${DEMO_MODE ? "h-50" : "h-100"} object-contain`}
-            />
-          )}
+    <div className="relative w-full h-full">
+      <div className="login-bg absolute inset-0 w-full h-full" />
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-full text-white">
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 rounded shadow-md w-80 space-y-4"
+        >
+          <div className="text-2xl mb-4 text-gray-900 text-center flex flex-col items-center justify-center">
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt="Logo"
+                className={`${
+                  DEMO_MODE ? "h-50" : "h-100"
+                } object-contain opacity-90`}
+              />
+            )}
 
-          {!previewUrl && (
-            <IconRenderer
-              name="RiBox2Line"
-              className="text-gray-400"
-              size={200}
-            />
-          )}
-        </div>
+            {!previewUrl && (
+              <IconRenderer
+                name="RiBox2Line"
+                className="text-gray-400"
+                size={200}
+              />
+            )}
+          </div>
 
-        {error && <div className="text-red-400 text-sm">{error}</div>}
+          {error && <div className="text-red-400 text-sm">{error}</div>}
 
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white outline-none"
-          required
-        />
-
-        <div className="relative w-full">
           <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white outline-none pr-10"
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white outline-none"
             required
           />
+
+          <div className="relative w-full">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white outline-none pr-10"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer"
+              tabIndex={-1}
+            >
+              {showPassword ? (
+                <IconRenderer
+                  name="RiEyeCloseLine"
+                  size={20}
+                  className="text-white"
+                />
+              ) : (
+                <IconRenderer
+                  name="RiEyeFill"
+                  size={20}
+                  className="text-white"
+                />
+              )}
+            </button>
+          </div>
+
           <button
-            type="button"
-            onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer"
-            tabIndex={-1}
+            type="submit"
+            className="cursor-pointer w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+            disabled={loading}
           >
-            {showPassword ? (
-              <IconRenderer
-                name="RiEyeCloseLine"
-                size={20}
-                className="text-white"
-              />
+            {loading ? (
+              <>
+                <IconRenderer
+                  name="RiLoginBoxFill"
+                  size={20}
+                  className="text-white"
+                />
+                Loggin in ...
+              </>
             ) : (
-              <IconRenderer name="RiEyeFill" size={20} className="text-white" />
+              <>
+                <IconRenderer
+                  name="RiLoginBoxLine"
+                  size={20}
+                  className="text-white"
+                />
+                Login
+              </>
             )}
           </button>
-        </div>
 
-        <button
-          type="submit"
-          className="cursor-pointer w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
-          disabled={loading}
-        >
-          {loading ? (
+          {DEMO_MODE && (
             <>
-              <IconRenderer
-                name="RiLoginBoxFill"
-                size={20}
-                className="text-white"
-              />
-              Loggin in ...
-            </>
-          ) : (
-            <>
-              <IconRenderer
-                name="RiLoginBoxLine"
-                size={20}
-                className="text-white"
-              />
-              Login
+              <div className="flex items-center my-4">
+                <div className="grow border-t border-gray-700" />
+                <span className="mx-3 text-xs text-gray-400 tracking-wider uppercase">
+                  Demo Access
+                </span>
+                <div className="grow border-t border-gray-700" />
+              </div>
+
+              <div className="flex flex-col gap-2 mt-4">
+                <button
+                  disabled={loading}
+                  onClick={() => handleDemoLogin("admin")}
+                  className="cursor-pointer w-full py-2 bg-slate-700 hover:bg-slate-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+                >
+                  <IconRenderer
+                    name="RiShieldUserLine"
+                    size={20}
+                    className="text-white"
+                  />
+                  Admin
+                </button>
+
+                <button
+                  disabled={loading}
+                  onClick={() => handleDemoLogin("staff")}
+                  className="cursor-pointer w-full py-2 bg-slate-700 hover:bg-slate-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+                >
+                  <IconRenderer
+                    name="RiUserLine"
+                    size={20}
+                    className="text-white"
+                  />
+                  Staff
+                </button>
+
+                <button
+                  disabled={loading}
+                  onClick={() => handleDemoLogin("dev")}
+                  className="cursor-pointer w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
+                >
+                  <IconRenderer
+                    name="RiTerminalBoxLine"
+                    size={20}
+                    className="text-white"
+                  />
+                  Developer
+                </button>
+              </div>
             </>
           )}
-        </button>
-
-        {DEMO_MODE && (
-          <>
-            <div className="flex items-center my-4">
-              <div className="grow border-t border-gray-700" />
-              <span className="mx-3 text-xs text-gray-400 tracking-wider uppercase">
-                Demo Access
-              </span>
-              <div className="grow border-t border-gray-700" />
-            </div>
-
-            <div className="flex flex-col gap-2 mt-4">
-              <button
-                disabled={loading}
-                onClick={() => handleDemoLogin("admin")}
-                className="cursor-pointer w-full py-2 bg-slate-700 hover:bg-slate-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
-              >
-                <IconRenderer
-                  name="RiShieldUserLine"
-                  size={20}
-                  className="text-white"
-                />
-                Admin
-              </button>
-
-              <button
-                disabled={loading}
-                onClick={() => handleDemoLogin("staff")}
-                className="cursor-pointer w-full py-2 bg-slate-700 hover:bg-slate-600 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
-              >
-                <IconRenderer
-                  name="RiUserLine"
-                  size={20}
-                  className="text-white"
-                />
-                Staff
-              </button>
-
-              <button
-                disabled={loading}
-                onClick={() => handleDemoLogin("dev")}
-                className="cursor-pointer w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded flex flex-row gap-1 text-center items-center justify-center"
-              >
-                <IconRenderer
-                  name="RiTerminalBoxLine"
-                  size={20}
-                  className="text-white"
-                />
-                Developer
-              </button>
-            </div>
-          </>
-        )}
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

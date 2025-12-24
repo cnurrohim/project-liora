@@ -966,3 +966,35 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
 }
+
+/* Login background – subtle & professional */
+.login-bg {
+  background: linear-gradient(-45deg, #0f172a, #020617, #020617, #1e293b);
+  background-size: 400% 400%;
+  animation: login-bg-shift 5s ease infinite;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+@keyframes login-bg-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .login-bg {
+    animation: none;
+  }
+}
