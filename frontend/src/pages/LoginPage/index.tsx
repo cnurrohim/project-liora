@@ -98,7 +98,7 @@ export default function LoginPage() {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white outline-none"
+            className="w-full px-3 py-2 bg-gray-900 border border-gray-800 rounded text-white outline-none"
             required
           />
 
@@ -108,7 +108,7 @@ export default function LoginPage() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white outline-none pr-10"
+              className="w-full px-3 py-2 bg-gray-900 border border-gray-800 rounded text-white outline-none pr-10"
               required
             />
             <button
@@ -212,6 +212,18 @@ export default function LoginPage() {
             </>
           )}
         </form>
+
+        <footer className="text-xs opacity-60 text-center py-4">
+          DNS powered by{" "}
+          <a
+            href="https://freedns.afraid.org/"
+            target="_blank"
+            rel="noopener"
+            className="underline"
+          >
+            Free DNS
+          </a>
+        </footer>
       </div>
     </div>
   );

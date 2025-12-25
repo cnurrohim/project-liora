@@ -19,12 +19,20 @@ import { widgetRoute } from "./routes/inventory/widget.route.js";
 
 export const app = new Hono<{ Variables: Variables }>();
 
+const corsOrigin = (() => {
+  try {
+    return JSON.parse(process.env.CORS_ORIGIN || "[]");
+  } catch {
+    return process.env.CORS_ORIGIN;
+  }
+})();
+
 app.use("/uploads/*", serveStatic({ root: "./public" }));
 
 app.use("*", logger());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: corsOrigin.length ? corsOrigin : "http://localhost:5173",
     allowHeaders: ["Authorization", "Content-Type"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     credentials: true,
