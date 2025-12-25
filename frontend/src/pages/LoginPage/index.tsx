@@ -64,7 +64,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full min-h-screen">
       <div className="login-bg absolute inset-0 w-full h-full" />
       <div className="relative z-10 flex flex-col items-center justify-center min-h-full text-white">
         <form
