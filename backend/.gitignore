@@ -27,6 +27,15 @@ lerna-debug.log*
 # misc
 .DS_Store
 
-/public/uploads/*
+# ignore all uploaded files
+/public/uploads/app/**
+/public/uploads/profile-photo/**
+
+# keep upload directories
 !/public/uploads/.gitkeep
+!/public/uploads/app/.gitkeep
+!/public/uploads/profile-photo/.gitkeep
+
+
+
 

@@ -28,3 +28,15 @@ Thumbs.db
 # Build outputs
 /frontend/dist
 /backend/dist
+
+# ignore all uploaded files
+/backend/public/uploads/app/**
+/backend/public/uploads/profile-photo/**
+
+# keep upload directories
+!/backend/public/uploads/.gitkeep
+!/backend/public/uploads/app/.gitkeep
+!/backend/public/uploads/profile-photo/.gitkeep
+
+
+
