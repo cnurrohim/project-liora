@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 import { authRoute } from "./routes/core/auth.js";
 import { userRoute } from "./routes/core/users.js";
@@ -29,7 +28,7 @@ app.use(
     origin: (origin) => {
       if (!origin) return origin;
       if (corsOrigins.includes(origin)) {
-        return origin; // ⬅️ PENTING: echo exact origin
+        return origin;
       }
       return null;
     },

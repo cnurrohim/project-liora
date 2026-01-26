@@ -119,7 +119,7 @@ menuRoute.get("/parent-menu", async (c) => {
     `SELECT id, label, parent_id 
      FROM menu_items 
      WHERE type = 'group' AND deleted_at IS NULL 
-     ORDER BY label ASC`
+     ORDER BY label ASC`,
   );
   return c.json({ data: result.rows });
 });
@@ -144,7 +144,7 @@ menuRoute.get("/:id", async (c) => {
        FROM menu_items mi 
        WHERE mi.id = $1 AND mi.deleted_at IS NULL
        LIMIT 1`,
-      [id]
+      [id],
     );
 
     const data = res.rows[0];
@@ -168,7 +168,7 @@ menuRoute.post("/", async (c) => {
     await client.query("BEGIN");
     const { rows } = await client.query(
       "SELECT MAX(ordinal) AS max FROM menu_items WHERE parent_id IS NOT DISTINCT FROM $1 AND deleted_at IS NULL",
-      [parent_id]
+      [parent_id],
     );
     const newOrdinal = (rows[0].max || 0) + 1;
 
@@ -194,7 +194,7 @@ menuRoute.post("/", async (c) => {
         body.alignment ?? null,
         body.position ?? 0,
         newOrdinal,
-      ]
+      ],
     );
 
     const menuId = result.rows[0].id;
@@ -209,7 +209,7 @@ menuRoute.post("/", async (c) => {
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("Error insert menu:", err);
-    return c.json({ error: "Gagal menambahkan menu" }, 400);
+    return c.json({ error: "Adding new menu failed" }, 400);
   } finally {
     client.release();
   }
@@ -250,7 +250,7 @@ menuRoute.put("/:id", async (c) => {
         body.description ?? null,
         body.icon_color ?? null,
         id,
-      ]
+      ],
     );
 
     await client.query(`DELETE FROM menu_permissions WHERE menu_id = $1`, [id]);
@@ -280,7 +280,7 @@ menuRoute.delete("/:id", async (c) => {
     await client.query("BEGIN");
     const { rows } = await client.query(
       "SELECT ordinal, parent_id FROM menu_items WHERE id = $1 AND deleted_at IS NULL",
-      [id]
+      [id],
     );
 
     if (rows.length === 0) {
@@ -292,7 +292,7 @@ menuRoute.delete("/:id", async (c) => {
     // soft delete
     await client.query(
       "UPDATE menu_items SET deleted_at = now() WHERE id = $1",
-      [id]
+      [id],
     );
     await client.query(`DELETE FROM menu_permissions WHERE menu_id = $1`, [id]);
 
@@ -302,7 +302,7 @@ menuRoute.delete("/:id", async (c) => {
        WHERE ordinal > $1 
          AND parent_id IS NOT DISTINCT FROM $2
          AND deleted_at IS NULL`,
-      [ordinal, parent_id]
+      [ordinal, parent_id],
     );
 
     await client.query("COMMIT");
@@ -325,7 +325,7 @@ menuRoute.post("/reorder", async (c) => {
     rows: [current],
   } = await db.query(
     "SELECT id, ordinal, parent_id FROM menu_items WHERE id = $1 AND deleted_at IS NULL",
-    [id]
+    [id],
   );
   if (!current) return c.json({ error: "Item not found" }, 404);
 
@@ -336,7 +336,7 @@ menuRoute.post("/reorder", async (c) => {
        AND deleted_at IS NULL
      ORDER BY ordinal ${isMoveMenuUp === true ? "DESC" : "ASC"}
      LIMIT 1`,
-    [current.parent_id, current.ordinal]
+    [current.parent_id, current.ordinal],
   );
 
   if (neighbor.rowCount === 0) {
@@ -368,7 +368,7 @@ menuRoute.post("/normalize-ordinal", async (c) => {
      WHERE parent_id IS NOT DISTINCT FROM $1 
        AND deleted_at IS NULL
      ORDER BY ordinal ASC`,
-    [parent_id]
+    [parent_id],
   );
 
   for (let i = 0; i < rows.length; i++) {
@@ -385,7 +385,7 @@ menuRoute.post("/normalize-ordinal", async (c) => {
 async function insertMenuPermissions(
   client: any,
   menuId: string,
-  permissions?: Permission[]
+  permissions?: Permission[],
 ) {
   if (!permissions || permissions.length === 0) {
     return;
@@ -402,14 +402,14 @@ async function insertMenuPermissions(
 
   await client.query(
     `INSERT INTO menu_permissions (permission_id, menu_id) VALUES ${valuePlaceholders}`,
-    params
+    params,
   );
 }
 
 // === helper DB functions ===
 async function getUserPermissions(
   userId: string,
-  roleId?: string
+  roleId?: string,
 ): Promise<Permission[]> {
   const params = [];
   params.push(userId);
@@ -444,14 +444,14 @@ async function getMenus(): Promise<MenuRow[]> {
     WHERE mi.deleted_at IS NULL
     GROUP BY mi.id
     ORDER BY mi.ordinal ASC
-    `
+    `,
   );
   return res.rows as MenuRow[];
 }
 
 async function getPinnedMenuIds(
   userId: string,
-  roleId: string
+  roleId: string,
 ): Promise<string[]> {
   const res = await db.query(
     `
@@ -459,7 +459,7 @@ async function getPinnedMenuIds(
     FROM user_pinned_menus
     WHERE user_id = $1 AND role_id = $2
     `,
-    [userId, roleId]
+    [userId, roleId],
   );
   return (res.rows as { menu_id: string }[]).map((r) => r.menu_id);
 }
@@ -467,7 +467,7 @@ async function getPinnedMenuIds(
 // filter menu by permission (unchanged)
 function filterMenusByPermissions(
   menus: MenuRow[],
-  userPermissions: Permission[]
+  userPermissions: Permission[],
 ): MenuRow[] {
   const hasAllAccess = userPermissions.some((p) => p.name === "all_access");
   if (hasAllAccess) return menus;

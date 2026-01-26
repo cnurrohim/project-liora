@@ -67,7 +67,7 @@ export default function RoleFormPage() {
   }, [isEdit, id]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -109,7 +109,7 @@ export default function RoleFormPage() {
       const tab = {
         key: `/pages/roles-${Date.now()}`,
         route: "/pages/roles",
-        label: "Daftar roles",
+        label: "List roles",
         content: RouteRegistry.get("/pages/roles"),
       };
 

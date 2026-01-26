@@ -8,7 +8,7 @@ This project demonstrates how a real-world internal admin system can be structur
 
 ## 🎯 Project Goals
 
-- Build a realistic **internal admin system** (not a toy CRUD)
+- Build a realistic **internal admin system**
 - Showcase **architecture & decision-making**, not just features
 - Design a **flexible UI layout system** similar to professional dashboards
 - Serve as a strong **portfolio project** for frontend & full‑stack roles

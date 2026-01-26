@@ -25,7 +25,7 @@ export default function PermissionForm({
   const [search, setSearch] = useState("");
   const grouped = useMemo(
     () => PermissionController.groupPermissionsByDomain(allPermissions),
-    [allPermissions]
+    [allPermissions],
   );
 
   return (
@@ -35,7 +35,7 @@ export default function PermissionForm({
       <input
         type="text"
         className="mb-4 px-3 py-2 w-full bg-(--content-surface) text-(--content-text) rounded"
-        placeholder="Cari permission..."
+        placeholder="Search permission..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -45,7 +45,7 @@ export default function PermissionForm({
           const filtered = group.permissions.filter(
             (p) =>
               p.label.toLowerCase().includes(search.toLowerCase()) ||
-              p.name.toLowerCase().includes(search.toLowerCase())
+              p.name.toLowerCase().includes(search.toLowerCase()),
           );
 
           if (filtered.length === 0) return null;
@@ -64,7 +64,7 @@ export default function PermissionForm({
                   <input
                     type="checkbox"
                     checked={filtered.every((p) =>
-                      form.permissions.includes(p.id)
+                      form.permissions.includes(p.id),
                     )}
                     onChange={(e) => {
                       const checked = e.target.checked;
@@ -78,7 +78,7 @@ export default function PermissionForm({
                     }}
                   />{" "}
                   <span className=" text-sm text-(--content-text-muted)/90">
-                    Pilih semua di {group.domain}
+                    Check all in {group.domain}
                   </span>
                 </label>
 

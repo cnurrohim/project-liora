@@ -1928,60 +1928,60 @@ c1e55d2b-4ecb-4a8a-91b6-8a58f72d7614	0a7c61d2-5659-4132-ad5c-a39c5721c188
 --
 
 COPY public.permissions (id, name, label, domain, description, deleted_at) FROM stdin;
-957f872a-ec05-45e7-b344-fdb840eb95e5	update	mengubah menu	menu	Can update menu	\N
-0fb947b7-5225-41a4-b619-b8d1a3505ad1	create	menambahkan menu baru	menu	Can create a new menu	\N
-21eaaf06-e089-4ceb-9852-c53f15fdcc3a	delete	hapus supplier	supplier	Able to delete supplier	\N
-0bd7f55a-79e2-46f9-9e3f-0986f376574d	update	mengubah supplier	supplier	Can update supplier	\N
-e8c9679f-0c8a-4aed-a044-0078a694133f	create	menambahkan supplier baru	supplier	Can create a new supplier	\N
-9d68bd7e-7a7a-4e43-9e07-d232b2842213	update	mengubah goods receipts	goods_receipts	Can update goods receipts	\N
-ab746370-1ef7-4d8e-9826-22e0edc27161	create	menambahkan goods receipts baru	goods_receipts	Can create a new goods receipt	\N
-3e761f25-84d1-4956-8c97-050b450cd570	delete	hapus roles	role	Able to delete role	\N
-e6ba7dc8-b1d8-4b1f-ac56-5dc939b58934	update	mengubah roles	role	Can update role details	\N
-64e3359e-db44-40e0-8a1d-8bed9dec9e7d	create	menambahkan roles baru	role	Can create a new role	\N
-1e5f56dc-feb6-422d-85bd-6cd7f8761942	view	buka halaman app setting management	app_setting	Can open the app setting management page	\N
+957f872a-ec05-45e7-b344-fdb840eb95e5	update	update menu	menu	Can update menu	\N
+0fb947b7-5225-41a4-b619-b8d1a3505ad1	create	create a new menu	menu	Can create a new menu	\N
+21eaaf06-e089-4ceb-9852-c53f15fdcc3a	delete	delete supplier	supplier	Able to delete supplier	\N
+0bd7f55a-79e2-46f9-9e3f-0986f376574d	update	update supplier	supplier	Can update supplier	\N
+e8c9679f-0c8a-4aed-a044-0078a694133f	create	create a new supplier	supplier	Can create a new supplier	\N
+9d68bd7e-7a7a-4e43-9e07-d232b2842213	update	update goods receipts	goods_receipts	Can update goods receipts	\N
+ab746370-1ef7-4d8e-9826-22e0edc27161	create	create a new goods receipt	goods_receipts	Can create a new goods receipt	\N
+3e761f25-84d1-4956-8c97-050b450cd570	delete	delete role	role	Able to delete role	\N
+e6ba7dc8-b1d8-4b1f-ac56-5dc939b58934	update	update role details	role	Can update role details	\N
+64e3359e-db44-40e0-8a1d-8bed9dec9e7d	create	create a new role	role	Can create a new role	\N
+1e5f56dc-feb6-422d-85bd-6cd7f8761942	view	open the app setting management page	app_setting	Can open the app setting management page	\N
 7703ad68-1e1b-4ebb-bcb4-5cb0188ecf63	approve	approve goods receipts	goods_receipts	Can approve new goods receipts	\N
-41e4b577-30ac-44f5-86b2-87e34171c5b0	view	buka halaman department management	department	Can open the department management page	\N
-82250154-6820-4eb1-9f4f-6d2b4b1b42b1	view	buka halaman form purchase order	purchase_order	Can open the purchase order page	\N
-34d13778-69d1-4f1b-8fab-6b533af8ac42	delete	hapus department	department	Able to delete department	\N
-d6c30375-e05c-4e59-b68c-6d1b2d41e0a1	delete	hapus app setting	app_setting	Able to delete app setting	\N
-cc4a16b0-9a50-446e-af0f-b8ce413fd4dc	delete	hapus purchase order	purchase_order	Able to delete purchase order	\N
-5a37e6fd-73a0-42b8-9c72-78910fa4fd12	update	mengubah department	department	Can update department details	\N
+41e4b577-30ac-44f5-86b2-87e34171c5b0	view	open the department management page	department	Can open the department management page	\N
+82250154-6820-4eb1-9f4f-6d2b4b1b42b1	view	open the purchase order page	purchase_order	Can open the purchase order page	\N
+34d13778-69d1-4f1b-8fab-6b533af8ac42	delete	delete department	department	Able to delete department	\N
+d6c30375-e05c-4e59-b68c-6d1b2d41e0a1	delete	delete app setting	app_setting	Able to delete app setting	\N
+cc4a16b0-9a50-446e-af0f-b8ce413fd4dc	delete	delete purchase order	purchase_order	Able to delete purchase order	\N
+5a37e6fd-73a0-42b8-9c72-78910fa4fd12	update	update department details	department	Can update department details	\N
 dd36d8e8-420e-4b49-b8bc-37c188e6ba34	receive	receive goods receipts	goods_receipts	Can receive goods receipts	\N
-691aa7c8-6b92-4c62-ab37-01e1a0b1618f	update	mengubah purchase order	purchase_order	Can update purchase order	\N
-23256f23-90c7-4d0a-91fc-af3b4ed30599	create	menambahkan purchase order baru	purchase_order	Can create a new purchase order	\N
+691aa7c8-6b92-4c62-ab37-01e1a0b1618f	update	update purchase order	purchase_order	Can update purchase order	\N
+23256f23-90c7-4d0a-91fc-af3b4ed30599	create	create a new purchase order	purchase_order	Can create a new purchase order	\N
 0a85c5d1-be0f-4343-b49c-9d862ec90e4a	approve	approve purchase order	purchase_order	Can approve new purchase order	\N
 6b7c91f5-3fb9-449c-9849-ea69c728d851	cancel	cancel goods receipts	goods_receipts	Can cancel goods receipts	\N
 5721224c-88bc-48c7-9387-e1def9df4aa0	all_access	Administrator	superadmin	Has access to all features	\N
-dd63ce0c-de60-4914-90ef-e573e3959b99	delete	hapus user	user	Able to delete user	\N
-21344f03-5daf-4233-bb4b-ac983e3eead2	update	mengubah user	user	Can update user details	\N
-72aeb7cd-d9ca-4473-9520-5e7dcc5e1808	create	menambahkan user baru	user	Can create a new user	\N
-24e364fa-f169-4d4e-aa1f-515ebbc3d937	create	menambahkan department baru	department	Can create a new department	\N
-810bc639-65bc-41c8-bec5-8e0c5ec9a2c1	view	buka halaman preferences management	preferences	Can open the preferences management page	\N
-3f58d759-bb58-4844-bfe9-d77a36c1dbb5	delete	hapus preferences	preferences	Able to delete preferences	\N
-a129920d-7dfb-4376-bf10-4ee3e3de6b5a	update	mengubah preferences	preferences	Can update preferences	\N
-66ef1954-bbf5-4c2a-94dd-66e0828bce5f	create	menambahkan preferences baru	preferences	Can create new preferences	\N
-a661dbce-2e35-48cc-9059-748cedfd3e8c	view	buka halaman menu management	menu	Can open the menu management page	\N
-cb1adeb6-1bd9-43a9-8c15-8d6dc5ab3a76	update	mengubah app setting	app_setting	Can update app setting	\N
-5350b355-1b37-45b1-ad3e-ad0e25cbc74b	create	menambahkan app setting baru	app_setting	Can create a new app setting	\N
-d63815df-fe49-4e94-bd32-b04bb642c009	view	buka halaman form user profile	user_profile	Can open the user profile page	\N
+dd63ce0c-de60-4914-90ef-e573e3959b99	delete	delete user	user	Able to delete user	\N
+21344f03-5daf-4233-bb4b-ac983e3eead2	update	update user	user	Can update user details	\N
+72aeb7cd-d9ca-4473-9520-5e7dcc5e1808	create	create new user	user	Can create a new user	\N
+24e364fa-f169-4d4e-aa1f-515ebbc3d937	create	create new department	department	Can create a new department	\N
+810bc639-65bc-41c8-bec5-8e0c5ec9a2c1	view	open preferences management	preferences	Can open the preferences management page	\N
+3f58d759-bb58-4844-bfe9-d77a36c1dbb5	delete	delete preferences	preferences	Able to delete preferences	\N
+a129920d-7dfb-4376-bf10-4ee3e3de6b5a	update	update preferences	preferences	Can update preferences	\N
+66ef1954-bbf5-4c2a-94dd-66e0828bce5f	create	create preferences	preferences	Can create new preferences	\N
+a661dbce-2e35-48cc-9059-748cedfd3e8c	view	open menu management page	menu	Can open the menu management page	\N
+cb1adeb6-1bd9-43a9-8c15-8d6dc5ab3a76	update	update app setting	app_setting	Can update app setting	\N
+5350b355-1b37-45b1-ad3e-ad0e25cbc74b	create	create app setting	app_setting	Can create a new app setting	\N
+d63815df-fe49-4e94-bd32-b04bb642c009	view	open user profile page	user_profile	Can open the user profile page	\N
 abf78059-df84-48eb-8d04-e37c80106500	receive	receive purchase order items	purchase_order	Can receive purchase order items	\N
-9e67720c-97e0-430e-884b-89377a3519eb	delete	hapus user profile	user_profile	Able to delete user profile	\N
-9a706a95-0f22-4e4c-93cd-566567a172b1	update	mengubah user profile	user_profile	Can update user profile	\N
-e391fcf7-0df9-473e-a11a-fb0c672e5223	view	buka halaman form item	item	Can open the item page	\N
+9e67720c-97e0-430e-884b-89377a3519eb	delete	delete user profile	user_profile	Able to delete user profile	\N
+9a706a95-0f22-4e4c-93cd-566567a172b1	update	update user profile	user_profile	Can update user profile	\N
+e391fcf7-0df9-473e-a11a-fb0c672e5223	view	open form item	item	Can open the item page	\N
 32b45501-36e2-4338-bb0f-7e60c43a6406	cancel	cancel purchase order items	purchase_order	Can cancel purchase order items	\N
-d0ec6eba-0a8f-4f99-b91f-a087c7cd20c5	view	buka halaman form goods receipts	goods_receipts	Can open the goods receipts page	\N
-8e0f1640-3811-4664-b8b0-7ce72f9d66a2	delete	hapus menu	menu	Able to delete menu	\N
-d06f0d95-7820-4cfc-8a6f-967d9b13b088	delete	hapus item	item	Able to delete item	\N
-687f3fbe-a1f4-44de-8e79-1e811d0ee34f	update	mengubah item	item	Can update item	\N
-bdb4c201-a8f8-47fb-800f-078eae49648a	create	menambahkan item baru	item	Can create a new item	\N
-2971d49e-2718-4a4b-9076-272990fab5d4	delete	hapus goods receipts	goods_receipts	Able to delete goods receipts	\N
-6658da8c-5460-4be8-ad7b-f3ebef7194fe	view	buka halaman role management	role	Can open the role management page	\N
-a6d41266-ae96-4120-b3bf-cbd02b7f6b4f	view	buka halaman form supplier	supplier	Can open the supplier page	\N
+d0ec6eba-0a8f-4f99-b91f-a087c7cd20c5	view	open form goods receipts	goods_receipts	Can open the goods receipts page	\N
+8e0f1640-3811-4664-b8b0-7ce72f9d66a2	delete	delete menu	menu	Able to delete menu	\N
+d06f0d95-7820-4cfc-8a6f-967d9b13b088	delete	delete item	item	Able to delete item	\N
+687f3fbe-a1f4-44de-8e79-1e811d0ee34f	update	update item	item	Can update item	\N
+bdb4c201-a8f8-47fb-800f-078eae49648a	create	create new item	item	Can create a new item	\N
+2971d49e-2718-4a4b-9076-272990fab5d4	delete	delete goods receipts	goods_receipts	Able to delete goods receipts	\N
+6658da8c-5460-4be8-ad7b-f3ebef7194fe	view	open role management	role	Can open the role management page	\N
+a6d41266-ae96-4120-b3bf-cbd02b7f6b4f	view	open form supplier	supplier	Can open the supplier page	\N
 2f97535f-f9ec-4e20-b698-13a944e942e4	view	Open Inventory Adjustment Page	inventory_adjustment	Can open the inventory adjustment page	\N
 fc75d232-b7c4-431f-974d-f4a59e38a3db	delete	Delete Inventory Adjustment	inventory_adjustment	Able to delete inventory adjustment	\N
 49fafe1b-9821-454b-af1a-453414f81565	update	Update Inventory Adjustment	inventory_adjustment	Can update inventory adjustment	\N
-99229c94-2593-4229-8b08-a0157296de6e	update	mengubah dashboard	dashboard	Can update dashboard	\N
-881ba0b6-f40c-4edd-b9ea-000ba5887bdc	create	menambahkan dashboard baru	dashboard	Can create a new dashboard	\N
+99229c94-2593-4229-8b08-a0157296de6e	update	update dashboard	dashboard	Can update dashboard	\N
+881ba0b6-f40c-4edd-b9ea-000ba5887bdc	create	change dashboard	dashboard	Can create a new dashboard	\N
 67ae1544-e4e5-41b2-b48e-9bdfbd1b7641	create	Create New Inventory Adjustment	inventory_adjustment	Can create a new inventory adjustment	\N
 1f434699-6414-4023-ba9a-2ef0e8b57a45	approve	Approve Inventory Adjustment	inventory_adjustment	Can approve new inventory adjustment	\N
 6b90fcf7-63a9-4ae5-9efa-19e61bfa4838	cancel	Cancel Inventory Adjustment	inventory_adjustment	Can cancel inventory adjustment	\N
@@ -1994,24 +1994,24 @@ ea60195a-03fc-4ab3-873d-a88e558e1255	update	Update Inventory Opname	inventory_op
 3db48591-9d27-4ec5-9298-e68d43d9b995	cancel	Cancel Inventory Opname	inventory_opname	Can cancel inventory opname	\N
 41aa4d42-e7ad-47b5-84c4-a92bb9d10a67	view	View Inventory Movements Ledger	monitoring_inventory_movements	View inventory movements ledger	\N
 e9405977-f46d-4580-9a91-4f8533f71503	all_access	DEV/IT	dev	Has access to all features	\N
-b7777865-d2b5-4a3e-9b3f-c09e951551ab	view	buka halaman users management	user	Can open the user management page	\N
-a7146a9e-af21-479c-bac8-44714c8d45d9	create	menambahkan user profile baru	user_profile	Can create a new user profile	\N
+b7777865-d2b5-4a3e-9b3f-c09e951551ab	view	open users management	user	Can open the user management page	\N
+a7146a9e-af21-479c-bac8-44714c8d45d9	create	update user profile baru	user_profile	Can update user profile	\N
 0a7c61d2-5659-4132-ad5c-a39c5721c188	view	Open Inventory Location Page	inventory_location	Can open the inventory location page	\N
 44bb77be-de14-41ed-a803-ed07d75f67b3	delete	Delete Inventory Location	inventory_location	Able to delete inventory location	\N
 255355aa-8a65-40de-ae99-c7ec9ff11d48	update	Update Inventory Location	inventory_location	Can update inventory location	\N
 e3556966-2a76-49e5-a823-8151702531be	create	Create New Inventory Location	inventory_location	Can create a new inventory location	\N
 1b420dd6-2b92-4648-a454-91f4fccfc9cf	view	Open Item detail Page	item_detail	Can open the item detail page	\N
-15bce617-5282-4dc7-9510-36e24bf73c56	view	buka halaman form goods issues	goods_issue	Can open the goods issues page	\N
+15bce617-5282-4dc7-9510-36e24bf73c56	view	open goods issues form page	goods_issue	Can open the goods issues page	\N
 63aeba46-9bb0-418e-934f-e1fb1e7ecb81	view	View Inventory On Hand	monitoring_inventory_on_hand	View inventory on hand	\N
-0cbcc661-7190-4273-895d-cd70e29bc672	delete	hapus goods issues	goods_issue	Able to delete goods issues	\N
-231a6ff0-62b2-4a99-b446-364b277d1d0d	update	mengubah goods issues	goods_issue	Can update goods issues	\N
-2c4c2a6c-0388-4554-b1bc-10efa7151498	create	menambahkan goods issues baru	goods_issue	Can create a new goods issue	\N
+0cbcc661-7190-4273-895d-cd70e29bc672	delete	delete goods issues	goods_issue	Able to delete goods issues	\N
+231a6ff0-62b2-4a99-b446-364b277d1d0d	update	update goods issues	goods_issue	Can update goods issues	\N
+2c4c2a6c-0388-4554-b1bc-10efa7151498	create	create new goods issues	goods_issue	Can create a new goods issue	\N
 1d9457f1-bd4c-4e6d-8dd1-9ccac9db31cd	approve	approve goods issues	goods_issue	Can approve new goods issues	\N
 8983ec84-793f-4393-aaf7-76621b46b5f7	view	View Inventory Location	monitoring_inventory_location	View inventory location	\N
 67d1a8e9-cccf-4fc7-9d1f-d71823087230	view	View Inventory History	report_inventory_history	View inventory history	\N
 7cc161ae-5841-4dcf-9063-571c8ff57e49	view	View PO Summary	report_po_summary	View PO summary	\N
-277cfa70-b0a0-4345-ac26-eee0027e324e	view	buka halaman dashboard management	dashboard	Can open the dashboard management page	\N
-1b2204b5-d007-48c2-8a34-7e6e35ddac15	delete	hapus dashboard	dashboard	Able to delete dashboard	\N
+277cfa70-b0a0-4345-ac26-eee0027e324e	view	open dashboard management page	dashboard	Can open the dashboard management page	\N
+1b2204b5-d007-48c2-8a34-7e6e35ddac15	delete	delete dashboard	dashboard	Able to delete dashboard	\N
 7d7cd8b9-99d5-40d3-8e1e-517395ce9dfd	receive	receive goods issues	goods_issue	Can receive goods issues	\N
 d6745d5d-465c-4b86-8235-5ceaff012906	cancel	cancel goods issues	goods_issue	Can cancel goods issues	\N
 \.
