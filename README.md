@@ -1,17 +1,17 @@
 # Inventory Management System
 
-A modern **Inventory Management System** built as a **personal portfolio project**, focused on clean architecture, scalability, and explicit UI state control using a **controller-based layout system**.
+An **Inventory Management System** built as a **personal portfolio project** for learning and practice. This project focuses on building a realistic internal admin application with a clean structure, clear responsibilities, and a UI that is easy to understand and extend.
 
-This project demonstrates how a real-world internal admin system can be structured with clear separation between **UI, controllers, and domain logic**, making it suitable for long-term maintenance and team collaboration.
+The main goal of this project is learning. I wanted to understand how an internal admin system can grow without becoming messy, so I focused on keeping the UI and application logic simple, clear, and easy to maintain.
 
 ---
 
 ## 🎯 Project Goals
 
-- Build a realistic **internal admin system**
-- Showcase **architecture & decision-making**, not just features
-- Design a **flexible UI layout system** similar to professional dashboards
-- Serve as a strong **portfolio project** for frontend & full‑stack roles
+- Build a realistic internal admin system for everyday operational needs
+- Design a flexible and reusable UI layout that can adapt as the app grows
+- Practice writing clean, readable code that is easy to understand and maintain
+- Serve as a personal portfolio project for frontend and full-stack roles
 
 ---
 
@@ -28,102 +28,15 @@ This project demonstrates how a real-world internal admin system can be structur
 
 - **React** – component-based UI
 - **Vite** – fast dev server & build tooling
-- **Controller-based UI architecture** (custom)
 
 ### Backend
 
 - **Hono** – lightweight, modern web framework
-- **RESTful API design**
+- REST API
 
 ### Database
 
-- **PostgreSQL** – relational data storage
-
----
-
-## 🧠 Architecture Overview
-
-### 1. Controller-Based UI Architecture
-
-Instead of relying purely on React local state or global stores, this project uses **explicit controllers** to manage complex UI behavior.
-
-Each major UI element has its own controller, for example:
-
-- `LayoutController`
-- `TabController`
-- `SidebarController`
-- `DetailPaneController`
-
-Controllers:
-
-- Hold UI state
-- Expose imperative actions (open, close, switch, reset)
-- Are independent from rendering logic
-
-This approach makes the UI:
-
-- Predictable
-- Easier to debug
-- More scalable as features grow
-
----
-
-### 2. Modular Layout System
-
-The application layout is composed of dynamic panes:
-
-- `leftPane`
-- `rightPane`
-- `topPane`
-- `bottomPane`
-- `content`
-
-Each pane can host different components such as:
-
-- Sidebars
-- Tab bars
-- Detail panels
-- Pages
-
-Layout behavior is fully driven by the **LayoutController**, allowing:
-
-- Runtime layout changes
-- User preferences (future feature)
-- Reusable layout patterns across pages
-
----
-
-### 3. Menu & Navigation Design
-
-Navigation is driven by a **structured menu definition** stored as data.
-
-Menu items support:
-
-- Multiple display modes (`sliding`, `context`)
-- Alignment grouping (`start`, `end`)
-- Different action types (`route`, `command`, `group`)
-
-This allows:
-
-- One menu source of truth
-- Easy permission-based filtering
-- Consistent behavior across UI surfaces
-
----
-
-### 4. Backend Design Decisions
-
-- **Hono** is chosen for its simplicity and performance
-- Clear separation between:
-  - Routes
-  - Services
-  - Database access
-- Authentication uses:
-  - Access token (short-lived)
-  - Refresh token (longer-lived)
-- Designed to support:
-  - Multi-role users
-  - Role & permission management
+- **PostgreSQL** – relational database
 
 ---
 
@@ -131,8 +44,9 @@ This allows:
 
 ### Inventory Management
 
-- Product & stock management
-- Category and metadata support
+- Inventory item management (CRUD)
+- Track basic inventory information
+- Support item details such as SKU, unit, and notes
 
 ### User & Role Management
 
@@ -140,31 +54,82 @@ This allows:
 - Multiple roles per user
 - Permission-based access control
 
-### Advanced UI System
+### UI System
 
 - Tab-based navigation (browser-like)
-- Dynamic sidebars
-- Right-side detail panes
-- Controller-driven UI state
-
-### Admin-Friendly UX
-
-- Page-based forms (mobile-friendly)
-- Persistent state across tabs
-- Predictable navigation behavior
+- Dynamic sidebar
+- Dynamic dashboard content
+- Predefined themes
+- Easy navigation with pinned menus
+- Changeable default page
 
 ---
 
-## 🖼 Demo Screenshots
+## 🖼 UI & Architecture Demos
 
-> Screenshots below illustrate the architecture-driven UI design
+> The following GIFs showcase key UI behaviors and interactions in the application.  
+> Each demo focuses on one feature to keep the behavior clear and easy to understand.
 
-- Dashboard with dynamic sidebar
-- Inventory list with right-side detail pane
-- Tab-based navigation system
-- User & role management pages
+### Dynamic Layout Preferences
 
-(Add screenshots or GIFs here)
+Demonstrates how users can rearrange core UI regions (sidebar, tab bar, content panes) at runtime.
+
+<img src="docs/gifs/layout_preferences.gif" alt="Dynamic layout" width="920">
+
+### Pinned Menu for Fast Navigation
+
+Shows a persistent, pinnable menu that remains accessible across views. Menu behavior is data-driven and permission-aware, ensuring consistent navigation for admin workflows.
+
+<img src="docs/gifs/pinnedmenu.gif" alt="Pinned menu" width="920">
+
+---
+
+### Swappable New Tab Component
+
+A browser-like tab system with a flexible New Tab concept.  
+The New Tab content is replaceable by design and can be switched from the Preferences page.
+
+<img src="docs/gifs/newtab.gif" alt="Swappable new tab" width="920">
+
+---
+
+### Dynamic Dashboard
+
+A dashboard composed of modular widgets. This shows how dashboard content can change without affecting the overall layout, keeping the navigation and surrounding UI stable.
+
+<img src="docs/gifs/dashboard.gif" alt="Dynamic dashboard" width="920">
+
+---
+
+### Multi-Role User with Role Switching
+
+Shows a user with multiple roles switching their active role at runtime. The UI reacts immediately by recalculating permissions and available navigation entries.
+
+<img src="docs/gifs/switchrole.gif" alt="Switch role" width="920">
+
+---
+
+### Predefined Themes
+
+Shows how users can switch between predefined themes to change the look of the application. This feature is meant to keep the interface comfortable to use and easy to adjust in the future.
+
+<img src="docs/gifs/theme.gif" alt="Themes" width="920">
+
+---
+
+### Role-Based Permission Management
+
+Shows how permissions are defined per role and reflected across the UI (menus, pages, actions). This reinforces the data-driven approach to access control.
+
+<img src="docs/gifs/permissions.gif" alt="Role permissions" width="920">
+
+---
+
+### User-Specific Permission Overrides
+
+Illustrates fine-grained permission overrides for individual users on top of role-based permissions, enabling flexible real-world access control scenarios.
+
+<img src="docs/gifs/override_permission.gif" alt="Override permissions" width="920">
 
 ---
 
@@ -201,38 +166,14 @@ npm run dev
 
 ---
 
-## 📌 Design Trade-offs & Decisions
-
-- **Controllers over global store**: clearer intent and easier debugging
-- **Explicit layout panes** instead of implicit composition
-- **Data-driven menu system** for future permission & customization support
-- **Page-based forms** instead of modals for better mobile UX
-
----
-
-## 🧪 Testing
-
-(Planned)
-
----
-
-## 🛣 Roadmap
-
-- [ ] Audit log system
-- [ ] User preferences (layout, theme, language)
-- [ ] Multi-language support (i18n)
-- [ ] Dashboard analytics widgets
-
----
-
 ## 📄 License
 
-MIT License
+MIT License — free to use, modify, and learn from.
 
 ---
 
 ## 🙌 Author
 
 **Choirul Nurrohim**  
-Personal Portfolio Project  
+Personal Portfolio Project built for learning and practice
 GitHub: https://github.com/cnurrohim
