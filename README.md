@@ -1,17 +1,23 @@
 # Inventory Management System
 
-An **Inventory Management System** built as a **personal portfolio project** for learning and practice. This project focuses on building a realistic internal admin application with a clean structure, clear responsibilities, and a UI that is easy to understand and extend.
+This is a personal project focused on building a modular internal admin application using React, Node.js, and PostgreSQL.
 
-The main goal of this project is learning. I wanted to understand how an internal admin system can grow without becoming messy, so I focused on keeping the UI and application logic simple, clear, and easy to maintain.
+I started this project based on some of the problems and requirements I encountered in previous projects, such as:
+
+- Some users need to have multiple roles
+- Permissions may need to be added or removed for a specific user or role
+- Users may need a simpler interface for specific use cases, such as data entry, without being cluttered with unnecessary elements
+- Users may want to customize the information shown on their dashboard instead of always following the default layout defined by their role
+
+Through this project, I wanted to learn how an admin system can grow as more features are added without making the UI and application logic difficult to manage. Rather than trying to build a large system, I focused on keeping the structure simple, reusable, and easy to change.
 
 ---
 
 ## 🎯 Project Goals
 
-- Build a realistic internal admin system for everyday operational needs
+- Build an internal basic inventory admin application
 - Design a flexible and reusable UI layout that can adapt as the app grows
 - Practice writing clean, readable code that is easy to understand and maintain
-- Serve as a personal portfolio project for frontend and full-stack roles
 
 ---
 
@@ -31,8 +37,8 @@ The main goal of this project is learning. I wanted to understand how an interna
 
 ### Backend
 
-- **Hono** – lightweight, modern web framework
-- REST API
+- **Hono** – web framework for the REST API
+- REST API – communication between frontend and backend
 
 ### Database
 
@@ -52,7 +58,9 @@ The main goal of this project is learning. I wanted to understand how an interna
 
 - CRUD users
 - Multiple roles per user
-- Permission-based access control
+- Role-based permission management
+- User-specific permission overrides
+- Role switching for users with multiple roles
 
 ### UI System
 
@@ -67,18 +75,17 @@ The main goal of this project is learning. I wanted to understand how an interna
 
 ## 🖼 UI & Architecture Demos
 
-> The following GIFs showcase key UI behaviors and interactions in the application.  
-> Each demo focuses on one feature to keep the behavior clear and easy to understand.
+> The following demos show some of the UI and permission-related features implemented in the application.
 
 ### Dynamic Layout Preferences
 
-Demonstrates how users can rearrange core UI regions (sidebar, tab bar, content panes) at runtime.
+Users can change the arrangement of the main UI areas, such as the sidebar, tab bar, and content panes.
 
 <img src="docs/gifs/layout_preferences.gif" alt="Dynamic layout" width="920">
 
 ### Pinned Menu for Fast Navigation
 
-Shows a persistent, pinnable menu that remains accessible across views. Menu behavior is data-driven and permission-aware, ensuring consistent navigation for admin workflows.
+Menus can be pinned so frequently used pages remain easy to access. The available menus are generated from the application's menu configuration and current user permissions.
 
 <img src="docs/gifs/pinnedmenu.gif" alt="Pinned menu" width="920">
 
@@ -86,8 +93,7 @@ Shows a persistent, pinnable menu that remains accessible across views. Menu beh
 
 ### Swappable New Tab Component
 
-A browser-like tab system with a flexible New Tab concept.  
-The New Tab content is replaceable by design and can be switched from the Preferences page.
+The New Tab page is treated as a replaceable part of the application. Users can change which page is opened as the default New Tab from Preferences.
 
 <img src="docs/gifs/newtab.gif" alt="Swappable new tab" width="920">
 
@@ -95,7 +101,7 @@ The New Tab content is replaceable by design and can be switched from the Prefer
 
 ### Dynamic Dashboard
 
-A dashboard composed of modular widgets. This shows how dashboard content can change without affecting the overall layout, keeping the navigation and surrounding UI stable.
+The dashboard uses modular widgets that can be added or rearranged without changing the surrounding application layout.
 
 <img src="docs/gifs/dashboard.gif" alt="Dynamic dashboard" width="920">
 
@@ -103,7 +109,7 @@ A dashboard composed of modular widgets. This shows how dashboard content can ch
 
 ### Multi-Role User with Role Switching
 
-Shows a user with multiple roles switching their active role at runtime. The UI reacts immediately by recalculating permissions and available navigation entries.
+A user can have multiple roles and switch between them at runtime. The active role determines the permissions and navigation available to the user.
 
 <img src="docs/gifs/switchrole.gif" alt="Switch role" width="920">
 
@@ -111,7 +117,7 @@ Shows a user with multiple roles switching their active role at runtime. The UI 
 
 ### Predefined Themes
 
-Shows how users can switch between predefined themes to change the look of the application. This feature is meant to keep the interface comfortable to use and easy to adjust in the future.
+Users can switch between predefined themes from the Preferences page.
 
 <img src="docs/gifs/theme.gif" alt="Themes" width="920">
 
@@ -119,7 +125,7 @@ Shows how users can switch between predefined themes to change the look of the a
 
 ### Role-Based Permission Management
 
-Shows how permissions are defined per role and reflected across the UI (menus, pages, actions). This reinforces the data-driven approach to access control.
+Permissions are assigned to roles and are reflected throughout the UI, including menus, pages, and available actions.
 
 <img src="docs/gifs/permissions.gif" alt="Role permissions" width="920">
 
@@ -127,7 +133,8 @@ Shows how permissions are defined per role and reflected across the UI (menus, p
 
 ### User-Specific Permission Overrides
 
-Illustrates fine-grained permission overrides for individual users on top of role-based permissions, enabling flexible real-world access control scenarios.
+Individual users can have permission overrides on top of their role permissions.
+This allows access to be adjusted for specific users without creating another role.
 
 <img src="docs/gifs/override_permission.gif" alt="Override permissions" width="920">
 
@@ -144,18 +151,33 @@ Illustrates fine-grained permission overrides for individual users on top of rol
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/inventory-system.git
-cd inventory-system
+git clone https://github.com/cnurrohim/project-liora.git
+cd project-liora
 npm install
 ```
 
-### Environment Setup
+## Environment Setup
 
 Create a `.env` file based on `.env.example`
 
+### Frontend
+
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/dbname
-JWT_SECRET=your-secret
+VITE_API_BASE_URL=http://123.456.78.90:1234
+VITE_API_DEMO_MODE=true
+```
+
+### Backend
+
+```env
+DATABASE_URL=postgresql://user:user@localhost:5432/db_name
+REDIS_URL=redis://127.0.0.1:1234
+JWT_SECRET=secrets
+JWT_REFRESH_SECRET=refresh-secrets
+CORS_ORIGIN=http://127.0.0.1:1234
+NODE_ENV=production
+PORT=1234
+DEMO_MODE=true
 ```
 
 ### Run Development Server
