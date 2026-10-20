@@ -1,11 +1,13 @@
-name: Build, Push & Deploy
+name: Build & Push Docker Images
 
 on:
   push:
     branches: [main]
 
+  workflow_dispatch:
+
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     permissions:
@@ -26,40 +28,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # =====================
-      # BUILD & PUSH IMAGES
-      # =====================
+      # Build & push backend
       - name: Build & push backend
         uses: docker/build-push-action@v5
         with:
           context: ./backend
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/cnurrohim/project-root-backend:latest
 
+      # Build & push frontend
       - name: Build & push frontend
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/cnurrohim/project-root-frontend:latest
           build-args: |
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
             VITE_API_DEMO_MODE=${{ secrets.VITE_API_DEMO_MODE }}
-
-      # =====================
-      # DEPLOY TO SERVER
-      # =====================
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H 103.127.99.96 >> ~/.ssh/known_hosts
-
-      - name: Deploy to Server
-        run: |
-          ssh -i ~/.ssh/deploy_key rokim@103.127.99.96 << 'EOF'
-            cd /home/rokim/project-root
-            docker compose pull
-            docker compose up -d
-          EOF
