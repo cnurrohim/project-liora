@@ -49,7 +49,7 @@ export const widgets: WidgetConfig[] = [
   },
   {
     key: "lowStock",
-    label: "Low Stock Alert",
+    label: "Low Inventory Alert",
     icon: "RiAlertFill",
     type: "card",
     datasource: "/widgets/low-stock",
@@ -135,7 +135,7 @@ export const widgets: WidgetConfig[] = [
   },
   {
     key: "stockByLocation",
-    label: "Stock by Location",
+    label: "Inventory by Location",
     icon: "RiPieChart2Fill",
     type: "piechart",
     datasource: "/widgets/stock-by-location",
